@@ -15,11 +15,11 @@ DUT(모듈)끼리 같은 폴더, Testbench끼리 같은 폴더
 
 ## Branch는 버전별로 나눈다
 
-master: 잘 작동되는 코드
+master: 잘 작동되는 코드를 올리는 곳
 
-develop: 아직 테스트 중인 코드
+develop: 아직 테스트 중인 코드를 올리는 곳
 
-원한다면 각자 개인의 branch를 만들어서 테스트해도 좋음
+원한다면 각자 맡은 분야의 branch를 만들거나, 새로운 기능을 위한 branch를 만들어서 테스트해도 좋음
 
 ## 코드가 아닌 것도 올릴 수 있다
 
@@ -38,3 +38,7 @@ commit message는 영어 명령문 형태로 짧게 작성
 - 새 파일을 만들었을 때: Create xxx.v
 - 새 파일을 올렸을 때: Upload xxx.v
 - 수정 사항이 있을 때: 수정한 내용을 간단히 적는다
+
+## 용어 설명
+
+pull request: https://devlog-wjdrbs96.tistory.com/231 참고
