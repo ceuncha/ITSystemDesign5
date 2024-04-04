@@ -1,0 +1,113 @@
+`timescale 1ns / 1ps
+
+module branch_unit_tb;
+
+    // Inputs
+    reg [6:0] opcode;
+    reg [2:0] funct3;
+    reg [31:0] immediate;
+    reg [31:0] PC;
+    reg [31:0] RData1;
+    reg [5:0] compare_out;
+
+    // Outputs
+    wire [31:0] PC_Branch;
+    wire PCSrc;
+    wire [31:0] Rd_data;
+    wire IF_ID_Flush;
+
+    // Instantiate the Unit Under Test (UUT)
+    branch_unit uut (
+        .opcode(opcode),
+        .funct3(funct3),
+        .immediate(immediate),
+        .PC(PC),
+        .RData1(RData1),
+        .compare_out(compare_out),
+        .PC_Branch(PC_Branch),
+        .PCSrc(PCSrc),
+        .Rd_data(Rd_data),
+        .IF_ID_Flush(IF_ID_Flush)
+    );
+
+    initial begin
+        // Initialize Inputs
+        opcode = 0;
+        funct3 = 0;
+        immediate = 0;
+        PC = 32'h1000;
+        RData1 = 0;
+        compare_out = 0;
+
+        // LUI Instruction Test
+        #10;
+        opcode = 7'b0110111; // LUI opcode
+        immediate = 32'hFFFF0000;
+
+        // AUIPC Instruction Test
+        #10;
+        opcode = 7'b0010111; // AUIPC opcode
+        immediate = 32'h00001000;
+
+        // JAL Instruction Test
+        #10;
+        opcode = 7'b1101111; // JAL opcode
+        immediate = 32'h00000004;
+
+        // JALR Instruction Test
+        #10;
+        opcode = 7'b1100111; // JALR opcode
+        immediate = 32'h00000004;
+        RData1 = 32'h1000;
+
+        // Branch Instructions Test - Conditions Satisfied and Not Satisfied
+        // BEQ
+        #20;
+        opcode = 7'b1100011; // Branch opcode
+        funct3 = 3'b000; // BEQ funct3
+        immediate = 32'h00000008;
+        compare_out = 3'b000; // Equal (Condition Satisfied)
+        #10;
+        compare_out = 3'b001; // Not Equal (Condition Not Satisfied)
+        
+        // BNE
+        #20;
+        funct3 = 3'b001; // BNE funct3
+        compare_out = 3'b001; // Not Equal (Condition Satisfied)
+        #10;
+        compare_out = 3'b000; // Equal (Condition Not Satisfied)
+        
+        // BLT
+        #20;
+        funct3 = 3'b100; // BLT funct3
+        compare_out = 3'b010; // Less Than (Condition Satisfied)
+        #10;
+        compare_out = 3'b011; // Greater or Equal (Condition Not Satisfied)
+        
+        // BGE
+        #20;
+        funct3 = 3'b101; // BGE funct3
+        compare_out = 3'b011; // Greater or Equal (Condition Satisfied)
+        #10;
+        compare_out = 3'b010; // Less Than (Condition Not Satisfied)
+
+        // BLTU
+        #20;
+        funct3 = 3'b110; // BLTU funct3
+        compare_out = 3'b100; // Less Than Unsigned (Condition Satisfied)
+        #10;
+        compare_out = 3'b101; // Greater or Equal Unsigned (Condition Not Satisfied)
+        
+        // BGEU
+        #20;
+        funct3 = 3'b111; // BGEU funct3
+        compare_out = 3'b101; // Greater or Equal Unsigned (Condition Satisfied)
+        #10;
+        compare_out = 3'b100; // Less Than Unsigned (Condition Not Satisfied)
+
+        // End Simulation
+        #10;
+        $finish;
+    end
+      
+endmodule
