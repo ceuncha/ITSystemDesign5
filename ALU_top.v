@@ -86,7 +86,7 @@ always @(*) begin
         carry = ((ALUop == 4'b0010) && ((Result < A) || (Result < B))) | // Carry for ADD operation
             ((ALUop == 4'b0110) && (A < B)); // Carry for SUB operation
 end
-
+endmodule
 
   module MUX_3input (input1,input2,input3,select,Result);
 
