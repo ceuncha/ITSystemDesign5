@@ -13,3 +13,4 @@ module Instruction_memory(pc, instOut);
     always @ (*) begin
         instOut <= memory[pc[7:2]];
     end
+endmodule
