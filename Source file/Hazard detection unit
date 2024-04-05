@@ -23,4 +23,4 @@ module Hazard_Detection_unit(ID_EX_MemRead,IF_ID_Rs1,IF_ID_Rd,ID_EX_Rd,
         end
     end
 
-endmodul
+endmodule
