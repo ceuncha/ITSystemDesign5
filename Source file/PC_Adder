@@ -1,0 +1,14 @@
+module PC_Adder(PC, PC_Plus4);
+    input [31:0] PC;
+    output reg [31:0] PC_Plus4;
+    
+    initial
+    begin
+        PC_Plus4 = 32'd0; //초기 시작 주소
+    end
+    
+    always @ (*)
+    begin
+        PC_Plus4 [31:0] <= pc [31:0] + 32'd4; 
+    end
+endmodule

@@ -1,0 +1,70 @@
+module data_forwarding_unit_tb();
+reg [4:0] EX_MEM_Rd;
+reg [4:0] MEM_WB_Rd;
+reg [4:0] ID_EX_Rs2;
+reg [4:0] ID_EX_Rs1;
+reg MEM_WB_RegWrite;
+reg EX_MEM_RegWrite;
+
+wire [1:0] ForwardA;
+wire [1:0] ForwardB;
+
+data_forwarding_unit data_forwarding_unit(
+.MEM_WB_RegWrite(MEM_WB_RegWrite),
+.EX_MEM_RegWrite(EX_MEM_RegWrite),
+.EX_MEM_Rd(EX_MEM_Rd),
+.ID_EX_Rs1(ID_EX_Rs1),
+.MEM_WB_Rd(MEM_WB_Rd),
+.ID_EX_Rs2(ID_EX_Rs2),
+.ForwardA(ForwardA),
+.ForwardB(ForwardB)
+);
+initial begin
+    // Initialize inputs
+    MEM_WB_RegWrite = 0;
+    EX_MEM_RegWrite = 0;
+    EX_MEM_Rd = 0;
+    ID_EX_Rs1 = 0;
+    MEM_WB_Rd = 0;
+    ID_EX_Rs2 = 0;
+
+    // Wait for some time
+    #20;
+
+    // Test case 1
+    // EX hazard
+    MEM_WB_RegWrite = 0;
+    EX_MEM_RegWrite = 1;
+    EX_MEM_Rd = 5;
+    ID_EX_Rs1 = 5;
+    MEM_WB_Rd = 0;
+    ID_EX_Rs2 = 0;
+
+    #10; // Wait for some time
+
+    // Test case 2
+    // MEM hazard
+    MEM_WB_RegWrite = 1;
+    EX_MEM_RegWrite = 0;
+    EX_MEM_Rd = 0;
+    ID_EX_Rs1 = 6;
+    MEM_WB_Rd = 6;
+    ID_EX_Rs2 = 0;
+
+    #10; // Wait for some time
+
+    // Test case 3
+    // Both EX and MEM hazard
+    MEM_WB_RegWrite = 1;
+    EX_MEM_RegWrite = 1;
+    EX_MEM_Rd = 7;
+    ID_EX_Rs1 = 7;
+    MEM_WB_Rd = 0;
+    ID_EX_Rs2 = 7;
+
+    #10; // Wait for some time
+
+    // End of simulation
+    $finish;
+end
+endmodule
