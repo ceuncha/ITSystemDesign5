@@ -2,9 +2,9 @@ module register_file (clk, Rs1, Rs2, MeM_WB_RegWrite, Write_Data, RD, RData1, RD
     input clk;   
     input [4:0] Rs1;
     input [4:0] Rs2;
-    input MeM_WB_RegWrite;
-    input Write_Data;
-    input RD;
+    input MEM_WB_RegWrite;
+    input [31:0] Write_Data;
+    input [4:0] RD;
     
     reg [31:0] registers [0:31];
     
@@ -24,7 +24,7 @@ module register_file (clk, Rs1, Rs2, MeM_WB_RegWrite, Write_Data, RD, RData1, RD
         RData1 = registers[Rs1];
         RData2 = registers[Rs2];
     
-        if (MeM_WB_RegWrite == 1) begin
+        if (MEM_WB_RegWrite == 1) begin
             registers[RD] = Write_Data;
         end
     end
