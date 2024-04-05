@@ -1,22 +1,36 @@
 module branch_unit(
-    input [6:0] opcode,      // 명령어 유형을 결정하는 opcode 신호
-    input [2:0] funct3,      // 분기 명령어의 종류를 결정하는 funct3 신호
-    input [31:0] immediate,  // 명령어에서 추출한 즉시값
-    input [31:0] PC,         // 현재 프로그램 카운터 값
-    input [31:0] RData1,     // JALR 동작을 위한 rs1 값 (JALR 점프 위치: rs1+imm)
-    input [5:0] compare_out, // 조건부 분기 판정을 위한 comparator 비교 값
-    output reg [31:0] PC_Branch, // 분기 또는 점프에 의해 변경될 PC 값
-    output reg PCSrc,        // 최종적으로 분기 또는 점프 발생 시 1, 아니면 0
-    output reg [31:0] Rd_data,   // LUI, AUIPC, JAL, JALR 명령어에서 Rd에 쓰이는 값
-    output reg IF_ID_Flush   // 분기 또는 점프 실행 시 IF/ID 파이프라인 레지스터를 flush할 신호
+    input [6:0] opcode,      // Opcode signal that determines the type of instruction
+    input [2:0] funct3,      // Funct3 signal that determines the type of branch instruction
+    input [31:0] immediate,  // Immediate value extracted from the instruction
+    input [31:0] PC,         // Current Program Counter value
+    input [31:0] RData1,     // rs1 value for JALR operation (Jump location: rs1 + immediate)
+    input [31:0] RData2,     // rs2 value for comparison in branch instructions
+    output reg [31:0] PC_Branch, // PC value to be updated by branch or jump
+    output reg PCSrc,        // Set to 1 if a branch or jump occurs, otherwise 0
+    output reg [31:0] Rd_data,   // Value to be written to Rd for LUI, AUIPC, JAL, JALR instructions
+    output reg IF_ID_Flush   // Signal to flush the IF/ID pipeline register on branch or jump execution
 );
 
+reg [2:0] compare_result; // 3-bit variable for comparison result
+
 always @(*) begin
-    // 기본값 설정
+    // Initialize comparison result
+    compare_result = 3'b0;
+
+    // Equal comparison
+    compare_result[0] = (RData1 == RData2);
+
+    // Signed less than comparison
+    compare_result[1] = $signed(RData1) < $signed(RData2);
+
+    // Unsigned less than comparison
+    compare_result[2] = RData1 < RData2;
+
+    // Initialize output signals
     PCSrc = 0;
     PC_Branch = 32'b0;
     Rd_data = 32'b0;
-    IF_ID_Flush = 0; // 기본적으로 flush하지 않음
+    IF_ID_Flush = 0;
     
     case(opcode)
         7'b0110111: begin // LUI
@@ -29,26 +43,26 @@ always @(*) begin
             PCSrc = 1;
             PC_Branch = PC + immediate;
             Rd_data = PC + 4;
-            IF_ID_Flush = 1; // flush 신호 활성화
+            IF_ID_Flush = 1;
         end
         7'b1100111: begin // JALR
             PCSrc = 1;
-            PC_Branch = (RData1 + immediate) & ~1; // Ensure the LSB is 0 for alignment
+            PC_Branch = (RData1 + immediate) & ~1;
             Rd_data = PC + 4;
-            IF_ID_Flush = 1; // flush 신호 활성화
+            IF_ID_Flush = 1;
         end
-        7'b1100011: begin // Branch Instructions
+        7'b1100011: begin // Conditional Branch Instructions
             case (funct3)
-                3'b000: PCSrc = (compare_out == 3'b000); // BEQ
-                3'b001: PCSrc = (compare_out == 3'b001); // BNE
-                3'b100: PCSrc = (compare_out == 3'b010); // BLT
-                3'b101: PCSrc = (compare_out == 3'b011); // BGE
-                3'b110: PCSrc = (compare_out == 3'b100); // BLTU
-                3'b111: PCSrc = (compare_out == 3'b101); // BGEU
+                3'b000: PCSrc = compare_result[0]; // BEQ
+                3'b001: PCSrc = ~compare_result[0]; // BNE
+                3'b100: PCSrc = compare_result[1]; // BLT (signed)
+                3'b101: PCSrc = ~compare_result[1] | compare_result[0]; // BGE (signed)
+                3'b110: PCSrc = compare_result[2]; // BLTU (unsigned)
+                3'b111: PCSrc = ~compare_result[2] | compare_result[0]; // BGEU (unsigned)
             endcase
             if (PCSrc) begin
                 PC_Branch = PC + immediate;
-                IF_ID_Flush = 1; // flush 신호 활성화
+                IF_ID_Flush = 1;
             end
         end
     endcase
