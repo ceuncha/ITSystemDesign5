@@ -39,7 +39,7 @@ module idex_pipeline_register #(
     input clk,
     input [Control_Width-1:0] Control_Sig,
     input [4:0] IF_ID_Rs1, IF_ID_Rs2, IF_ID_Rd,
-    input [2:0] IF_ID_funct3;
+    input [2:0] IF_ID_funct3,
     input [31:0] RData1, RData2,
     input [31:0] imm32,  // sign extend의 output
     input [31:0] PC_Plus4, PC_imm, imm_out,
