@@ -1,4 +1,4 @@
-module register_file (clk, Rs1, Rs2, MeM_WB_RegWrite, Write_Data, RD, RData1, RData2);
+module register_file (clk, Rs1, Rs2, MEM_WB_RegWrite, Write_Data, RD, RData1, RData2);
     input clk;   
     input [4:0] Rs1;
     input [4:0] Rs2;
