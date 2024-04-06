@@ -18,7 +18,6 @@
 ) 추가 및 인풋 아웃풋 뒤에 ; 되있던걸 , 로 고침 */
 
 
-
 //IFID PIPELINE REGISTER
 module ifid_pipeline_register (
     input clk,
@@ -58,7 +57,7 @@ module idex_pipeline_register #(
     output reg [2:0] ID_EX_funct3,
     output reg [31:0] ID_EX_RData1, ID_EX_RData2,
     output reg [31:0] ID_EX_imm32,
-    output reg [31:0] ID_EX_PC_Plus4, ID_EX_PC_imm, ID_EX_imm_out,
+    output reg [31:0] ID_EX_PC_Plus4, ID_EX_PC_imm, ID_EX_imm_out
 );
         
     always @(posedge clk) begin
@@ -81,7 +80,9 @@ module idex_pipeline_register #(
 endmodule
 
 //EXMEM PIPELINE REGISTER
-module exmem_pipeline_register (
+module exmem_pipeline_register #(
+    parameter Control_Width = 11
+)(
     input clk,
     input [Control_Width-1:0] ID_EX_Control_Sig,
     input [4:0] ID_EX_Rd, // inst decode해서 나온 dest reg가 넘어온 것
@@ -120,7 +121,7 @@ module memwb_pipeline_register #(
     output reg [4:0] MEM_WB_Rd,
     output reg [31:0] MEM_WB_PC_Plus4, MEM_WB_PC_imm, MEM_WB_imm_out,
     output reg [31:0] MEM_WB_ALUResult,
-    output reg [31:0] MEM_WB_RData,
+    output reg [31:0] MEM_WB_RData
 );
         
     always @(posedge clk) begin
