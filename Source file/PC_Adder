@@ -9,6 +9,6 @@ module PC_Adder(PC, PC_Plus4);
     
     always @ (*)
     begin
-        PC_Plus4 [31:0] <= pc [31:0] + 32'd4; 
+        PC_Plus4 [31:0] <= PC [31:0] + 32'd4; 
     end
 endmodule
