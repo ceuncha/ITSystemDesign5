@@ -144,7 +144,7 @@ module memwb_pipeline_register (
     always @(posedge clk) begin
         MEM_WB_RegWrite <= EX_MEM_RegWrite;
         MEM_WB_MemToReg <= EX_MEM_MemToReg;
-        MEM_WB_RWSel <= EX_MEM_RWSel
+        MEM_WB_RWSel <= EX_MEM_RWSel;
         
         MEM_WB_Rd <= EX_MEM_Rd;
         MEM_WB_PC_Plus4 <= EX_MEM_PC_Plus4;
