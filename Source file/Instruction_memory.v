@@ -1,5 +1,5 @@
 module Instruction_memory(pc, instOut);
-    input [31:0] pc;
+    input [31:0] PC;
     output reg [31:0] instOut;
 
     reg [31:0] memory [0:63];
