@@ -15,7 +15,7 @@
 1. //IDEX PIPELINE REGISTER 에 Control_Sig_Stall 인풋 추가
 2. //MEMWB PIPELINE REGISTER 에서 #(
     parameter Control_Width = 11
-) 등 자잘한 문법 오류 수정 */
+) 추가 등 자잘한 문법 오류 수정 */
 
 
 //IFID PIPELINE REGISTER
