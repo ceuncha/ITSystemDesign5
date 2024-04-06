@@ -38,6 +38,7 @@ module idex_pipeline_register #(
     )(    
     input clk,
     input [Control_Width-1:0] Control_Sig,
+    input Control_Sig_Stall,
     input [4:0] IF_ID_Rs1, IF_ID_Rs2, IF_ID_Rd,
     input [2:0] IF_ID_funct3,
     input [31:0] RData1, RData2,
@@ -98,18 +99,20 @@ module exmem_pipeline_register (
 endmodule
 
 //MEMWB PIPELINE REGISTER
-module memwb_pipeline_register (
-    input clk;
+module memwb_pipeline_register #(
+    parameter Control_Width = 11
+)(
+    input clk,
     input [Control_Width-1:0] EX_MEM_Control_Sig,
-    input [4:0] EX_MEM_Rd;  // inst decode해서 나온 dest reg가 넘어온 것
-    input [31:0] EX_MEM_PC_Plus4, EX_MEM_PC_imm, EX_MEM_imm_out
-    input [31:0] EX_MEM_ALUResult;
-    input [31:0] RData; // data memory에서 읽은 데이터
+    input [4:0] EX_MEM_Rd,  // inst decode해서 나온 dest reg가 넘어온 것
+    input [31:0] EX_MEM_PC_Plus4, EX_MEM_PC_imm, EX_MEM_imm_out,
+    input [31:0] EX_MEM_ALUResult,
+    input [31:0] RData, // data memory에서 읽은 데이터
     output reg [Control_Width-1:0] MEM_WB_Control_Sig,
-    output reg [4:0] MEM_WB_Rd;
+    output reg [4:0] MEM_WB_Rd,
     output reg [31:0] MEM_WB_PC_Plus4, MEM_WB_PC_imm, MEM_WB_imm_out,
-    output reg [31:0] MEM_WB_ALUResult;
-    output reg [31:0] MEM_WB_RData;
+    output reg [31:0] MEM_WB_ALUResult,
+    output reg [31:0] MEM_WB_RData,
 );
         
     always @(posedge clk) begin
