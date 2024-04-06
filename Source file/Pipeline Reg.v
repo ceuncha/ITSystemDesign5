@@ -46,7 +46,7 @@ module idex_pipeline_register #(
 
     output reg [Control_Width-1:0] ID_EX_Control_Sig,
     output reg [4:0] ID_EX_Rs1, ID_EX_Rs2, ID_EX_Rd,
-    output reg [2:0] ID_EX_funct3;
+    output reg [2:0] ID_EX_funct3,
     output reg [31:0] ID_EX_RData1, ID_EX_RData2,
     output reg [31:0] ID_EX_imm32,
     output reg [31:0] ID_EX_PC_Plus4, ID_EX_PC_imm, ID_EX_imm_out,
