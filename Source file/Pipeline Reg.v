@@ -74,7 +74,6 @@ module idex_pipeline_register (
             ID_EX_ALUOp <= ALUOp;
             ID_EX_RWSel <= RWSel;
             
-            ID_EX_Control_Sig <= Control_Sig;
             ID_EX_Rs1 <= IF_ID_Rs1;
             ID_EX_Rs2 <= IF_ID_Rs2;
             ID_EX_Rd <= IF_ID_Rd;
@@ -94,7 +93,7 @@ endmodule
 //EXMEM PIPELINE REGISTER
 module exmem_pipeline_register (
     input clk,
-    input reg ID_EX_RegWrite, ID_EX_MemToReg, ID_EX_MemRead, ID_EX_MemWrite, ID_EX_RWSel
+    input ID_EX_RegWrite, ID_EX_MemToReg, ID_EX_MemRead, ID_EX_MemWrite, ID_EX_RWSel
    
     
     input [4:0] ID_EX_Rd, // inst decode해서 나온 dest reg가 넘어온 것
@@ -135,7 +134,7 @@ module memwb_pipeline_register (
     input [31:0] EX_MEM_PC_Plus4, EX_MEM_PC_imm, EX_MEM_imm_out,
     input [31:0] EX_MEM_ALUResult,
     input [31:0] RData, // data memory에서 읽은 데이터
-    output MEM_WB_RegWrite, MEM_WB_MemToReg, MEM_WB_RWSel,
+    output reg MEM_WB_RegWrite, MEM_WB_MemToReg, MEM_WB_RWSel,
     output reg [4:0] MEM_WB_Rd,
     output reg [31:0] MEM_WB_PC_Plus4, MEM_WB_PC_imm, MEM_WB_imm_out,
     output reg [31:0] MEM_WB_ALUResult,
