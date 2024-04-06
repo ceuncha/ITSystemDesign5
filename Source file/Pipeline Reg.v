@@ -11,6 +11,14 @@
 - 기능 추가될 때마다 꼼꼼히 유지보수
 */
 
+/*보수내용(기호민)
+1. //IDEX PIPELINE REGISTER 에 Control_Sig_Stall 인풋 추가
+2. //MEMWB PIPELINE REGISTER 에서 #(
+    parameter Control_Width = 11
+) 추가 및 인풋 아웃풋 뒤에 ; 되있던걸 , 로 고침 */
+
+
+
 //IFID PIPELINE REGISTER
 module ifid_pipeline_register (
     input clk,
