@@ -93,7 +93,7 @@ endmodule
 //EXMEM PIPELINE REGISTER
 module exmem_pipeline_register (
     input clk,
-    input ID_EX_RegWrite, ID_EX_MemToReg, ID_EX_MemRead, ID_EX_MemWrite, ID_EX_RWSel
+    input ID_EX_RegWrite, ID_EX_MemToReg, ID_EX_MemRead, ID_EX_MemWrite, ID_EX_RWSel,
    
     
     input [4:0] ID_EX_Rd, // inst decode해서 나온 dest reg가 넘어온 것
