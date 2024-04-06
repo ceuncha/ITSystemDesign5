@@ -11,6 +11,6 @@ module Instruction_memory(pc, instOut);
         memory[29] <= 32'b00000000010010100011000000100000; //ADD 
     end
     always @ (*) begin
-        instOut <= memory[pc[7:2]];
+        instOut <= memory[PC[7:2]];
     end
 endmodule
