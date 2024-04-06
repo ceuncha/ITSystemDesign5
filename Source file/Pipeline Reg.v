@@ -92,9 +92,7 @@ module idex_pipeline_register (
 endmodule
 
 //EXMEM PIPELINE REGISTER
-module exmem_pipeline_register #(
-    parameter Control_Width = 11
-)(
+module exmem_pipeline_register (
     input clk,
     input reg ID_EX_RegWrite, ID_EX_MemToReg, ID_EX_MemRead, ID_EX_MemWrite, ID_EX_RWSel
    
@@ -130,9 +128,7 @@ module exmem_pipeline_register #(
 endmodule
 
 //MEMWB PIPELINE REGISTER
-module memwb_pipeline_register #(
-    parameter Control_Width = 11
-)(
+module memwb_pipeline_register (
     input clk,
     input EX_MEM_RegWrite, EX_MEM_MemToReg, EX_MEM_RWSel,
     input [4:0] EX_MEM_Rd,  // inst decode해서 나온 dest reg가 넘어온 것
