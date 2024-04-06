@@ -1,4 +1,4 @@
-module Program_Counter(clk, PC_Stall, PC_Next, pc);
+module Program_Counter(clk, PC_Stall, PC_Next, PC);
     input clk;
     input PC_Stall;
     input [31:0] PC_Next;
