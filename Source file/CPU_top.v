@@ -103,7 +103,7 @@ ifid_pipeline_register u_ifid_pipeline_register(
 // ID stage
 register_file u_register_file(
     .clk (clk),
-    .Rs1 (IF_ID_Rs1),.Rs2 (IF_ID_Rs2),.RD (EX_MEM_Rd),
+    .Rs1 (IF_ID_Rs1),.Rs2 (IF_ID_Rs2),.Rd (EX_MEM_Rd),
     .MEM_WB_RegWrite (MEM_WB_RegWrite),
     .Write_Data (MEM_WB_Result),
     .RData1 (RData1),.RData2 (RData2)
@@ -151,7 +151,7 @@ idex_pipeline_register u_idex_pipeline_register(
     .MemRead(MemRead),
     .MemWrite(MemWrite),
     .ALUOp(ALUOp),
-    .ALUSrc(ALUSrc),
+    .ALUSrc(ALUSrC),
     .RWsel(RWsel),
     .Control_Sig_Stall(Control_Sig_Stall),
     .IF_ID_Rs1(IF_ID_Rs1),.IF_ID_Rs2(IF_ID_Rs2),.IF_ID_Rd(IF_ID_Rd),
@@ -159,7 +159,6 @@ idex_pipeline_register u_idex_pipeline_register(
     .RData1(RData1),.RData2(RData2),
     .imm32(imm32),
     .Rd_data(Rd_data),
-    .ID_EX_RWsel(ID_EX_RWsel),
     .ID_EX_RegWrite(ID_EX_RegWrite),
     .ID_EX_MemWrite(ID_EX_MemWrite),
     .ID_EX_MemRead(ID_EX_MemRead),
@@ -179,8 +178,7 @@ ALU_top u_ALU_top(
     .ALU_A(EX_MEM_ALUResult),.ALU_B(EX_MEM_ALUResult),
     .immediate(ID_EX_imm32),
     .SEL_A(ForwardA), .SEL_B(ForwardB),
-    .ALUsrc(ID_EX_ALUSrc),
-    .ALUop(ID_EX_ALUOp),
+    .ALUsrc(ID_EX_ALUsrc),
     .Result(ALUResult)
     //.negative(),.overflow(),.zero(),.carry(),
 );
@@ -232,7 +230,7 @@ memwb_pipeline_register u_memwb_pipeline_register(
     .EX_MEM_Rd_data(EX_MEM_Rd_data),
     .EX_MEM_ALUResult(EX_MEM_ALUResult),
     .RData(RData),
-    .MEM_WB_RegWrite(MEM_WB_RegWrite),
+    .MEM_WB_RegWrite(MEM_WB_RegWrtie),
     .MEM_WB_MemToReg(MEM_WB_MemToReg),
     .MEM_WB_RWsel(MEM_WB_RWsel),
     .MEM_WB_Rd(MEM_WB_Rd),
@@ -250,7 +248,7 @@ WbMux u_WbMux(
 pretty_mux u_pretty_mux(
     .mem_out(mem_out),
     .MEM_WB_Rd_data(MEM_WB_Rd_data),
-    .MEM_WB_RWsel(MEM_WB_RWsel),
+    .MEM_WB_RWSet(MEM_WB_RWsel),
     .Write_Data(MEM_WB_Result)
 );
 endmodule
