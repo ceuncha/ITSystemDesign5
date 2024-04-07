@@ -8,7 +8,12 @@ module Hazard_Detection_unit(ID_EX_MemRead,IF_ID_Rs1,IF_ID_Rd,ID_EX_Rd,
     output reg PC_Stall;
     output reg IF_ID_Stall;
     output reg Control_Sig_Stall;
-
+    
+initial begin
+        PC_Stall = 1'b0;
+        IF_ID_Stall = 1'b0;
+        Control_Sig_Stall = 1'b0;
+end
 
     always @(*) begin
         PC_Stall = 0;
