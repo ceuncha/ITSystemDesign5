@@ -4,7 +4,7 @@ module CPU_top(
 
 // wire declarations
 // IF stage
-wire [31:0] PC, PC_Plus4, PC_next, PC_Branch;
+wire [31:0] PC, PC_next, PC_Branch;
 wire PC_Stall, PCSrc;
 wire [31:0] instOut;
 wire IF_ID_Stall, IF_ID_Flush;
@@ -73,20 +73,12 @@ wire [31:0] MEM_WB_Result;
 // IF stage
 Program_Counter u_Program_Counter(
     .clk (clk),
+    .PC_Branch(PC_Branch),
     .PC_Stall (PC_Stall),
-    .PC_next (PC_next),
+    .PCSrc(PCSrc),
     .PC (PC)
 );
-PC_Mux u_PC_Mux(
-    .PC_Branch (PC_Branch),
-    .PCSrc (PCSrc),
-    .PC_Plus4 (PC_Plus4),
-    .PC_next (PC_next)
-);    
-PC_Adder u_PC_Adder(
-    .PC (PC),
-    .PC_Plus4 (PC_Plus4)
-);
+
 Instruction_memory u_Instruction_memory(
     .pc (PC),
     .instOut (instOut)
