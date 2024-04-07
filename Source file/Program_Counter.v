@@ -3,7 +3,10 @@ module Program_Counter(clk, PC_Stall, PC_Next, PC);
     input PC_Stall;
     input [31:0] PC_Next;
     output reg [31:0] PC;
-   
+    
+   initial begin
+       PC= 32'd0;
+   end
 always @ (posedge clk) begin
     if (PC_Stall) begin
         // stall signal = 1 이면 , keep PC unchanged
