@@ -4,7 +4,7 @@ module PC_Adder(PC, PC_Plus4);
     
     initial
     begin
-        PC_Plus4 = 32'd0; //초기 시작 주소
+        PC_Plus4 = 32'd4; 
     end
     
     always @ (*)
