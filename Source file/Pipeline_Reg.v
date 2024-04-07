@@ -9,7 +9,7 @@ module ifid_pipeline_register (
 );
     
     always @(posedge clk) begin
-        if(!IF_ID_Stall || !IF_ID_Flush) begin
+        if(!(IF_ID_Stall || IF_ID_Flush)) begin
             IF_ID_instOut <= instOut;
             IF_ID_PC <= PC;
         end
