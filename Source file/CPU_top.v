@@ -4,7 +4,7 @@ module CPU_top(
 
 // wire declarations
 // IF stage
-wire [31:0] PC, PC_next, PC_Branch;
+wire [31:0] PC, PC_Branch;
 wire PC_Stall, PCSrc;
 wire [31:0] instOut;
 wire IF_ID_Stall, IF_ID_Flush;
