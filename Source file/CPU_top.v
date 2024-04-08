@@ -27,6 +27,7 @@ wire [3:0] ALUOp;
 wire ALUSrc;
 wire RWsel;
 wire [31:0] RData1, RData2;
+wire [31:0] Rd_data;
 wire Control_Sig_Stall;
     // pipeline reg
 wire ID_EX_RegWrite;
