@@ -12,14 +12,14 @@ module branch_unit(
 );
 
 reg [2:0] compare_result; // 3-bit variable for comparison result
-
 initial begin
-    PCSrc=1'b0;
-    IF_ID_Flush=1'b0;
-    
+    PCSrc=0;
+    IF_ID_Flush = 0;
 end
 
 always @(*) begin
+    PCSrc=0;
+    IF_ID_Flush = 0;
     // Initialize comparison result
     compare_result = 3'b0;
 
@@ -35,7 +35,7 @@ always @(*) begin
     // Initialize output signals
     PCSrc = 0;
     PC_Branch = 32'b0;
-    Rd_data = 0;
+    Rd_data = 32'b0;
     IF_ID_Flush = 0;
     
     case(opcode)
