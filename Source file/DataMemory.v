@@ -26,15 +26,15 @@ always @ (*) begin
 
         case (funct3)
 
-            3'b000: ReadData <= {{24{memory[ALUResult >> 2][7]}}, memory[ALUResult >> 2][7:0]}; // LB
+            3'b000: ReadData <= {{24{memory[ALUResult][31]}}, memory[ALUResult][7:0]}; // LB
 
-            3'b001: ReadData <= {{16{memory[ALUResult >> 2][15]}}, memory[ALUResult >> 2][15:0]}; // LH
+            3'b001: ReadData <= {{16{memory[ALUResult][31]}}, memory[ALUResult][15:0]}; // LH
 
-            3'b010: ReadData <= memory[ALUResult >> 2]; // LW
+            3'b010: ReadData <= memory[ALUResult]; // LW
 
-            3'b100: ReadData <= {{24{1'b0}}, memory[ALUResult >> 2][7:0]}; // LBU
+            3'b100: ReadData <= {{24{1'b0}}, memory[ALUResult][7:0]}; // LBU
 
-            3'b101: ReadData <= {{16{1'b0}}, memory[ALUResult >> 2][15:0]}; // LHU
+            3'b101: ReadData <= {{16{1'b0}}, memory[ALUResult][15:0]}; // LHU
 
             default: ReadData <= 32'd0;
 
@@ -46,11 +46,11 @@ always @ (*) begin
 
         case (funct3)
 
-            3'b000: memory[ALUResult >> 2][7:0] <= WriteData[7:0]; // SB
+            3'b000: memory[ALUResult][7:0] <= WriteData[7:0]; // SB
 
-            3'b001: memory[ALUResult >> 2][15:0] <= WriteData[15:0]; // SH
+            3'b001: memory[ALUResult][15:0] <= WriteData[15:0]; // SH
 
-            3'b010: memory[ALUResult >> 2] <= WriteData; // SW
+            3'b010: memory[ALUResult] <= WriteData; // SW
 
         endcase
 
