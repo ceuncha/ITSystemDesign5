@@ -17,7 +17,7 @@ module ifid_pipeline_register (
         if(IF_ID_Stall) begin
             // NOP 명령어 출력
             IF_ID_instOut <= 32'h00000013; // RV32I에서의 NOP 명령어
-            IF_ID_PC <= 0; 
+            IF_ID_PC <= PC; 
         end
         else begin
             // 플러시가 아니고 스톨도 아닐 때 정상 동작
