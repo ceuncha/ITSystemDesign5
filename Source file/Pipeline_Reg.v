@@ -76,8 +76,13 @@ module idex_pipeline_register (
             ID_EX_Rd_data <= Rd_data;
         end
         else begin
-            // Stall 
-        end
+            ID_EX_RWsel <= 0;
+            ID_EX_ALUSrc <= 0;
+            ID_EX_ALUOp <= 0;
+            ID_EX_MemWrite <= 0;
+            ID_EX_MemRead <= 0;
+            ID_EX_MemToReg <= 0;
+            ID_EX_RegWrite <= 0;        end
         
     end 
 endmodule
