@@ -82,7 +82,8 @@ module idex_pipeline_register (
             ID_EX_MemWrite <= 0;
             ID_EX_MemRead <= 0;
             ID_EX_MemToReg <= 0;
-            ID_EX_RegWrite <= 0;        end
+            ID_EX_RegWrite <= 0;        
+        end
         
     end 
 endmodule
