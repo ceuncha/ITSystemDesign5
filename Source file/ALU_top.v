@@ -45,7 +45,8 @@ always @(*) begin
 
             end
         4'b0011: begin  //XOR
-
+            Result = A ^ B; 
+           
             end
         4'b0100: begin  //SLL
             Result = A << B[4:0]; 
