@@ -1,16 +1,27 @@
-module ALU_top(A,WB_A,ALU_A,B,WB_B,ALU_B,immediate,SEL_A,SEL_B,ALUsrc,ALUop,Result,negative,overflow,zero,carry);
-   input [31:0] A,WB_A,ALU_A,B,WB_B,ALU_B,immediate;
-   input [1:0] SEL_A,SEL_B;
-   input [3:0] ALUop;
-   input ALUsrc;
-   output [31:0] Result;
-   output negative,overflow,zero,carry;
-   wire [31:0] ResultA,ResultB,SrcB;
-   
-   MUX_3input MUXA(A,WB_A,ALU_A,SEL_A,ResultA);
-   MUX_3input MUXB(B,WB_B,ALU_B,SEL_B,ResultB);
-   MUX_2input MUXsrcB(ResultB,immediate,ALUsrc,SrcB);
-   ALU ALU(ResultA,SrcB,ALUop,Result,negative,overflow,zero,carry);
+module ALU_top(
+   input [31:0] A, WB_A, ALU_A, B, WB_B, ALU_B, immediate, ID_EX_PC,
+   input [1:0] SEL_A, SEL_B,
+   input [3:0] ALUop,
+   input [1:0] ALUsrc,
+   output [31:0] Result,
+   output reg [31:0] ResultA, ResultB,  // output으로 reg 선언
+   output negative, overflow, zero, carry
+);
+
+   wire [31:0] SrcA, SrcB;
+   wire [31:0] MuxA_Out, MuxB_Out;  // MUX 결과를 위한 wire 선언
+
+   MUX_3input MUXA(A, WB_A, ALU_A, SEL_A, MuxA_Out);
+   MUX_3input MUXB(B, WB_B, ALU_B, SEL_B, MuxB_Out);
+   MUX_2input MUXsrcA(ID_EX_PC, MuxA_Out, ALUsrc[1], SrcA);
+   MUX_2input MUXsrcB(MuxB_Out, immediate, ALUsrc[0], SrcB);
+   ALU ALU(SrcA, SrcB, ALUop, Result, negative, overflow, zero, carry);
+
+   // always 블록을 사용하여 ResultA, ResultB를 업데이트
+   always @(*) begin
+       ResultA = MuxA_Out;
+       ResultB = MuxB_Out;
+   end
 endmodule
 
 module ALU(A,B,ALUop,Result,negative,overflow,zero,carry);
@@ -45,8 +56,7 @@ always @(*) begin
 
             end
         4'b0011: begin  //XOR
-            Result = A ^ B; 
-           
+            Result = A ^ B; // XOR
             end
         4'b0100: begin  //SLL
             Result = A << B[4:0]; 
@@ -79,6 +89,16 @@ always @(*) begin
             Result = (A < B) ? 32'b1 : 32'b0; // SLTU (Set Less Than Unsigned)
 
             end
+        4'b1010: begin  // Branch target 주소 계산
+            Result = A+4+B;
+
+            end
+        4'b1011: begin  // LUI
+            Result = B;
+
+            end
+
+        
         default: Result = 32'b0; // Default: Output 0
     endcase
         negative = Result[31];
@@ -113,3 +133,4 @@ assign Result = (select) ? input2 : input1;
 endmodule
 
   
+
