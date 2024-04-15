@@ -5,50 +5,55 @@ module control_rom(
     output MemRead,
     output MemWrite,
     output [3:0] ALUOp,
-    output ALUSrc,
-    output RWsel // 1비트 출력 신호로 변경
+    output [1:0] ALUSrc,
+    output RWsel,
+    output Branch,
+    output Jump // 추가된 Jump 신호
 );
 
-reg [9:0] ROM [0:63]; // ROM 크기 변경
+reg [12:0] ROM [0:63]; // ROM 크기를 13비트로 증가
 
-assign {RegWrite, MemToReg, MemRead, MemWrite, ALUOp, ALUSrc, RWsel} = ROM[mapped_address];
+assign {RegWrite, MemToReg, MemRead, MemWrite, ALUOp, ALUSrc, RWsel, Branch, Jump} = ROM[mapped_address];
 
 initial begin
-    // All control signals are initialized to 0 at address 0
-    ROM[0] = 10'b0_0_0_0_0000_0_0;
+    // 모든 제어 신호를 주소 0에서 0으로 초기화
+    ROM[0] = 13'b0_0_0_0_0000_00_0_0_0;
 
-    // R-type operations, shifted by one address
-    ROM[1] = 10'b1_0_0_0_0010_0_0; // ADD
-    ROM[2] = 10'b1_0_0_0_0110_0_0; // SUB
-    ROM[3] = 10'b1_0_0_0_0000_0_0; // AND
-    ROM[4] = 10'b1_0_0_0_0001_0_0; // OR
-    ROM[5] = 10'b1_0_0_0_0011_0_0; // XOR
-    ROM[6] = 10'b1_0_0_0_0100_0_0; // SLL
-    ROM[7] = 10'b1_0_0_0_0101_0_0; // SRL
-    ROM[8] = 10'b1_0_0_0_0111_0_0; // SRA
-    ROM[9] = 10'b1_0_0_0_1000_0_0; // SLT
-    ROM[10] = 10'b1_0_0_0_1001_0_0; // SLTU
+    // R-타입 명령어
+    ROM[1] = 13'b1_0_0_0_0010_10_0_0_0; // ADD
+    ROM[2] = 13'b1_0_0_0_0110_10_0_0_0; // SUB
+    ROM[3] = 13'b1_0_0_0_0000_10_0_0_0; // AND
+    ROM[4] = 13'b1_0_0_0_0001_10_0_0_0; // OR
+    ROM[5] = 13'b1_0_0_0_0011_10_0_0_0; // XOR
+    ROM[6] = 13'b1_0_0_0_0100_10_0_0_0; // SLL
+    ROM[7] = 13'b1_0_0_0_0101_10_0_0_0; // SRL
+    ROM[8] = 13'b1_0_0_0_0111_10_0_0_0; // SRA
+    ROM[9] = 13'b1_0_0_0_1000_10_0_0_0; // SLT
+    ROM[10] = 13'b1_0_0_0_1001_10_0_0_0; // SLTU
 
-    // Load and Store, shifted by one address
-    ROM[11] = 10'b1_1_1_0_0010_1_0; // Load instructions
-    ROM[12] = 10'b0_0_0_1_0010_1_0; // Store instructions
+    // 로드 및 스토어
+    ROM[11] = 13'b1_1_1_0_0010_11_0_0_0; // 로드
+    ROM[12] = 13'b0_0_0_1_0010_11_0_0_0; // 스토어
 
-    // I-type Immediate and ALU operations, shifted by one address
-    ROM[14] = 10'b1_0_0_0_0010_1_0; // ADDI
-    ROM[15] = 10'b1_0_0_0_1000_1_0; // SLTI
-    ROM[16] = 10'b1_0_0_0_1001_1_0; // SLTIU
-    ROM[17] = 10'b1_0_0_0_0011_1_0; // XORI
-    ROM[18] = 10'b1_0_0_0_0001_1_0; // ORI
-    ROM[19] = 10'b1_0_0_0_0000_1_0; // ANDI
-    ROM[20] = 10'b1_0_0_0_0100_1_0; // SLLI
-    ROM[21] = 10'b1_0_0_0_0101_1_0; // SRLI
-    ROM[22] = 10'b1_0_0_0_0111_1_0; // SRAI
+    // Branch 명령어
+    ROM[13] = 13'b0_0_0_0_1010_01_0_1_0; // 분기 명령어에 대한 ALUOp 설정
 
-    // LUI, AUIPC, JAL, JALR, shifted by one address
-    ROM[23] = 10'b1_0_0_0_0000_0_1; // LUI
-    ROM[24] = 10'b1_0_0_0_0000_0_1; // AUIPC
-    ROM[25] = 10'b1_0_0_0_0000_0_1; // JAL 
-    ROM[26] = 10'b1_0_0_0_0010_1_1; // JALR
+    // I-타입 즉시값 연산 및 ALU 명령어
+    ROM[14] = 13'b1_0_0_0_0010_11_0_0_0; // ADDI
+    ROM[15] = 13'b1_0_0_0_1000_11_0_0_0; // SLTI
+    ROM[16] = 13'b1_0_0_0_1001_11_0_0_0; // SLTIU
+    ROM[17] = 13'b1_0_0_0_0011_11_0_0_0; // XORI
+    ROM[18] = 13'b1_0_0_0_0001_11_0_0_0; // ORI
+    ROM[19] = 13'b1_0_0_0_0000_11_0_0_0; // ANDI
+    ROM[20] = 13'b1_0_0_0_0100_11_0_0_0; // SLLI
+    ROM[21] = 13'b1_0_0_0_0101_11_0_0_0; // SRLI
+    ROM[22] = 13'b1_0_0_0_0111_11_0_0_0; // SRAI
+
+    // LUI, AUIPC, JAL, JALR
+    ROM[23] = 13'b1_0_0_0_1011_11_0_0_0; // LUI
+    ROM[24] = 13'b1_0_0_0_0010_01_0_0_0; // AUIPC
+    ROM[25] = 13'b1_0_0_0_0010_01_1_0_1; // JAL
+    ROM[26] = 13'b1_0_0_0_0010_11_1_0_1; // JALR
 end
 
 endmodule
