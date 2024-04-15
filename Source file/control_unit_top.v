@@ -1,4 +1,3 @@
-
 module control_unit_top(
     input [6:0] opcode,
     input [2:0] funct3,
@@ -8,13 +7,15 @@ module control_unit_top(
     output MemRead,
     output MemWrite,
     output [3:0] ALUOp,
-    output ALUSrc,
-    output RWsel
+    output [1:0]ALUSrc,
+    output RWsel,
+    output Branch,
+    output Jump
 );
 
 wire [5:0] mapped_address;
 
-// address_mapper
+// address_mapper ?��?��?��?��
 address_mapper addr_mapper (
     .opcode(opcode),
     .funct3(funct3),
@@ -22,7 +23,7 @@ address_mapper addr_mapper (
     .mapped_address(mapped_address)
 );
 
-// control_rom
+// control_rom ?��?��?��?��
 control_rom ctrl_rom (
     .mapped_address(mapped_address),
     .RegWrite(RegWrite),
@@ -31,7 +32,9 @@ control_rom ctrl_rom (
     .MemWrite(MemWrite),
     .ALUOp(ALUOp),
     .ALUSrc(ALUSrc),
-    .RWsel(RWsel)
+    .RWsel(RWsel),
+    .Branch(Branch),
+    .Jump(Jump)
 );
 
 endmodule
