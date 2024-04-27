@@ -118,7 +118,6 @@ module exmem_pipeline_register (
     input ID_EX_MemRead,
     input ID_EX_MemWrite,
     input ID_EX_RWsel,
-    input [31:0] ID_EX_Rd_data,
     input [2:0] ID_EX_funct3,
     input [4:0] ID_EX_Rd, // inst decode
     input [31:0] ALUResult,  // ALU output
