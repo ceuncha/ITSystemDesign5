@@ -51,7 +51,6 @@ wire [31:0] Rd_data;
 wire [1:0] ForwardA, ForwardB;
 wire [31:0] ALUResult;
 wire [31:0] ResultA, ResultB;
-wire [31:0] ID_EX_PC;
     // pipeline reg
 wire EX_MEM_RegWrite;
 wire EX_MEM_MemWrite;
