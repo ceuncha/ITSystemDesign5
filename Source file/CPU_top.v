@@ -127,7 +127,7 @@ control_unit_top u_control_unit_top(
 );
 Hazard_Detection_unit u_Hazard_Detection_unit(
     .ID_EX_MemRead(ID_EX_MemRead),
-    .IF_ID_Rs1(IF_ID_Rs1),.IF_ID_Rd(IF_ID_Rd),
+    .IF_ID_Rs1(IF_ID_Rs1),.IF_ID_Rs2(iF_ID_Rs2),.IF_ID_Rd(IF_ID_Rd),
     .ID_EX_Rd(ID_EX_Rd),
     .PC_Stall(PC_Stall),
     .IF_ID_Stall(IF_ID_Stall),
