@@ -216,7 +216,6 @@ exmem_pipeline_register u_exmem_pipeline_register(
     .ALUResult(ALUResult),
     .Rd_data(Rd_data),
     .ID_EX_RData2(ID_EX_RData2),
-    .ID_EX_Rd_data(ID_EX_Rd_data),
     .EX_MEM_MemRead(EX_MEM_MemRead),
     .EX_MEM_RWsel(EX_MEM_RWsel),
     .EX_MEM_MemToReg(EX_MEM_MemToReg),
