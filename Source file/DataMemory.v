@@ -10,6 +10,8 @@ module DataMemory(
 reg [31:0] memory [0:255];
 
 always @ (*) begin
+// Default value for ReadData, ensures it is always assigned
+    ReadData <= 32'd0; // if MemRead is false
     if (MemRead) begin
         case (funct3)
             3'b000: ReadData <= {{24{memory[ALUResult][31]}}, memory[ALUResult][7:0]}; // LB
@@ -31,6 +33,7 @@ always @ (*) begin
             default: ; // No operation (NOP) for other funct3 values, explicitly defined
         endcase
     end
+    else if (!MemWrite) ; // If MemWrite is false, no changes are made to memory - it retains its previous state
 end
 
 endmodule
