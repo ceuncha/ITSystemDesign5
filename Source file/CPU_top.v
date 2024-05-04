@@ -1,5 +1,6 @@
 module CPU_top(
-    input clk
+    input clk,
+    output instOut
 );
 
 // wire declarations
@@ -51,7 +52,6 @@ wire [31:0] Rd_data;
 wire [1:0] ForwardA, ForwardB;
 wire [31:0] ALUResult;
 wire [31:0] ResultA, ResultB;
-wire [31:0] ID_EX_PC;
     // pipeline reg
 wire EX_MEM_RegWrite;
 wire EX_MEM_MemWrite;
@@ -128,7 +128,7 @@ control_unit_top u_control_unit_top(
 );
 Hazard_Detection_unit u_Hazard_Detection_unit(
     .ID_EX_MemRead(ID_EX_MemRead),
-    .IF_ID_Rs1(IF_ID_Rs1),.IF_ID_Rd(IF_ID_Rd),
+    .IF_ID_Rs1(IF_ID_Rs1),.IF_ID_Rs2(IF_ID_Rs2),.IF_ID_Rd(IF_ID_Rd),
     .ID_EX_Rd(ID_EX_Rd),
     .PC_Stall(PC_Stall),
     .IF_ID_Stall(IF_ID_Stall),
@@ -217,7 +217,6 @@ exmem_pipeline_register u_exmem_pipeline_register(
     .ALUResult(ALUResult),
     .Rd_data(Rd_data),
     .ID_EX_RData2(ID_EX_RData2),
-    .ID_EX_Rd_data(ID_EX_Rd_data),
     .EX_MEM_MemRead(EX_MEM_MemRead),
     .EX_MEM_RWsel(EX_MEM_RWsel),
     .EX_MEM_MemToReg(EX_MEM_MemToReg),
