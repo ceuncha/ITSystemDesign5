@@ -2,112 +2,77 @@
 
 module branch_unit_tb;
 
-    // Inputs
-    reg [6:0] opcode;
-    reg [2:0] funct3;
-    reg [31:0] immediate;
-    reg [31:0] PC;
-    reg [31:0] RData1;
-    reg [5:0] compare_out;
+    reg [31:0] ResultA;
+    reg [31:0] ResultB;
+    reg [31:0] ID_EX_PC;
+    reg ID_EX_Branch;
+    reg [2:0] ID_EX_funct3;
+    reg [31:0] ALUResult;
+    reg ID_EX_Jump;
 
-    // Outputs
-    wire [31:0] PC_Branch;
     wire PCSrc;
+    wire [31:0] PC_Branch;
     wire [31:0] Rd_data;
     wire IF_ID_Flush;
+    wire ID_EX_Flush;
 
-    // Instantiate the Unit Under Test (UUT)
-    branch_unit uut (
-        .opcode(opcode),
-        .funct3(funct3),
-        .immediate(immediate),
-        .PC(PC),
-        .RData1(RData1),
-        .compare_out(compare_out),
-        .PC_Branch(PC_Branch),
+    branch_unit BU(
+        .ResultA(ResultA),
+        .ResultB(ResultB),
+        .ID_EX_PC(ID_EX_PC),
+        .ID_EX_Branch(ID_EX_Branch),
+        .ID_EX_funct3(ID_EX_funct3),
+        .ALUResult(ALUResult),
+        .ID_EX_Jump(ID_EX_Jump),
         .PCSrc(PCSrc),
+        .PC_Branch(PC_Branch),
         .Rd_data(Rd_data),
-        .IF_ID_Flush(IF_ID_Flush)
+        .IF_ID_Flush(IF_ID_Flush),
+        .ID_EX_Flush(ID_EX_Flush)
     );
 
     initial begin
-        // Initialize Inputs
-        opcode = 0;
-        funct3 = 0;
-        immediate = 0;
-        PC = 32'h1000;
-        RData1 = 0;
-        compare_out = 0;
+        // 입력 초기화
+        ResultA = 0;
+        ResultB = 0;
+        ID_EX_PC = 32'h1000;
+        ID_EX_Branch = 0;
+        ID_EX_funct3 = 3'b000;
+        ALUResult = 32'h2000;
+        ID_EX_Jump = 0;
 
-        // LUI Instruction Test
+        // 지연시간 추가
         #10;
-        opcode = 7'b0110111; // LUI opcode
-        immediate = 32'hFFFF0000;
 
-        // AUIPC Instruction Test
+        // 테스트 케이스: BEQ - 분기 발생
+        ResultA = 10; ResultB = 10;
+        ID_EX_Branch = 1; ID_EX_funct3 = 3'b000;
         #10;
-        opcode = 7'b0010111; // AUIPC opcode
-        immediate = 32'h00001000;
 
-        // JAL Instruction Test
+        // 테스트 케이스: BEQ - 분기 발생하지 않음
+        ResultA = 10; ResultB = 20;
         #10;
-        opcode = 7'b1101111; // JAL opcode
-        immediate = 32'h00000004;
 
-        // JALR Instruction Test
+        // 테스트 케이스: BNE - 분기 발생
+        ResultA = 10; ResultB = 20;
+        ID_EX_funct3 = 3'b001;
         #10;
-        opcode = 7'b1100111; // JALR opcode
-        immediate = 32'h00000004;
-        RData1 = 32'h1000;
 
-        // Branch Instructions Test - Conditions Satisfied and Not Satisfied
-        // BEQ
-        #20;
-        opcode = 7'b1100011; // Branch opcode
-        funct3 = 3'b000; // BEQ funct3
-        immediate = 32'h00000008;
-        compare_out = 3'b000; // Equal (Condition Satisfied)
+        // 테스트 케이스: BNE - 분기 발생하지 않음
+        ResultA = 20; ResultB = 20;
         #10;
-        compare_out = 3'b001; // Not Equal (Condition Not Satisfied)
-        
-        // BNE
-        #20;
-        funct3 = 3'b001; // BNE funct3
-        compare_out = 3'b001; // Not Equal (Condition Satisfied)
-        #10;
-        compare_out = 3'b000; // Equal (Condition Not Satisfied)
-        
-        // BLT
-        #20;
-        funct3 = 3'b100; // BLT funct3
-        compare_out = 3'b010; // Less Than (Condition Satisfied)
-        #10;
-        compare_out = 3'b011; // Greater or Equal (Condition Not Satisfied)
-        
-        // BGE
-        #20;
-        funct3 = 3'b101; // BGE funct3
-        compare_out = 3'b011; // Greater or Equal (Condition Satisfied)
-        #10;
-        compare_out = 3'b010; // Less Than (Condition Not Satisfied)
 
-        // BLTU
-        #20;
-        funct3 = 3'b110; // BLTU funct3
-        compare_out = 3'b100; // Less Than Unsigned (Condition Satisfied)
-        #10;
-        compare_out = 3'b101; // Greater or Equal Unsigned (Condition Not Satisfied)
-        
-        // BGEU
-        #20;
-        funct3 = 3'b111; // BGEU funct3
-        compare_out = 3'b101; // Greater or Equal Unsigned (Condition Satisfied)
-        #10;
-        compare_out = 3'b100; // Less Than Unsigned (Condition Not Satisfied)
-
-        // End Simulation
+        // 테스트 케이스: : Jump - jump 발생
+        ID_EX_Jump = 1;
+        ID_EX_Branch = 0;
         #10;
         $finish;
     end
-      
+
+    // 변화 모니터링
+    initial begin
+        $monitor("시간 %t에 PCSrc = %d, PC_Branch = %h, Rd_data = %h, IF_ID_Flush = %d, ID_EX_Flush = %d",
+                 $time, PCSrc, PC_Branch, Rd_data, IF_ID_Flush, ID_EX_Flush);
+    end
+
 endmodule
