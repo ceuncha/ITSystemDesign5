@@ -9,17 +9,14 @@ module ifid_pipeline_register (
 );
     
     always @(posedge clk) begin
-        if(IF_ID_Flush) begin
-            // NOP 명령어 출력
-            IF_ID_instOut <= 32'h00000013; // RV32I에서의 NOP 명령어
-            IF_ID_PC <= PC; // PC는 NOP 상태에서도 업데이트 될 수 있도록 유지
-        end
-        else if(!IF_ID_Stall) begin
-            // 플러시가 아니고 스톨도 아닐 때 정상 동작
+        if(!(IF_ID_Stall || IF_ID_Flush)) begin
             IF_ID_instOut <= instOut;
             IF_ID_PC <= PC;
         end
-        // 추가적인 else 절은 필요하지 않음. 스톨 상태에서는 이전 상태를 유지하면 됨.
+        else begin           
+            IF_ID_instOut <= 0;
+            IF_ID_PC <= 0;
+        end
     end
 endmodule
 
