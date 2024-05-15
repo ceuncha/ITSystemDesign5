@@ -59,7 +59,7 @@ module idex_pipeline_register (
     
     
     always @(posedge clk) begin
-         if (ID_EX_Flush) begin
+        if (ID_EX_Flush) begin
         // On a flush, reset the pipeline stage to NOP
         ID_EX_RWsel <= 1'b0;
         ID_EX_ALUSrc <= 2'b00;
@@ -80,7 +80,7 @@ module idex_pipeline_register (
         ID_EX_PC <= 32'b0;
         end
 
-        else if(!Control_Sig_Stall) begin
+        else begin
             ID_EX_RWsel <= RWsel;
             ID_EX_ALUSrc <= ALUSrc;
             ID_EX_ALUOp <= ALUOp;
@@ -100,10 +100,7 @@ module idex_pipeline_register (
             ID_EX_PC <= IF_ID_PC;
         end
         else 
-        begin
-            // Stall 
-        end
-        
+
     end 
 endmodule
 
