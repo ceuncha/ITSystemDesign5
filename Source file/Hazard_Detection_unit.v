@@ -4,7 +4,6 @@ module Hazard_Detection_unit(ID_EX_MemRead,IF_ID_Rs1,IF_ID_Rs2,IF_ID_Rd,ID_EX_Rd
     input ID_EX_MemRead;
     input [4:0] IF_ID_Rs1;
     input [4:0] IF_ID_Rs2;
-    input [4:0] IF_ID_Rd;
     input [4:0] ID_EX_Rd;
     output reg PC_Stall;
     output reg IF_ID_Stall;
