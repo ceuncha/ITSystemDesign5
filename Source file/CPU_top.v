@@ -234,7 +234,7 @@ DataMemory u_DataMemory(
     .MemWrite(EX_MEM_MemWrite),
     .funct3(EX_MEM_funct3),
     .ALUResult(EX_MEM_ALUResult),
-    .WriteData(ID_EX_RData2),
+    .WriteData(EX_MEM_RData2),
     .ReadData(RData)
 );
 memwb_pipeline_register u_memwb_pipeline_register(
