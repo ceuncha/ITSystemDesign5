@@ -99,8 +99,6 @@ module idex_pipeline_register (
             ID_EX_Branch <= Branch;
             ID_EX_PC <= IF_ID_PC;
         end
-        else 
-
     end 
 endmodule
 
