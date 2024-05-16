@@ -103,7 +103,7 @@ ifid_pipeline_register u_ifid_pipeline_register(
 // ID stage
 register_file u_register_file(
     .clk (clk),
-    .Rs1 (IF_ID_Rs1),.Rs2 (IF_ID_Rs2),.RD (EX_MEM_Rd),
+    .Rs1 (IF_ID_Rs1),.Rs2 (IF_ID_Rs2),.RD (MEM_WB_Rd),
     .MEM_WB_RegWrite (MEM_WB_RegWrite),
     .Write_Data (MEM_WB_Result),
     .RData1 (RData1),.RData2 (RData2)
