@@ -8,15 +8,18 @@ module ifid_pipeline_register (
     output reg [31:0] IF_ID_PC
 );
     
-    always @(posedge clk) begin
-        if(!(IF_ID_Stall || IF_ID_Flush)) begin
+    always @(*) begin
+        if(IF_ID_Flush) begin
+            // NOP 명령어 출력
+            IF_ID_instOut <= 32'h00000013; // RV32I에서의 NOP 명령어
+            IF_ID_PC <= PC; // PC는 NOP 상태에서도 업데이트 될 수 있도록 유지
+        end
+        else if(!IF_ID_Stall) begin
+            // 플러시가 아니고 스톨도 아닐 때 정상 동작
             IF_ID_instOut <= instOut;
             IF_ID_PC <= PC;
         end
-        else begin           
-            IF_ID_instOut <= 0;
-            IF_ID_PC <= 0;
-        end
+        // 추가적인 else 절은 필요하지 않음. 스톨 상태에서는 이전 상태를 유지하면 됨.
     end
 endmodule
 
@@ -55,11 +58,9 @@ module idex_pipeline_register (
     output reg ID_EX_Branch,
     output reg [31:0] ID_EX_PC
     );
-
     
-    
-    always @(posedge clk) begin
-        if (ID_EX_Flush) begin
+    always @(*) begin
+         if (ID_EX_Flush) begin
         // On a flush, reset the pipeline stage to NOP
         ID_EX_RWsel <= 1'b0;
         ID_EX_ALUSrc <= 2'b00;
@@ -80,7 +81,7 @@ module idex_pipeline_register (
         ID_EX_PC <= 32'b0;
         end
 
-        else begin
+        else if(!Control_Sig_Stall) begin
             ID_EX_RWsel <= RWsel;
             ID_EX_ALUSrc <= ALUSrc;
             ID_EX_ALUOp <= ALUOp;
@@ -100,7 +101,10 @@ module idex_pipeline_register (
             ID_EX_PC <= IF_ID_PC;
         end
         else 
-
+        begin
+            // Stall 
+        end
+        
     end 
 endmodule
 
