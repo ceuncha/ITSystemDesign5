@@ -8,7 +8,7 @@ module ifid_pipeline_register (
     output reg [31:0] IF_ID_PC
 );
     
-    always @(*) begin
+    always @(posedge clk) begin
         if(IF_ID_Flush) begin
             // NOP 명령어 출력
             IF_ID_instOut <= 32'h00000013; // RV32I에서의 NOP 명령어
@@ -59,7 +59,7 @@ module idex_pipeline_register (
     output reg [31:0] ID_EX_PC
     );
     
-    always @(*) begin
+    always @(posedge clk) begin
          if (ID_EX_Flush) begin
         // On a flush, reset the pipeline stage to NOP
         ID_EX_RWsel <= 1'b0;
