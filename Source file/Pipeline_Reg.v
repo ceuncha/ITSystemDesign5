@@ -100,9 +100,15 @@ module idex_pipeline_register (
             ID_EX_Branch <= Branch;
             ID_EX_PC <= IF_ID_PC;
         end
-        else 
-        begin
-            // Stall 
+        else begin
+        //stall
+        ID_EX_RWsel <= 1'b0;
+        ID_EX_ALUSrc <= 2'b00;
+        ID_EX_ALUOp <= 4'b0000;
+        ID_EX_MemWrite <= 1'b0;
+        ID_EX_MemRead <= 1'b0;
+        ID_EX_MemToReg <= 1'b0;
+        ID_EX_RegWrite <= 1'b0;
         end
         
     end 
