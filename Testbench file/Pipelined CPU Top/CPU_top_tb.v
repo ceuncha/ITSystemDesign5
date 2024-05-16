@@ -34,7 +34,7 @@ initial begin
  
  always begin
     clk =~ clk;
-    #100;
+    #15;
  end    
 initial begin
 #2000;
