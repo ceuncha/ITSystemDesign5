@@ -103,7 +103,7 @@ ifid_pipeline_register u_ifid_pipeline_register(
 // ID stage
 register_file u_register_file(
     .clk (clk),
-    .Rs1 (IF_ID_Rs1),.Rs2 (IF_ID_Rs2),.RD (MEM_WB_Rd),
+    .Rs1 (IF_ID_Rs1),.Rs2 (IF_ID_Rs2),.RD (EX_MEM_Rd),
     .MEM_WB_RegWrite (MEM_WB_RegWrite),
     .Write_Data (MEM_WB_Result),
     .RData1 (RData1),.RData2 (RData2)
@@ -127,7 +127,7 @@ control_unit_top u_control_unit_top(
     .Branch(Branch)
 );
 Hazard_Detection_unit u_Hazard_Detection_unit(
-    .ID_EX_MemRead(ID_EX_MemRead),
+    .ID_EX_MemRead(ID_EX_MemRead),.MemRead(MemRead),
     .IF_ID_Rs1(IF_ID_Rs1),.IF_ID_Rs2(IF_ID_Rs2),
     .ID_EX_Rd(ID_EX_Rd),
     .PC_Stall(PC_Stall),
