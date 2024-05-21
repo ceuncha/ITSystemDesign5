@@ -44,7 +44,6 @@ always @(posedge clk or posedge rst) begin
             for (i = 0; i < 1024; i = i + 1) begin
                 if (rob_entry[i][9:0] == PC_Branch) begin
                     tail <= (i + 1) % 1024; // Set tail to the next position after the PC_Branch index
-                    head <= (i + 1) % 1024; // Set head to the next position after the PC_Branch index
                     i=1024;
                 end
             end
