@@ -53,7 +53,9 @@ always @(posedge clk or posedge rst) begin
             end
         end else begin
             rob_entry[tail] <= {1'b0, reg_write, 32'b0, instr, phys_addr, PC}; // Store input data in the ROB entry with value set to 32'b0
-            tail <= (tail + 1) % 1024;                 // Circular buffer handling
+            if (instr != 32'b0) begin
+                tail <= (tail + 1) % 1024;                 // Circular buffer handling
+            end
         end
 
         // Update the value and set ready flag upon execution completion
