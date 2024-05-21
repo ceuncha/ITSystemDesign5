@@ -51,11 +51,9 @@ always @(posedge clk or posedge rst) begin
                     tail <= (i + 1) % 1024; // Move tail to the entry right after the branch entry
                 end
             end
-        end else begin
+        end else if (instr != 32'b0) begin  // Only increment tail if the instruction is not invalid (i.e., not a bubble)
             rob_entry[tail] <= {1'b0, reg_write, 32'b0, instr, phys_addr, PC}; // Store input data in the ROB entry with value set to 32'b0
-            if (instr != 32'b0) begin
-                tail <= (tail + 1) % 1024;                 // Circular buffer handling
-            end
+            tail <= (tail + 1) % 1024;                 // Circular buffer handling
         end
 
         // Update the value and set ready flag upon execution completion
