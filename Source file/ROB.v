@@ -60,13 +60,13 @@ always @(posedge clk or posedge rst) begin
         if (alu_exec_done || mul_exec_done || div_exec_done) begin
             for (i = 0; i < 1024; i = i + 1) begin
                 if (alu_exec_done && rob_entry[i][31:0] == alu_exec_index) begin
-                    rob_entry[i][104:0] <= {1'b1, rob_entry[i][103], alu_exec_value, rob_entry[i][71:40], rob_entry[i][39:33], rob_entry[i][32:0]}; // Update value and maintain instr, phys_addr, PC
+                    rob_entry[i][104:0] <= {1'b1, regwrite, alu_exec_value, rob_entry[i][71:40], rob_entry[i][39:33], rob_entry[i][32:0]}; // Update value and maintain instr, phys_addr, PC
                 end
                 if (mul_exec_done && rob_entry[i][31:0] == mul_exec_index) begin
-                    rob_entry[i][104:0] <= {1'b1, rob_entry[i][103], mul_exec_value, rob_entry[i][71:40], rob_entry[i][39:33], rob_entry[i][32:0]}; // Update value and maintain instr, phys_addr, PC
+                    rob_entry[i][104:0] <= {1'b1, reg_write, mul_exec_value, rob_entry[i][71:40], rob_entry[i][39:33], rob_entry[i][32:0]}; // Update value and maintain instr, phys_addr, PC
                 end
                 if (div_exec_done && rob_entry[i][31:0] == div_exec_index) begin
-                    rob_entry[i][104:0] <= {1'b1, rob_entry[i][103], div_exec_value, rob_entry[i][71:40], rob_entry[i][39:33], rob_entry[i][32:0]}; // Update value and maintain instr, phys_addr, PC        
+                    rob_entry[i][104:0] <= {1'b1, reg_write, div_exec_value, rob_entry[i][71:40], rob_entry[i][39:33], rob_entry[i][32:0]}; // Update value and maintain instr, phys_addr, PC        
                 end
             end
         end
