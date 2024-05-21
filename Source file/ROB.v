@@ -43,11 +43,21 @@ always @(posedge clk or posedge rst) begin
         tail <= 0;
         reset_rob_entries();
     end else begin
-        rob_entry[tail] <= {1'b0, reg_write, 32'b0, instr, phys_addr, PC}; // Store input data in the ROB entry with value set to 32'b0
-        tail <= (tail + 1) % 1024;                 // Circular buffer handling
+        if (PcSrc) begin
+            // Update the branch entry with PC_Branch value
+            for (i = 0; i < 1024; i = i + 1) begin
+                if (rob_entry[i][31:0] == branch_index) begin
+                    rob_entry[i][118:0] <= {1'b1, rob_entry[i][117], PC_Branch, rob_entry[i][84:53], rob_entry[i][52:46], rob_entry[i][45:0]};
+                    tail <= (i + 1) % 1024; // Move tail to the entry right after the branch entry
+                end
+            end
+        end else begin
+            rob_entry[tail] <= {1'b0, reg_write, 32'b0, instr, phys_addr, PC}; // Store input data in the ROB entry with value set to 32'b0
+            tail <= (tail + 1) % 1024;                 // Circular buffer handling
+        end
 
         // Update the value and set ready flag upon execution completion
-        if (alu_exec_done || mul_exec_done || div_exec_done || PcSrc) begin
+        if (alu_exec_done || mul_exec_done || div_exec_done) begin
             for (i = 0; i < 1024; i = i + 1) begin
                 if (alu_exec_done && rob_entry[i][31:0] == alu_exec_index) begin
                     rob_entry[i][118:0] <= {1'b1, rob_entry[i][117], alu_exec_value, rob_entry[i][84:53], rob_entry[i][52:46], rob_entry[i][45:0]}; // Update value and maintain reg_write, instr, and phys_addr
@@ -57,9 +67,6 @@ always @(posedge clk or posedge rst) begin
                 end
                 if (div_exec_done && rob_entry[i][31:0] == div_exec_index) begin
                     rob_entry[i][118:0] <= {1'b1, rob_entry[i][117], div_exec_value, rob_entry[i][84:53], rob_entry[i][52:46], rob_entry[i][45:0]}; // Update value and maintain reg_write, instr, and phys_addr        
-                end
-                if (PcSrc && rob_entry[i][31:0] == branch_index) begin
-                    rob_entry[i][118:0] <= {1'b1, rob_entry[i][117], PC_Branch, rob_entry[i][84:53], rob_entry[i][52:46], rob_entry[i][45:0]}; // Update value with PC_Branch and maintain reg_write, instr, and phys_addr        
                 end
             end
         end
