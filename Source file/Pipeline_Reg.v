@@ -5,7 +5,8 @@ module ifid_pipeline_register (
     input [31:0] instOut,
     input [31:0] PC,
     output reg [31:0] IF_ID_instOut,  
-    output reg [31:0] IF_ID_PC
+    output reg [31:0] IF_ID_PC,
+    output reg id_on
 );
     
     always @(posedge clk) begin
@@ -14,17 +15,21 @@ module ifid_pipeline_register (
             IF_ID_instOut <= 32'h00000013; // RV32I에서의 NOP 명령어
             IF_ID_PC <= PC; // PC는 NOP 상태에서도 업데이트 될 수 있도록 유지
         end
-        else if(!IF_ID_Stall) begin
+        else  begin
             // 플러시가 아니고 스톨도 아닐 때 정상 동작
             IF_ID_instOut <= instOut;
             IF_ID_PC <= PC;
+            id_on <= 1'b1;
         end
         // 추가적인 else 절은 필요하지 않음. 스톨 상태에서는 이전 상태를 유지하면 됨.
     end
+    always @(negedge clk) begin
+        id_on <= 1'b0;
+    end
 endmodule
 
-//IDEX PIPELINE REGISTER
-module idex_pipeline_register (
+//IDRS PIPELINE REGISTER
+module idrs_pipeline_register (
     input clk,
     input Control_Sig_Stall,
     input RegWrite,
@@ -43,75 +48,71 @@ module idex_pipeline_register (
     input [31:0] IF_ID_PC,
     input ID_EX_Flush,
 
-    output reg ID_EX_RWsel,
-    output reg [1:0] ID_EX_ALUSrc,
-    output reg [3:0] ID_EX_ALUOp,
-    output reg ID_EX_MemWrite,
-    output reg ID_EX_MemRead,
-    output reg ID_EX_MemToReg,
-    output reg ID_EX_RegWrite,
-    output reg [4:0] ID_EX_Rs1, ID_EX_Rs2, ID_EX_Rd,
-    output reg [2:0] ID_EX_funct3,
-    output reg [31:0] ID_EX_RData1, ID_EX_RData2,
-    output reg [31:0] ID_EX_imm32,
-    output reg ID_EX_Jump,
-    output reg ID_EX_Branch,
-    output reg [31:0] ID_EX_PC
+    output reg ID_RS_RWsel,
+    output reg [1:0] ID_RS_ALUSrc,
+    output reg [3:0] ID_RS_ALUOp,
+    output reg ID_RS_MemWrite,
+    output reg ID_RS_MemRead,
+    output reg ID_RS_MemToReg,
+    output reg ID_RS_RegWrite,
+    output reg [4:0] ID_RS_Rs1, ID_RS_Rs2, ID_RS_Rd,
+    output reg [2:0] ID_RS_funct3,
+    output reg [31:0] ID_RS_RData1, ID_RS_RData2,
+    output reg [31:0] ID_RS_imm32,
+    output reg ID_RS_Jump,
+    output reg ID_RS_Branch,
+    output reg [31:0] ID_RS_PC,
+    output reg rs_on
     );
     
     always @(posedge clk) begin
          if (ID_EX_Flush) begin
         // On a flush, reset the pipeline stage to NOP
-        ID_EX_RWsel <= 1'b0;
-        ID_EX_ALUSrc <= 2'b00;
-        ID_EX_ALUOp <= 4'b0000;
-        ID_EX_MemWrite <= 1'b0;
-        ID_EX_MemRead <= 1'b0;
-        ID_EX_MemToReg <= 1'b0;
-        ID_EX_RegWrite <= 1'b0;
-        ID_EX_Rs1 <= 5'b00000;
-        ID_EX_Rs2 <= 5'b00000;
-        ID_EX_Rd <= 5'b00000;
-        ID_EX_funct3 <= 3'b000;
-        ID_EX_RData1 <= 32'b0;
-        ID_EX_RData2 <= 32'b0;
-        ID_EX_imm32 <= 32'b0;
-        ID_EX_Jump <= 1'b0;
-        ID_EX_Branch <= 1'b0;
-        ID_EX_PC <= 32'b0;
+        ID_RS_RWsel <= 1'b0;
+        ID_RS_ALUSrc <= 2'b00;
+        ID_RS_ALUOp <= 4'b0000;
+        ID_RS_MemWrite <= 1'b0;
+        ID_RS_MemRead <= 1'b0;
+        ID_RS_MemToReg <= 1'b0;
+        ID_RS_RegWrite <= 1'b0;
+        ID_RS_Rs1 <= 5'b00000;
+        ID_RS_Rs2 <= 5'b00000;
+        ID_RS_Rd <= 5'b00000;
+        ID_RS_funct3 <= 3'b000;
+        ID_RS_RData1 <= 32'b0;
+        ID_RS_RData2 <= 32'b0;
+        ID_RS_imm32 <= 32'b0;
+        ID_RS_Jump <= 1'b0;
+        ID_RS_Branch <= 1'b0;
+        ID_RS_PC <= 32'b0;
         end
 
         else if(!Control_Sig_Stall) begin
-            ID_EX_RWsel <= RWsel;
-            ID_EX_ALUSrc <= ALUSrc;
-            ID_EX_ALUOp <= ALUOp;
-            ID_EX_MemWrite <= MemWrite;
-            ID_EX_MemRead <= MemRead;
-            ID_EX_MemToReg <= MemToReg;
-            ID_EX_RegWrite <= RegWrite;
-            ID_EX_RData1 <= RData1;
-            ID_EX_RData2 <= RData2;
-            ID_EX_Rs1 <= IF_ID_Rs1;
-            ID_EX_Rs2 <= IF_ID_Rs2;
-            ID_EX_Rd <= IF_ID_Rd;
-            ID_EX_funct3 <= IF_ID_funct3;
-            ID_EX_imm32 <= imm32;
-            ID_EX_Jump <= Jump;
-            ID_EX_Branch <= Branch;
-            ID_EX_PC <= IF_ID_PC;
+            ID_RS_RWsel <= RWsel;
+            ID_RS_ALUSrc <= ALUSrc;
+            ID_RS_ALUOp <= ALUOp;
+            ID_RS_MemWrite <= MemWrite;
+            ID_RS_MemRead <= MemRead;
+            ID_RS_MemToReg <= MemToReg;
+            ID_RS_RegWrite <= RegWrite;
+            ID_RS_RData1 <= RData1;
+            ID_RS_RData2 <= RData2;
+            ID_RS_Rs1 <= IF_ID_Rs1;
+            ID_RS_Rs2 <= IF_ID_Rs2;
+            ID_RS_Rd <= IF_ID_Rd;
+            ID_RS_funct3 <= IF_ID_funct3;
+            ID_RS_imm32 <= imm32;
+            ID_RS_Jump <= Jump;
+            ID_RS_Branch <= Branch;
+            ID_RS_PC <= IF_ID_PC;
+            rs_on <= 1'b1;
         end
-        else begin
-        //stall
-        ID_EX_RWsel <= 1'b0;
-        ID_EX_ALUSrc <= 2'b00;
-        ID_EX_ALUOp <= 4'b0000;
-        ID_EX_MemWrite <= 1'b0;
-        ID_EX_MemRead <= 1'b0;
-        ID_EX_MemToReg <= 1'b0;
-        ID_EX_RegWrite <= 1'b0;
-        end
+
         
     end 
+    always @(negedge clk) begin
+    rs_on <= 1'b0;
+    end
 endmodule
 
 //EXMEM PIPELINE REGISTER
