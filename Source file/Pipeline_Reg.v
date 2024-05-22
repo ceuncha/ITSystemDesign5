@@ -46,7 +46,7 @@ module idrs_pipeline_register (
     input Jump,
     input Branch,
     input [31:0] IF_ID_PC,
-    input ID_EX_Flush,
+    input ID_RS_Flush,
 
     output reg ID_RS_RWsel,
     output reg [1:0] ID_RS_ALUSrc,
@@ -66,7 +66,7 @@ module idrs_pipeline_register (
     );
     
     always @(posedge clk) begin
-         if (ID_EX_Flush) begin
+        if (ID_RS_Flush) begin
         // On a flush, reset the pipeline stage to NOP
         ID_RS_RWsel <= 1'b0;
         ID_RS_ALUSrc <= 2'b00;
