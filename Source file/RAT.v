@@ -15,7 +15,7 @@ input wire [6:0] opcode,
 output reg [6:0] phy_addr_out1, // 오퍼랜드 1 물리 주소 출력
 output reg [6:0] phy_addr_out2, // 오퍼랜드 2 물리 주소 출력
 output reg [1:0] ready_out, // 레디 플래그 출력
-
+output reg rat_done,
 
 output reg [6:0] free_phy_addr_out
 
@@ -43,14 +43,27 @@ always @(posedge id_on or posedge reset) begin
         // 1. 오퍼랜드 유효성 검사 및 물리 주소 접근
         phy_addr_out1 <= phy_addr_table[logical_addr1];
         phy_addr_out2 <= phy_addr_table[logical_addr2];
-        ready_out[1] <= valid_table[logical_addr2];
-        ready_out[0] <= valid_table[logical_addr1];
+
+        case (opcode)
+        7'b1101111, 7'b0000011, 7'b0010011: begin
+            ready_out[0] <= valid_table[logical_addr1];
+            ready_out[1] <= 1;
+        end
+        7'b0110111, 7'b0010111, 7'b1100111: begin
+            ready_out <= 2'b11;
+        end
+        default: begin
+            ready_out[1] <= valid_table[logical_addr2];
+            ready_out[0] <= valid_table[logical_addr1];
+        end
+        endcase
         
         // 2. Rd 레지스터 유효성 및 새로운 물리 주소 할당
         if((opcode != 7'b1100011) && (opcode != 7'b0100011)) begin
         valid_table[rd_logical_addr] <= 1'b0; // 유효성을 0으로 변경
         free_phy_addr_out <= phy_addr_table[rd_logical_addr]; //프리리스트로 비어있는 주소 전송 
         phy_addr_table[rd_logical_addr] <= free_phy_addr; // 새로운 물리 주소 할당
+        
         end
         
 
