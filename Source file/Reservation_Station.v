@@ -252,25 +252,7 @@ always @(rs_on or posedge rst) begin
         // 먼저 들어온 순으로 명령어를 ALU로 보냅니다.
       out_execute_on = 1'b0; //0이 출력되면 stall이라는 뜻
       loop_done = 0;
-       for (i = head; i != tail; i = (i + 1)/rs_size) begin 
-        if(!loop_done) begin
-            if ( !done[i] && ready[i][0] == 1'b1 && ready[i][1] == 1'b1) begin
-                done[i] = 1'b1;
-	            out_execute_on = 1'b1;
-                out_rs_add = i;
-                out_branch_flag = branch_flag[i];
-                out_rd_phy = rd_phy[i];
-	            out_rd_reg = rd_reg[i];
-                out_operand1 = operand1[i];
-                out_operand2 = operand2[i];
-                out_opcode = opcode[i];
-                out_func3 = func3[i];
-                out_control = control[i];
-                out_pc = pc[i];	
-                loop_done=1;
-                end // 첫 번째 준비된 명령어만 ALU로 보냅니다.
-            end
-        end
+
         // 업데이트된 명령어는 rs에서 제거합니다.
         if (mem_write) begin
             head = (head + 1) % rs_size;
@@ -279,6 +261,26 @@ always @(rs_on or posedge rst) begin
      tail = (tail + 1) % rs_size;  // 순환 버퍼 처리를 합니다.
 end
 
-
+	always @(*) begin
+		for (i = head; i != tail; i = (i + 1)/rs_size) begin 
+        		if(!loop_done) begin
+            			if ( !done[i] && ready[i][0] == 1'b1 && ready[i][1] == 1'b1) begin
+                			done[i] = 1'b1;
+	            			out_execute_on = 1'b1;
+               				out_rs_add = i;
+               				out_branch_flag = branch_flag[i];
+                			out_rd_phy = rd_phy[i];
+	         			out_rd_reg = rd_reg[i];
+                			out_operand1 = operand1[i];
+                			out_operand2 = operand2[i];
+               				out_opcode = opcode[i];
+              	  			out_func3 = func3[i];
+                			out_control = control[i];
+                			out_pc = pc[i];	
+                			loop_done=1;
+                		end // 첫 번째 준비된 명령어만 ALU로 보냅니다.
+            		end
+        	end
+	end	
 
 endmodule
