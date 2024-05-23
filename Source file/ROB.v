@@ -14,7 +14,7 @@ module ROB(
     input wire [31:0] div_exec_value,    // Divider executed value
     input wire [31:0] div_exec_index,    // Divider execution index
     input wire PcSrc,                    // Branch signal (acts like a done signal)
-    input wire [31:0] PC_Branch,         // Branch target address
+    input wire [31:0] PC_Return,         // Branch target address
     input wire [31:0] branch_index,      // Branch index in ROB
     input wire [31:0] PC,                // Current PC value (expanded to 32 bits)
     output reg [31:0] out_value,         // Output value
@@ -47,7 +47,7 @@ always @(posedge clk or posedge rst) begin
             // Update the branch entry with PC_Branch value
             for (i = 0; i < 1024; i = i + 1) begin
                 if (rob_entry[i][31:0] == branch_index) begin
-                    rob_entry[i][104:0] <= {1'b1, rob_entry[i][103], PC_Branch, rob_entry[i][71:40], rob_entry[i][39:33], rob_entry[i][32:0]};
+                    rob_entry[i][104:0] <= {1'b1, rob_entry[i][103], PC_Return, rob_entry[i][71:40], rob_entry[i][39:33], rob_entry[i][32:0]};
                     tail <= (i + 1) % 1024; // Move tail to the entry right after the branch entry
                 end
             end
