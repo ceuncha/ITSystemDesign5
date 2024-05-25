@@ -1,5 +1,3 @@
-`timescale 1ns / 1ps
-
 module reservation_station (
 
     input wire rst,
@@ -99,10 +97,10 @@ reg [9:0] head, tail;
 reg loop_done;
 
 
-integer i, j, x,y,z,w;
+integer i,x,y,z,w;
 
 // 메인 프로세스
-always @(posedge clk or posedge rst) begin
+always @(posedge rs_on or posedge rst) begin
     if (rst) begin
         // 모든 RS 항목을 리셋합니다.
         for (i = 0; i < rs_size; i = i + 1) begin
@@ -248,7 +246,7 @@ always @(negedge clk) begin
 
 
         // 업데이트된 명령어는 rs에서 제거합니다.
-        if (mem_write) begin
+        if (mem_write) begin            
             head <= (head + 1) % rs_size;
         end
         if (!stall) begin
