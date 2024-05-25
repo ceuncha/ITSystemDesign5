@@ -5,7 +5,8 @@ module reservation_station (
     input wire rst,
     input wire rs_on,
     input wire clk,
-
+    input wire stall,
+    
     input wire mem_write,
 
     input wire alu_done_add,
@@ -121,10 +122,13 @@ always @(posedge clk or posedge rst) begin
             phy_add2[i] <= 0;
             pc[i] <= 0;
             label[i] <= 0;
+         end
+;       head <= 0;
+        tail <=0;
         end
-        head <= 0;
-        tail <= 0;
-    end else begin
+        
+        
+   else begin
         // 브랜치가 바뀌면 tail을 업데이트합니다.
         
         out_execute_on <= 1'b0; // 0이 출력되면 stall이라는 뜻
@@ -132,7 +136,8 @@ always @(posedge clk or posedge rst) begin
         if (in_branch_flag != branch_flag[branch_rs_add]) begin
             tail <= (branch_rs_add + 1) % rs_size;
         end
-
+        
+               
         // 여러 ALU로부터의 업데이트를 처리합니다.
         if (alu_done_add) begin  // 유효한 결과를 확인합니다. alu done add  는 파이프라인에서 한사이클마다 0으로 업데이트 해줘야함,
             x = alu_rs_add_add;
@@ -204,11 +209,7 @@ always @(posedge clk or posedge rst) begin
     end
 end
 
-always @(negedge clk or posedge rst) begin
-    if (rst) begin
-        head <= 0;
-        tail <= 0;
-    end else begin
+always @(negedge clk) begin
         // 들어오는 명령어를 위해 tail에 새로운 주소를 할당합니다.
         branch_flag[tail] <= branch_in; 
         rd_ready[tail] <= 1'b0;    // 초기값 0
@@ -216,7 +217,7 @@ always @(negedge clk or posedge rst) begin
         rd_phy[tail] <= in_rd_phy;
         rd_reg[tail] <= in_rd_reg;
         done[tail] <= in_done;
-        ready[tail][1:0] <= in_ready;
+        ready[tail] <= in_ready;
         opcode[tail] <= in_opcode;
         func3[tail] <= in_func3;
         control[tail] <= in_control;
@@ -228,13 +229,14 @@ always @(negedge clk or posedge rst) begin
         label[tail] <= in_label;
 
         // 할당된 주소의 operand를 업데이트 해줍니다.
+        // 할당된 주소의 operand를 업데이트 해줍니다.
         for (i = head; i != tail; i = (i + 1) % rs_size) begin
             if(rd_ready[i]) begin
-                if (i != tail && (phy_add1[tail] == rd_phy[i])) begin
+                if ( in_phy_add1== rd_phy[i]) begin
                     operand1[tail] <= rd_data[i];
                     ready[tail][0] <= 1'b1;
                 end
-                if (i != tail && (phy_add2[tail] == rd_phy[i])) begin
+                if (in_phy_add2 == rd_phy[i]) begin
                     operand2[tail] <= rd_data[i];
                     ready[tail][1] <= 1'b1;
                 end
@@ -249,9 +251,10 @@ always @(negedge clk or posedge rst) begin
         if (mem_write) begin
             head <= (head + 1) % rs_size;
         end
+        if (!stall) begin
         tail <= (tail + 1) % rs_size;  // 순환 버퍼 처리를 합니다.
+        end
     end
-end
 
 always @(*) begin
     for (i = head; i != tail; i = (i + 1) % rs_size) begin 
