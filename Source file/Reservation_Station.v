@@ -28,9 +28,10 @@ module reservation_station (
     input wire [6:0] alu_phy_reg_div,
     input wire [6:0] alu_rs_add_div,
 
+
+
     // 파이프라인 입력들
     input wire in_branch_flag,
-    input wire [31:0] in_rd_data,
     input wire [6:0] in_rd_phy,
     input wire [4:0] in_rd_reg,
     input wire in_done,
@@ -44,6 +45,8 @@ module reservation_station (
     input wire [6:0] in_phy_add2,
     input wire [9:0] in_pc,
     input wire [31:0] in_label,
+    
+    
 
     // 브랜치 유닛으로부터 수신
     input wire [6:0] branch_rs_add,
@@ -69,8 +72,8 @@ module reservation_station (
 );
 
 parameter rs_size = 128;
-parameter add_cycle = 1;
-parameter load_cycle = 2;
+parameter add_cycle = 3;
+parameter load_cycle = 4;
 parameter mul_cycle = 10;
 parameter div_cycle = 20;
 
@@ -94,10 +97,11 @@ reg [31:0] label [0:rs_size-1];
 reg [9:0] head, tail;
 reg loop_done;
 
-integer i, j, x;
+
+integer i, j, x,y,z,w;
 
 // 메인 프로세스
-always @(posedge rs_on or posedge rst) begin
+always @(posedge clk or posedge rst) begin
     if (rst) begin
         // 모든 RS 항목을 리셋합니다.
         for (i = 0; i < rs_size; i = i + 1) begin
@@ -122,12 +126,15 @@ always @(posedge rs_on or posedge rst) begin
         tail <= 0;
     end else begin
         // 브랜치가 바뀌면 tail을 업데이트합니다.
+        
+        out_execute_on <= 1'b0; // 0이 출력되면 stall이라는 뜻
+        loop_done <= 0;
         if (in_branch_flag != branch_flag[branch_rs_add]) begin
             tail <= (branch_rs_add + 1) % rs_size;
         end
 
         // 여러 ALU로부터의 업데이트를 처리합니다.
-        if (alu_done_add) begin  // 유효한 결과를 확인합니다.
+        if (alu_done_add) begin  // 유효한 결과를 확인합니다. alu done add  는 파이프라인에서 한사이클마다 0으로 업데이트 해줘야함,
             x = alu_rs_add_add;
             rd_data[x] <= alu_result_add;  // Rd_result 업데이트
             rd_ready[x] <= 1'b1;
@@ -145,11 +152,11 @@ always @(posedge rs_on or posedge rst) begin
         end
 
         if (alu_done_load) begin  // 유효한 결과를 확인합니다.
-            x = alu_rs_add_load;
-            rd_data[x] <= alu_result_load;  // Rd_result 업데이트
-            rd_ready[x] <= 1'b1;
+            y = alu_rs_add_load;
+            rd_data[y] <= alu_result_load;  // Rd_result 업데이트
+            rd_ready[y] <= 1'b1;
 
-            for (i = (x+1) % rs_size; i != (x + load_cycle) % rs_size; i = (i + 1) % rs_size) begin
+            for (i = (y+1) % rs_size; i != (y + load_cycle) % rs_size; i = (i + 1) % rs_size) begin
                 if (alu_phy_reg_load == phy_add1[i]) begin
                     operand1[i] <= alu_result_load;
                     ready[i][0] <= 1'b1;
@@ -162,11 +169,11 @@ always @(posedge rs_on or posedge rst) begin
         end
         
         if (alu_done_mul) begin  // 유효한 결과를 확인합니다.
-            x = alu_rs_add_mul;
-            rd_data[x] <= alu_result_mul;  // Rd_result 업데이트
-            rd_ready[x] <= 1'b1;
+            z = alu_rs_add_mul;
+            rd_data[z] <= alu_result_mul;  // Rd_result 업데이트
+            rd_ready[z] <= 1'b1;
 
-            for (i = (x+1) % rs_size; i != (x + mul_cycle) % rs_size; i = (i + 1) % rs_size) begin
+            for (i = (z+1) % rs_size; i != (z + mul_cycle) % rs_size; i = (i + 1) % rs_size) begin
                 if (alu_phy_reg_mul == phy_add1[i]) begin
                     operand1[i] <= alu_result_mul;
                     ready[i][0] <= 1'b1;
@@ -179,11 +186,11 @@ always @(posedge rs_on or posedge rst) begin
         end
         
         if (alu_done_div) begin  // 유효한 결과를 확인합니다.
-            x = alu_rs_add_div;
-            rd_data[x] <= alu_result_div;  // Rd_result 업데이트
-            rd_ready[x] <= 1'b1;
+            w = alu_rs_add_div;
+            rd_data[w] <= alu_result_div;  // Rd_result 업데이트
+            rd_ready[w] <= 1'b1;
 
-            for (i = (x+1) % rs_size; i != (x + div_cycle) % rs_size; i = (i + 1) % rs_size) begin
+            for (i = (w+1) % rs_size; i != (w + div_cycle) % rs_size; i = (i + 1) % rs_size) begin
                 if (alu_phy_reg_div == phy_add1[i]) begin
                     operand1[i] <= alu_result_div;
                     ready[i][0] <= 1'b1;
@@ -236,8 +243,7 @@ always @(negedge clk or posedge rst) begin
 
         // ALU로 명령어 내보내기, done != 1, ready bit 준비된 것 중
         // 먼저 들어온 순으로 명령어를 ALU로 보냅니다.
-        out_execute_on <= 1'b0; // 0이 출력되면 stall이라는 뜻
-        loop_done <= 0;
+
 
         // 업데이트된 명령어는 rs에서 제거합니다.
         if (mem_write) begin
