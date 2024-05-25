@@ -5,6 +5,7 @@ module BranchUnit(
     input wire [2:0] ID_EX_funct3,
     input wire [31:0] ALUResult,
     input wire [31:0] imm,
+    input wire [9:0] PC,
     input wire ALUNegative, // ALU에서 오는 Negative 플래그
     input wire ALUZero,     // ALU에서 오는 Zero 플래그
     input wire ALUOverflow, // ALU에서 오는 Overflow 플래그
@@ -40,7 +41,7 @@ always @(*) begin
                 default: PCSrc = 0;
             endcase
             if(PCSrc) begin
-                PC_Branch = imm; // 분기 주소 업데이트
+                PC_Branch = imm + PC + 4; // 분기 주소 업데이트
                 IF_ID_Flush = 1'b1;
                 ID_RS_Flush = 1'b1;
             end
