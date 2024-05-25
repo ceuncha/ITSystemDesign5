@@ -6,6 +6,7 @@ module test_reservation_station;
     reg rst;
     reg rs_on;
     reg clk;
+    reg stall;
     reg mem_write;
 
     reg alu_done_add;
@@ -65,6 +66,7 @@ module test_reservation_station;
         .rst(rst),
         .rs_on(rs_on),
         .clk(clk),
+        .stall(stall),
         .mem_write(mem_write),
         .alu_done_add(alu_done_add),
         .alu_result_add(alu_result_add),
@@ -121,7 +123,7 @@ module test_reservation_station;
     // Initialize inputs and define test sequences
     initial begin
         // Initialize Inputs
-        rst = 0;
+        rst =  1;
         rs_on = 0;
         mem_write = 0;
         alu_done_add = 0;
@@ -156,10 +158,10 @@ module test_reservation_station;
         in_label = 0;
         branch_rs_add = 0;
         branch_in = 0;
-
+        stall = 1;
         // Reset the UUT
-        #20 rst = 1;
-        #20 rst = 0;
+;
+        #20 rst = 0; stall=0;
 
         // Test sequence
         // 1st operation: ADD x1, x2, x3
@@ -197,10 +199,10 @@ module test_reservation_station;
         alu_done_add = 1;
         alu_result_add = 32'd5;
         alu_phy_reg_add = 7'b0000001;
-        alu_rs_add_add = 7'b0000001;
-
-        #20 rs_on = 0;
-        alu_done_add = 0;
+        alu_rs_add_add = 7'b0000000;
+        #10   alu_done_add = 0;
+        #10 rs_on = 0;
+ 
 
         // 3rd operation: SUB x6, x1, x3
         rs_on = 1;
@@ -212,7 +214,7 @@ module test_reservation_station;
         in_operand2 = 32'd3; // Value of x3
         in_phy_add1 = 7'b0000001; // Physical register address for x1 (p1)
         in_phy_add2 = 7'b0000011; // Physical register address for x3 (p3)
-        in_ready = 2'b11; // Both operands ready
+        in_ready = 2'b10; // Both operands ready
         in_done = 0;
         in_pc = 2'd08;
 
@@ -236,10 +238,10 @@ module test_reservation_station;
         alu_done_add = 1;
         alu_result_add = 32'd2;
         alu_phy_reg_add = 7'b0000110;
-        alu_rs_add_add = 7'b0000110;
+        alu_rs_add_add = 2;
 
-        #20 rs_on = 0;
-        alu_done_add = 0;
+        #10   alu_done_add = 0;
+        #10 rs_on = 0;
 
         // 5th operation: Load x8, x1, x2
         rs_on = 1;
@@ -251,7 +253,7 @@ module test_reservation_station;
         in_operand2 = 32'd2; // Value of x2 (offset)
         in_phy_add1 = 7'b0000001; // Physical register address for x1 (p1)
         in_phy_add2 = 7'b0000010; // Physical register address for x2 (p2)
-        in_ready = 2'b11; // Both operands ready
+        in_ready = 2'b10; // Both operands ready
         in_done = 0;
         in_pc = 2'd16;
 
@@ -259,17 +261,17 @@ module test_reservation_station;
         alu_done_add = 1;
         alu_result_add = 32'd12;
         alu_phy_reg_add = 7'b0000111;
-        alu_rs_add_add = 7'b0000111;
+        alu_rs_add_add = 3;
 
         // ALU result for MUL (Available at the 3rd clock cycle)
         alu_done_mul = 1;
         alu_result_mul = 32'd15;
         alu_phy_reg_mul = 7'b0000101;
-        alu_rs_add_mul = 7'b0000101;
+        alu_rs_add_mul = 1;
 
-        #20 rs_on = 0;
-        alu_done_add = 0;
-        alu_done_mul = 0;
+        #10   alu_done_add = 0;
+              alu_done_mul = 0;
+        #10 rs_on = 0;
 
         // 6th operation: ADD x9, x7, x3
         rs_on = 1;
@@ -281,27 +283,31 @@ module test_reservation_station;
         in_operand2 = 32'd3; // Value of x3
         in_phy_add1 = 7'b0000111; // Physical register address for x7 (p7)
         in_phy_add2 = 7'b0000011; // Physical register address for x3 (p3)
-        in_ready = 2'b11; // Both operands ready
+        in_ready = 2'b10; // Both operands ready
         in_done = 0;
         in_pc = 2'd20;
 
-        #20 rs_on = 0;
+        #10   alu_done_add = 0;
+
+        #10 rs_on = 0;
 
         // ALU result for Load x8 (Available at the 7th clock cycle)
         alu_done_load = 1;
         alu_result_load = 32'd7;
         alu_phy_reg_load = 7'b0001000;
-        alu_rs_add_load = 7'b0001000;
+        alu_rs_add_load = 4;
 
         // ALU result for Add x9 (Available at the 8th clock cycle)
         alu_done_add = 1;
         alu_result_add = 32'd15;
         alu_phy_reg_add = 7'b0001001;
-        alu_rs_add_add = 7'b0001001;
+        alu_rs_add_add = 5;
 
-        #20 rs_on = 0;
-        alu_done_add = 0;
-        alu_done_load = 0;
+        #10   alu_done_add = 0;
+              alu_done_load = 0;
+        #10 rs_on = 0;
+
+
 
         // End of simulation
         #200 $finish;
