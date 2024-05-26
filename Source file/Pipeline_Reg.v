@@ -224,7 +224,7 @@ module memwb_pipeline_register (
     output reg [31:0] MEM_WB_RData
     output reg alu_exec_done,
     output reg [6:0] alu_phys_addr,
-    output reg [31:0] alu_exec_index,
+    output reg [31:0] alu_exec_index
 
 );
         
