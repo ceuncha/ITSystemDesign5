@@ -1,4 +1,5 @@
 module DataMemory(
+    input wire clk,
     input wire MemRead,
     input wire MemWrite,
     input wire [2:0] funct3,
@@ -9,7 +10,7 @@ module DataMemory(
 
 reg [31:0] memory [0:255];
 
-always @ (*) begin
+always @ (posedge clk) begin
 // Default value for ReadData, ensures it is always assigned
     ReadData <= 32'd0; // if MemRead is false
     if (MemRead) begin
@@ -24,7 +25,7 @@ always @ (*) begin
     end
 end
 
-always @ (*) begin
+always @ (posedge clk) begin
     if (MemWrite) begin
         case (funct3)
             3'b000: memory[ALUResult][7:0] <= WriteData[7:0]; // SB
