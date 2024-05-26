@@ -1,7 +1,7 @@
 module ROB(
     input wire clk,                      // Clock signal
     input wire rst,                      // Reset signal
-    input wire [31:0] instr,             // Input instruction (expanded to 32 bits)
+    input wire [31:0] IF_ID_instOut,             // Input instruction (expanded to 32 bits)
     input wire reg_write,                // Register write enable signal from the decode stage
     input wire [6:0] alu_phys_addr,          // Input physical address
     input wire [6:0] mul_phys_addr,          // Input physical address
@@ -54,7 +54,7 @@ always @(posedge clk or posedge rst) begin
                 end
             end
         end else if (instr != 32'b0) begin  // Only increment tail if the instruction is not invalid (i.e., not a bubble)
-            rob_entry[tail] <= {1'b0, reg_write, 32'b0, instr, 7'b0, PC}; // Store input data in the ROB entry with value set to 32'b0
+            rob_entry[tail] <= {1'b0, reg_write, 32'b0, IF_ID_instOut, 7'b0, PC}; // Store input data in the ROB entry with value set to 32'b0
             tail <= (tail + 1) % 1024;                 // Circular buffer handling
         end
 
