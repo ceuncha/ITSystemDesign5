@@ -126,7 +126,7 @@ always @(posedge rst) begin
         end
 end
 // 메인 프로세스
-always @(posedge clk) begin
+    always @(posedge rs_on) begin
         // 브랜치가 바뀌면 tail을 업데이트합니다.
         
         out_execute_on <= 1'b0; // 0이 출력되면 stall이라는 뜻
