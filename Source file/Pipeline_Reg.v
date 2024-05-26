@@ -1,6 +1,7 @@
 //IFID PIPELINE REGISTER
 module ifid_pipeline_register (
     input clk,
+    input reset,
     input IF_ID_Stall, IF_ID_Flush,
     input [31:0] instOut,
     input [31:0] PC,
@@ -9,20 +10,24 @@ module ifid_pipeline_register (
     output reg id_on
 );
     
-    always @(posedge clk) begin
-        if(IF_ID_Flush) begin
+    always @(posedge clk or posedge reset) begin
+        if (reset) begin
+            // 리셋 신호가 활성화되면 초기화
+            IF_ID_instOut <= 32'b0;
+            IF_ID_PC <= 32'b0;
+            id_on <= 1'b0;
+        end else if (IF_ID_Flush) begin
             // NOP 명령어 출력
             IF_ID_instOut <= 32'h00000013; // RV32I에서의 NOP 명령어
             IF_ID_PC <= PC; // PC는 NOP 상태에서도 업데이트 될 수 있도록 유지
-        end
-        else  begin
+        end else begin
             // 플러시가 아니고 스톨도 아닐 때 정상 동작
             IF_ID_instOut <= instOut;
             IF_ID_PC <= PC;
             id_on <= 1'b1;
         end
-        // 추가적인 else 절은 필요하지 않음. 스톨 상태에서는 이전 상태를 유지하면 됨.
     end
+
     always @(negedge clk) begin
         id_on <= 1'b0;
     end
@@ -31,6 +36,7 @@ endmodule
 //IDRS PIPELINE REGISTER
 module idrs_pipeline_register (
     input clk,
+    input reset,
     input Control_Sig_Stall,
     input RegWrite,
     input MemToReg,
@@ -65,29 +71,49 @@ module idrs_pipeline_register (
     output reg rs_on
     );
     
-    always @(posedge clk) begin
-        if (ID_RS_Flush) begin
-        // On a flush, reset the pipeline stage to NOP
-        ID_RS_RWsel <= 1'b0;
-        ID_RS_ALUSrc <= 2'b00;
-        ID_RS_ALUOp <= 4'b0000;
-        ID_RS_MemWrite <= 1'b0;
-        ID_RS_MemRead <= 1'b0;
-        ID_RS_MemToReg <= 1'b0;
-        ID_RS_RegWrite <= 1'b0;
-        ID_RS_Rs1 <= 5'b00000;
-        ID_RS_Rs2 <= 5'b00000;
-        ID_RS_Rd <= 5'b00000;
-        ID_RS_funct3 <= 3'b000;
-        ID_RS_RData1 <= 32'b0;
-        ID_RS_RData2 <= 32'b0;
-        ID_RS_imm32 <= 32'b0;
-        ID_RS_Jump <= 1'b0;
-        ID_RS_Branch <= 1'b0;
-        ID_RS_PC <= 32'b0;
-        end
-
-        else if(!Control_Sig_Stall) begin
+    always @(posedge clk or posedge reset) begin
+        if (reset) begin
+            // 리셋 신호가 활성화되면 초기화
+            ID_RS_RWsel <= 1'b0;
+            ID_RS_ALUSrc <= 2'b00;
+            ID_RS_ALUOp <= 4'b0000;
+            ID_RS_MemWrite <= 1'b0;
+            ID_RS_MemRead <= 1'b0;
+            ID_RS_MemToReg <= 1'b0;
+            ID_RS_RegWrite <= 1'b0;
+            ID_RS_Rs1 <= 5'b00000;
+            ID_RS_Rs2 <= 5'b00000;
+            ID_RS_Rd <= 5'b00000;
+            ID_RS_funct3 <= 3'b000;
+            ID_RS_RData1 <= 32'b0;
+            ID_RS_RData2 <= 32'b0;
+            ID_RS_imm32 <= 32'b0;
+            ID_RS_Jump <= 1'b0;
+            ID_RS_Branch <= 1'b0;
+            ID_RS_PC <= 32'b0;
+            rs_on <= 1'b0;
+        end else if (ID_RS_Flush) begin
+            // 플러시 신호가 활성화되면 NOP 상태로 초기화
+            ID_RS_RWsel <= 1'b0;
+            ID_RS_ALUSrc <= 2'b00;
+            ID_RS_ALUOp <= 4'b0000;
+            ID_RS_MemWrite <= 1'b0;
+            ID_RS_MemRead <= 1'b0;
+            ID_RS_MemToReg <= 1'b0;
+            ID_RS_RegWrite <= 1'b0;
+            ID_RS_Rs1 <= 5'b00000;
+            ID_RS_Rs2 <= 5'b00000;
+            ID_RS_Rd <= 5'b00000;
+            ID_RS_funct3 <= 3'b000;
+            ID_RS_RData1 <= 32'b0;
+            ID_RS_RData2 <= 32'b0;
+            ID_RS_imm32 <= 32'b0;
+            ID_RS_Jump <= 1'b0;
+            ID_RS_Branch <= 1'b0;
+            ID_RS_PC <= 32'b0;
+            rs_on <= 1'b0;
+        end else if (!Control_Sig_Stall) begin
+            // 정상 동작
             ID_RS_RWsel <= RWsel;
             ID_RS_ALUSrc <= ALUSrc;
             ID_RS_ALUOp <= ALUOp;
@@ -107,17 +133,17 @@ module idrs_pipeline_register (
             ID_RS_PC <= IF_ID_PC;
             rs_on <= 1'b1;
         end
-
-        
-    end 
+    end
+    
     always @(negedge clk) begin
-    rs_on <= 1'b0;
+        rs_on <= 1'b0;
     end
 endmodule
 
 //EXMEM PIPELINE REGISTER
 module exmem_pipeline_register (
     input clk,
+    input reset,
     input ID_EX_RegWrite,
     input ID_EX_MemToReg,
     input ID_EX_MemRead,
@@ -141,23 +167,39 @@ module exmem_pipeline_register (
     output reg [31:0] EX_MEM_Rd_data
 );
         
-    always @(posedge clk) begin
-        EX_MEM_RegWrite <= ID_EX_RegWrite;
-        EX_MEM_MemToReg <= ID_EX_MemToReg;
-        EX_MEM_MemRead <= ID_EX_MemRead;
-        EX_MEM_MemWrite <= ID_EX_MemWrite;
-        EX_MEM_RWsel <= ID_EX_RWsel;
-        EX_MEM_Rd <= ID_EX_Rd;
-        EX_MEM_funct3 <= ID_EX_funct3;
-        EX_MEM_ALUResult <= ALUResult;
-        EX_MEM_RData2 <= ID_EX_RData2;
-        EX_MEM_Rd_data <= Rd_data;
-    end 
+    always @(posedge clk or posedge reset) begin
+        if (reset) begin
+            // 리셋 신호가 활성화되면 초기화
+            EX_MEM_RegWrite <= 1'b0;
+            EX_MEM_MemToReg <= 1'b0;
+            EX_MEM_MemRead <= 1'b0;
+            EX_MEM_MemWrite <= 1'b0;
+            EX_MEM_RWsel <= 1'b0;
+            EX_MEM_funct3 <= 3'b000;
+            EX_MEM_Rd <= 5'b00000;
+            EX_MEM_ALUResult <= 32'b0;
+            EX_MEM_RData2 <= 32'b0;
+            EX_MEM_Rd_data <= 32'b0;
+        end else begin
+            // 정상 동작
+            EX_MEM_RegWrite <= ID_EX_RegWrite;
+            EX_MEM_MemToReg <= ID_EX_MemToReg;
+            EX_MEM_MemRead <= ID_EX_MemRead;
+            EX_MEM_MemWrite <= ID_EX_MemWrite;
+            EX_MEM_RWsel <= ID_EX_RWsel;
+            EX_MEM_Rd <= ID_EX_Rd;
+            EX_MEM_funct3 <= ID_EX_funct3;
+            EX_MEM_ALUResult <= ALUResult;
+            EX_MEM_RData2 <= ID_EX_RData2;
+            EX_MEM_Rd_data <= Rd_data;
+        end
+    end
 endmodule
 
 //MEMWB PIPELINE REGISTER
 module memwb_pipeline_register (
     input clk,
+    input reset,
     input EX_MEM_RegWrite,
     input EX_MEM_MemToReg,
     input EX_MEM_RWsel,
@@ -174,14 +216,25 @@ module memwb_pipeline_register (
     output reg [31:0] MEM_WB_RData
 );
         
-    always @(posedge clk) begin
-        MEM_WB_RegWrite <= EX_MEM_RegWrite;
-        MEM_WB_MemToReg <= EX_MEM_MemToReg;
-        MEM_WB_RWsel <= EX_MEM_RWsel;
-        MEM_WB_Rd <= EX_MEM_Rd;
-        MEM_WB_Rd_data <= EX_MEM_Rd_data;
-        MEM_WB_ALUResult <= EX_MEM_ALUResult;
-        MEM_WB_RData <= RData;
-    end 
-    
+    always @(posedge clk or posedge reset) begin
+        if (reset) begin
+            // 리셋 신호가 활성화되면 초기화
+            MEM_WB_RegWrite <= 1'b0;
+            MEM_WB_MemToReg <= 1'b0;
+            MEM_WB_RWsel <= 1'b0;
+            MEM_WB_Rd <= 5'b00000;
+            MEM_WB_Rd_data <= 32'b0;
+            MEM_WB_ALUResult <= 32'b0;
+            MEM_WB_RData <= 32'b0;
+        end else begin
+            // 정상 동작
+            MEM_WB_RegWrite <= EX_MEM_RegWrite;
+            MEM_WB_MemToReg <= EX_MEM_MemToReg;
+            MEM_WB_RWsel <= EX_MEM_RWsel;
+            MEM_WB_Rd <= EX_MEM_Rd;
+            MEM_WB_Rd_data <= EX_MEM_Rd_data;
+            MEM_WB_ALUResult <= EX_MEM_ALUResult;
+            MEM_WB_RData <= RData;
+        end
+    end
 endmodule
