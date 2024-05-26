@@ -14,7 +14,7 @@ module ROB(
     input wire [31:0] div_exec_value,    // Divider executed value
     input wire [31:0] div_exec_index,    // Divider execution index
     input wire PcSrc,                    // Branch signal (acts like a done signal)
-    input wire [31:0] PC_Return,         // Branch target address
+    input wire [31:0] PC_Return,         // Jump address
     input wire [31:0] branch_index,      // Branch index in ROB
     input wire [31:0] PC,                // Current PC value (expanded to 32 bits)
     output reg [31:0] out_value,         // Output value
