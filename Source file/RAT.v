@@ -1,8 +1,7 @@
 module RAT (
 input wire id_on,
 input wire reset,
-input wire [4:0] logical_addr, // 논리 주소
-input wire [7:0] phy_addr_in, // 물리 주소
+
 input wire write_enable, // 쓰기 활성화 신호
 input wire [4:0] logical_addr1, // 오퍼랜드 1 논리 주소
 input wire [4:0] logical_addr2, // 오퍼랜드 2 논리 주소
@@ -14,6 +13,9 @@ input wire [6:0] opcode,
 
 output reg [6:0] phy_addr_out1, // 오퍼랜드 1 물리 주소 출력
 output reg [6:0] phy_addr_out2, // 오퍼랜드 2 물리 주소 출력
+output reg [4:0] log_addr_out1,
+output reg [4:0] log_addr_out2,
+
 output reg [1:0] ready_out, // 레디 플래그 출력
 output reg rat_done,
 
@@ -43,6 +45,8 @@ always @(posedge id_on or posedge reset) begin
         // 1. 오퍼랜드 유효성 검사 및 물리 주소 접근
         phy_addr_out1 <= phy_addr_table[logical_addr1];
         phy_addr_out2 <= phy_addr_table[logical_addr2];
+        log_addr_out1 <= logical_addr1;
+        log_addr_out2 <= logical_addr2;
 
         case (opcode)
         7'b1101111, 7'b0000011, 7'b0010011: begin
