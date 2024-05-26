@@ -3,6 +3,7 @@ module ROB(
     input wire rst,                      // Reset signal
     input wire [31:0] IF_ID_instOut,             // Input instruction (expanded to 32 bits)
     input wire reg_write,                // Register write enable signal from the decode stage
+    input wire [6:0] RS_EX_alu_phys_addr // when jump
     input wire [6:0] alu_phys_addr,          // Input physical address
     input wire [6:0] mul_phys_addr,          // Input physical address
     input wire [6:0] div_phys_addr,          // Input physical address
@@ -49,7 +50,7 @@ always @(posedge clk or posedge rst) begin
             // Update the branch entry with PC_Branch value
             for (i = 0; i < 1024; i = i + 1) begin
                 if (rob_entry[i][31:0] == branch_index) begin
-                    rob_entry[i][104:0] <= {1'b1, rob_entry[i][103], PC_Return, rob_entry[i][71:40], rob_entry[i][39:33], rob_entry[i][32:0]};
+                    rob_entry[i][104:0] <= {1'b1, rob_entry[i][103], PC_Return, rob_entry[i][71:40], RS_EX_alu_phys_addr, rob_entry[i][32:0]};
                     tail <= (i + 1) % 1024; // Move tail to the entry right after the branch entry
                 end
             end
