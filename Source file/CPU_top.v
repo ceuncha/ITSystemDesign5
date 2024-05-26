@@ -5,80 +5,81 @@ module CPU_top(
 
 // wire declarations
 // IF stage
-wire [31:0] PC, PC_Branch;
-wire PC_Stall, PCSrc;
-wire [31:0] instOut;
-wire IF_ID_Stall, IF_ID_Flush;
+(* keep = "true" *)wire [31:0] PC, PC_Branch;
+(* keep = "true" *)wire PC_Stall, PCSrc;
+(* keep = "true" *)wire [31:0] instOut;
+(* keep = "true" *)wire IF_ID_Stall, IF_ID_Flush;
 // ID stage
-wire [31:0] IF_ID_instOut;
-wire [31:0] IF_ID_PC;
+(* keep = "true" *)wire [31:0] IF_ID_instOut;
+(* keep = "true" *)wire [31:0] IF_ID_PC;
     // parse instOut
-wire [6:0] funct7 = IF_ID_instOut[31:25];
-wire [4:0] IF_ID_Rs1 = IF_ID_instOut[19:15];
-wire [4:0] IF_ID_Rs2 = IF_ID_instOut[24:20];
-wire [2:0] funct3 = IF_ID_instOut[14:12];
-wire [4:0] IF_ID_Rd = IF_ID_instOut[11:7];
-wire [6:0] opcode = IF_ID_instOut[6:0];
-wire [31:0] imm32;
-wire RegWrite;
-wire MemToReg;
-wire MemRead;
-wire MemWrite;
-wire [3:0] ALUOp;
-wire [1:0] ALUSrc;
-wire RWsel;
-wire Jump;
-wire Branch;
-wire Control_Sig_Stall, ID_EX_Flush;
-wire [31:0]RData1, RData2;
+(* keep = "true" *)wire [6:0] funct7 = IF_ID_instOut[31:25];
+(* keep = "true" *)wire [4:0] IF_ID_Rs1 = IF_ID_instOut[19:15];
+(* keep = "true" *)wire [4:0] IF_ID_Rs2 = IF_ID_instOut[24:20];
+(* keep = "true" *)wire [2:0] funct3 = IF_ID_instOut[14:12];
+(* keep = "true" *)wire [4:0] IF_ID_Rd = IF_ID_instOut[11:7];
+(* keep = "true" *)wire [6:0] opcode = IF_ID_instOut[6:0];
+(* keep = "true" *)wire [31:0] imm32;
+(* keep = "true" *)wire RegWrite;
+(* keep = "true" *)wire MemToReg;
+(* keep = "true" *)wire MemRead;
+(* keep = "true" *)wire MemWrite;
+(* keep = "true" *)wire [3:0] ALUOp;
+(* keep = "true" *)wire [1:0] ALUSrc;
+(* keep = "true" *)wire RWsel;
+(* keep = "true" *)wire Jump;
+(* keep = "true" *)wire Branch;
+(* keep = "true" *)wire Control_Sig_Stall, ID_EX_Flush;
+(* keep = "true" *)wire [31:0]RData1, RData2;
 
     // pipeline reg
-wire ID_EX_RegWrite;
-wire ID_EX_MemWrite;
-wire ID_EX_MemRead;
-wire [3:0] ID_EX_ALUOp;
-wire [1:0] ID_EX_ALUSrc;
-wire ID_EX_MemToReg;
-wire ID_EX_RWsel;
-wire [31:0]ID_EX_PC;
-wire ID_EX_Branch;
-wire ID_EX_Jump;
-wire [4:0] ID_EX_Rs1, ID_EX_Rs2, ID_EX_Rd;
-wire [2:0] ID_EX_funct3;
-wire [31:0] ID_EX_RData1, ID_EX_RData2;
-wire [31:0] ID_EX_imm32;
-wire [31:0] Rd_data;
+(* keep = "true" *)wire ID_EX_RegWrite;
+(* keep = "true" *)wire ID_EX_MemWrite;
+(* keep = "true" *)wire ID_EX_MemRead;
+(* keep = "true" *)wire [3:0] ID_EX_ALUOp;
+(* keep = "true" *)wire [1:0] ID_EX_ALUSrc;
+(* keep = "true" *)wire ID_EX_MemToReg;
+(* keep = "true" *)wire ID_EX_RWsel;
+(* keep = "true" *)wire [31:0]ID_EX_PC;
+(* keep = "true" *)wire ID_EX_Branch;
+(* keep = "true" *)wire ID_EX_Jump;
+(* keep = "true" *)wire [4:0] ID_EX_Rs1, ID_EX_Rs2, ID_EX_Rd;
+(* keep = "true" *)wire [2:0] ID_EX_funct3;
+(* keep = "true" *)wire [31:0] ID_EX_RData1, ID_EX_RData2;
+(* keep = "true" *)wire [31:0] ID_EX_imm32;
+(* keep = "true" *)wire [31:0] Rd_data;
 // EX stage
-wire [1:0] ForwardA, ForwardB;
-wire [31:0] ALUResult;
-wire [31:0] ResultA, ResultB;
+(* keep = "true" *)wire [1:0] ForwardA, ForwardB;
+(* keep = "true" *)wire [31:0] ALUResult;
+(* keep = "true" *)wire [31:0] ResultA, ResultB;
     // pipeline reg
-wire EX_MEM_RegWrite;
-wire EX_MEM_MemWrite;
-wire EX_MEM_MemRead;
-wire EX_MEM_MemToReg;
-wire EX_MEM_RWsel;
-wire [2:0] EX_MEM_funct3;
-wire [4:0] EX_MEM_Rd;
-wire [31:0] EX_MEM_ALUResult;
-wire [31:0] EX_MEM_RData2;
-wire [31:0] EX_MEM_Rd_data;
+(* keep = "true" *)wire EX_MEM_RegWrite;
+(* keep = "true" *)wire EX_MEM_MemWrite;
+(* keep = "true" *)wire EX_MEM_MemRead;
+(* keep = "true" *)wire EX_MEM_MemToReg;
+(* keep = "true" *)wire EX_MEM_RWsel;
+(* keep = "true" *)wire [2:0] EX_MEM_funct3;
+(* keep = "true" *)wire [4:0] EX_MEM_Rd;
+(* keep = "true" *)wire [31:0] EX_MEM_ALUResult;
+(* keep = "true" *)wire [31:0] EX_MEM_RData2;
+(* keep = "true" *)wire [31:0] EX_MEM_Rd_data;
 // MEM stage
-wire [31:0] RData;
+(* keep = "true" *)wire [31:0] RData;
     //pipeline reg
-wire MEM_WB_RegWrite;
-wire MEM_WB_MemToReg;
-wire MEM_WB_RWsel;
-wire [4:0] MEM_WB_Rd;
-wire [31:0] MEM_WB_Rd_data;
-wire [31:0] MEM_WB_ALUResult;
-wire [31:0] MEM_WB_RData;
+(* keep = "true" *)wire MEM_WB_RegWrite;
+(* keep = "true" *)wire MEM_WB_MemToReg;
+(* keep = "true" *)wire MEM_WB_RWsel;
+(* keep = "true" *)wire [4:0] MEM_WB_Rd;
+(* keep = "true" *)wire [31:0] MEM_WB_Rd_data;
+(* keep = "true" *)wire [31:0] MEM_WB_ALUResult;
+(* keep = "true" *)wire [31:0] MEM_WB_RData;
 // WB stage
-wire [31:0] mem_out;
-wire [31:0] MEM_WB_Result;
+(* keep = "true" *)wire [31:0] mem_out;
+(* keep = "true" *)wire [31:0] MEM_WB_Result;
 
 // module declaraions
 // IF stage
+(* keep_hierarchy = "yes" *)
 Program_Counter u_Program_Counter(
     .clk (clk),
     .PC_Branch(PC_Branch),
@@ -86,11 +87,12 @@ Program_Counter u_Program_Counter(
     .PCSrc(PCSrc),
     .PC (PC)
 );
-
+(* keep_hierarchy = "yes" *)
 Instruction_memory u_Instruction_memory(
     .pc (PC),
     .instOut (instOut)
 );
+(* keep_hierarchy = "yes" *)
 ifid_pipeline_register u_ifid_pipeline_register(
     .clk (clk),
     .IF_ID_Stall (IF_ID_Stall),
@@ -101,6 +103,7 @@ ifid_pipeline_register u_ifid_pipeline_register(
     .IF_ID_PC (IF_ID_PC)
 );
 // ID stage
+(* keep_hierarchy = "yes" *)
 register_file u_register_file(
     .clk (clk),
     .Rs1 (IF_ID_Rs1),.Rs2 (IF_ID_Rs2),.RD (MEM_WB_Rd),
@@ -108,10 +111,12 @@ register_file u_register_file(
     .Write_Data (MEM_WB_Result),
     .RData1 (RData1),.RData2 (RData2)
 );
+(* keep_hierarchy = "yes" *)
 sign_extend u_sign_extend(
     .inst(IF_ID_instOut),
     .Imm(imm32)
 );
+(* keep_hierarchy = "yes" *)
 control_unit_top u_control_unit_top(
     .opcode(opcode),
     .funct3(funct3),
@@ -126,6 +131,7 @@ control_unit_top u_control_unit_top(
     .Jump(Jump),
     .Branch(Branch)
 );
+(* keep_hierarchy = "yes" *)
 Hazard_Detection_unit u_Hazard_Detection_unit(
     .ID_EX_MemRead(ID_EX_MemRead),.MemRead(MemRead),
     .IF_ID_Rs1(IF_ID_Rs1),.IF_ID_Rs2(IF_ID_Rs2),
@@ -134,7 +140,7 @@ Hazard_Detection_unit u_Hazard_Detection_unit(
     .IF_ID_Stall(IF_ID_Stall),
     .Control_Sig_Stall(Control_Sig_Stall)
 );
-
+(* keep_hierarchy = "yes" *)
 idex_pipeline_register u_idex_pipeline_register(
     .clk(clk),
     .RegWrite(RegWrite),
@@ -169,6 +175,7 @@ idex_pipeline_register u_idex_pipeline_register(
     .ID_EX_Flush(ID_EX_Flush)
 );
 // EX stage
+(* keep_hierarchy = "yes" *)
 ALU_top u_ALU_top(
     .A(ID_EX_RData1), .B(ID_EX_RData2),
     .WB_A(MEM_WB_Result),.WB_B(MEM_WB_Result),
@@ -180,7 +187,7 @@ ALU_top u_ALU_top(
     .Result(ALUResult), .ResultA(ResultA) , .ResultB(ResultB)
     //.negative(),.overflow(),.zero(),.carry(),
 );
-
+(* keep_hierarchy = "yes" *)
 branch_unit u_branch_unit (
     .ResultA(ResultA),      
     .ResultB(ResultB),       
@@ -195,8 +202,7 @@ branch_unit u_branch_unit (
     .IF_ID_Flush(IF_ID_Flush),   
     .ID_EX_Flush(ID_EX_Flush)    
 );
-
-
+(* keep_hierarchy = "yes" *)
 data_forwarding_unit u_data_forwarding_unit(
     .MEM_WB_RegWrite(MEM_WB_RegWrite),
     .EX_MEM_RegWrite(EX_MEM_RegWrite),
@@ -204,7 +210,7 @@ data_forwarding_unit u_data_forwarding_unit(
     .ID_EX_Rs1(ID_EX_Rs1),.ID_EX_Rs2(ID_EX_Rs2),
     .ForwardA(ForwardA),.ForwardB(ForwardB)
 );
-
+(* keep_hierarchy = "yes" *)
 exmem_pipeline_register u_exmem_pipeline_register(
     .clk(clk),
     .ID_EX_MemRead(ID_EX_MemRead),
@@ -229,6 +235,7 @@ exmem_pipeline_register u_exmem_pipeline_register(
     .EX_MEM_Rd_data(EX_MEM_Rd_data)
 );
 // MEM stage
+(* keep_hierarchy = "yes" *)
 DataMemory u_DataMemory(
     .clk(clk),
     .MemRead(EX_MEM_MemRead),
@@ -238,6 +245,7 @@ DataMemory u_DataMemory(
     .WriteData(EX_MEM_RData2),
     .ReadData(RData)
 );
+(* keep_hierarchy = "yes" *)
 memwb_pipeline_register u_memwb_pipeline_register(
     .clk(clk),
     .EX_MEM_RegWrite(EX_MEM_RegWrite),
@@ -256,12 +264,14 @@ memwb_pipeline_register u_memwb_pipeline_register(
     .MEM_WB_RData(MEM_WB_RData)
 );
 //WB stage
+(* keep_hierarchy = "yes" *)
 WbMux u_WbMux(
     .Address(MEM_WB_ALUResult),
     .RData(MEM_WB_RData),
     .wm2reg(MEM_WB_MemToReg),
     .mem_out(mem_out)
 );
+(* keep_hierarchy = "yes" *)
 pretty_mux u_pretty_mux(
     .mem_out(mem_out),
     .MEM_WB_Rd_data(MEM_WB_Rd_data),
