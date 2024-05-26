@@ -12,7 +12,7 @@ module BranchUnit(
     input wire ALUCarry,    // ALU에서 오는 Carry 플래그
     input wire ALUOperationComplete, // ALU에서 오는 연산 완료 신호
     output reg [31:0] PC_Branch,
-    output reg [31:0] Branch_index
+    output reg [31:0] branch_index
     output reg PCSrc,
     output reg IF_ID_Flush,
     output reg ID_RS_Flush
@@ -30,7 +30,7 @@ always @(*) begin
             PCSrc = 1; // 점프 시 PC 소스 신호 활성화
             IF_ID_Flush = 1'b1;
             ID_RS_Flush = 1'b1;
-            Branch_index = PC
+            branch_index = PC
         end
         else if(ID_EX_Branch) begin
             case(ID_EX_funct3)
@@ -46,7 +46,7 @@ always @(*) begin
                 PC_Branch = imm + PC + 4; // 분기 주소 업데이트
                 IF_ID_Flush = 1'b1;
                 ID_RS_Flush = 1'b1;
-                Branch_index = PC
+                branch_index = PC
             end
         end
         else begin
