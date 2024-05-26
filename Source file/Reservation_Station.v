@@ -121,7 +121,7 @@ always @(posedge rs_on or posedge rst) begin
             pc[i] <= 0;
             label[i] <= 0;
          end
-;       head <= 0;
+        head <= 0;
         tail <=0;
         end
         
