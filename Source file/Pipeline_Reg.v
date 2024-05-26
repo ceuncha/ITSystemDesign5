@@ -163,6 +163,16 @@ module exmem_pipeline_register (
     output reg [31:0] EX_MEM_ALUResult,
     output reg [31:0] EX_MEM_RData2,
     output reg [31:0] EX_MEM_Rd_data
+
+    output reg [31:0] mul_exec_value,
+    output reg mul_exec_done,
+    output reg [6:0] mul_phys_addr,
+    output reg [31:0] mul_exec_index,
+
+    output reg [31:0] div_exec_value
+    output reg div_exec_done,
+    output reg [6:0] div_phys_addr,
+    output reg [31:0] div_exec_index
 );
         
     always @(posedge clk or posedge reset) begin
@@ -199,37 +209,35 @@ module memwb_pipeline_register (
     input clk,
     input reset,
     input EX_MEM_MemToReg,
-    input EX_MEM_RWsel,
-    input [4:0] EX_MEM_Rd,  // inst decode
-    input [31:0] EX_MEM_Rd_data,
     input [31:0] EX_MEM_ALUResult,
     input [31:0] RData, // data memory
-    output reg MEM_WB_RegWrite,
+    input EX_MEM_alu_done,
+    input [6:0]EX_MEM_alu_phys_addr,
+    input [31:0]EX_MEM_alu_exec_index,
+    
+    input EX_MEM_mul_done,
+    input [6:0]EX_MEM_mul_phys_addr,
+    input [31:0]EX_MEM_mul_exec_index,
+    
     output reg MEM_WB_MemToReg,
-    output reg MEM_WB_RWsel,
-    output reg [4:0] MEM_WB_Rd,
-    output reg [31:0] MEM_WB_Rd_data,
     output reg [31:0] MEM_WB_ALUResult,
     output reg [31:0] MEM_WB_RData
+    output reg alu_exec_done,
+    output reg [6:0] alu_phys_addr,
+    output reg [31:0] alu_exec_index,
+
 );
         
     always @(posedge clk or posedge reset) begin
         if (reset) begin
             // 리셋 신호가 활성화되면 초기화
-            MEM_WB_RegWrite <= 1'b0;
             MEM_WB_MemToReg <= 1'b0;
-            MEM_WB_RWsel <= 1'b0;
-            MEM_WB_Rd <= 5'b00000;
-            MEM_WB_Rd_data <= 32'b0;
             MEM_WB_ALUResult <= 32'b0;
             MEM_WB_RData <= 32'b0;
         end else begin
             // 정상 동작
-            MEM_WB_RegWrite <= EX_MEM_RegWrite;
             MEM_WB_MemToReg <= EX_MEM_MemToReg;
-            MEM_WB_RWsel <= EX_MEM_RWsel;
             MEM_WB_Rd <= EX_MEM_Rd;
-            MEM_WB_Rd_data <= EX_MEM_Rd_data;
             MEM_WB_ALUResult <= EX_MEM_ALUResult;
             MEM_WB_RData <= RData;
         end
