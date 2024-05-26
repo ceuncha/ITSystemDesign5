@@ -1,3 +1,4 @@
+
 module reservation_station (
 
     input wire rst,
@@ -99,8 +100,7 @@ reg loop_done;
 
 integer i,x,y,z,w;
 
-// 메인 프로세스
-always @(posedge rs_on or posedge rst) begin
+always @(posedge rst) begin
     if (rst) begin
         // 모든 RS 항목을 리셋합니다.
         for (i = 0; i < rs_size; i = i + 1) begin
@@ -124,9 +124,9 @@ always @(posedge rs_on or posedge rst) begin
         head <= 0;
         tail <=0;
         end
-        
-        
-   else begin
+end
+// 메인 프로세스
+always @(posedge clk) begin
         // 브랜치가 바뀌면 tail을 업데이트합니다.
         
         out_execute_on <= 1'b0; // 0이 출력되면 stall이라는 뜻
@@ -135,80 +135,7 @@ always @(posedge rs_on or posedge rst) begin
             tail <= (branch_rs_add + 1) % rs_size;
         end
         
-               
-        // 여러 ALU로부터의 업데이트를 처리합니다.
-        if (alu_done_add) begin  // 유효한 결과를 확인합니다. alu done add  는 파이프라인에서 한사이클마다 0으로 업데이트 해줘야함,
-            x = alu_rs_add_add;
-            rd_data[x] <= alu_result_add;  // Rd_result 업데이트
-            rd_ready[x] <= 1'b1;
-
-            for (i = (x+1) % rs_size; i != (x+add_cycle) % rs_size; i = (i + 1) % rs_size) begin
-                if (alu_phy_reg_add == phy_add1[i]) begin
-                    operand1[i] <= alu_result_add;
-                    ready[i][0] <= 1'b1;
-                end
-                if (alu_phy_reg_add == phy_add2[i]) begin
-                    operand2[i] <= alu_result_add;
-                    ready[i][1] <= 1'b1;
-                end
-            end
-        end
-
-        if (alu_done_load) begin  // 유효한 결과를 확인합니다.
-            y = alu_rs_add_load;
-            rd_data[y] <= alu_result_load;  // Rd_result 업데이트
-            rd_ready[y] <= 1'b1;
-
-            for (i = (y+1) % rs_size; i != (y + load_cycle) % rs_size; i = (i + 1) % rs_size) begin
-                if (alu_phy_reg_load == phy_add1[i]) begin
-                    operand1[i] <= alu_result_load;
-                    ready[i][0] <= 1'b1;
-                end
-                if (alu_phy_reg_load == phy_add2[i]) begin
-                    operand2[i] <= alu_result_load;
-                    ready[i][1] <= 1'b1;
-                end
-            end
-        end
         
-        if (alu_done_mul) begin  // 유효한 결과를 확인합니다.
-            z = alu_rs_add_mul;
-            rd_data[z] <= alu_result_mul;  // Rd_result 업데이트
-            rd_ready[z] <= 1'b1;
-
-            for (i = (z+1) % rs_size; i != (z + mul_cycle) % rs_size; i = (i + 1) % rs_size) begin
-                if (alu_phy_reg_mul == phy_add1[i]) begin
-                    operand1[i] <= alu_result_mul;
-                    ready[i][0] <= 1'b1;
-                end
-                if (alu_phy_reg_mul == phy_add2[i]) begin
-                    operand2[i] <= alu_result_mul;
-                    ready[i][1] <= 1'b1;
-                end
-            end
-        end
-        
-        if (alu_done_div) begin  // 유효한 결과를 확인합니다.
-            w = alu_rs_add_div;
-            rd_data[w] <= alu_result_div;  // Rd_result 업데이트
-            rd_ready[w] <= 1'b1;
-
-            for (i = (w+1) % rs_size; i != (w + div_cycle) % rs_size; i = (i + 1) % rs_size) begin
-                if (alu_phy_reg_div == phy_add1[i]) begin
-                    operand1[i] <= alu_result_div;
-                    ready[i][0] <= 1'b1;
-                end
-                if (alu_phy_reg_div == phy_add2[i]) begin
-                    operand2[i] <= alu_result_div;
-                    ready[i][1] <= 1'b1;
-                end
-            end
-        end
-    end
-end
-
-always @(negedge clk) begin
-        // 들어오는 명령어를 위해 tail에 새로운 주소를 할당합니다.
         branch_flag[tail] <= branch_in; 
         rd_ready[tail] <= 1'b0;    // 초기값 0
         rd_data[tail] <= 32'b0;    // 초기값 0
@@ -225,6 +152,81 @@ always @(negedge clk) begin
         phy_add2[tail] <= in_phy_add2;
         pc[tail] <= in_pc;
         label[tail] <= in_label;
+               
+        // 여러 ALU로부터의 업데이트를 처리합니다.
+        if (alu_done_add) begin  // 유효한 결과를 확인합니다. alu done add  는 파이프라인에서 한사이클마다 0으로 업데이트 해줘야함,
+            x = alu_rs_add_add;
+            rd_data[alu_rs_add_add] <= alu_result_add;  // Rd_result 업데이트
+            rd_ready[alu_rs_add_add] <= 1'b1;
+
+            for (i = (x+1) % rs_size; i != (x+add_cycle) % rs_size; i = (i + 1) % rs_size) begin
+                if (alu_phy_reg_add == phy_add1[i]) begin
+                    operand1[i] <= alu_result_add;
+                    ready[i][0] <= 1'b1;
+                end
+                if (alu_phy_reg_add == phy_add2[i]) begin
+                    operand2[i] <= alu_result_add;
+                    ready[i][1] <= 1'b1;
+                end
+            end
+        end
+
+        if (alu_done_load) begin  // 유효한 결과를 확인합니다.
+            y = alu_rs_add_load;
+            rd_data[alu_rs_add_load] <= alu_result_load;  // Rd_result 업데이트
+            rd_ready[alu_rs_add_load] <= 1'b1;
+
+            for (i = (y+1) % rs_size; i != (y + load_cycle) % rs_size; i = (i + 1) % rs_size) begin
+                if (alu_phy_reg_load == phy_add1[i]) begin
+                    operand1[i] <= alu_result_load;
+                    ready[i][0] <= 1'b1;
+                end
+                if (alu_phy_reg_load == phy_add2[i]) begin
+                    operand2[i] <= alu_result_load;
+                    ready[i][1] <= 1'b1;
+                end
+            end
+          end
+          
+         if (alu_done_mul) begin  // 유효한 결과를 확인합니다.
+            y = alu_rs_add_mul;
+            rd_data[alu_rs_add_mul] <= alu_result_mul;  // Rd_result 업데이트
+            rd_ready[alu_rs_add_mul] <= 1'b1;
+
+            for (i = (z+1) % rs_size; i != (z + mul_cycle) % rs_size; i = (i + 1) % rs_size) begin
+                if (alu_phy_reg_mul == phy_add1[i]) begin
+                    operand1[i] <= alu_result_mul;
+                    ready[i][0] <= 1'b1;
+                end
+                if (alu_phy_reg_mul == phy_add2[i]) begin
+                    operand2[i] <= alu_result_mul;
+                    ready[i][1] <= 1'b1;
+                end
+            end
+           end
+        
+        if (alu_done_div) begin  // 유효한 결과를 확인합니다.
+            w = alu_rs_add_div;
+            rd_data[alu_rs_add_div] <= alu_result_div;  // Rd_result 업데이트
+            rd_ready[alu_rs_add_div] <= 1'b1;
+
+            for (i = (w+1) % rs_size; i != (w + div_cycle) % rs_size; i = (i + 1) % rs_size) begin
+                if (alu_phy_reg_div == phy_add1[i]) begin
+                    operand1[i] <= alu_result_div;
+                    ready[i][0] <= 1'b1;
+                end
+                if (alu_phy_reg_div == phy_add2[i]) begin
+                    operand2[i] <= alu_result_div;
+                    ready[i][1] <= 1'b1;
+                end
+            end
+        end
+    end
+
+
+always @(negedge clk) begin
+        // 들어오는 명령어를 위해 tail에 새로운 주소를 할당합니다.
+
 
         // 할당된 주소의 operand를 업데이트 해줍니다.
         // 할당된 주소의 operand를 업데이트 해줍니다.
