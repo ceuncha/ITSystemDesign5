@@ -80,7 +80,7 @@ always @(posedge clk) begin
     if (rob_entry[head][104]) begin       // Check if the entry is ready
         out_value <= rob_entry[head][102:71];     // Output value
         out_dest <= rob_entry[head][70:66];      // Extract out_dest from instr[11:7]
-        out_phys_addr <= rob_entry[head][65:59]; // Output physical address
+        out_phys_addr <= rob_entry[head][39:33]; // Output physical address
         out_reg_write <= rob_entry[head][103];    // Output RegWrite status
         head <= (head + 1) % 1024;               // Circular buffer handling
         rob_entry[head][104] <= 1'b0;             // Clear the ready flag after consuming the entry
