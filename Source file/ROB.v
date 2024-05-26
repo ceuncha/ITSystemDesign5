@@ -47,7 +47,7 @@ always @(posedge clk or posedge rst) begin
             // Update the branch entry with PC_Branch value
             for (i = 0; i < 1024; i = i + 1) begin
                 if (rob_entry[i][31:0] == branch_index) begin
-                    rob_entry[i][104:0] <= {1'b0, rob_entry[i][103], PC_Return, rob_entry[i][71:40], rob_entry[i][39:33], rob_entry[i][32:0]};
+                    rob_entry[i][104:0] <= {1'b1, rob_entry[i][103], PC_Return, rob_entry[i][71:40], rob_entry[i][39:33], rob_entry[i][32:0]};
                     tail <= (i + 1) % 1024; // Move tail to the entry right after the branch entry
                 end
             end
