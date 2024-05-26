@@ -230,6 +230,7 @@ exmem_pipeline_register u_exmem_pipeline_register(
 );
 // MEM stage
 DataMemory u_DataMemory(
+    .clk(clk),
     .MemRead(EX_MEM_MemRead),
     .MemWrite(EX_MEM_MemWrite),
     .funct3(EX_MEM_funct3),
