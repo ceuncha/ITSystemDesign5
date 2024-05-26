@@ -215,11 +215,8 @@ module memwb_pipeline_register (
     input [6:0]EX_MEM_alu_phys_addr,
     input [31:0]EX_MEM_alu_exec_index,
     
-    input EX_MEM_mul_done,
-    input [6:0]EX_MEM_mul_phys_addr,
-    input [31:0]EX_MEM_mul_exec_index,
-    
     output reg MEM_WB_MemToReg,
+    
     output reg [31:0] MEM_WB_ALUResult,
     output reg [31:0] MEM_WB_RData
     output reg alu_exec_done,
@@ -234,12 +231,18 @@ module memwb_pipeline_register (
             MEM_WB_MemToReg <= 1'b0;
             MEM_WB_ALUResult <= 32'b0;
             MEM_WB_RData <= 32'b0;
+            alu_exec_done <= 1'b0;
+            alu_phys_addr <= 7'b0;
+            alu_exec_index <= 32'b0;
         end else begin
             // 정상 동작
             MEM_WB_MemToReg <= EX_MEM_MemToReg;
             MEM_WB_Rd <= EX_MEM_Rd;
             MEM_WB_ALUResult <= EX_MEM_ALUResult;
             MEM_WB_RData <= RData;
+            alu_exec_done <= EX_MEM_alu_done;
+            alu_phys_addr <= EX_MEM_alu_phys_addr;
+            alu_exec_index <= EX_MEM_alu_exec_index;
         end
     end
 endmodule
