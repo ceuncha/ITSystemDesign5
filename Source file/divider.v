@@ -4,9 +4,13 @@ module divider (
     input wire start,
     input wire [31:0] A,
     input wire [31:0] B,
+    input wire [6:0] Physical_address_in, RS_address_in,
+    input wire [31:0] PC_address_in;
     output reg [31:0] quotient,
     output reg [31:0] remainder,
-    output reg done
+    output reg done,
+    output reg [6:0] Physical_address_out, RS_address_out,
+    output reg [31:0] PC_out
 );
 
     // 내부 레지스터
@@ -15,6 +19,8 @@ module divider (
     reg [63:0] temp_dividend;
     reg [5:0] count;
     reg running;
+    reg [6:0] Physical_address_reg, RS_address_reg;
+    reg [31:0] PC_reg;
 
     // 초기화 및 시작
     always @(posedge clk or posedge reset) begin
@@ -22,16 +28,18 @@ module divider (
             dividend <= 64'd0;
             divisor <= 32'd0;
             count <= 6'd0;
-            done <= 1'b0;
             running <= 1'b0;
-            quotient <= 32'd0;
-            remainder <= 32'd0;
+            Physical_address_reg <= 7'd0;
+            RS_address_reg <= 7'd0;
+            PC_reg <= 32'd0;
         end else if (start && !running) begin
             dividend <= {32'd0, A};
             divisor <= B;
             count <= 6'd32;
-            done <= 1'b0;
             running <= 1'b1;
+            Physical_address_reg <= Physical_address_in;
+            RS_address_reg <= RS_address_in;
+            PC_reg <= PC_in;
         end
     end
 
@@ -61,6 +69,9 @@ module divider (
                 remainder <= dividend[63:32];
                 done <= 1'b1;
                 running <= 1'b0;
+                Physical_address_out <= Physical_address_reg;
+                RS_address_out <= RS_address_reg;
+                PC_out <= PC_reg;
             end
         end
     end
