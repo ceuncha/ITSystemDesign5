@@ -10,7 +10,6 @@ module BranchUnit(
     input wire ALUZero,     // ALU에서 오는 Zero 플래그
     input wire ALUOverflow, // ALU에서 오는 Overflow 플래그
     input wire ALUCarry,    // ALU에서 오는 Carry 플래그
-    input wire ALUOperationComplete, // ALU에서 오는 연산 완료 신호
     output reg [31:0] PC_Branch,
     output reg [31:0] branch_index
     output reg PCSrc,
