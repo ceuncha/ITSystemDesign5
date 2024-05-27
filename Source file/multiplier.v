@@ -78,15 +78,6 @@ module multiplier (
                 stgae1_RS_address_reg <= 0;
                 stage1_PC_reg <= 0;
             end
-        end else if (start) begin
-            for (j = 0; j < 16; j = j + 1) begin
-                stage1_sums_reg[j] <= 0;
-                stage1_carries_reg[j] <= 0;
-                stage1_done_reg <= 0;
-                stage1_Physical_address_reg <= 0;
-                stgae1_RS_address_reg <= 0;
-                stage1_PC_reg <= 0;
-            end
         end else begin
             for (j = 0; j < 16; j = j + 1) begin
                 stage1_sums_reg[j] <= stage1_sums[j];
@@ -118,15 +109,6 @@ module multiplier (
 
     always @(posedge clk or posedge rst) begin
         if (rst) begin
-            for (j = 0; j < 8; j = j + 1) begin
-                stage2_sums_reg[j] <= 0;
-                stage2_carries_reg[j] <= 0;
-                stage2_done_reg <= 0;
-                stage2_Physical_address_reg <= 0;
-                stgae2_RS_address_reg <= 0;
-                stage2_PC_reg <= 0;
-            end
-        end else if (start) begin
             for (j = 0; j < 8; j = j + 1) begin
                 stage2_sums_reg[j] <= 0;
                 stage2_carries_reg[j] <= 0;
@@ -174,15 +156,6 @@ module multiplier (
                 stgae3_RS_address_reg <= 0;
                 stage3_PC_reg <= 0;
             end
-        end else if (start) begin
-            for (j = 0; j < 4; j = j + 1) begin
-                stage3_sums_reg[j] <= 0;
-                stage3_carries_reg[j] <= 0;
-                stage3_done_reg <= 0;
-                stage3_Physical_address_reg <= 0;
-                stgae3_RS_address_reg <= 0;
-                stage3_PC_reg <= 0;
-            end
         end else begin
             for (j = 0; j < 4; j = j + 1) begin
                 stage3_sums_reg[j] <= stage3_sums[j];
@@ -218,15 +191,6 @@ module multiplier (
                 stage4_carries_reg[j] <= 0;
                 stage4_done_reg <= 0;
             end
-        end else if (start) begin
-            for (j = 0; j < 2; j = j + 1) begin
-                stage4_sums_reg[j] <= 0;
-                stage4_carries_reg[j] <= 0;
-                stage4_done_reg <= 0;
-                stage4_Physical_address_reg <= 0;
-                stgae4_RS_address_reg <= 0;
-                stage4_PC_reg <= 0;
-            end
         end else begin
             for (j = 0; j < 2; j = j + 1) begin
                 stage4_sums_reg[j] <= stage4_sums[j];
@@ -242,12 +206,6 @@ module multiplier (
     // 최종 결과와 done 신호 업데이트
     always @(posedge clk or posedge rst) begin
         if (rst) begin
-            Product <= 0;
-            done <= 0;
-            Physical_address_out <= 0;
-            RS_address_out <= 0;
-            PC_out <= 0;
-        end else if (start) begin
             Product <= 0;
             done <= 0;
             Physical_address_out <= 0;
