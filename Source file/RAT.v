@@ -1,7 +1,5 @@
 module RAT (
-input wire id_on,
 input wire reset,
-
 input wire write_enable, // 쓰기 활성화 신호
 input wire [4:0] logical_addr1, // 오퍼랜드 1 논리 주소
 input wire [4:0] logical_addr2, // 오퍼랜드 2 논리 주소
@@ -32,7 +30,7 @@ reg valid_table [0:31]; // 유효성 테이블
 integer i;
 
 // 초기화
-always @(posedge id_on or posedge reset) begin
+    always @(*) begin
     if (reset) begin
         
         for (i = 0; i < 32; i = i + 1) begin
