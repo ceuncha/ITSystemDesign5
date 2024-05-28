@@ -1,7 +1,6 @@
-module ALU(A,B,ALUop,subtract,Result,negative,overflow,zero,carry);
+module ALU(A,B,ALUop,Result,negative,overflow,zero,carry);
     input [31:0] A,B;
     input [3:0] ALUop;
-    input subtract;
     output reg [31:0] Result;
     output reg negative;
     output reg overflow;
@@ -11,7 +10,7 @@ module ALU(A,B,ALUop,subtract,Result,negative,overflow,zero,carry);
     wire C_out,overflow_out;
     reg [31:0] compare;
     
-    CLA_32bit CLA_32bit(A,B,subtract,Result_Adder,C_out,overflow_out);
+    CLA_32bit CLA_32bit(A,B,ALUop[2],Result_Adder,C_out,overflow_out);
 
 always @(*) begin
     case (ALUop)
