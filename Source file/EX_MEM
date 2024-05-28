@@ -4,6 +4,7 @@ module EX_MEM(
   input [31:0]RS_EX_PC_ALU,
   input [31:0]Operand1,
   input [31:0]Operand2,
+  input [31:0] ALU_A,
   input ALUop,
   input ID_EX_jump,
   input ID_EX_Branch,
@@ -20,6 +21,7 @@ module EX_MEM(
    ALU ALU(.A(Operand1),.B(Operand2),.ALUop(ALUop),.Result(ALUResult),.negative(negative),.overflow(overflow),.zero(zero),.carry(carry));
    branch_unit branch_unit(.ID_EX_Jump(ID_EX_jump),.ID_EX_Branch(ID_EX_Branch),.ID_EX_funct3(RS_EX_func3),.ALUResult(ALUResult),.imm(immediate),.PC(RS_EX_PC_ALU),.ALUNegative(negative),.ALUZero(zero),.ALUOverflow(overflow),.ALUCarry(carry),.PC_Branch(PC_Branch),.branch_index(branch_index),.PCSrc(PCSrc),.IF_ID_Flush(IF_ID_Flush),.ID_RS_Flush(ID_RS_Flush));
    ADD4 ADD4 (.in(RS_EX_PC_ALU),.out(PC_Return));
-   MUX_2input MUX_2input (.a(ALUResult),.b(PC_Return),.sel(ID_EX_jump),.y(EX_MEM_ALUResult));
+   MUX_2input MUX2 (.a(ALUResult),.b(PC_Return),.sel(ID_EX_jump),.y(EX_MEM_ALUResult));
+   MUX_2input MUX1 (.a(Operand1),.b(RS_EX_PC_ALU),.sel(ID_EX_jump),.y(ALU_A));
 
 endmodule
