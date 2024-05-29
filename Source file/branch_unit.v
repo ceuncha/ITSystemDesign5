@@ -1,5 +1,6 @@
 
 module BranchUnit(
+    input rst
     input wire ID_EX_Jump,
     input wire ID_EX_Branch,
     input wire [2:0] ID_EX_funct3,
