@@ -4,7 +4,7 @@ module EX_MEM(
   input [31:0]RS_EX_PC_ALU,
   input [31:0]Operand1,
   input [31:0]Operand2,
-  input ALUop,
+  input [3:0]ALUop,
   input ID_EX_jump,
   input ID_EX_Branch,
   input  [1:0]ALUSrc,
@@ -19,9 +19,12 @@ module EX_MEM(
    wire [31:0] PC_Return;
    wire [31:0] ALUResult;
    wire [31:0] ALU_A;
+   
+  
+   
    ALU ALU(.A(ALU_A),.B(Operand2),.ALUop(ALUop),.Result(ALUResult),.negative(negative),.overflow(overflow),.zero(zero),.carry(carry));
    branchUnit branchUnit(.ID_EX_Jump(ID_EX_jump),.ID_EX_Branch(ID_EX_Branch),.ID_EX_funct3(RS_EX_func3),.ALUResult(ALUResult),.imm(immediate),.PC(RS_EX_PC_ALU),.ALUNegative(negative),.ALUZero(zero),.ALUOverflow(overflow),.ALUCarry(carry),.PC_Branch(PC_Branch),.branch_index(branch_index),.PCSrc(PCSrc),.IF_ID_Flush(IF_ID_Flush),.ID_RS_Flush(ID_RS_Flush));
    add4 add4 (.in(RS_EX_PC_ALU),.out(PC_Return));
    MUX_2input MUX_2input (.a(ALUResult),.b(PC_Return),.sel(ID_EX_jump),.y(EX_MEM_ALUResult));
-   A_select A_select(.A(RS_EX_PC_ALU),.B(Operand1),.ID_EX_jump(ID_EX_jump),.ALUSrc(ALUSrc[1]),.y(ALU_A));
+   A_select A_select(.A(RS_EX_PC_ALU),.B(Operand1),.sel(ID_EX_jump),.sel2(ALUSrc[1]),.y(ALU_A));
 endmodule
