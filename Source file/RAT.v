@@ -17,7 +17,7 @@ output reg [4:0] rd_log_out,
 output reg [1:0] ready_out, // 레디 플래그 출력
 output reg rat_done,
 
-output reg [6:0] free_phy_addr_out
+output reg [6:0] free_phy_addr_out //send to free list
 
 
 
@@ -34,40 +34,50 @@ integer i;
     if (reset) begin
         
         for (i = 0; i < 32; i = i + 1) begin
-            phy_addr_table[i] <= 8'b0;
-            valid_table[i] <= 1'b0;
+            phy_addr_table[i] <= i;
+            valid_table[i] <= 1'b1;
         end
-
+        
     end 
     else begin
         // 1. 오퍼랜드 유효성 검사 및 물리 주소 접근
-        phy_addr_out1 <= phy_addr_table[logical_addr1];
-        phy_addr_out2 <= phy_addr_table[logical_addr2];
-
 
         case (opcode)
-        7'b1101111, 7'b0000011, 7'b0010011: begin
+        7'b1100111, 7'b0000011, 7'b0010011: begin  //jalr, load, i-type
             ready_out[0] <= valid_table[logical_addr1];
             ready_out[1] <= 1;
+            phy_addr_out1 <= phy_addr_table[logical_addr1];
+            phy_addr_out2 <= 0;
         end
-        7'b0110111, 7'b0010111, 7'b1100111: begin
+        7'b0110111, 7'b0010111, 7'b1101111: begin // lui, auipc, jal
             ready_out <= 2'b11;
+            phy_addr_out1 <= 0;
+            phy_addr_out2 <= 0;
+            
         end
         default: begin
             ready_out[1] <= valid_table[logical_addr2];
             ready_out[0] <= valid_table[logical_addr1];
+            phy_addr_out1 <= phy_addr_table[logical_addr1];
+            phy_addr_out2 <= phy_addr_table[logical_addr2];
         end
         endcase
+
+      
         
         // 2. Rd 레지스터 유효성 및 새로운 물리 주소 할당
-        if((opcode != 7'b1100011) && (opcode != 7'b0100011)) begin
-        valid_table[rd_logical_addr] <= 1'b0; // 유효성을 0으로 변경
-        free_phy_addr_out <= phy_addr_table[rd_logical_addr]; //프리리스트로 비어있는 주소 전송 
-        phy_addr_table[rd_logical_addr] <= free_phy_addr; // 새로운 물리 주소 할당
-        rd_phy_out <= free_phy_addr;
-        rd_log_out <= rd_logical_addr;
+        if((opcode != 7'b1100011) && (opcode != 7'b0100011)) begin  // beq, store need no Rd
+            valid_table[rd_logical_addr] <= 1'b0; // 유효성을 0으로 변경
+            free_phy_addr_out <= phy_addr_table[rd_logical_addr]; //프리리스트로 비어있는 주소 전송 
+            phy_addr_table[rd_logical_addr] <= free_phy_addr; // 새로운 물리 주소 할당
+            rd_phy_out <= free_phy_addr;
+            rd_log_out <= rd_logical_addr;
+        
         end
         
+        else begin
+            free_phy_addr_out <= free_phy_addr; //send to free list ph again
+        end
 
     end
 end
