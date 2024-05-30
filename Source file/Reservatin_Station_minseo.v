@@ -88,7 +88,7 @@ module Reservation_station (
         end 
          if (ALU_result_valid) begin
             for (i = 0; i < 16; i = i + 1) begin
-                if (Rds[i] == ALU_result_dest) begin
+
                     if (!valid_entries1[i] && operand1s[i] == ALU_result_dest) begin
                         operand1_datas[i] <= ALU_result;
                         valid_entries1[i] <= 1;
@@ -97,7 +97,7 @@ module Reservation_station (
                         operand2_datas[i] <= ALU_result;
                         valid_entries2[i] <= 1;
                     end
-                end
+
             end
         end
         end
@@ -110,7 +110,6 @@ module Reservation_station (
                 result = {opcodes[i],PCs[i], Rds[i], operand1s[i], operand2s[i],operand1_datas[i],operand2_datas[i]};
                 valid_entries1[i] = 0;
                 valid_entries2[i] = 0;
-                break;
             end
         end
     end
