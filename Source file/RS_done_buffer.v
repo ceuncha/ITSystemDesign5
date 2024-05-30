@@ -11,6 +11,7 @@ module RS_done_buffer(
     input [2:0] in_func3,   // 3-bit, 부가적 연산 정보
     input [31:0] in_pc,     // 32-bit, 프로그램 카운터
     input [31:0] in_label,  // 조건 분기 명령어에서 사용될 Immediate 값
+    input [6:0] in_control, // 7-bit, 제어 신호
     input add_done,         // Add ALU 연산 완료 신호
     input mul_done,         // Mul ALU 연산 완료 신호
     input div_done,         // Div ALU 연산 완료 신호
@@ -24,6 +25,7 @@ module RS_done_buffer(
     output reg [2:0] add_alu_func3,  // Add ALU로 보낼 func3
     output reg [31:0] add_alu_pc,    // Add ALU로 보낼 프로그램 카운터
     output reg [31:0] add_alu_label, // Add ALU로 보낼 Immediate 값
+    output reg [6:0] add_control,    // Add ALU로 보낼 제어 신호
     output reg mul_execute_on,     // Mul ALU로 보낼 실행 여부 신호
     output reg mul_branch_flag,    // Mul ALU로 보낼 분기 여부 신호
     output reg [6:0] mul_alu_opcode,  // Mul ALU로 보낼 Opcode
@@ -34,6 +36,7 @@ module RS_done_buffer(
     output reg [2:0] mul_alu_func3,  // Mul ALU로 보낼 func3
     output reg [31:0] mul_alu_pc,    // Mul ALU로 보낼 프로그램 카운터
     output reg [31:0] mul_alu_label, // Mul ALU로 보낼 Immediate 값
+    output reg [6:0] mul_control,    // Mul ALU로 보낼 제어 신호
     output reg div_execute_on,     // Div ALU로 보낼 실행 여부 신호
     output reg div_branch_flag,    // Div ALU로 보낼 분기 여부 신호
     output reg [6:0] div_alu_opcode,  // Div ALU로 보낼 Opcode
@@ -42,8 +45,9 @@ module RS_done_buffer(
     output reg [31:0] div_alu_operand1,  // Div ALU로 보낼 첫 번째 피연산자
     output reg [31:0] div_alu_operand2,  // Div ALU로 보낼 두 번째 피연산자
     output reg [2:0] div_alu_func3,  // Div ALU로 보낼 func3
-    output reg [31:0] div_alu_pc,    // Div ALU로 보낼 프로그램 카운터
-    output reg [31:0] div_alu_label  // Div ALU로 보낼 Immediate 값
+    output reg [31:32] div_alu_pc,    // Div ALU로 보낼 프로그램 카운터
+    output reg [31:32] div_alu_label, // Div ALU로 보낼 Immediate 값
+    output reg [6:0] div_control    // Div ALU로 보낼 제어 신호
 );
 
 parameter ADD_SIZE = 4;
@@ -61,6 +65,7 @@ reg [31:0] add_pc_fifo [0:ADD_SIZE-1];
 reg [31:0] add_label_fifo [0:ADD_SIZE-1];
 reg add_execute_on_fifo [0:ADD_SIZE-1];
 reg add_branch_flag_fifo [0:ADD_SIZE-1];
+reg [6:0] add_control_fifo [0:ADD_SIZE-1];
 
 reg [6:0] mul_opcode_fifo [0:MUL_SIZE-1];
 reg [4:0] mul_rs_add_fifo [0:MUL_SIZE-1];
@@ -72,6 +77,7 @@ reg [31:0] mul_pc_fifo [0:MUL_SIZE-1];
 reg [31:0] mul_label_fifo [0:MUL_SIZE-1];
 reg mul_execute_on_fifo [0:MUL_SIZE-1];
 reg mul_branch_flag_fifo [0:MUL_SIZE-1];
+reg [6:0] mul_control_fifo [0:MUL_SIZE-1];
 
 reg [6:0] div_opcode_fifo [0:DIV_SIZE-1];
 reg [4:0] div_rs_add_fifo [0:DIV_SIZE-1];
@@ -79,10 +85,11 @@ reg [4:0] div_rd_reg_fifo [0:DIV_SIZE-1];
 reg [31:0] div_operand1_fifo [0:DIV_SIZE-1];
 reg [31:0] div_operand2_fifo [0:DIV_SIZE-1];
 reg [2:0] div_func3_fifo [0:DIV_SIZE-1];
-reg [31:0] div_pc_fifo [0:DIV_SIZE-1];
-reg [31:0] div_label_fifo [0:DIV_SIZE-1];
+reg [31:32] div_pc_fifo [0:DIV_SIZE-1];
+reg [31:32] div_label_fifo [0:DIV_SIZE-1];
 reg div_execute_on_fifo [0:DIV_SIZE-1];
 reg div_branch_flag_fifo [0:DIV_SIZE-1];
+reg [6:0] div_control_fifo [0:DIV_SIZE-1];
 
 integer add_head, add_tail;
 integer mul_head, mul_tail;
@@ -108,6 +115,7 @@ always @(posedge clk or posedge reset) begin
                         mul_alu_func3 <= in_func3;
                         mul_alu_pc <= in_pc;
                         mul_alu_label <= in_label;
+                        mul_control <= in_control;
                     end else begin
                         mul_opcode_fifo[mul_tail] <= in_opcode;
                         mul_rs_add_fifo[mul_tail] <= in_rs_add;
@@ -119,6 +127,7 @@ always @(posedge clk or posedge reset) begin
                         mul_label_fifo[mul_tail] <= in_label;
                         mul_execute_on_fifo[mul_tail] <= in_execute_on;
                         mul_branch_flag_fifo[mul_tail] <= in_branch_flag;
+                        mul_control_fifo[mul_tail] <= in_control;
                         mul_tail <= (mul_tail + 1) % MUL_SIZE;
                     end
                 7'b1001111: // DIV 명령어
@@ -133,6 +142,7 @@ always @(posedge clk or posedge reset) begin
                         div_alu_func3 <= in_func3;
                         div_alu_pc <= in_pc;
                         div_alu_label <= in_label;
+                        div_control <= in_control;
                     end else begin
                         div_opcode_fifo[div_tail] <= in_opcode;
                         div_rs_add_fifo[div_tail] <= in_rs_add;
@@ -144,6 +154,7 @@ always @(posedge clk or posedge reset) begin
                         div_label_fifo[div_tail] <= in_label;
                         div_execute_on_fifo[div_tail] <= in_execute_on;
                         div_branch_flag_fifo[div_tail] <= in_branch_flag;
+                        div_control_fifo[div_tail] <= in_control;
                         div_tail <= (div_tail + 1) % DIV_SIZE;
                     end
                 default: // ADD 명령어
@@ -158,6 +169,7 @@ always @(posedge clk or posedge reset) begin
                         add_alu_func3 <= in_func3;
                         add_alu_pc <= in_pc;
                         add_alu_label <= in_label;
+                        add_control <= in_control;
                     end else begin
                         add_opcode_fifo[add_tail] <= in_opcode;
                         add_rs_add_fifo[add_tail] <= in_rs_add;
@@ -169,6 +181,7 @@ always @(posedge clk or posedge reset) begin
                         add_label_fifo[add_tail] <= in_label;
                         add_execute_on_fifo[add_tail] <= in_execute_on;
                         add_branch_flag_fifo[add_tail] <= in_branch_flag;
+                        add_control_fifo[add_tail] <= in_control;
                         add_tail <= (add_tail + 1) % ADD_SIZE;
                     end
             endcase
@@ -186,6 +199,7 @@ always @(posedge clk or posedge reset) begin
             add_alu_func3 <= add_func3_fifo[add_head];
             add_alu_pc <= add_pc_fifo[add_head];
             add_alu_label <= add_label_fifo[add_head];
+            add_control <= add_control_fifo[add_head];
             add_head <= (add_head + 1) % ADD_SIZE;
         end
         if (mul_done && (mul_head != mul_tail)) begin
@@ -199,6 +213,7 @@ always @(posedge clk or posedge reset) begin
             mul_alu_func3 <= mul_func3_fifo[mul_head];
             mul_alu_pc <= mul_pc_fifo[mul_head];
             mul_alu_label <= mul_label_fifo[mul_head];
+            mul_control <= mul_control_fifo[mul_head];
             mul_head <= (mul_head + 1) % MUL_SIZE;
         end
         if (div_done && (div_head != div_tail)) begin
@@ -212,6 +227,7 @@ always @(posedge clk or posedge reset) begin
             div_alu_func3 <= div_func3_fifo[div_head];
             div_alu_pc <= div_pc_fifo[div_head];
             div_alu_label <= div_label_fifo[div_head];
+            div_control <= div_control_fifo[div_head];
             div_head <= (div_head + 1) % DIV_SIZE;
         end
     end
