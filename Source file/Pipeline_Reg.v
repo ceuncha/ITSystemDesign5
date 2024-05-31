@@ -154,21 +154,24 @@ module exmem_pipeline_register (
     input [31:0] ALUResult,  // ALU output
     input [31:0] ID_EX_RData2,  // regfile
     input [31:0] Rd_data,
+
     
     output reg EX_MEM_MemToReg,
     output reg EX_MEM_MemRead,
     output reg EX_MEM_MemWrite,
+    output reg EX_MEM_RegWrite,
+    output reg EX_MEM_RWsel,
     output reg [2:0] EX_MEM_funct3,
     output reg [4:0] EX_MEM_Rd,
     output reg [31:0] EX_MEM_ALUResult,
     output reg [31:0] EX_MEM_RData2,
-    output reg [31:0] EX_MEM_Rd_data
+    output reg [31:0] EX_MEM_Rd_data,
 
     output reg [31:0] mul_exec_value,
     output reg mul_exec_done,
     output reg [31:0] mul_exec_index,
 
-    output reg [31:0] div_exec_value
+    output reg [31:0] div_exec_value,
     output reg div_exec_done,
     output reg [31:0] div_exec_index
 );
@@ -211,11 +214,12 @@ module memwb_pipeline_register (
     input [31:0] RData, // data memory
     input EX_MEM_alu_done,
     input [31:0]EX_MEM_alu_exec_index,
-    
+    input [4:0] EX_MEM_Rd,
     output reg MEM_WB_MemToReg,
     
     output reg [31:0] MEM_WB_ALUResult,
-    output reg [31:0] MEM_WB_RData
+    output reg [31:0] MEM_WB_RData,
+    output reg [4:0] MEM_WB_Rd,
     output reg alu_exec_done,
     output reg [31:0] alu_exec_index
 
