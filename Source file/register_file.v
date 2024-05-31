@@ -73,10 +73,10 @@ end
 
 // 읽기 연산
 always @(Operand1_phy or Operand2_phy) begin
-    Operand1_data = registers[Operand1_phy];
-    Operand2_data = registers[Operand2_phy];
-    valid1 = valid[Operand1_phy];
-    valid2 = valid[Operand2_phy];
+    Operand1_data <= registers[Operand1_phy];
+    Operand2_data <= registers[Operand2_phy];
+    valid1 <= valid[Operand1_phy];
+    valid2 <= valid[Operand2_phy];
 end
 
 endmodule
