@@ -144,7 +144,6 @@ endmodule
 module exmem_pipeline_register (
     input clk,
     input reset,
-    input ID_EX_RegWrite,
     input ID_EX_MemToReg,
     input ID_EX_MemRead,
     input ID_EX_MemWrite,
@@ -158,8 +157,6 @@ module exmem_pipeline_register (
     output reg EX_MEM_MemToReg,
     output reg EX_MEM_MemRead,
     output reg EX_MEM_MemWrite,
-    output reg EX_MEM_RegWrite,
-    output reg EX_MEM_RWsel,
     output reg [2:0] EX_MEM_funct3,
     output reg [31:0] EX_MEM_ALUResult,
     output reg [31:0] EX_MEM_Rd_data,
