@@ -67,51 +67,40 @@ module Reservation_station (
                 valid_entries2[i] <= 1'b0; // 리셋 시 초기값으로 복원
             end
         end else begin
-            if (valid == 2'b00) begin  // operand1, operand2 둘 다 사용 가능하지 않을 때
+            if (operand1 == ALU_result_dest) begin  // ALU에서 operand1의 연산이 끝났을때
                 opcodes[tail] <= opcode;
                 PCs[tail] <= PC;
                 Rds[tail] <= Rd;
                 operand1s[tail] <= operand1;
                 operand2s[tail] <= operand2;
-                operand1_datas[tail] <= 0;
-                operand2_datas[tail] <= 0;
-                valid_entries1[tail] <= 0;
-                valid_entries2[tail] <= 0;
+                operand1_datas[tail] <= ALU_result;
+                operand2_datas[tail] <= operand2_data;
+                valid_entries1[tail] <= 1;
+                valid_entries2[tail] <= valid[1];
                 tail <= (tail + 1) % 16;
-            end else if (valid == 2'b01) begin  // operand1 만 사용 가능할 때
+            end else if (operand2 == ALU_result_dest) begin  // ALU에서 operand2의 연산이 끝났을때
                 opcodes[tail] <= opcode;
                 PCs[tail] <= PC;
                 Rds[tail] <= Rd;
                 operand1s[tail] <= operand1;
                 operand2s[tail] <= operand2;
                 operand1_datas[tail] <= operand1_data;
-                operand2_datas[tail] <= 0;
-                valid_entries1[tail] <= 1;
-                valid_entries2[tail] <= 0; 
-                tail <= (tail + 1) % 16;
-            end else if (valid == 2'b10) begin  // operand2 만 사용 가능할 때
-                opcodes[tail] <= opcode;
-                PCs[tail] <= PC;
-                Rds[tail] <= Rd;
-                operand1s[tail] <= operand1;
-                operand2s[tail] <= operand2;
-                operand1_datas[tail] <= 0;
-                operand2_datas[tail] <= operand2_data;
-                valid_entries1[tail] <= 0;
+                operand2_datas[tail] <= ALU_result;
+                valid_entries1[tail] <= valid[0];
                 valid_entries2[tail] <= 1; 
                 tail <= (tail + 1) % 16;
-            end else if (valid == 2'b11) begin  // operand1, operand2 둘 다 사용 가능할 때
-                opcodes[tail] <= opcode;
+            end else begin
+               opcodes[tail] <= opcode;
                 PCs[tail] <= PC;
                 Rds[tail] <= Rd;
                 operand1s[tail] <= operand1;
                 operand2s[tail] <= operand2;
                 operand1_datas[tail] <= operand1_data;
-                operand2_datas[tail] <= operand2_data;
-                valid_entries1[tail] <= 1;
-                valid_entries2[tail] <= 1; 
+                operand2_datas[tail] <= operand1_data ;
+                valid_entries1[tail] <= valid[0];
+                valid_entries2[tail] <= valid[1]; 
                 tail <= (tail + 1) % 16;
-            end 
+             end 
             if (ALU_result_valid) begin
                 for (i = 0; i < 16; i = i + 1) begin
                     if (!valid_entries1[i] && operand1s[i] == ALU_result_dest) begin
