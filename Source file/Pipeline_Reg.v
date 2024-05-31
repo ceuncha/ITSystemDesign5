@@ -148,7 +148,6 @@ module exmem_pipeline_register (
     input ID_EX_MemToReg,
     input ID_EX_MemRead,
     input ID_EX_MemWrite,
-    input ID_EX_RWsel,
     input [2:0] ID_EX_funct3,
     input [4:0] ID_EX_Rd, // inst decode
     input [31:0] ALUResult,  // ALU output
@@ -162,9 +161,7 @@ module exmem_pipeline_register (
     output reg EX_MEM_RegWrite,
     output reg EX_MEM_RWsel,
     output reg [2:0] EX_MEM_funct3,
-    output reg [4:0] EX_MEM_Rd,
     output reg [31:0] EX_MEM_ALUResult,
-    output reg [31:0] EX_MEM_RData2,
     output reg [31:0] EX_MEM_Rd_data,
 
     output reg [31:0] mul_exec_value,
@@ -219,7 +216,6 @@ module memwb_pipeline_register (
     
     output reg [31:0] MEM_WB_ALUResult,
     output reg [31:0] MEM_WB_RData,
-    output reg [4:0] MEM_WB_Rd,
     output reg alu_exec_done,
     output reg [31:0] alu_exec_index
 
@@ -236,7 +232,6 @@ module memwb_pipeline_register (
         end else begin
             // 정상 동작
             MEM_WB_MemToReg <= EX_MEM_MemToReg;
-            MEM_WB_Rd <= EX_MEM_Rd;
             MEM_WB_ALUResult <= EX_MEM_ALUResult;
             MEM_WB_RData <= RData;
             alu_exec_done <= EX_MEM_alu_done;
