@@ -1,4 +1,4 @@
-module register_file (
+module physical_register_file (
     input clk,
     input reset,
     input [6:0] Operand1_phy,
