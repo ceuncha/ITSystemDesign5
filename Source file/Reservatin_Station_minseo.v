@@ -13,7 +13,6 @@ module Reservation_station (
     input [6:0] ALU_result_dest,
     input ALU_result_valid,
     output reg [123:0] result,
-    output reg ready
 );
     
     // Internal storage for reservation station entries
@@ -24,8 +23,8 @@ module Reservation_station (
     reg [6:0] operand2s [15:0];
     reg [31:0] operand1_datas [15:0];  //operand1 data
     reg [31:0] operand2_datas [15:0]; //operand2 data
-    reg [15:0] valid_entries1;  // operand1이 valid한지
-    reg [15:0] valid_entries2; // operand2가 valid한지
+    reg valid_entries1;  // operand1이 valid한지
+    reg valid_entries2; // operand2가 valid한지
     
     reg [3:0] tail;
     integer i;
@@ -105,7 +104,7 @@ module Reservation_station (
     always @(*) begin
         for (i = 0; i < 16; i = i + 1) begin
             if (valid_entries1[i]&&valid_entries2[i]) begin
-                ready[i] = 1;
+                ready[i] = 1b'1;
                 result[i] = {opcodes[i],PCs[i], Rds[i], operand1s[i], operand2s[i],operand1_datas[i],operand2_datas[i]};
             end
         end
