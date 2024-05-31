@@ -231,8 +231,12 @@ module memwb_pipeline_register (
             MEM_WB_MemToReg <= EX_MEM_MemToReg;
             MEM_WB_ALUResult <= EX_MEM_ALUResult;
             MEM_WB_RData <= RData;
-            alu_exec_done <= EX_MEM_alu_done;
             alu_exec_index <= EX_MEM_alu_exec_index;
+            if (!mem_read) begin
+                alu_exec_done <= EX_MEM_alu_done;
+            end else begin 
+                alu_exec_done <= 1'b1; 
+            end
         end
-    end
+   
 endmodule
