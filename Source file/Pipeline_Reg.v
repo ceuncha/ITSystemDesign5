@@ -24,7 +24,7 @@ module ifid_pipeline_register (
             // 플러시가 아니고 스톨도 아닐 때 정상 동작
             IF_ID_instOut <= instOut;
             IF_ID_PC <= PC;
-            id_on <= 1'b0;
+            id_on <= 1'b1;
         end
     end
 
