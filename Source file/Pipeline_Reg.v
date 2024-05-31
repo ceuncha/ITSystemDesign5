@@ -15,7 +15,7 @@ module ifid_pipeline_register (
             // 리셋 신호가 활성화되면 초기화
             IF_ID_instOut <= 32'b0;
             IF_ID_PC <= 32'b0;
-            id_on <= 1'b0;
+            id_on <= 1'b1;
         end else if (IF_ID_Flush) begin
             // NOP 명령어 출력
             IF_ID_instOut <= 32'h00000013; // RV32I에서의 NOP 명령어
