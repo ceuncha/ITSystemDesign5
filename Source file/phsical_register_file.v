@@ -30,7 +30,7 @@ reg valid [0:127];
 integer i;
 
 always @(posedge reset) begin
-	    if (reset) begin
+   if (reset) begin
         for (i = 0; i < 32; i = i + 1) begin
             registers[i] <= i;
             valid[i] <= 1'b1; // 초기 valid 비트는 1로 설정
