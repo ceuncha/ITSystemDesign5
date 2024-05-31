@@ -11,6 +11,7 @@ module RS_EX_decoder(
     input [6:0] in_control, // 7-bit, 제어 신호
     input [7:0] rd_phy_reg, // 8-bit, 물리적 레지스터 주소
 
+
     output reg [31:0] add_alu_operand1,  // Add ALU로 보낼 첫 번째 피연산자
     output reg [31:0] add_alu_operand2,  // Add ALU로 보낼 두 번째 피연산자
     output reg [2:0] add_alu_func3,      // Add ALU로 보낼 func3
@@ -18,6 +19,7 @@ module RS_EX_decoder(
     output reg [31:0] add_alu_label,     // Add ALU로 보낼 Immediate 값
     output reg [6:0] add_control,        // Add ALU로 보낼 제어 신호
     output reg [7:0] add_rd_phy_reg,     // Add ALU로 보낼 물리적 레지스터 주소
+    output reg add_rs_on,
 
     output reg [31:0] mul_alu_operand1,  // Mul ALU로 보낼 첫 번째 피연산자
     output reg [31:0] mul_alu_operand2,  // Mul ALU로 보낼 두 번째 피연산자
@@ -26,6 +28,7 @@ module RS_EX_decoder(
     output reg [31:0] mul_alu_label,     // Mul ALU로 보낼 Immediate 값
     output reg [6:0] mul_control,        // Mul ALU로 보낼 제어 신호
     output reg [7:0] mul_rd_phy_reg,     // Mul ALU로 보낼 물리적 레지스터 주소
+    output reg mul_rs_on,
 
     output reg [31:0] div_alu_operand1,  // Div ALU로 보낼 첫 번째 피연산자
     output reg [31:0] div_alu_operand2,  // Div ALU로 보낼 두 번째 피연산자
@@ -33,11 +36,12 @@ module RS_EX_decoder(
     output reg [31:0] div_alu_pc,        // Div ALU로 보낼 프로그램 카운터
     output reg [31:0] div_alu_label,     // Div ALU로 보낼 Immediate 값
     output reg [6:0] div_control,        // Div ALU로 보낼 제어 신호
-    output reg [7:0] div_rd_phy_reg      // Div ALU로 보낼 물리적 레지스터 주소
+    output reg [7:0] div_rd_phy_reg,      // Div ALU로 보낼 물리적 레지스터 주소
+    output reg div_rs_on
 );
 
-always @(posedge clk or posedge reset) begin
-    if (reset) begin
+always @(posedge reset) begin
+        if (reset) begin
         // 모든 출력을 리셋
         add_alu_operand1 <= 0;
         add_alu_operand2 <= 0;
@@ -62,7 +66,11 @@ always @(posedge clk or posedge reset) begin
         div_alu_label <= 0;
         div_control <= 0;
         div_rd_phy_reg <= 0;
-    end else if (in_execute_on) begin
+        end
+end
+
+always @(*) begin
+  if (in_execute_on) begin
         case (in_opcode)
             7'b0110011: begin // MUL 명령어
                 mul_alu_operand1 <= in_operand1;
@@ -72,6 +80,9 @@ always @(posedge clk or posedge reset) begin
                 mul_alu_label <= in_label;
                 mul_control <= in_control;
                 mul_rd_phy_reg <= rd_phy_reg;
+                add_rs_on <= 0;
+                mul_rs_on <= 1;
+                div_rs_on <= 0;
             end
             7'b1001111: begin // DIV 명령어
                 div_alu_operand1 <= in_operand1;
@@ -81,6 +92,9 @@ always @(posedge clk or posedge reset) begin
                 div_alu_label <= in_label;
                 div_control <= in_control;
                 div_rd_phy_reg <= rd_phy_reg;
+                add_rs_on <= 0;
+                mul_rs_on <= 0;
+                div_rs_on <= 1;
             end
             default: begin // ADD 명령어
                 add_alu_operand1 <= in_operand1;
@@ -90,6 +104,9 @@ always @(posedge clk or posedge reset) begin
                 add_alu_label <= in_label;
                 add_control <= in_control;
                 add_rd_phy_reg <= rd_phy_reg;
+                add_rs_on <= 1;
+                mul_rs_on <= 0;
+                div_rs_on <= 0;
             end
         endcase
     end
