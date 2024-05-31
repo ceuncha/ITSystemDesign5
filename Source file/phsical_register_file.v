@@ -37,7 +37,7 @@ always @(posedge reset) begin
         end
        for (i = 32; i < 255; i = i + 1) begin
             registers[i] <= 32'h00000000;
-            valid[i] <= 1'b0; // 초기 valid 비트는 0으로 설정
+           valid[i] <= 1'b1; // 초기 valid 비트는 0으로 설정
         end
     end
 end
