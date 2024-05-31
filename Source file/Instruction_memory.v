@@ -9,7 +9,7 @@ module Instruction_memory(pc, instOut);
     end
 
     always @(pc) begin
-        data = memory[pc];
+        instOut = memory[pc >> 2];
     end
 /*
     reg [7:0] memory [0:1023]; // 1KB memory
