@@ -2,6 +2,16 @@ module Instruction_memory(pc, instOut);
     input [31:0] pc;
     output reg [31:0] instOut;
 
+    reg [31:0] memory [0:9999];  // 10000개의 32비트 명령어를 저장할 수 있는 메모리, 약 40KB
+
+    initial begin
+        $readmemh("i.mem", memory);
+    end
+
+    always @(pc) begin
+        data = memory[pc];
+    end
+/*
     reg [7:0] memory [0:1023]; // 1KB memory
 
     initial begin
@@ -33,4 +43,5 @@ module Instruction_memory(pc, instOut);
     always @ (*) begin
         instOut <= {memory[pc], memory[pc+1], memory[pc+2], memory[pc+3]};
     end
+*/
 endmodule
