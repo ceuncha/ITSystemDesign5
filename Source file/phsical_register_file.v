@@ -1,9 +1,9 @@
 module physical_register_file (
     input clk,
     input reset,
-    input [6:0] Operand1_phy,
-    input [6:0] Operand2_phy,
-    input [6:0] Rd_phy, // 명령어의 Rd 주소
+    input [7:0] Operand1_phy,
+    input [7:0] Operand2_phy,
+    input [7:0] Rd_phy, // 명령어의 Rd 주소
 
     input ALU_add_Write,
     input ALU_load_Write,
@@ -13,10 +13,10 @@ module physical_register_file (
     input [31:0] ALU_load_Data,
     input [31:0] ALU_mul_Data,
     input [31:0] ALU_div_Data,
-    input [6:0] ALU_add_phy,
-    input [6:0] ALU_load_phy,
-    input [6:0] ALU_mul_phy,
-    input [6:0] ALU_div_phy,
+    input [7:0] ALU_add_phy,
+    input [7:0] ALU_load_phy,
+    input [7:0] ALU_mul_phy,
+    input [7:0] ALU_div_phy,
 
     output reg [31:0] Operand1_data,
     output reg [31:0] Operand2_data,
@@ -25,17 +25,17 @@ module physical_register_file (
 );
 
 // 레지스터와 valid 비트 저장
-reg [31:0] registers [0:127];
-reg valid [0:127];
+reg [31:0] registers [0:255];
+    reg valid [0:255];
 integer i;
 
 always @(posedge reset) begin
    if (reset) begin
-        for (i = 0; i < 32; i = i + 1) begin
+       for (i = 0; i < 31; i = i + 1) begin
             registers[i] <= i;
             valid[i] <= 1'b1; // 초기 valid 비트는 1로 설정
         end
-        for (i = 32; i < 128; i = i + 1) begin
+       for (i = 32; i < 255; i = i + 1) begin
             registers[i] <= 32'h00000000;
             valid[i] <= 1'b0; // 초기 valid 비트는 0으로 설정
         end
