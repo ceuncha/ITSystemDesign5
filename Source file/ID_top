@@ -1,0 +1,124 @@
+module ID_top (
+    input wire clk,
+    input wire reset,
+    input wire id_on, // id_on 신호 추가
+    input wire write_enable, // 통합된 write_enable 신호
+    input wire [31:0] inst, // 통합된 inst 신호
+    input wire [6:0] free_phy_addr, // 통합된 free_phy_addr 및 chuchu_out 신호
+    input wire [6:0] wb_phy_addr, // 통합된 wb_phy_addr 및 PD 신호
+    input wire [4:0] wb_logical_addr,
+    input wire [31:0] IF_ID_PC,
+    input wire ALUSrc1,
+    input wire ALUSrc2,
+    input wire [31:0] Write_Data,
+    output wire [31:0] PData1, // 통합된 PData1 신호
+    output wire [31:0] PData2, // 통합된 PData2 신호
+    output wire [6:0] phy_addr_out1, // 통합된 phy_addr_out1 및 Ps1 신호
+    output wire [6:0] phy_addr_out2, // 통합된 phy_addr_out2 및 Ps2 신호
+    output wire [6:0] rd_phy_out,
+    output wire [4:0] rd_log_out,
+    output wire [1:0] ready_out,
+    output wire rat_done,
+    output wire [6:0] free_phy_addr_out, // 통합된 free_phy_addr_out 및 rat_data 신호
+    output wire [6:0] chuchu_out, // 통합된 chuchu_out 신호
+    output wire [31:0] Imm, // 통합된 Imm 및 imm32 신호
+    output wire [31:0] mux_out2,
+    output wire [31:0] mux_out,
+    output wire RegWrite,
+    output wire MemToReg,
+    output wire MemRead,
+    output wire MemWrite,
+    output wire [3:0] ALUOp,
+    output wire [1:0] ALUSrc,
+    output wire RWsel,
+    output wire Branch,
+    output wire Jump,
+    output wire [4:0] logical_addr1,
+    output wire [4:0] logical_addr2,
+    output wire [4:0] rd_logical_addr
+);
+
+    assign logical_addr1 = inst[19:15];
+    assign logical_addr2 = inst[24:20];
+    assign rd_logical_addr = inst[11:7];
+
+    // RAT 인스턴스
+    RAT rat_inst (
+        .reset(reset),
+        .id_on(id_on),
+        .write_enable(write_enable),
+        .logical_addr1(logical_addr1),
+        .logical_addr2(logical_addr2),
+        .rd_logical_addr(rd_logical_addr),
+        .free_phy_addr(free_phy_addr),
+        .wb_phy_addr(wb_phy_addr),
+        .wb_logical_addr(wb_logical_addr),
+        .opcode(inst[6:0]),
+        .phy_addr_out1(phy_addr_out1),
+        .phy_addr_out2(phy_addr_out2),
+        .rd_phy_out(rd_phy_out),
+        .rd_log_out(rd_log_out),
+        .ready_out(ready_out),
+        .rat_done(rat_done),
+        .free_phy_addr_out(free_phy_addr_out)
+    );
+
+    // chuchu 인스턴스
+    chuchu chuchu_inst (
+        .clk(clk),
+        .reset(reset),
+        .rat_data(free_phy_addr_out),
+        .chuchu_out(free_phy_addr)
+    );
+
+    // register_file 인스턴스
+    register_file reg_file_inst (
+        .clk(clk),
+        .Ps1(phy_addr_out1),
+        .Ps2(phy_addr_out2),
+        .MEM_WB_RegWrite(write_enable),
+        .Write_Data(Write_Data),
+        .PD(wb_phy_addr),
+        .PData1(PData1),
+        .PData2(PData2)
+    );
+
+    // sign_extend 인스턴스
+    sign_extend sign_extend_inst (
+        .inst(inst),
+        .Imm(Imm)
+    );
+
+    // DIMux 인스턴스
+    DIMux dimux_inst (
+        .PData2(PData2),
+        .imm32(Imm),
+        .ALUSrc2(ALUSrc2),
+        .mux_out2(mux_out2)
+    );
+
+    // DPMux 인스턴스
+    DPMux dpmux_inst (
+        .IF_ID_PC(IF_ID_PC),
+        .PData1(PData1),
+        .ALUSrc1(ALUSrc1),
+        .mux_out(mux_out)
+    );
+
+    // control_unit_top 인스턴스
+    control_unit_top control_unit (
+        .opcode(inst[6:0]),
+        .funct3(inst[14:12]),
+        .funct7(inst[31:25]),
+        .RegWrite(RegWrite),
+        .MemToReg(MemToReg),
+        .MemRead(MemRead),
+        .MemWrite(MemWrite),
+        .ALUOp(ALUOp),
+        .ALUSrc(ALUSrc),
+        .RWsel(RWsel),
+        .Branch(Branch),
+        .Jump(Jump)
+    );
+
+endmodule
