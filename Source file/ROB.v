@@ -5,13 +5,13 @@ module ROB(
     input wire reg_write,                // Register write enable signal from the decode stage
     input wire alu_exec_done,            // ALU execution completion signal
     input wire [31:0] alu_exec_value,    // ALU executed value
-    input wire [31:0] alu_exec_index,    // ALU execution index
+    input wire [31:0] alu_exec_PC,    // ALU execution index
     input wire mul_exec_done,            // Multiplier execution completion signal
     input wire [31:0] mul_exec_value,    // Multiplier executed value
-    input wire [31:0] mul_exec_index,    // Multiplier execution index
+    input wire [31:0] mul_exec_PC,    // Multiplier execution index
     input wire div_exec_done,            // Divider execution completion signal
     input wire [31:0] div_exec_value,    // Divider executed value
-    input wire [31:0] div_exec_index,    // Divider execution index
+    input wire [31:0] div_exec_PC,    // Divider execution index
     input wire PcSrc,                    // Branch signal (acts like a done signal)
     input wire [31:0] PC_Return,         // Jump address
     input wire [31:0] branch_index,      // Branch index in ROB
@@ -59,13 +59,13 @@ always @(posedge clk or posedge rst) begin
         // Update the value and set ready flag upon execution completion
         if (alu_exec_done || mul_exec_done || div_exec_done) begin
             for (i = 0; i < 32; i = i + 1) begin
-                if (alu_exec_done && rob_entry[i][31:0] == alu_exec_index) begin
+                if (alu_exec_done && rob_entry[i][31:0] == alu_exec_PC) begin
                     rob_entry[i][96:0] <= {1'b1, rob_entry[i][95], alu_exec_value, rob_entry[i][62:31], rob_entry[i][30:0]}; // Update value and maintain reg_write, instr, PC
                 end
-                if (mul_exec_done && rob_entry[i][31:0] == mul_exec_index) begin
+                if (mul_exec_done && rob_entry[i][31:0] == mul_exec_PC) begin
                     rob_entry[i][96:0] <= {1'b1, rob_entry[i][95], mul_exec_value, rob_entry[i][62:31], rob_entry[i][30:0]}; // Update value and maintain reg_write, instr, PC       
                 end
-                if (div_exec_done && rob_entry[i][31:0] == div_exec_index) begin
+                if (div_exec_done && rob_entry[i][31:0] == div_exec_PC) begin
                     rob_entry[i][96:0] <= {1'b1, rob_entry[i][95], div_exec_value, rob_entry[i][62:31], rob_entry[i][30:0]}; // Update value and maintain reg_write, instr, PC     
                 end
             end
