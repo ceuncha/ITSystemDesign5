@@ -1,4 +1,5 @@
-mmodule RAT (
+module RAT (
+input wire id_on,
 input wire reset,
 input wire write_enable, // 쓰기 활성화 신호
 input wire [4:0] logical_addr1, // 오퍼랜드 1 논리 주소
@@ -30,7 +31,7 @@ reg valid_table [0:31]; // 유효성 테이블
 integer i;
 
 // 초기화
-    always @(*) begin
+    always @(id_on) begin
     if (reset) begin
         
         for (i = 0; i < 32; i = i + 1) begin
@@ -74,7 +75,7 @@ integer i;
         end
         
         else begin
-            free_phy_addr_out <= free_phy_addr; //send to free list ph again
+            free_phy_addr_out <= phy_addr_table[rd_logical_addr]; //send to free list ph again
         end
 
     end
