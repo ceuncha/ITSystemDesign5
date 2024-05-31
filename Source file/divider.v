@@ -4,76 +4,88 @@ module divider (
     input wire start,
     input wire [31:0] A,
     input wire [31:0] B,
-    input wire [6:0] Physical_address_in, RS_address_in,
-    input wire [31:0] PC_address_in;
+    input wire [6:0] Physical_address_in, 
+    input wire [31:0] PC_in,
     output reg [31:0] quotient,
     output reg [31:0] remainder,
     output reg done,
-    output reg [6:0] Physical_address_out, RS_address_out,
+    output reg [6:0] Physical_address_out,
     output reg [31:0] PC_out
 );
 
     // 내부 레지스터
-    reg [63:0] dividend;
-    reg [31:0] divisor;
-    reg [63:0] temp_dividend;
-    reg [5:0] count;
-    reg running;
-    reg [6:0] Physical_address_reg, RS_address_reg;
-    reg [31:0] PC_reg;
+    reg [63:0] temp_dividend[0:31];
+    reg [31:0] divisor[0:31];
+    reg [6:0] Physical_address_reg[0:31];
+    reg [31:0] PC_reg[0:31];
+    reg done_reg[0:31];
 
     // 초기화 및 시작
     always @(posedge clk or posedge reset) begin
         if (reset) begin
-            dividend <= 64'd0;
-            divisor <= 32'd0;
-            count <= 6'd0;
-            running <= 1'b0;
-            Physical_address_reg <= 7'd0;
-            RS_address_reg <= 7'd0;
-            PC_reg <= 32'd0;
-        end else if (start && !running) begin
-            dividend <= {32'd0, A};
-            divisor <= B;
-            count <= 6'd32;
-            running <= 1'b1;
-            Physical_address_reg <= Physical_address_in;
-            RS_address_reg <= RS_address_in;
-            PC_reg <= PC_in;
+            temp_dividend[0] <= 64'd0;
+            divisor[0] <= 32'd0;
+            Physical_address_reg[0] <= 7'd0;
+            PC_reg[0] <= 32'd0;
+            done_reg[0] <= 1'd0;
+        end else if (start) begin
+            temp_dividend[0] <= {31'b0, A, 1'b0};
+            divisor[0] <= B;
+            Physical_address_reg[0] <= Physical_address_in;
+            PC_reg[0] <= PC_in;
+            done_reg[0] <= 1'd1;
         end
     end
 
-    // 비복원 나눗셈 알고리즘
-    always @(posedge clk) begin
-        if (running) begin
-            if (count > 0) begin
-                // 임시 변수 사용
-               
-                
-                // 왼쪽 시프트
-                temp_dividend = {dividend[62:0], 1'b0};
-
-                // 조건부 뺄셈
-                if (temp_dividend[63:32] >= divisor) begin
-                    temp_dividend[63:32] = temp_dividend[63:32] - divisor;
-                    temp_dividend[0] = 1'b1;
+    // 32 스테이지 생성
+    genvar i;
+    generate
+        for (i = 0; i < 31; i = i + 1) begin : stages
+            always @(posedge clk or posedge reset) begin
+                if (reset) begin
+                    temp_dividend[i+1] <= 64'd0;
+                    divisor[i+1] <= 32'd0;
+                    Physical_address_reg[i+1] <= 7'd0;
+                    PC_reg[i+1] <= 32'd0; 
+                    done_reg[i+1] <= 1'd0;                   
                 end else begin
-                    temp_dividend[0] = 1'b0;
+                    if (temp_dividend[i][63:32] >= divisor[i]) begin
+                        temp_dividend[i][63:32] = temp_dividend[i][63:32] - divisor[i];
+                        temp_dividend[i][0] = 1'b1;
+                    end else begin
+                        temp_dividend[i][0] = 1'b0;
+                    end
+                    temp_dividend[i+1] <= {temp_dividend[i][62:0], 1'b0};
+                    divisor[i+1] <= divisor[i];
+                    Physical_address_reg[i+1] <= Physical_address_reg[i];
+                    PC_reg[i+1] <= PC_reg[i];
+                    done_reg[i+1] <= done_reg[i];
                 end
-                
-                // 업데이트
-                dividend <= temp_dividend;
-                count <= count - 1;
-            end else begin
-                quotient <= dividend[31:0];
-                remainder <= dividend[63:32];
-                done <= 1'b1;
-                running <= 1'b0;
-                Physical_address_out <= Physical_address_reg;
-                RS_address_out <= RS_address_reg;
-                PC_out <= PC_reg;
             end
         end
-    end
+    endgenerate
 
+    // 결과 설정
+   always @(posedge clk or posedge reset) begin
+        if(reset) begin
+         quotient <= 0;
+         remainder <=0;
+         Physical_address_out <= 0;
+         PC_out <= 0;
+         done <= 0;
+         end else begin
+                // 조건부 뺄셈
+                if (temp_dividend[31][63:32] >= divisor[31]) begin
+                    temp_dividend[31][63:32] = temp_dividend[31][63:32] - divisor[31];
+                    temp_dividend[31][0] = 1'b1;
+                end else begin
+                    temp_dividend[31][0] = 1'b0;
+                end
+                quotient <= temp_dividend[31][31:0];
+                remainder <= temp_dividend[31][63:32];
+                Physical_address_out <= Physical_address_reg[31];
+                PC_out <= PC_reg[31];
+                done <= done_reg[31];
+                end
+                end
 endmodule
