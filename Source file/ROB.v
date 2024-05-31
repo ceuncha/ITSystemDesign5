@@ -3,8 +3,6 @@ module ROB(
     input wire rst,                      // Reset signal
     input wire [31:0] IF_ID_instOut,     // Input instruction (expanded to 32 bits)
     input wire reg_write,                // Register write enable signal from the decode stage
-    input wire [6:0] RS_EX_alu_phys_addr,// when jump
-    input wire [6:0] phys_addr,          // Input physical address
     input wire alu_exec_done,            // ALU execution completion signal
     input wire [31:0] alu_exec_value,    // ALU executed value
     input wire [31:0] alu_exec_index,    // ALU execution index
