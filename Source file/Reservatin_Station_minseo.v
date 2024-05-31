@@ -55,7 +55,7 @@ module Reservation_station (
     reg [123:0] result [15:0];
     
     reg [3:0] tail;
-    reg [15:0] ready;
+    reg [15:0] readys;
     wire [15:0] Y;
     integer i;
 
@@ -132,14 +132,14 @@ module Reservation_station (
     always @(*) begin
         for (i = 0; i < 16; i = i + 1) begin
             if (valid_entries1[i] && valid_entries2[i]) begin
-                ready[i] = 1;
+                readys[i] = 1;
                 result[i] = {opcodes[i], PCs[i], Rds[i], operand1s[i], operand2s[i], operand1_datas[i], operand2_datas[i]};
             end
         end
     end
 
     priority_encoder encoder (
-        .ready(ready),
+        .ready(readys),
         .Y(Y)
     );
 
