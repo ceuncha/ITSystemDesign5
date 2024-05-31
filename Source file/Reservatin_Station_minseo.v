@@ -39,7 +39,7 @@ module Reservation_station (
     input wire [31:0] ALU_result,
     input wire [6:0] ALU_result_dest,
     input wire ALU_result_valid,
-    output reg [123:0] result_out
+    output reg [124:0] result_out
 );
     
     // Internal storage for reservation station entries
@@ -52,7 +52,7 @@ module Reservation_station (
     reg [31:0] operand2_datas [15:0]; // operand2 data
     reg [15:0] valid_entries1;  // operand1이 valid한지
     reg [15:0] valid_entries2; // operand2가 valid한지
-    reg [123:0] result [15:0];
+    reg [124:0] result [15:0];
     
     reg [3:0] tail;
     reg [15:0] readys;
@@ -122,7 +122,7 @@ module Reservation_station (
         for (i = 0; i < 16; i = i + 1) begin
             if (valid_entries1[i] && valid_entries2[i]) begin
                 readys[i] = 1;
-                result[i] = {opcodes[i], PCs[i], Rds[i], operand1s[i], operand2s[i], operand1_datas[i], operand2_datas[i]};
+                result[i] = {1'b1,opcodes[i], PCs[i], Rds[i], operand1s[i], operand2s[i], operand1_datas[i], operand2_datas[i]}; //맨 앞 1은ALU_done신호
             end
         end
     end
