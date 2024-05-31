@@ -129,7 +129,6 @@ module Reservation_station (
     wire [15:0] Y;
 
     always @(*) begin
-        ready_signals = 16'b0;
         for (i = 0; i < 16; i = i + 1) begin
             if (valid_entries1[i] && valid_entries2[i]) begin
                 ready_signals[i] = 1;
