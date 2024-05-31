@@ -103,15 +103,13 @@ module Reservation_station (
         end
     // Logic to check dependencies and issue instructions
     always @(*) begin
-       
         for (i = 0; i < 16; i = i + 1) begin
             if (valid_entries1[i]&&valid_entries2[i]) begin
-                ready = 1;
-                result = {opcodes[i],PCs[i], Rds[i], operand1s[i], operand2s[i],operand1_datas[i],operand2_datas[i]};
-                valid_entries1[i] = 0;
-                valid_entries2[i] = 0;
+                ready[i] = 1;
+                result[i] = {opcodes[i],PCs[i], Rds[i], operand1s[i], operand2s[i],operand1_datas[i],operand2_datas[i]};
             end
         end
+
     end
     
 endmodule
