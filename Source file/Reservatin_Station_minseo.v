@@ -31,6 +31,10 @@ module Reservation_station (
     input wire [6:0] opcode,
     input wire [31:0] PC,
     input wire [6:0] Rd,
+    input wire MemRead,
+    input wire EX_MEM_MemRead,
+    input wire [31:0] RData,
+    input wire [6:0] EX_MEM_Physical_Address,
     input wire [6:0] operand1,
     input wire [6:0] operand2,
     input wire [31:0] operand1_data,
@@ -46,6 +50,7 @@ module Reservation_station (
     reg [6:0] opcodes [15:0];
     reg [31:0] PCs [15:0];
     reg [6:0] Rds [15:0];
+    reg [15:0] MemReads;
     reg [6:0] operand1s [15:0];
     reg [6:0] operand2s [15:0];
     reg [31:0] operand1_datas [15:0];  // operand1 data
@@ -53,7 +58,6 @@ module Reservation_station (
     reg [15:0] valid_entries1;  // operand1이 valid한지
     reg [15:0] valid_entries2; // operand2가 valid한지
     reg [124:0] result [15:0];
-    
     reg [3:0] tail;
     reg [15:0] readys;
     wire [15:0] Y;
@@ -89,6 +93,28 @@ module Reservation_station (
                 valid_entries1[tail] <= valid[0];
                 valid_entries2[tail] <= 1; 
                 tail <= (tail + 1) % 16;
+             end else if ( operand1 == EX_MEM_Physical_Address && EX_MEM_MemRead ==1) begin
+                opcodes[tail] <= opcode;
+                PCs[tail] <= PC;
+                Rds[tail] <= Rd;
+                operand1s[tail] <= operand1;
+                operand2s[tail] <= operand2;
+                operand1_datas[tail] <= RData;
+                operand2_datas[tail] <= operand2_data;
+                valid_entries1[tail] <= 1;
+                valid_entries2[tail] <= valid[1] ; 
+                tail <= (tail + 1) % 16;
+              end else if ( operand2 == EX_MEM_Physical_Address && EX_MEM_MemRead ==1) begin
+                opcodes[tail] <= opcode;
+                PCs[tail] <= PC;
+                Rds[tail] <= Rd;
+                operand1s[tail] <= operand1;
+                operand2s[tail] <= operand2;
+                operand1_datas[tail] <= operand1_data;
+                operand2_datas[tail] <= RData;
+                valid_entries1[tail] <= valid[0];
+                valid_entries2[tail] <= 1 ; 
+                tail <= (tail + 1) % 16;
             end else begin
                opcodes[tail] <= opcode;
                 PCs[tail] <= PC;
@@ -113,16 +139,31 @@ module Reservation_station (
                     end
                 end
             end
-        end
-    end
+           if (EX_MEM_MemRead) begin
+           for (i = 0; i < 16; i = i + 1) begin
+                    if (!valid_entries1[i] && operand1s[i] == EX_MEM_Physical_Address) begin
+                        operand1_datas[i] <= RData;
+                        valid_entries1[i] <= 1;
+                    end
+                    if (!valid_entries2[i] && operand2s[i] == EX_MEM_Physical_Address) begin
+                        operand2_datas[i] <= RData;
+                        valid_entries2[i] <= 1;
+                    end
+                end     
+            end
+         end
+      end
     
 
 
     always @(*) begin
         for (i = 0; i < 16; i = i + 1) begin
-            if (valid_entries1[i] && valid_entries2[i]) begin
+            if (valid_entries1[i] && valid_entries2[i] && !MemReads[i]) begin
                 readys[i] = 1;
-                result[i] = {1'b1,opcodes[i], PCs[i], Rds[i], operand1s[i], operand2s[i], operand1_datas[i], operand2_datas[i]}; //맨 앞 1은ALU_done신호
+                result[i] = {1'b1,opcodes[i], PCs[i], Rds[i], operand1s[i], operand2s[i], operand1_datas[i], operand2_datas[i]};
+            end else if (valid_entries1[i] && valid_entries2[i] && MemReads[i]) begin
+                readys[i] = 1;
+                result[i] = {1'b0,opcodes[i], PCs[i], Rds[i], operand1s[i], operand2s[i], operand1_datas[i], operand2_datas[i]};
             end
         end
     end
