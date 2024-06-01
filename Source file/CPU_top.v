@@ -218,7 +218,7 @@ control_unit_top u_control_unit_top(
 
    RS_EX_decoder rs_ex_decoder_inst (
         .clk(clk),
-        .reset(reset),
+        .reset(rst),
         .in_opcode(opcode),
         .in_operand1(RData1),
         .in_operand2(RData2),
@@ -294,7 +294,7 @@ control_unit_top u_control_unit_top(
     );
         Reservation_station rs_alu (
         .clk(clk),
-        .reset(reset),
+        .reset(rst),
         .start(RS_alu_start),
         .PC(RS_alu_PC),
         .Rd(RS_alu_Rd),
@@ -440,7 +440,7 @@ control_unit_top u_control_unit_top(
 
     exmem_pipeline_register exmem (
         .clk(clk),
-        .reset(reset),
+        .reset(rst),
         .ID_EX_MemToReg(ID_EX_MemToReg),
         .ID_EX_MemRead(ID_EX_MemRead),
         .ID_EX_MemWrite(ID_EX_MemWrite),
@@ -486,7 +486,7 @@ control_unit_top u_control_unit_top(
     // memwb_pipeline_register instantiation
     memwb_pipeline_register memwb (
         .clk(clk),
-        .reset(reset),
+        .reset(rst),
         .EX_MEM_MemToReg(EX_MEM_MemToReg),
         .EX_MEM_ALUResult(EX_MEM_ALUResult),
         .Load_Data(Load_Data),
@@ -511,10 +511,10 @@ control_unit_top u_control_unit_top(
     // ROB instantiation
     ROB rob (
         .clk(clk),
-        .rst(reset),
+        .rst(rst),
         .ROB_Flush(ROB_Flush),
         .IF_ID_instOut(IF_ID_instOut),
-        .reg_write(reg_write),
+        .reg_write(RegWrite),
         .alu_exec_done(alu_exec_done),
         .alu_exec_value(alu_exec_value),
         .alu_exec_PC(alu_exec_PC),
@@ -524,7 +524,7 @@ control_unit_top u_control_unit_top(
         .div_exec_done(div_exec_done),
         .div_exec_value(div_exec_value),
         .div_exec_PC(div_exec_PC),
-        .PcSrc(PcSrc),
+        .PcSrc(PCSrc),
         .PC_Return(PC_Return),
         .branch_index(branch_index),
         .PC(PC),
