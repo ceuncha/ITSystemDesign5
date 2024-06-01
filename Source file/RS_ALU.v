@@ -45,7 +45,6 @@ module Reservation_station (
     input wire clk,
     input wire reset,
     input wire start,
-    input wire [6:0] opcode,
     input wire [31:0] PC,
     input wire [7:0] Rd,
     input wire MemToReg,
@@ -61,8 +60,7 @@ module Reservation_station (
     input wire EX_MEM_MemRead,
     input wire [31:0] RData,
     input wire [7:0] EX_MEM_Physical_Address,
-    input wire [7:0] operand1,
-    input wire [7:0] operand2,
+
     input wire [31:0] operand1_data,
     input wire [31:0] operand2_data,
     input wire [1:0] valid,
@@ -79,7 +77,6 @@ module Reservation_station (
 );
     
     // Internal storage for reservation station entries
-    reg [6:0] opcodes [0:31];
     reg [31:0] PCs [0:31];
     reg [6:0] Rds [0:31];
     reg [31:0] MemToRegs;
@@ -92,8 +89,6 @@ module Reservation_station (
     reg [31:0] Branchs;
     reg [2:0] funct3s [0:31];
     reg [31:0] immediates [0:31];
-    reg [6:0] operand1s [0:31];
-    reg [6:0] operand2s [0:31];
     reg [31:0] operand1_datas [0:31];  // operand1 data
     reg [31:0] operand2_datas [0:31]; // operand2 data
     reg [31:0] valid_entries1;  // operand1이 valid한지
