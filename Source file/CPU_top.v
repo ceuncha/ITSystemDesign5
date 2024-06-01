@@ -337,19 +337,19 @@ control_unit_top u_control_unit_top(
    divider divider (.clk(clk),.rst(rst),.start(Div_start_in),.A(Operand1_Div),.B(Operand2_Div),.Physical_address_in(RS_EX_Div_Physical_address_in),.PC_in(RS_EX_PC_Div_in),.Result(DIV_Data),.divider_op_in(divider_op),.done(DIV_Done),.Physical_address_out(DIV_Phy),.PC_out(RS_EX_PC_Div_out));
 
    //MEM_WB////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-   wire EX_MEM_MemToReg, EX_MEM_MemRead, EX_MEM_MemWrite, EX_MEM_alu_exec_done, mul_exec_done, div_exec_done;
-   wire [2:0] EX_MEM_funct3;
-   wire [31:0] EX_MEM_Rdata2, EX_MEM_ALUResult, EX_MEM_alu_exec_PC, EX_MEM_alu_physical_address;
-   wire [31:0] mul_exec_value, mul_exec_PC, div_exec_value, div_exec_PC;
-   wire [31:0] Load_Data;
-   wire MEM_WB_MemToReg;
-   wire [31:0] MEM_WB_ALUResult, MEM_WB_RData, alu_exec_value, alu_exec_PC;
-   wire alu_exec_done;
-   wire [31:0] out_value;
-   wire [4:0] out_dest;
-   wire out_reg_write;
+    wire EX_MEM_MemToReg, Load_Done, EX_MEM_MemWrite, EX_MEM_alu_exec_done, mul_exec_done, div_exec_done;
+    wire [2:0] EX_MEM_funct3;
+    wire [31:0] EX_MEM_Rdata2, EX_MEM_ALUResult, EX_MEM_alu_exec_PC, EX_MEM_alu_physical_address;
+    wire [31:0] mul_exec_value, mul_exec_PC, div_exec_value, div_exec_PC;
+    wire [31:0] Load_Data;
+    wire MEM_WB_MemToReg;
+    wire [31:0] MEM_WB_ALUResult, MEM_WB_RData, alu_exec_value, alu_exec_PC;
+    wire alu_exec_done;
+    wire [31:0] out_value;
+    wire [4:0] out_dest;
+    wire out_reg_write;
 
-  exmem_pipeline_register exmem (
+    exmem_pipeline_register exmem (
         .clk(clk),
         .reset(reset),
         .ID_EX_MemToReg(ID_EX_MemToReg),
@@ -368,7 +368,7 @@ control_unit_top u_control_unit_top(
         .RS_EX_PC_Div_out(RS_EX_PC_Div_out),
         .Div_done_out(Div_done_out),
         .EX_MEM_MemToReg(EX_MEM_MemToReg),
-        .EX_MEM_MemRead(Load_Done),
+        .Load_Done(Load_Done),
         .EX_MEM_MemWrite(EX_MEM_MemWrite),
         .EX_MEM_funct3(EX_MEM_funct3),
         .EX_MEM_Rdata2(EX_MEM_Rdata2),
@@ -386,7 +386,7 @@ control_unit_top u_control_unit_top(
 
     // DataMemory instantiation
     DataMemory datamem (
-        .EX_MEM_MemRead(EX_MEM_MemRead),
+        .Load_Done(Load_Done),
         .EX_MEM_MemWrite(EX_MEM_MemWrite),
         .EX_MEM_funct3(EX_MEM_funct3),
         .EX_MEM_ALUResult(EX_MEM_ALUResult),
@@ -403,6 +403,7 @@ control_unit_top u_control_unit_top(
         .Load_Data(Load_Data),
         .EX_MEM_alu_exec_PC(EX_MEM_alu_exec_PC),
         .EX_MEM_alu_exec_done(EX_MEM_alu_exec_done),
+        .Load_Done(Load_Done),
         .MEM_WB_MemToReg(MEM_WB_MemToReg),
         .MEM_WB_ALUResult(MEM_WB_ALUResult),
         .MEM_WB_RData(MEM_WB_RData),
@@ -447,7 +448,7 @@ control_unit_top u_control_unit_top(
     logical_address_register logical_reg (
         .clk(clk),
         .reset(reset),
-        .Reg_write(out_reg_write),
+        .mem_to_write(out_reg_write),
         .logical_address(out_dest),
         .write_data(out_value),
         .x0(x0),
@@ -483,6 +484,4 @@ control_unit_top u_control_unit_top(
         .x30(x30),
         .x31(x31)
     );
-
-
 endmodule
