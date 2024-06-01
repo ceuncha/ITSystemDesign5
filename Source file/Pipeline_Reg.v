@@ -4,6 +4,7 @@ module ifid_pipeline_register (
     input reset,
     input [31:0] instOut,
     input [31:0] PC,
+    input IF_ID_Flush,
     output reg [31:0] IF_ID_instOut,  
     output reg [31:0] IF_ID_PC,
     output reg ROB_Flush
