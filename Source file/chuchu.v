@@ -3,7 +3,8 @@ module chuchu (
     input reset,
     input save_state,          // 상태 저장 신호
     input restore_state,       // 상태 복원 신호
-    input [3:0] page,          // 사본 레지스터 페이지 선택 신호
+    input [3:0] save_page,     // 상태 저장 페이지 선택 신호
+    input [3:0] restore_page,  // 상태 복원 페이지 선택 신호
     input [7:0] rat_data,
     output reg [7:0] chuchu_out
 );
@@ -41,12 +42,12 @@ module chuchu (
         end else begin
             if (save_state) begin
                 for (i = 0; i < 128; i = i + 1) begin
-                    shadow_data_in[page][i] <= chuchu_array[i];
+                    shadow_data_in[save_page][i] <= chuchu_array[i];
                 end
-                shadow_write_enable[page] <= 1;
+                shadow_write_enable[save_page] <= 1;
             end else if (restore_state) begin
                 for (i = 0; i < 128; i = i + 1) begin
-                    chuchu_array[i] <= shadow_data_out[page][i];
+                    chuchu_array[i] <= shadow_data_out[restore_page][i];
                 end
             end else begin
                 chuchu_out <= chuchu_array[current_index];
