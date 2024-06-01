@@ -221,7 +221,7 @@ control_unit_top u_control_unit_top(
         .in_operand1(operand1),
         .in_operand2(operand2),
         .in_func3(funct3),
-        .in_pc(PC),
+        .in_pc(IF_ID_PC),
         .MemToReg(MemToReg),
         .MemRead(MemRead),
         .MemWrite(MemWrite),
