@@ -216,7 +216,7 @@ module memwb_pipeline_register (
     input reset,
     input EX_MEM_MemToReg,
     input [31:0] EX_MEM_ALUResult,
-    input [31:0] RData, // data memory
+    input [31:0] Load_Data, // data memory
     input [31:0] EX_MEM_alu_exec_PC,
     input EX_MEM_alu_exec_done,
     
@@ -239,7 +239,7 @@ module memwb_pipeline_register (
             // 정상 동작
             MEM_WB_MemToReg <= EX_MEM_MemToReg;
             MEM_WB_ALUResult <= EX_MEM_ALUResult;
-            MEM_WB_RData <= RData;
+            MEM_WB_RData <= Load_Data;
             alu_exec_done <= EX_MEM_alu_exec_done;
             alu_exec_PC <= EX_MEM_alu_exec_PC;
             end
