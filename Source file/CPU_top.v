@@ -207,7 +207,7 @@ control_unit_top u_control_unit_top(
     wire [31:0] RS_mul_immediate;
     wire RS_mul_start;
 
-    wire [31:0] RS_div_operand1_data, RS_div_operand2_data, RS_div_pc;
+    wire [31:0] RS_div_operand1_data, RS_div_operand2_data, RS_div_PC;
     wire [2:0] RS_div_funct3;
     wire RS_div_MemToReg, RS_div_MenRead, RS_div_MemWrite, RS_div_ALUSrc1, RS_div_ALUSrc2, RS_div_Jump, RS_div_Branch;
     wire [3:0] RS_div_ALUOP;
@@ -276,7 +276,7 @@ control_unit_top u_control_unit_top(
         .div_alu_operand1(RS_div_operand1_data),
         .div_alu_operand2(RS_div_operand2_data),
         .div_alu_func3(RS_div_funct3),
-        .div_alu_pc(RS_div_pc),
+       .div_alu_pc(RS_div_PC),
         .out_div_MemToReg(RS_div_MemToReg),
         .out_div_MemRead(RS_div_MenRead),
         .out_div_MemWrite(RS_div_MemWrite),
