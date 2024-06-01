@@ -11,7 +11,7 @@ module logical_address_register (
     integer i;
 
     // 클락 또는 리셋 신호 처리
-    always @(posedge clk or posedge reset) begin
+    always @(*) begin
         if (reset) begin
             for (i = 0; i < 32; i = i + 1) begin
                 logical_registers[i] <= i; // 초기값은 번지수
