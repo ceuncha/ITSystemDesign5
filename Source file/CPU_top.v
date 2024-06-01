@@ -216,7 +216,7 @@ control_unit_top u_control_unit_top(
     wire [31:0] RS_div_immediate;
     wire RS_div_start;
 
-    RS_EX_decoder rs_ex_decoder_inst (
+   RS_EX_decoder rs_ex_decoder_inst (
         .clk(clk),
         .reset(reset),
         .in_opcode(opcode),
@@ -249,12 +249,12 @@ control_unit_top u_control_unit_top(
         .out_add_ALUSrc2(RS_alu_ALUSrc2),
         .out_add_Jump(RS_alu_Jump),
         .out_add_Branch(RS_alu_Branch),
-        .add_rd_phy_reg(Rd_phy),
+        .add_rd_phy_reg(RS_alu_Rd),
         .add_rs_on(RS_alu_start),
-        .out_add_Operand1_phy(Phy_addr_OP1),
-        .out_add_Operand2_phy(Phy_addr_OP2),
-        .out_add_valid(valid),
-        .out_add_immediate(imm32),
+        .out_add_Operand1_phy(RS_alu_operand1),
+        .out_add_Operand2_phy(RS_alu_operand2),
+        .out_add_valid(RS_alu_valid),
+        .out_add_immediate(RS_alu_immediate),
         .mul_alu_operand1(RS_mul_operand1_data),
         .mul_alu_operand2(RS_mul_operand2_data),
         .mul_alu_func3(RS_mul_funct3),
@@ -267,12 +267,12 @@ control_unit_top u_control_unit_top(
         .out_mul_ALUSrc2(RS_mul_ALUSrc2),
         .out_mul_Jump(RS_mul_Jump),
         .out_mul_Branch(RS_mul_Branch),
-        .mul_rd_phy_reg(Rd_phy),
+        .mul_rd_phy_reg(RS_mul_Rd),
         .mul_rs_on(RS_mul_start),
-        .out_mul_Operand1_phy(Phy_addr_OP1),
-        .out_mul_Operand2_phy(Phy_addr_OP2),
-        .out_mul_valid(valid),
-        .out_mul_immediate(imm32),
+        .out_mul_Operand1_phy(RS_mul_operand1),
+        .out_mul_Operand2_phy(RS_mul_operand2),
+        .out_mul_valid(RS_mul_valid),
+        .out_mul_immediate(RS_mul_immediate),
         .div_alu_operand1(RS_div_operand1_data),
         .div_alu_operand2(RS_div_operand2_data),
         .div_alu_func3(RS_div_funct3),
@@ -285,12 +285,12 @@ control_unit_top u_control_unit_top(
         .out_div_ALUSrc2(RS_div_ALUSrc2),
         .out_div_Jump(RS_div_Jump),
         .out_div_Branch(RS_div_Branch),
-        .div_rd_phy_reg(Rd_phy),
+        .div_rd_phy_reg(RS_div_Rd),
         .div_rs_on(RS_div_start),
-        .out_div_Operand1_phy(Phy_addr_OP1),
-        .out_div_Operand2_phy(Phy_addr_OP2),
-        .out_div_valid(valid),
-        .out_div_immediate(imm32)
+        .out_div_Operand1_phy(RS_div_operand1),
+        .out_div_Operand2_phy(RS_div_operand2),
+        .out_div_valid(RS_div_valid),
+        .out_div_immediate(RS_div_immediate)
     );
 
     // EX_MEM////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
