@@ -1,5 +1,5 @@
 module DataMemory(
-    input wire EX_MEM_MemRead,
+    input wire Load_Done,
     input wire EX_MEM_MemWrite,
     input wire [2:0] EX_MEM_funct3,
     input wire [31:0] EX_MEM_ALUResult,
@@ -12,7 +12,7 @@ reg [31:0] memory [0:255];
 always @ (*) begin
 // Default value for RData, ensures it is always assigned
     Load_Data <= 32'd0; // if MemRead is false
-    if (EX_MEM_MemRead) begin
+    if (Load_Done) begin
         case (EX_MEM_funct3)
             3'b000: Load_Data <= {{24{memory[EX_MEM_ALUResult][31]}}, memory[EX_MEM_ALUResult][7:0]}; // LB
             3'b001: Load_Data <= {{16{memory[EX_MEM_ALUResult][31]}}, memory[EX_MEM_ALUResult][15:0]}; // LH
