@@ -1,21 +1,21 @@
 module RAT (
     input wire clk,
     input wire reset,
-    input wire id_on, // id_on 신호 추가
-    input wire save_state, // 사본 레지스터에 상태 저장 신호
+    input wire id_on,         // id_on 신호 추가
+    input wire save_state,    // 사본 레지스터에 상태 저장 신호
     input wire restore_state, // 사본 레지스터에서 상태 복원 신호
-    input wire [3:0] page, // 사본 레지스터 페이지 선택 신호
+    input wire [3:0] page,    // 사본 레지스터 페이지 선택 신호
     
     input wire [4:0] logical_addr1, // 오퍼랜드 1 논리 주소
     input wire [4:0] logical_addr2, // 오퍼랜드 2 논리 주소
     input wire [4:0] rd_logical_addr, // 쓰기 작업을 하는 논리 주소 (Rd)
-    input wire [7:0] free_phy_addr, // 프리리스트로부터 받은 비어있는 물리 주소
-    input wire [7:0] wb_phy_addr, // WB 단계에서의 물리 주소
+    input wire [7:0] free_phy_addr,   // 프리리스트로부터 받은 비어있는 물리 주소
+    input wire [7:0] wb_phy_addr,     // WB 단계에서의 물리 주소
     input wire [4:0] wb_logical_addr, // WB 단계에서의 논리 주소
     input wire [6:0] opcode,
 
-    output reg [7:0] phy_addr_out1, // 오퍼랜드 1 물리 주소 출력
-    output reg [7:0] phy_addr_out2, // 오퍼랜드 2 물리 주소 출력
+    output reg [7:0] phy_addr_out1,   // 오퍼랜드 1 물리 주소 출력
+    output reg [7:0] phy_addr_out2,   // 오퍼랜드 2 물리 주소 출력
     output reg [7:0] rd_phy_out,
     output reg [4:0] rd_log_out,
 
@@ -33,8 +33,8 @@ module RAT (
 
     genvar i, j;
     generate
-        for (i = 0; i < 16; i = i + 1) begin : shadow_reg_array
-            shadow_register u_shadow_register (
+        for (i = 0; i < 16; i = i + 1) begin : shadow_RAT_reg_array
+            shadow_RAT_register u_shadow_RAT_register (
                 .clk(clk),
                 .reset(reset),
                 .addr(shadow_addr),
@@ -97,7 +97,7 @@ module RAT (
             endcase
 
             // 2. Rd 레지스터 유효성 및 새로운 물리 주소 할당
-            if((opcode != 7'b1100011) && (opcode != 7'b0100011)) begin  // beq, store need no Rd
+            if ((opcode != 7'b1100011) && (opcode != 7'b0100011)) begin  // beq, store need no Rd
                 free_phy_addr_out <= phy_addr_table[rd_logical_addr]; // 프리리스트로 비어있는 주소 전송 
                 phy_addr_table[rd_logical_addr] <= free_phy_addr; // 새로운 물리 주소 할당
                 rd_phy_out <= free_phy_addr;
@@ -109,4 +109,28 @@ module RAT (
         end
     end
 
+endmodule
+
+module shadow_RAT_register(
+    input wire clk,
+    input wire reset,
+    input wire [4:0] addr,    // 레지스터 주소 (0-31)
+    input wire [7:0] data_in,
+    output wire [7:0] data_out,
+    input wire write_enable
+);
+    reg [7:0] registers [0:31];  // 32개의 8비트 레지스터
+
+    always @(posedge clk or posedge reset) begin
+        if (reset) begin
+            integer i;
+            for (i = 0; i < 32; i = i + 1) begin
+                registers[i] <= 8'b0;
+            end
+        end else if (write_enable) begin
+            registers[addr] <= data_in;
+        end
+    end
+
+    assign data_out = registers[addr];
 endmodule
