@@ -368,7 +368,7 @@ control_unit_top u_control_unit_top(
         .RS_EX_PC_Div_out(RS_EX_PC_Div_out),
         .Div_done_out(Div_done_out),
         .EX_MEM_MemToReg(EX_MEM_MemToReg),
-        .EX_MEM_MemRead(EX_MEM_MemRead),
+        .EX_MEM_MemRead(Load_Done),
         .EX_MEM_MemWrite(EX_MEM_MemWrite),
         .EX_MEM_funct3(EX_MEM_funct3),
         .EX_MEM_Rdata2(EX_MEM_Rdata2),
