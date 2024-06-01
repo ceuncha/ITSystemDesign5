@@ -1,7 +1,7 @@
 module logical_address_register (
     input clk,
     input reset,
-    input mem_to_write,        // MEM 단계에서 데이터 쓰기 신호
+    input Reg_write,        // MEM 단계에서 데이터 쓰기 신호
     input [4:0] logical_address, // 논리 주소 (0번지부터 31번지)
     input [31:0] write_data,    // MEM 단계에서 쓰기 데이터
     output [31:0] x0, x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11, x12, x13, x14, x15,
@@ -16,7 +16,7 @@ module logical_address_register (
             for (i = 0; i < 32; i = i + 1) begin
                 logical_registers[i] <= i; // 초기값은 번지수
             end
-        end else if (mem_to_write) begin
+        end else if (Reg_write) begin
             if (logical_address != 5'b0) begin
                 logical_registers[logical_address] <= write_data;
             end
