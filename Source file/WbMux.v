@@ -1,15 +1,15 @@
-module WbMux (Address, RData, wm2reg, mem_out);
-        input [31:0] Address;
-        input [31:0] RData;
-        input wm2reg;
-        output reg [31:0] mem_out;
+module WbMux (MEM_WB_ALUResult, MEM_WB_RData, MEM_WB_MemToReg, alu_exec_value);
+        input [31:0] MEM_WB_ALUResult;
+        input [31:0] MEM_WB_RData;
+        input MEM_WB_MemToReg;
+        output reg [31:0] alu_exec_value;
         
         always@(*) begin
-            if (wm2reg == 1) begin
-                mem_out <= RData;
+            if (MEM_WB_MemToReg == 1) begin
+                alu_exec_value <= MEM_WB_RData;
             end
-            else if (wm2reg == 0) begin
-                mem_out <= Address;
+            else if (MEM_WB_MemToReg == 0) begin
+                alu_exec_value <= MEM_WB_ALUResult;
             end
         end
 endmodule
