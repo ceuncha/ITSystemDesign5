@@ -376,7 +376,7 @@ module Reservation_station (
         for (i = 0; i < 32; i = i + 1) begin
             if (valid_entries1[i] && valid_entries2[i] && !MemReads[i]) begin
                 readys[i] = 1;
-                result[i] = {1'b1,opcodes[i], PCs[i], Rds[i], MemToRegs[i], MemReads[i], MemWr], Branchs[i], funct3s[i], immediates[i], operand1s[i], operand2s[i], operanites[i], ALUOPs[i], ALUSrc1s[i], ALUSrc2s[i], Jumps[id1_datas[i], operand2_datas[i]};
+                result[i] = 1'b1,opcodes[i], PCs[i], Rds[i], MemToRegs[i], MemReads[i], MemWrites[i], ALUOPs[i], ALUSrc1s[i], ALUSrc2s[i], Jumps[i], Branchs[i], funct3s[i], immediates[i], operand1s[i], operand2s[i], operand1_datas[i], operand2_datas[i]};
             end else if (valid_entries1[i] && valid_entries2[i] && MemReads[i]) begin
                 readys[i] = 1;
                 result[i] = {1'b0,opcodes[i], PCs[i], Rds[i], MemToRegs[i], MemReads[i], MemWrites[i], ALUOPs[i], ALUSrc1s[i], ALUSrc2s[i], Jumps[i], Branchs[i], funct3s[i], immediates[i], operand1s[i], operand2s[i], operand1_datas[i], operand2_datas[i]};
