@@ -1,17 +1,18 @@
 module ROB(
     input wire clk,                      // Clock signal
     input wire rst,                      // Reset signal
+    input wire ROB_Flush,                // ROB Flush signal
     input wire [31:0] IF_ID_instOut,     // Input instruction (expanded to 32 bits)
     input wire reg_write,                // Register write enable signal from the decode stage
     input wire alu_exec_done,            // ALU execution completion signal
     input wire [31:0] alu_exec_value,    // ALU executed value
-    input wire [31:0] alu_exec_PC,    // ALU execution index
+    input wire [31:0] alu_exec_PC,       // ALU execution index
     input wire mul_exec_done,            // Multiplier execution completion signal
     input wire [31:0] mul_exec_value,    // Multiplier executed value
-    input wire [31:0] mul_exec_PC,    // Multiplier execution index
+    input wire [31:0] mul_exec_PC,       // Multiplier execution index
     input wire div_exec_done,            // Divider execution completion signal
     input wire [31:0] div_exec_value,    // Divider executed value
-    input wire [31:0] div_exec_PC,    // Divider execution index
+    input wire [31:0] div_exec_PC,       // Divider execution index
     input wire PcSrc,                    // Branch signal (acts like a done signal)
     input wire [31:0] PC_Return,         // Jump address
     input wire [31:0] branch_index,      // Branch index in ROB
@@ -44,12 +45,19 @@ always @(posedge clk or posedge rst) begin
         reset_rob_entries();
     end else begin
         if (PcSrc) begin
-            // Update the branch entry with PC_Branch value
+            // Update the branch entry with PC_Return value
             for (i = 0; i < 32; i = i + 1) begin
                 if (rob_entry[i][31:0] == branch_index) begin
                     rob_entry[i][96:0] <= {1'b1, rob_entry[i][95], PC_Return, rob_entry[i][62:31], rob_entry[i][30:0]};
                     tail <= (i + 1) % 32; // Move tail to the entry right after the branch entry
                 end
+            end
+        end else if (ROB_Flush) begin
+            // Decrement tail on ROB_Flush signal
+            if (tail == 0) begin
+                tail <= 31; // Wrap around to 31 if tail is 0
+            end else begin
+                tail <= tail - 1;
             end
         end else if (IF_ID_instOut != 32'b0) begin  // Only increment tail if the instruction is not invalid (i.e., not a bubble)
             rob_entry[tail] <= {1'b0, reg_write, 32'b0, IF_ID_instOut, PC}; // Store input data in the ROB entry with value set to 32'b0
