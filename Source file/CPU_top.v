@@ -183,4 +183,113 @@ control_unit_top u_control_unit_top(
     .Jump(Jump)
 );
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//RS_EX_decoder top Line
+    
+    wire [31:0] RS_alu_operand1_data, RS_alu_operand2_data, RS_alu_PC;
+    wire [2:0] RS_alu_funct3;
+    wire RS_alu_MemToReg, RS_alu_MenRead, RS_alu_MemWrite, RS_alu_ALUSrc1, RS_alu_ALUSrc2, RS_alu_Jump, RS_alu_Branch;
+    wire [3:0] RS_alu_ALUOP;
+    wire [7:0] RS_alu_Rd, RS_alu_operand1, RS_alu_operand2;
+    wire [1:0] RS_alu_valid;
+    wire [31:0] RS_alu_immediate;
+    wire RS_alu_start;
+
+    wire [31:0] RS_mul_operand1_data, RS_mul_operand2_data, RS_mul_PC;
+    wire [2:0] RS_mul_funct3;
+    wire RS_mul_MemToReg, RS_mul_MenRead, RS_mul_MemWrite, RS_mul_ALUSrc1, RS_mul_ALUSrc2, RS_mul_Jump, RS_mul_Branch;
+    wire [3:0] RS_mul_ALUOP;
+    wire [7:0] RS_mul_Rd, RS_mul_operand1, RS_mul_operand2;
+    wire [1:0] RS_mul_valid;
+    wire [31:0] RS_mul_immediate;
+    wire RS_mul_start;
+
+    wire [31:0] RS_div_operand1_data, RS_div_operand2_data, RS_div_pc;
+    wire [2:0] RS_div_funct3;
+    wire RS_div_MemToReg, RS_div_MenRead, RS_div_MemWrite, RS_div_ALUSrc1, RS_div_ALUSrc2, RS_div_Jump, RS_div_Branch;
+    wire [3:0] RS_div_ALUOP;
+    wire [7:0] RS_div_Rd, RS_div_operand1, RS_div_operand2;
+    wire [1:0] RS_div_valid;
+    wire [31:0] RS_div_immediate;
+    wire RS_div_start;
+
+    RS_EX_decoder rs_ex_decoder_inst (
+        .clk(clk),
+        .reset(reset),
+        .in_opcode(opcode),
+        .in_operand1(operand1),
+        .in_operand2(operand2),
+        .in_func3(funct3),
+        .in_pc(pc),
+        .MemToReg(MemToReg),
+        .MemRead(MemRead),
+        .MemWrite(MemWrite),
+        .ALUOP(ALUOP),
+        .ALUSrc1(ALUSrc1),
+        .ALUSrc2(ALUSrc2),
+        .Jump(Jump),
+        .Branch(Branch),
+        .rd_phy_reg(Rd_phy),
+        .Operand1_phy(Phy_addr_OP1),
+        .Operand2_phy(Phy_addr_OP2),
+        .valid(valid),
+        .immediate(imm32),
+        .add_alu_operand1(RS_alu_operand1_data),
+        .add_alu_operand2(RS_alu_operand2_data),
+        .add_alu_func3(RS_alu_funct3),
+        .add_alu_pc(RS_alu_PC),
+        .out_add_MemToReg(RS_alu_MemToReg),
+        .out_add_MemRead(RS_alu_MenRead),
+        .out_add_MemWrite(RS_alu_MemWrite),
+        .out_add_ALUOP(RS_alu_ALUOP),
+        .out_add_ALUSrc1(RS_alu_ALUSrc1),
+        .out_add_ALUSrc2(RS_alu_ALUSrc2),
+        .out_add_Jump(RS_alu_Jump),
+        .out_add_Branch(RS_alu_Branch),
+        .add_rd_phy_reg(Rd_phy),
+        .add_rs_on(RS_alu_start),
+        .out_add_Operand1_phy(Phy_addr_OP1),
+        .out_add_Operand2_phy(Phy_addr_OP2),
+        .out_add_valid(valid),
+        .out_add_immediate(imm32),
+        .mul_alu_operand1(RS_mul_operand1_data),
+        .mul_alu_operand2(RS_mul_operand2_data),
+        .mul_alu_func3(RS_mul_funct3),
+        .mul_alu_pc(RS_mul_PC),
+        .out_mul_MemToReg(RS_mul_MemToReg),
+        .out_mul_MemRead(RS_mul_MenRead),
+        .out_mul_MemWrite(RS_mul_MemWrite),
+        .out_mul_ALUOP(RS_mul_ALUOP),
+        .out_mul_ALUSrc1(RS_mul_ALUSrc1),
+        .out_mul_ALUSrc2(RS_mul_ALUSrc2),
+        .out_mul_Jump(RS_mul_Jump),
+        .out_mul_Branch(RS_mul_Branch),
+        .mul_rd_phy_reg(Rd_phy),
+        .mul_rs_on(RS_mul_start),
+        .out_mul_Operand1_phy(Phy_addr_OP1),
+        .out_mul_Operand2_phy(Phy_addr_OP2),
+        .out_mul_valid(valid),
+        .out_mul_immediate(imm32),
+        .div_alu_operand1(RS_div_operand1_data),
+        .div_alu_operand2(RS_div_operand2_data),
+        .div_alu_func3(RS_div_funct3),
+        .div_alu_pc(RS_div_pc),
+        .out_div_MemToReg(RS_div_MemToReg),
+        .out_div_MemRead(RS_div_MenRead),
+        .out_div_MemWrite(RS_div_MemWrite),
+        .out_div_ALUOP(RS_div_ALUOP),
+        .out_div_ALUSrc1(RS_div_ALUSrc1),
+        .out_div_ALUSrc2(RS_div_ALUSrc2),
+        .out_div_Jump(RS_div_Jump),
+        .out_div_Branch(RS_div_Branch),
+        .div_rd_phy_reg(Rd_phy),
+        .div_rs_on(RS_div_start),
+        .out_div_Operand1_phy(Phy_addr_OP1),
+        .out_div_Operand2_phy(Phy_addr_OP2),
+        .out_div_valid(valid),
+        .out_div_immediate(imm32)
+    );
+
+    // 다른 모듈들 연결 및 신호 라우팅 필요
+
+
 endmodule
