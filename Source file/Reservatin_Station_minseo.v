@@ -57,6 +57,7 @@ module Reservation_station (
     input wire Jump,
     input wire Branch,
     input wire [2:0] funct3,
+    input wire [31:0] immediate,
     input wire EX_MEM_MemRead,
     input wire [31:0] RData,
     input wire [7:0] EX_MEM_Physical_Address,
@@ -74,7 +75,7 @@ module Reservation_station (
     input wire [31:0] DIV_result,
     input wire [7:0] DIV_result_dest,
     input wire DIV_result_valid,
-    output reg [141:0] result_out
+    output reg [173:0] result_out
 );
     
     // Internal storage for reservation station entries
@@ -90,13 +91,14 @@ module Reservation_station (
     reg [31:0] Jumps;
     reg [31:0] Branchs;
     reg [2:0] funct3s [0:31];
+    reg [31:0] immediates [0:31];
     reg [6:0] operand1s [0:31];
     reg [6:0] operand2s [0:31];
     reg [31:0] operand1_datas [0:31];  // operand1 data
     reg [31:0] operand2_datas [0:31]; // operand2 data
     reg [31:0] valid_entries1;  // operand1이 valid한지
     reg [31:0] valid_entries2; // operand2가 valid한지
-    reg [141:0] result [0:31];
+    reg [173:0] result [0:31];
     reg [4:0] tail;
     reg [31:0] readys;
     wire [31:0] Y;
@@ -118,6 +120,7 @@ module Reservation_station (
                 Jumps[i] <= 0;
                 Branchs[i] <= 0;
                 funct3s[i] <= 0;
+                immediates[i] <= 0;
                 operand1s[i] <= 0;
                 operand2s[i] <= 0;
                 operand1_datas[i] <= 0;
@@ -139,6 +142,7 @@ module Reservation_station (
                 Jumps[tail] <= Jump;
                 Branchs[tail] <= Branch;
                 funct3s[tail] <= funct3;
+                immediates[tail] <= immediate;
                 operand1s[tail] <= operand1;
                 operand2s[tail] <= operand2;
                 operand1_datas[tail] <= ALU_result;
@@ -159,6 +163,7 @@ module Reservation_station (
                 Jumps[tail] <= Jump;
                 Branchs[tail] <= Branch;
                 funct3s[tail] <= funct3;
+                immediates[tail] <= immediate;
                 operand1s[tail] <= operand1;
                 operand2s[tail] <= operand2;
                 operand1_datas[tail] <= operand1_data;
@@ -179,6 +184,7 @@ module Reservation_station (
                 Jumps[tail] <= Jump;
                 Branchs[tail] <= Branch;
                 funct3s[tail] <= funct3;
+                immediates[tail] <= immediate;
                 operand1s[tail] <= operand1;
                 operand2s[tail] <= operand2;
                 operand1_datas[tail] <= MUL_result;
@@ -199,6 +205,7 @@ module Reservation_station (
                 Jumps[tail] <= Jump;
                 Branchs[tail] <= Branch;
                 funct3s[tail] <= funct3;
+                immediates[tail] <= immediate;
                 operand1s[tail] <= operand1;
                 operand2s[tail] <= operand2;
                 operand1_datas[tail] <= operand1_data;
@@ -219,6 +226,7 @@ module Reservation_station (
                 Jumps[tail] <= Jump;
                 Branchs[tail] <= Branch;
                 funct3s[tail] <= funct3;
+                immediates[tail] <= immediate;  
                 operand1s[tail] <= operand1;
                 operand2s[tail] <= operand2;
                 operand1_datas[tail] <= DIV_result;
@@ -239,6 +247,7 @@ module Reservation_station (
                 Jumps[tail] <= Jump;
                 Branchs[tail] <= Branch;
                 funct3s[tail] <= funct3;
+                immediates[tail] <= immediate;  
                 operand1s[tail] <= operand1;
                 operand2s[tail] <= operand2;
                 operand1_datas[tail] <= operand1_data;
@@ -259,6 +268,7 @@ module Reservation_station (
                 Jumps[tail] <= Jump;
                 Branchs[tail] <= Branch;
                 funct3s[tail] <= funct3;
+                immediates[tail] <= immediate; 
                 operand1s[tail] <= operand1;
                 operand2s[tail] <= operand2;
                 operand1_datas[tail] <= RData;
@@ -279,6 +289,7 @@ module Reservation_station (
                 Jumps[tail] <= Jump;
                 Branchs[tail] <= Branch;
                 funct3s[tail] <= funct3;
+                immediates[tail] <= immediate;  
                 operand1s[tail] <= operand1;
                 operand2s[tail] <= operand2;
                 operand1_datas[tail] <= operand1_data;
@@ -299,6 +310,7 @@ module Reservation_station (
                 Jumps[tail] <= Jump;
                 Branchs[tail] <= Branch;
                 funct3s[tail] <= funct3;
+                immediates[tail] <= immediate;
                 operand1s[tail] <= operand1;
                 operand2s[tail] <= operand2;
                 operand1_datas[tail] <= operand1_data;
@@ -364,10 +376,10 @@ module Reservation_station (
         for (i = 0; i < 32; i = i + 1) begin
             if (valid_entries1[i] && valid_entries2[i] && !MemReads[i]) begin
                 readys[i] = 1;
-                result[i] = {1'b1,opcodes[i], PCs[i], Rds[i], MemToRegs[i], MemReads[i], MemWrites[i], ALUOPs[i], ALUSrc1s[i], ALUSrc2s[i], Jumps[i], Branchs[i], funct3s[i], operand1s[i], operand2s[i], operand1_datas[i], operand2_datas[i]};
+                result[i] = {1'b1,opcodes[i], PCs[i], Rds[i], MemToRegs[i], MemReads[i], MemWr], Branchs[i], funct3s[i], immediates[i], operand1s[i], operand2s[i], operanites[i], ALUOPs[i], ALUSrc1s[i], ALUSrc2s[i], Jumps[id1_datas[i], operand2_datas[i]};
             end else if (valid_entries1[i] && valid_entries2[i] && MemReads[i]) begin
                 readys[i] = 1;
-                result[i] = {1'b0,opcodes[i], PCs[i], Rds[i], MemToRegs[i], MemReads[i], MemWrites[i], ALUOPs[i], ALUSrc1s[i], ALUSrc2s[i], Jumps[i], Branchs[i], funct3s[i], operand1s[i], operand2s[i], operand1_datas[i], operand2_datas[i]};
+                result[i] = {1'b0,opcodes[i], PCs[i], Rds[i], MemToRegs[i], MemReads[i], MemWrites[i], ALUOPs[i], ALUSrc1s[i], ALUSrc2s[i], Jumps[i], Branchs[i], funct3s[i], immediates[i], operand1s[i], operand2s[i], operand1_datas[i], operand2_datas[i]};
             end
         end
     end
