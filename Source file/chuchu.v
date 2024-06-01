@@ -3,8 +3,8 @@ module chuchu (
     input reset,
     input save_state,          // 상태 저장 신호
     input restore_state,       // 상태 복원 신호
-    input [3:0] save_page,     // 상태 저장 페이지 선택 신호
-    input [3:0] restore_page,  // 상태 복원 페이지 선택 신호
+    input [2:0] save_page,     // 상태 저장 페이지 선택 신호
+    input [2:0] restore_page,  // 상태 복원 페이지 선택 신호
     input [7:0] rat_data,
     output reg [7:0] chuchu_out
 );
@@ -14,14 +14,14 @@ module chuchu (
     integer i;
 
     // 사본 레지스터 배열 인스턴스
-    wire [7:0] shadow_data_out [0:15][0:127];
-    reg [7:0] shadow_data_in [0:15][0:127];
-    reg shadow_write_enable [0:15];
+    wire [7:0] shadow_data_out [0:7][0:127];
+    reg [7:0] shadow_data_in [0:7][0:127];
+    reg shadow_write_enable [0:7];
     reg [6:0] shadow_addr;
 
     genvar j, k;
     generate
-        for (j = 0; j < 16; j = j + 1) begin : shadow_chuchu_array
+        for (j = 0; j < 8; j = j + 1) begin : shadow_chuchu_array
             shadow_chuchu u_shadow_chuchu (
                 .clk(clk),
                 .reset(reset),
@@ -64,7 +64,7 @@ module shadow_chuchu(
     input wire reset,
     input wire [6:0] addr,    // 레지스터 주소 (0-127)
     input wire [7:0] data_in,
-    output wire [7:0] data_out,
+    output wire [7:8] data_out,
     input wire write_enable
 );
     reg [7:0] registers [0:127];  // 128개의 8비트 레지스터
