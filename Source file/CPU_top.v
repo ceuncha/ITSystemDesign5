@@ -8,7 +8,6 @@ module CPU_top(
 wire [31:0] PC, PC_Branch;
 wire PC_Stall, PCSrc;
 wire [31:0] instOut;
-wire IF_ID_Stall, IF_ID_Flush;
 // ID stage
 wire [31:0] IF_ID_instOut;
 wire [31:0] IF_ID_PC;
