@@ -1,269 +1,56 @@
 module CPU_top(
     input clk,
+    input rst,
     output instOut
 );
 
-// wire declarations
-// IF stage
-wire [31:0] PC, PC_Branch;
-wire PC_Stall, PCSrc;
-wire [31:0] instOut;
-// ID stage
-wire [31:0] IF_ID_instOut;
-wire [31:0] IF_ID_PC;
-    // parse instOut
-wire [6:0] funct7 = IF_ID_instOut[31:25];
-wire [4:0] IF_ID_Rs1 = IF_ID_instOut[19:15];
-wire [4:0] IF_ID_Rs2 = IF_ID_instOut[24:20];
-wire [2:0] funct3 = IF_ID_instOut[14:12];
-wire [4:0] IF_ID_Rd = IF_ID_instOut[11:7];
-wire [6:0] opcode = IF_ID_instOut[6:0];
-wire [31:0] imm32;
-wire RegWrite;
-wire MemToReg;
-wire MemRead;
-wire MemWrite;
-wire [3:0] ALUOp;
-wire [1:0] ALUSrc;
-wire RWsel;
-wire Jump;
-wire Branch;
-wire Control_Sig_Stall, ID_EX_Flush;
-wire [31:0]RData1, RData2;
-
-    // pipeline reg
-wire ID_EX_RegWrite;
-wire ID_EX_MemWrite;
-wire ID_EX_MemRead;
-wire [3:0] ID_EX_ALUOp;
-wire [1:0] ID_EX_ALUSrc;
-wire ID_EX_MemToReg;
-wire ID_EX_RWsel;
-wire [31:0]ID_EX_PC;
-wire ID_EX_Branch;
-wire ID_EX_Jump;
-wire [4:0] ID_EX_Rs1, ID_EX_Rs2, ID_EX_Rd;
-wire [2:0] ID_EX_funct3;
-wire [31:0] ID_EX_RData1, ID_EX_RData2;
-wire [31:0] ID_EX_imm32;
-wire [31:0] Rd_data;
-// EX stage
-wire [1:0] ForwardA, ForwardB;
-wire [31:0] ALUResult;
-wire [31:0] ResultA, ResultB;
-    // pipeline reg
-wire EX_MEM_RegWrite;
-wire EX_MEM_MemWrite;
-wire EX_MEM_MemRead;
-wire EX_MEM_MemToReg;
-wire EX_MEM_RWsel;
-wire [2:0] EX_MEM_funct3;
-wire [4:0] EX_MEM_Rd;
-wire [31:0] EX_MEM_ALUResult;
-wire [31:0] EX_MEM_RData2;
-wire [31:0] EX_MEM_Rd_data;
-// MEM stage
-wire [31:0] RData;
-    //pipeline reg
-wire MEM_WB_RegWrite;
-wire MEM_WB_MemToReg;
-wire MEM_WB_RWsel;
-wire [4:0] MEM_WB_Rd;
-wire [31:0] MEM_WB_Rd_data;
-wire [31:0] MEM_WB_ALUResult;
-wire [31:0] MEM_WB_RData;
-// WB stage
-wire [31:0] mem_out;
-wire [31:0] MEM_WB_Result;
-
-// module declaraions
-// IF stage
-Program_Counter u_Program_Counter(
-    .clk (clk),
-    .PC_Branch(PC_Branch),
-    .PC_Stall (PC_Stall),
-    .PCSrc(PCSrc),
-    .PC (PC)
-);
-
-Instruction_memory u_Instruction_memory(
-    .pc (PC),
-    .instOut (instOut)
-);
-ifid_pipeline_register u_ifid_pipeline_register(
-    .clk (clk),
-    .IF_ID_Stall (IF_ID_Stall),
-    .IF_ID_Flush (IF_ID_Flush),
-    .instOut (instOut),
-    .PC (PC),
-    .IF_ID_instOut (IF_ID_instOut),
-    .IF_ID_PC (IF_ID_PC)
-);
-// ID stage
-register_file u_register_file(
-    .clk (clk),
-    .Rs1 (IF_ID_Rs1),.Rs2 (IF_ID_Rs2),.RD (MEM_WB_Rd),
-    .MEM_WB_RegWrite (MEM_WB_RegWrite),
-    .Write_Data (MEM_WB_Result),
-    .RData1 (RData1),.RData2 (RData2)
-);
-sign_extend u_sign_extend(
-    .inst(IF_ID_instOut),
-    .Imm(imm32)
-);
-control_unit_top u_control_unit_top(
-    .opcode(opcode),
-    .funct3(funct3),
-    .funct7(funct7),
-    .RegWrite(RegWrite),
-    .MemToReg(MemToReg),
-    .MemRead(MemRead),
-    .MemWrite(MemWrite),
-    .ALUOp(ALUOp),
-    .ALUSrc(ALUSrc),
-    .RWsel(RWsel),
-    .Jump(Jump),
-    .Branch(Branch)
-);
-Hazard_Detection_unit u_Hazard_Detection_unit(
-    .ID_EX_MemRead(ID_EX_MemRead),.MemRead(MemRead),
-    .IF_ID_Rs1(IF_ID_Rs1),.IF_ID_Rs2(IF_ID_Rs2),
-    .ID_EX_Rd(ID_EX_Rd),
-    .PC_Stall(PC_Stall),
-    .IF_ID_Stall(IF_ID_Stall),
-    .Control_Sig_Stall(Control_Sig_Stall)
-);
-
-idex_pipeline_register u_idex_pipeline_register(
-    .clk(clk),
-    .RegWrite(RegWrite),
-    .MemToReg(MemToReg),
-    .MemRead(MemRead),
-    .MemWrite(MemWrite),
-    .ALUOp(ALUOp),
-    .ALUSrc(ALUSrc),
-    .RWsel(RWsel),
-    .Jump(Jump),
-    .Branch(Branch),
-    .Control_Sig_Stall(Control_Sig_Stall),
-    .IF_ID_Rs1(IF_ID_Rs1),.IF_ID_Rs2(IF_ID_Rs2),.IF_ID_Rd(IF_ID_Rd),
-    .IF_ID_funct3(IF_ID_instOut[14:12]),
-    .IF_ID_PC(IF_ID_PC),
-    .RData1(RData1),.RData2(RData2),
-    .imm32(imm32),
-    .ID_EX_RWsel(ID_EX_RWsel),
-    .ID_EX_RegWrite(ID_EX_RegWrite),
-    .ID_EX_MemWrite(ID_EX_MemWrite),
-    .ID_EX_MemRead(ID_EX_MemRead),
-    .ID_EX_ALUOp(ID_EX_ALUOp),
-    .ID_EX_ALUSrc(ID_EX_ALUSrc),
-    .ID_EX_MemToReg(ID_EX_MemToReg),
-    .ID_EX_Jump(ID_EX_Jump),
-    .ID_EX_Branch(ID_EX_Branch),
-    .ID_EX_Rs1(ID_EX_Rs1), .ID_EX_Rs2(ID_EX_Rs2), .ID_EX_Rd(ID_EX_Rd),
-    .ID_EX_funct3(ID_EX_funct3),
-    .ID_EX_RData1(ID_EX_RData1), .ID_EX_RData2(ID_EX_RData2),
-    .ID_EX_imm32(ID_EX_imm32),
-    .ID_EX_PC(ID_EX_PC),
-    .ID_EX_Flush(ID_EX_Flush)
-);
-// EX stage
-ALU_top u_ALU_top(
-    .A(ID_EX_RData1), .B(ID_EX_RData2),
-    .WB_A(MEM_WB_Result),.WB_B(MEM_WB_Result),
-    .ALU_A(EX_MEM_ALUResult),.ALU_B(EX_MEM_ALUResult),
-    .immediate(ID_EX_imm32), .ID_EX_PC(ID_EX_PC),
-    .SEL_A(ForwardA), .SEL_B(ForwardB),
-    .ALUsrc(ID_EX_ALUSrc),
-    .ALUop(ID_EX_ALUOp),
-    .Result(ALUResult), .ResultA(ResultA) , .ResultB(ResultB)
-    //.negative(),.overflow(),.zero(),.carry(),
-);
-
-branch_unit u_branch_unit (
-    .ResultA(ResultA),      
-    .ResultB(ResultB),       
-    .ID_EX_PC(ID_EX_PC),     
-    .ID_EX_Branch(ID_EX_Branch),   
-    .ID_EX_funct3(ID_EX_funct3),  
-    .ALUResult(ALUResult),   
-    .ID_EX_Jump(ID_EX_Jump), 
-    .PCSrc(PCSrc),           
-    .PC_Branch(PC_Branch),   
-    .Rd_data(Rd_data),       
-    .IF_ID_Flush(IF_ID_Flush),   
-    .ID_EX_Flush(ID_EX_Flush)    
-);
-
-
-data_forwarding_unit u_data_forwarding_unit(
-    .MEM_WB_RegWrite(MEM_WB_RegWrite),
-    .EX_MEM_RegWrite(EX_MEM_RegWrite),
-    .EX_MEM_Rd(EX_MEM_Rd),.MEM_WB_Rd(MEM_WB_Rd),
-    .ID_EX_Rs1(ID_EX_Rs1),.ID_EX_Rs2(ID_EX_Rs2),
-    .ForwardA(ForwardA),.ForwardB(ForwardB)
-);
-
-exmem_pipeline_register u_exmem_pipeline_register(
-    .clk(clk),
-    .ID_EX_MemRead(ID_EX_MemRead),
-    .ID_EX_RegWrite(ID_EX_RegWrite),
-    .ID_EX_MemWrite(ID_EX_MemWrite),
-    .ID_EX_MemToReg(ID_EX_MemToReg),
-    .ID_EX_RWsel(ID_EX_RWsel),
-    .ID_EX_funct3(ID_EX_funct3),
-    .ID_EX_Rd(ID_EX_Rd),
-    .ALUResult(ALUResult),
-    .Rd_data(Rd_data),
-    .ID_EX_RData2(ID_EX_RData2),
-    .EX_MEM_MemRead(EX_MEM_MemRead),
-    .EX_MEM_RWsel(EX_MEM_RWsel),
-    .EX_MEM_MemToReg(EX_MEM_MemToReg),
-    .EX_MEM_MemWrite(EX_MEM_MemWrite),
-    .EX_MEM_RegWrite(EX_MEM_RegWrite),
-    .EX_MEM_funct3(EX_MEM_funct3),
-    .EX_MEM_Rd(EX_MEM_Rd),
-    .EX_MEM_ALUResult(EX_MEM_ALUResult),
-    .EX_MEM_RData2(EX_MEM_RData2),
-    .EX_MEM_Rd_data(EX_MEM_Rd_data)
-);
-// MEM stage
-DataMemory u_DataMemory(
-    .MemRead(EX_MEM_MemRead),
-    .MemWrite(EX_MEM_MemWrite),
-    .funct3(EX_MEM_funct3),
-    .ALUResult(EX_MEM_ALUResult),
-    .WriteData(EX_MEM_RData2),
-    .ReadData(RData)
-);
-memwb_pipeline_register u_memwb_pipeline_register(
-    .clk(clk),
-    .EX_MEM_RegWrite(EX_MEM_RegWrite),
-    .EX_MEM_MemToReg(EX_MEM_MemToReg),
-    .EX_MEM_RWsel(EX_MEM_RWsel),
-    .EX_MEM_Rd(EX_MEM_Rd),
-    .EX_MEM_Rd_data(EX_MEM_Rd_data),
-    .EX_MEM_ALUResult(EX_MEM_ALUResult),
-    .RData(RData),
-    .MEM_WB_RegWrite(MEM_WB_RegWrite),
-    .MEM_WB_MemToReg(MEM_WB_MemToReg),
-    .MEM_WB_RWsel(MEM_WB_RWsel),
-    .MEM_WB_Rd(MEM_WB_Rd),
-    .MEM_WB_Rd_data(MEM_WB_Rd_data),
-    .MEM_WB_ALUResult(MEM_WB_ALUResult),
-    .MEM_WB_RData(MEM_WB_RData)
-);
-//WB stage
-WbMux u_WbMux(
-    .Address(MEM_WB_ALUResult),
-    .RData(MEM_WB_RData),
-    .wm2reg(MEM_WB_MemToReg),
-    .mem_out(mem_out)
-);
-pretty_mux u_pretty_mux(
-    .mem_out(mem_out),
-    .MEM_WB_Rd_data(MEM_WB_Rd_data),
-    .MEM_WB_RWsel(MEM_WB_RWsel),
-    .Write_Data(MEM_WB_Result)
-);
-endmodule
+    // RS_EX
+   wire RS_EX_Branch;
+   wire RS_Ex_Jump;
+   wire RS_EX_MemRead;
+   wire RS_Ex_MemToReg;
+   wire RS_EX_ALU_Src1;
+   wire RS_EX_ALU_Src2;
+   wire RS_EX_MemWrite;
+   wire [3:0] ALUop;
+   wire [2:0] RS_EX_funct3;
+   wire negaive,overflow,zero,carry;
+   wire [31:0] ALU_A;
+   wire [31:0] ALU_B;
+   wire [31:0] ALUResult;
+   wire [31:0] PC_Return;
+   wire [31:0] Operand1_ALU;
+   wire [7:0] RS_EX_alu_Physical_address;
+   wire ALU_done;
+   wire [31:0] RS_EX_PC_ALU;
+   wire [31:0] Operand2_ALU;
+   wire [31:0] immediate;
+   wire [31:0] RS_EX_ALUResult;
+   wire [31:0] Operand1_Mul;
+   wire [7:0] RS_EX_Mul_Physical_address_in;
+   wire Mul_start_in;
+   wire [31:0] RS_EX_PC_Mul_in;
+   wire [31:0] Operand2_Mul;
+   wire [63:0]Mul_Result;
+   wire [31:0] RS_EX_Mul_Physical_address_out;
+   wire [31:0] RS_EX_PC_Mul_out;
+   wire Mul_done_out;
+   wire [31:0] Operand1_Div;
+   wire [7:0] RS_EX_Div_Physical_address_in;
+   wire Div_start_in;
+   wire [31:0] RS_EX_PC_Div_in;
+   wire [31:0] Operand2_Div;
+   wire [31:0]Div_Result;
+   wire [7:0] RS_EX_Div_Physical_address_out;
+   wire [31:0] RS_EX_PC_Div_out;
+   wire Div_done_out;
+   wire [3:0]divider_op;
+   
+   ALU ALU(.A(ALU_A),.B(Operand2),.ALUop(ALUop),.Result(ALUResult),.negative(negative),.overflow(overflow),.zero(zero),.carry(carry));
+    branchUnit branchUnit(.ID_EX_Jump(RS_Ex_Jump),.ID_EX_Branch(RS_EX_Branch),.ID_EX_funct3(RS_EX_func3),.ALUResult(ALUResult),.imm(immediate),.PC(RS_EX_PC_ALU),.ALUNegative(negative),.ALUZero(zero),.ALUOverflow(overflow),.ALUCarry(carry),.PC_Branch(PC_Branch),.branch_index(branch_index),.PCSrc(PCSrc),.IF_ID_Flush(IF_ID_Flush),.ID_RS_Flush(ID_RS_Flush));
+   add4 add4 (.in(RS_EX_PC_ALU),.out(PC_Return));
+   MUX_2input pretty_mux (.a(ALUResult),.b(PC_Return),.sel(ID_EX_jump),.y(EX_MEM_ALUResult));
+   MUX_2input MUX_A (.a(RS_EX_PC_ALU),.b(Operand1_ALU),.sel(RS_EX_ALU_Src1),.y(ALU_A));
+   MUX_2input MUX_B (.a(Operand2_ALU),.b(immediate),.sel(RS_EX_ALU_Src2),.y(ALU_B));
+   multiplier multiplier (.clk(clk),.rst(rst),.start(Mul_start_in),.A(Operand1_Mul),.B(Operand2_Mul),.Physical_address_in(RS_EX_Mul_Physical_address_in),.PC_in(RS_EX_PC_Mul_in),.Product(Mul_Result),.done(Mul_done_out),.Physical_address_out(RS_EX_Mul_Physical_address_out),.PC_out(RS_EX_PC_Mul_out));
+   divider divider (.clk(clk),.rst(rst),.start(Div_start_in),.A(Operand1_Div),.B(Operand2_Div),.Physical_address_in(RS_EX_Div_Physical_address_in),.PC_in(RS_EX_PC_Div_in),.Result(Div_Result),.divider_op_in(divider_op),.done(Div_done_out),.Physical_address_out(RS_EX_Div_Physical_address_out),.PC_out(RS_EX_PC_Div_out));
