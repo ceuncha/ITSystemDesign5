@@ -294,9 +294,13 @@ control_unit_top u_control_unit_top(
     );
 
     RS_div RS_Div (.clk(clk),.reset(rst),.RS_div_start(RS_div_start),.RS_div_PC(RS_div_PC),.RS_div_Rd(RS_div_Rd),.RS_div_ALUOP(RS_div_ALUOP),.EX_MEM_MemRead(Load_Done),.RData(Load_Data),.EX_MEM_Physical_Address(Load_Phy),.RS_div_operand1(RS_div_operand1),.RS_div_operand2(RS_div_operand2),.RS_div_operand1_data(RS_div_operand1_data),.RS_div_operand2_data(RS_div_operand2_data),.RS_div_valid(RS_div_valid),.ALU_result(ALU_Data),.ALU_result_dest(ALU_Phy),.ALU_result_valid(ALU_Done),.MUL_result(MUL_Data),.MUL_result_dest(MUL_Phy),.MUL_result_valid(MUL_Done),.DIV_result(DIV_Data),.DIV_result_dest(DIV_Phy),.DIV_result_valid(DIV_Done),.result_out(result_out_div));
-    wire [124:0]result_out_mul;
-    assign 
-    
+    wire [108:0]result_out_div;
+    assign Operand2_Div=result_out_div[0:31];
+    assign Operand1_Div=result_out_div[32:63];
+    assign divider_op=result_out_div[64:67];
+    assign RS_EX_Div_Physical_address_in=result_out_div[68:75];
+    assign RS_EX_PC_Div_in=result_out_div[76:107];
+    assign Div_start_in=result_out_div[108];
     // EX_MEM////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
    wire RS_EX_Branch;
    wire RS_Ex_Jump;
