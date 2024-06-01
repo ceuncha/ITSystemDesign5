@@ -43,6 +43,8 @@ always @(posedge clk or posedge rst) begin
             tail_num <= tail;        //
             Copy_RAT <= 1;
             tail <= tail + 1;        // Increment the tail pointer
+        end else begin
+            Copy_RAT <= 0;
         end
 
         // Compare branch_PC with head's PC and check PCSrc
