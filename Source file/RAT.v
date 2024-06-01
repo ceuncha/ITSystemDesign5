@@ -50,7 +50,7 @@ module RAT (
     integer k;
 
     // 초기화
-    always @(posedge clk or posedge reset) begin
+    always @(posedge reset) begin
         if (reset) begin
             for (k = 0; k < 32; k = k + 1) begin
                 phy_addr_table[k] <= k;
@@ -68,19 +68,19 @@ module RAT (
         end else begin
             shadow_write_enable[save_page] <= 0;
         end
-    end
+ 
 
     // 사본 레지스터에서 상태 복원
-    always @(posedge clk) begin
+   
         if (restore_state) begin
             for (k = 0; k < 32; k = k + 1) begin
                 phy_addr_table[k] <= shadow_data_out[restore_page][k];
             end
         end
-    end
+
 
     // id_on이 1일 때 동작
-    always @(posedge clk) begin
+
         if (!restore_state) begin
             // 1. 오퍼랜드 유효성 검사 및 물리 주소 접근
             case (opcode)
