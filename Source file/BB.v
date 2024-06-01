@@ -5,9 +5,9 @@ module BB(
     input wire PCSrc,                    // Branch decision signal
     input wire [31:0] branch_PC,         // Branch index in ROB
     input wire [31:0] PC,                // Current PC value (expanded to 32 bits)
-    output reg [2:0] tail_num,               // Output value
+    output reg [2:0] tail_num,           // Output value
     output reg Copy_RAT,                 // Output register destination extracted from instr[11:7]
-    output reg [2:0] head_num,               // Output RegWrite signal to indicate a register write operation
+    output reg [2:0] head_num,           // Output RegWrite signal to indicate a register write operation
     output reg Paste_RAT
 );
 
@@ -15,6 +15,8 @@ module BB(
 reg [31:0] BB_entry [0:7];          
 reg ready [0:7];                       // Ready flag array for ROB entries
 integer i;
+reg [2:0] head;
+reg [2:0] tail;
 
 // Reset BB entries
 task reset_bb_entries;
@@ -38,8 +40,8 @@ always @(posedge clk or posedge rst) begin
         if (opcode == 7'b1101111 || opcode == 7'b1100111) begin // Assuming these are jump or branch opcodes
             BB_entry[tail] <= PC;    // Store the current PC value in ROB at tail position
             ready[tail] <= 1'b0;     // Set ready flag to 0
-            tail_num <= tail;	//
-            Copy_RAT <=1;
+            tail_num <= tail;        //
+            Copy_RAT <= 1;
             tail <= tail + 1;        // Increment the tail pointer
         end
 
@@ -47,9 +49,8 @@ always @(posedge clk or posedge rst) begin
         if (BB_entry[head] == branch_PC) begin
             if (PCSrc == 1'b1) begin
                 Paste_RAT <= 1;      // Set Paste_RAT to 1
-                head_num <= head
+                head_num <= head;
                 reset_bb_entries();  // Reset BB entries
-
             end else begin
                 head <= head + 1;    // Increment head
                 Paste_RAT <= 0;      // Reset Paste_RAT to 0
@@ -62,7 +63,14 @@ always @(posedge clk or posedge rst) begin
                     ready[i] <= 1'b1;   // Set the ready flag to 1
                 end
             end
-         end
+        end
+
+        // Check if the head is ready
+        if (ready[head] == 1'b1) begin
+            head_num <= head;
+            Paste_RAT <= 1;
+            reset_bb_entries();  // Reset BB entries
+        end
     end
 end
 
