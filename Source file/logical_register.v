@@ -14,7 +14,10 @@ module logical_address_register (
             for (i = 0; i < 32; i = i + 1) begin
                 logical_registers[i] <= i; // 초기값은 번지수
             end
-        end else if (mem_to_write) begin
+          end
+          end
+   always @(*) begin      
+        if (mem_to_write) begin
             if (logical_address != 5'b0) begin
                 logical_registers[logical_address] <= write_data;
             end
