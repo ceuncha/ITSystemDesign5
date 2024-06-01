@@ -4,7 +4,8 @@ module RAT (
     input wire id_on,         // id_on 신호 추가
     input wire save_state,    // 사본 레지스터에 상태 저장 신호
     input wire restore_state, // 사본 레지스터에서 상태 복원 신호
-    input wire [3:0] page,    // 사본 레지스터 페이지 선택 신호
+    input wire [3:0] save_page,     // 상태 저장용 사본 레지스터 페이지 선택 신호
+    input wire [3:0] restore_page,  // 상태 복원용 사본 레지스터 페이지 선택 신호
     
     input wire [4:0] logical_addr1, // 오퍼랜드 1 논리 주소
     input wire [4:0] logical_addr2, // 오퍼랜드 2 논리 주소
@@ -60,11 +61,11 @@ module RAT (
     always @(posedge clk) begin
         if (save_state) begin
             for (k = 0; k < 32; k = k + 1) begin
-                shadow_data_in[page][k] <= phy_addr_table[k];
+                shadow_data_in[save_page][k] <= phy_addr_table[k];
             end
-            shadow_write_enable[page] <= 1;
+            shadow_write_enable[save_page] <= 1;
         end else begin
-            shadow_write_enable[page] <= 0;
+            shadow_write_enable[save_page] <= 0;
         end
     end
 
@@ -72,7 +73,7 @@ module RAT (
     always @(posedge clk) begin
         if (restore_state) begin
             for (k = 0; k < 32; k = k + 1) begin
-                phy_addr_table[k] <= shadow_data_out[page][k];
+                phy_addr_table[k] <= shadow_data_out[restore_page][k];
             end
         end
     end
@@ -110,6 +111,7 @@ module RAT (
     end
 
 endmodule
+
 
 module shadow_RAT_register(
     input wire clk,
