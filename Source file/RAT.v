@@ -17,7 +17,7 @@ module RAT (
     output reg [7:0] phy_addr_out1,   // 오퍼랜드 1 물리 주소 출력
     output reg [7:0] phy_addr_out2,   // 오퍼랜드 2 물리 주소 출력
     output reg [7:0] rd_phy_out,
-    output reg [4:0] rd_log_out,
+
 
     output reg [7:0] free_phy_addr_out // 프리리스트로 비어있는 주소 전송
 );
@@ -109,7 +109,7 @@ module RAT (
                 free_phy_addr_out <= phy_addr_table[rd_logical_addr]; // 프리리스트로 비어있는 주소 전송 
                 phy_addr_table[rd_logical_addr] <= free_phy_addr; // 새로운 물리 주소 할당
                 rd_phy_out <= free_phy_addr;
-                rd_log_out <= rd_logical_addr;
+   
             end else begin
                 free_phy_addr_out <= free_phy_addr; // 프리리스트로 비어있는 주소 다시 전송
                 rd_phy_out <= 8'd255;   
