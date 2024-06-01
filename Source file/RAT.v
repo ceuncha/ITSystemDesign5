@@ -10,8 +10,7 @@ module RAT (
     input wire [4:0] logical_addr2, // 오퍼랜드 2 논리 주소
     input wire [4:0] rd_logical_addr, // 쓰기 작업을 하는 논리 주소 (Rd)
     input wire [7:0] free_phy_addr,   // 프리리스트로부터 받은 비어있는 물리 주소
-    input wire [7:0] wb_phy_addr,     // WB 단계에서의 물리 주소
-    input wire [4:0] wb_logical_addr, // WB 단계에서의 논리 주소
+
     input wire [6:0] opcode,
 
     output reg [7:0] phy_addr_out1,   // 오퍼랜드 1 물리 주소 출력
