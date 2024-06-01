@@ -156,7 +156,7 @@ module exmem_pipeline_register (
     input [31:0] Div_done_out,
 
     output reg EX_MEM_MemToReg,
-    output reg EX_MEM_MemRead,
+    output reg Load_Done,
     output reg EX_MEM_MemWrite,
     output reg [2:0] EX_MEM_funct3,
     output reg [31:0] EX_MEM_Rdata2,
@@ -176,7 +176,7 @@ module exmem_pipeline_register (
         if (reset) begin
             // 리셋 신호가 활성화되면 초기화
             EX_MEM_MemToReg <= 1'b0;
-            EX_MEM_MemRead <= 1'b0;
+            Load_Done <= 1'b0;
             EX_MEM_MemWrite <= 1'b0;
             EX_MEM_funct3 <= 3'b000;
             EX_MEM_Rdata2 <= 32'b0;
@@ -193,7 +193,7 @@ module exmem_pipeline_register (
         end else begin
             // 정상 동작
             EX_MEM_MemToReg <= ID_EX_MemToReg;
-            EX_MEM_MemRead <= ID_EX_MemRead;
+            Load_Done <= ID_EX_MemRead;
             EX_MEM_MemWrite <= ID_EX_MemWrite; 
             EX_MEM_funct3 <= RS_EX_funt3;
             EX_MEM_Rdata2 <= operand2_Phy_Data;
