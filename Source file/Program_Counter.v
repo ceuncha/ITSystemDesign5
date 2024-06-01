@@ -7,7 +7,7 @@ module Program_Counter(
 );
 
     reg [31:0] PC_Plus4;
-    reg [31:0] PC_next
+    reg [31:0] PC_next;
     
     always @ (*) begin
         PC_Plus4 <= PC + 32'd4;
