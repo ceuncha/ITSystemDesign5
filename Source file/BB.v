@@ -33,7 +33,6 @@ always @(posedge clk or posedge rst) begin
     if (rst) begin
         head <= 0;
         tail <= 0;
-        Paste_RAT <= 0;
         reset_bb_entries();
     end else begin
         // Check for jump or branch opcode
