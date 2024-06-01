@@ -22,23 +22,25 @@ module chuchu (
     genvar j, k;
     generate
         for (j = 0; j < 8; j = j + 1) begin : shadow_chuchu_array
-            shadow_chuchu u_shadow_chuchu (
-                .clk(clk),
-                .reset(reset),
-                .addr(shadow_addr),
-                .data_in(shadow_data_in[j][shadow_addr]),
-                .data_out(shadow_data_out[j][shadow_addr]),
-                .write_enable(shadow_write_enable[j])
-            );
+            for (k = 0; k < 128; k = k + 1) begin : shadow_chuchu_regs
+                shadow_chuchu u_shadow_chuchu (
+                    .clk(clk),
+                    .reset(reset),
+                    .addr(k[6:0]),  // 정수형을 7비트로 강제 변환
+                    .data_in(shadow_data_in[j][k]),
+                    .data_out(shadow_data_out[j][k]),
+                    .write_enable(shadow_write_enable[j])
+                );
+            end
         end
     endgenerate
 
     always @(posedge clk or posedge reset) begin
         if (reset) begin
             for (i = 0; i < 128; i = i + 1) begin
-                chuchu_array[i] = 32 + i;
+                chuchu_array[i] <= 32 + i;
             end
-            current_index = 0;
+            current_index <= 0;
         end else begin
             if (save_state) begin
                 for (i = 0; i < 128; i = i + 1) begin
@@ -49,6 +51,7 @@ module chuchu (
                 for (i = 0; i < 128; i = i + 1) begin
                     chuchu_array[i] <= shadow_data_out[restore_page][i];
                 end
+                shadow_write_enable[restore_page] <= 0;  // 복원 후 쓰기 비활성화
             end else begin
                 chuchu_out <= chuchu_array[current_index];
                 chuchu_array[current_index] <= rat_data;
@@ -64,14 +67,14 @@ module shadow_chuchu(
     input wire reset,
     input wire [6:0] addr,    // 레지스터 주소 (0-127)
     input wire [7:0] data_in,
-    output wire [7:8] data_out,
+    output reg [7:0] data_out,
     input wire write_enable
 );
     reg [7:0] registers [0:127];  // 128개의 8비트 레지스터
-
+    integer i;
+    
     always @(posedge clk or posedge reset) begin
         if (reset) begin
-            integer i;
             for (i = 0; i < 128; i = i + 1) begin
                 registers[i] <= 8'b0;
             end
@@ -80,5 +83,7 @@ module shadow_chuchu(
         end
     end
 
-    assign data_out = registers[addr];
+    always @(posedge clk) begin
+        data_out <= registers[addr];
+    end
 endmodule
