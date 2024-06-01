@@ -22,7 +22,6 @@ module BranchUnit(
         PCSrc = 0;
         PC_Branch = 0;  // 기본 분기 주소
         IF_ID_Flush = 0;
-        ID_RS_Flush = 0;
   end
     
 always @(*) begin
@@ -30,7 +29,6 @@ always @(*) begin
             PC_Branch = ALUResult; // 점프 처리
             PCSrc = 1; // 점프 시 PC 소스 신호 활성화
             IF_ID_Flush = 1'b1;
-            ID_RS_Flush = 1'b1;
             branch_index = PC
         end
         else if(ID_EX_Branch) begin
@@ -46,7 +44,6 @@ always @(*) begin
             if(PCSrc) begin
                 PC_Branch = imm + PC + 4; // 분기 주소 업데이트
                 IF_ID_Flush = 1'b1;
-                ID_RS_Flush = 1'b1;
                 branch_index = PC
             end
         end
