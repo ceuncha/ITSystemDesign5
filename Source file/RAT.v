@@ -36,7 +36,7 @@ module RAT (
         for (i = 0; i < 8; i = i + 1) begin : shadow_RAT_reg_array
             for (j = 0; j < 32; j = j + 1) begin : shadow_RAT_regs
                 shadow_RAT_register u_shadow_RAT_register (
-                    .clk(clk),
+    
                     .reset(reset),
                     .addr(j[4:0]),  // 정수형을 5비트로 강제 변환
                     .data_in(shadow_data_in[i][j]),
@@ -59,26 +59,35 @@ module RAT (
     end
 
     // 사본 레지스터에 상태 저장
-    always @(posedge save_state or posedge restore_state) begin
-        if (save_state) begin
+    always @(posedge save_state) begin
+
             for (k = 0; k < 32; k = k + 1) begin
                 shadow_data_in[save_page][k] <= phy_addr_table[k];
             end
             shadow_write_enable[save_page] <= 1;
-        end else begin
-            shadow_write_enable[save_page] <= 0;
-        end
 
-        if (restore_state) begin
+
+    end
+    
+        always @(negedge save_state) begin
+
+            shadow_write_enable[save_page] <= 0;
+      
+
+    end
+    
+        always @(posedge restore_state) begin
+
             for (k = 0; k < 32; k = k + 1) begin
                 phy_addr_table[k] <= shadow_data_out[restore_page][k];
             end
-        end
+
     end
+
 
     // id_on이 1일 때 동작
     always @(posedge clk) begin
-        if (!restore_state) begin
+  
             // 1. 오퍼랜드 유효성 검사 및 물리 주소 접근
             case (opcode)
                 7'b1100111, 7'b0000011, 7'b0010011: begin  // jalr, load, i-type
@@ -106,12 +115,12 @@ module RAT (
                 rd_phy_out <= 8'd255;   
             end
         end
-    end
+
 
 endmodule
 
 module shadow_RAT_register(
-    input wire clk,
+
     input wire reset,
     input wire [4:0] addr,    // 레지스터 주소 (0-31)
     input wire [7:0] data_in,
@@ -121,7 +130,7 @@ module shadow_RAT_register(
     reg [7:0] registers [0:31];  // 32개의 8비트 레지스터
     integer l;
     
-    always @(posedge clk or posedge reset) begin
+    always @(posedge reset) begin
         if (reset) begin
             for (l = 0; l < 32; l = l + 1) begin
                 registers[l] <= 8'b0;
@@ -129,10 +138,13 @@ module shadow_RAT_register(
 
     end
 end
+
+    always @(write_enable) begin
+        registers[addr] <= data_in;
+    end
+
     always @(*) begin
         data_out = registers[addr];
-        if (write_enable) begin
-            registers[addr] <= data_in;
-        end
+
     end
 endmodule
