@@ -15,6 +15,7 @@ module Program_Counter(
             PC_next <= PC_Branch;
         end else begin
             PC_next <= PC_Plus4;
+        end
     end
 
     always @ (posedge clk or posedge rst) begin
