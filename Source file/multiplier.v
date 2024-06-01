@@ -4,18 +4,16 @@ module multiplier (
     input start,
     input [31:0] A,
     input [31:0] B,
-    input [6:0] Physical_address_in,
-    input [6:0] RS_address_in,
+    input [7:0] Physical_address_in,
     input [31:0] PC_in,
     output reg [63:0] Product,
     output reg done,
-    output reg [6:0] Physical_address_out,
-    output reg [6:0] RS_address_out,
+    output reg [7:0] Physical_address_out,
     output reg [31:0] PC_out
 );
     reg [31:0] A_reg, B_reg;
     reg done_reg;
-    reg [6:0] Physical_address_reg, RS_address_reg;
+    reg [7:0] Physical_address_reg;
     reg [31:0] PC_reg;
     wire [63:0] partial_products[31:0];
     wire [63:0] stage1_sums[15:0], stage1_carries[15:0];
@@ -33,14 +31,12 @@ module multiplier (
             B_reg <= 0;
             done_reg <= 0;
             Physical_address_reg <= 0;
-            RS_address_reg <= 0;
             PC_reg <= 0;
         end else if (start) begin
             A_reg <= A;
             B_reg <= B;
             done_reg <= 1;
             Physical_address_reg <= Physical_address_in;
-            RS_address_reg <= RS_address_in;
             PC_reg <= PC_in;
         end
     end
@@ -55,7 +51,7 @@ module multiplier (
     // 1단계
     reg [63:0] stage1_sums_reg[15:0], stage1_carries_reg[15:0];
     reg stage1_done_reg;
-    reg [6:0] stage1_Physical_address_reg, stage1_RS_address_reg;
+    reg [7:0] stage1_Physical_address_reg;
     reg [31:0] stage1_PC_reg;
     generate
         for (i = 0; i < 16; i = i + 1) begin : stage1
@@ -75,7 +71,6 @@ module multiplier (
                 stage1_carries_reg[j] <= 0;
                 stage1_done_reg <= 0;
                 stage1_Physical_address_reg <= 0;
-                stage1_RS_address_reg <= 0;
                 stage1_PC_reg <= 0;
             end
         end else begin
@@ -84,7 +79,6 @@ module multiplier (
                 stage1_carries_reg[j] <= stage1_carries[j];
                 stage1_done_reg <= done_reg;
                 stage1_Physical_address_reg <= Physical_address_reg;
-                stage1_RS_address_reg <= RS_address_reg;
                 stage1_PC_reg <= PC_reg;
             end
         end
@@ -93,7 +87,7 @@ module multiplier (
     // 2단계
     reg [63:0] stage2_sums_reg[7:0], stage2_carries_reg[7:0];
     reg stage2_done_reg;
-    reg [6:0] stage2_Physical_address_reg, stage2_RS_address_reg;
+    reg [7:0] stage2_Physical_address_reg;
     reg [31:0] stage2_PC_reg;
     
     generate
@@ -114,7 +108,6 @@ module multiplier (
                 stage2_carries_reg[j] <= 0;
                 stage2_done_reg <= 0;
                 stage2_Physical_address_reg <= 0;
-                stage2_RS_address_reg <= 0;
                 stage2_PC_reg <= 0;
             end
         end else begin
@@ -123,7 +116,6 @@ module multiplier (
                 stage2_carries_reg[j] <= stage2_carries[j];
                 stage2_done_reg <= stage1_done_reg;
                 stage2_Physical_address_reg <= stage1_Physical_address_reg;
-                stage2_RS_address_reg <= stage1_RS_address_reg;
                 stage2_PC_reg <= stage1_PC_reg;
             end
         end
@@ -132,7 +124,7 @@ module multiplier (
     // 3단계
     reg [63:0] stage3_sums_reg[3:0], stage3_carries_reg[3:0];
     reg stage3_done_reg;
-    reg [6:0] stage3_Physical_address_reg, stage3_RS_address_reg;
+    reg [7:0] stage3_Physical_address_reg;
     reg [31:0] stage3_PC_reg;
     
     generate
@@ -153,7 +145,6 @@ module multiplier (
                 stage3_carries_reg[j] <= 0;
                 stage3_done_reg <= 0;
                 stage3_Physical_address_reg <= 0;
-                stage3_RS_address_reg <= 0;
                 stage3_PC_reg <= 0;
             end
         end else begin
@@ -162,7 +153,6 @@ module multiplier (
                 stage3_carries_reg[j] <= stage3_carries[j];
                 stage3_done_reg <= stage2_done_reg;
                 stage3_Physical_address_reg <= stage2_Physical_address_reg;
-                stage3_RS_address_reg <= stage2_RS_address_reg;
                 stage3_PC_reg <= stage2_PC_reg;
             end
         end
@@ -171,7 +161,7 @@ module multiplier (
     // 4단계
     reg [63:0] stage4_sums_reg[1:0], stage4_carries_reg[1:0];
     reg stage4_done_reg;
-    reg [6:0] stage4_Physical_address_reg, stage4_RS_address_reg;
+    reg [7:0] stage4_Physical_address_reg;
     reg [31:0] stage4_PC_reg;
     generate
         for (i = 0; i < 2; i = i + 1) begin : stage4
@@ -197,7 +187,6 @@ module multiplier (
                 stage4_carries_reg[j] <= stage4_carries[j];
                 stage4_done_reg <= stage3_done_reg;
                 stage4_Physical_address_reg <= stage3_Physical_address_reg;
-                stage4_RS_address_reg <= stage3_RS_address_reg;
                 stage4_PC_reg <= stage3_PC_reg;
             end
         end
@@ -209,14 +198,12 @@ module multiplier (
             Product <= 0;
             done <= 0;
             Physical_address_out <= 0;
-            RS_address_out <= 0;
             PC_out <= 0;
             end    
             else begin      
             Product <= stage4_sums_reg[0] + stage4_sums_reg[1] + stage4_carries_reg[0] + stage4_carries_reg[1];
             done <= stage4_done_reg;
             Physical_address_out <= stage4_Physical_address_reg;
-            RS_address_out <= stage4_RS_address_reg;
             PC_out <= stage4_PC_reg;
         end
     end
