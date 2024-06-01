@@ -1,11 +1,11 @@
 module RAT (
     input wire clk,
     input wire reset,
-    input wire id_on,         // id_on 신호 추가
+
     input wire save_state,    // 사본 레지스터에 상태 저장 신호
     input wire restore_state, // 사본 레지스터에서 상태 복원 신호
-    input wire [3:0] save_page,     // 상태 저장용 사본 레지스터 페이지 선택 신호
-    input wire [3:0] restore_page,  // 상태 복원용 사본 레지스터 페이지 선택 신호
+    input wire [2:0] save_page,     // 상태 저장용 사본 레지스터 페이지 선택 신호
+    input wire [2:0] restore_page,  // 상태 복원용 사본 레지스터 페이지 선택 신호
     
     input wire [4:0] logical_addr1, // 오퍼랜드 1 논리 주소
     input wire [4:0] logical_addr2, // 오퍼랜드 2 논리 주소
@@ -27,14 +27,14 @@ module RAT (
     reg [7:0] phy_addr_table [0:31]; // 논리 주소에 대응하는 물리 주소 테이블
 
     // 사본 레지스터 배열 인스턴스
-    wire [7:0] shadow_data_out [0:15][0:31];
-    reg [7:0] shadow_data_in [0:15][0:31];
-    reg shadow_write_enable [0:15];
+    wire [7:0] shadow_data_out [0:7][0:31];
+    reg [7:0] shadow_data_in [0:7][0:31];
+    reg shadow_write_enable [0:7];
     reg [4:0] shadow_addr;
 
     genvar i, j;
     generate
-        for (i = 0; i < 16; i = i + 1) begin : shadow_RAT_reg_array
+        for (i = 0; i < 8; i = i + 1) begin : shadow_RAT_reg_array
             shadow_RAT_register u_shadow_RAT_register (
                 .clk(clk),
                 .reset(reset),
@@ -122,12 +122,12 @@ module shadow_RAT_register(
     input wire write_enable
 );
     reg [7:0] registers [0:31];  // 32개의 8비트 레지스터
-
+     integer l;
     always @(posedge clk or posedge reset) begin
         if (reset) begin
-            integer i;
-            for (i = 0; i < 32; i = i + 1) begin
-                registers[i] <= 8'b0;
+
+            for (l = 0; l < 32; l = l + 1) begin
+                registers[l] <= 8'b0;
             end
         end else if (write_enable) begin
             registers[addr] <= data_in;
