@@ -248,8 +248,6 @@ module Reservation_station (
                 Branchs[tail] <= Branch;
                 funct3s[tail] <= funct3;
                 immediates[tail] <= immediate;  
-                operand1s[tail] <= operand1;
-                operand2s[tail] <= operand2;
                 operand1_datas[tail] <= operand1_data;
                 operand2_datas[tail] <= DIV_result;
                 valid_entries1[tail] <= valid[0];
@@ -269,8 +267,6 @@ module Reservation_station (
                 Branchs[tail] <= Branch;
                 funct3s[tail] <= funct3;
                 immediates[tail] <= immediate; 
-                operand1s[tail] <= operand1;
-                operand2s[tail] <= operand2;
                 operand1_datas[tail] <= RData;
                 operand2_datas[tail] <= operand2_data;
                 valid_entries1[tail] <= 1;
@@ -290,8 +286,6 @@ module Reservation_station (
                 Branchs[tail] <= Branch;
                 funct3s[tail] <= funct3;
                 immediates[tail] <= immediate;  
-                operand1s[tail] <= operand1;
-                operand2s[tail] <= operand2;
                 operand1_datas[tail] <= operand1_data;
                 operand2_datas[tail] <= RData;
                 valid_entries1[tail] <= valid[0];
@@ -311,8 +305,6 @@ module Reservation_station (
                 Branchs[tail] <= Branch;
                 funct3s[tail] <= funct3;
                 immediates[tail] <= immediate;
-                operand1s[tail] <= operand1;
-                operand2s[tail] <= operand2;
                 operand1_datas[tail] <= operand1_data;
                 operand2_datas[tail] <= operand1_data ;
                 valid_entries1[tail] <= valid[0];
@@ -376,10 +368,10 @@ module Reservation_station (
         for (i = 0; i < 32; i = i + 1) begin
             if (valid_entries1[i] && valid_entries2[i] && !MemReads[i]) begin
                 readys[i] = 1;
-                result[i] = 1'b1,opcodes[i], PCs[i], Rds[i], MemToRegs[i], MemReads[i], MemWrites[i], ALUOPs[i], ALUSrc1s[i], ALUSrc2s[i], Jumps[i], Branchs[i], funct3s[i], immediates[i], operand1s[i], operand2s[i], operand1_datas[i], operand2_datas[i]};
+                result[i] = 1'b1, PCs[i], Rds[i], MemToRegs[i], MemReads[i], MemWrites[i], ALUOPs[i], ALUSrc1s[i], ALUSrc2s[i], Jumps[i], Branchs[i], funct3s[i], immediates[i],  operand1_datas[i], operand2_datas[i]};
             end else if (valid_entries1[i] && valid_entries2[i] && MemReads[i]) begin
                 readys[i] = 1;
-                result[i] = {1'b0,opcodes[i], PCs[i], Rds[i], MemToRegs[i], MemReads[i], MemWrites[i], ALUOPs[i], ALUSrc1s[i], ALUSrc2s[i], Jumps[i], Branchs[i], funct3s[i], immediates[i], operand1s[i], operand2s[i], operand1_datas[i], operand2_datas[i]};
+                result[i] = {1'b0, PCs[i], Rds[i], MemToRegs[i], MemReads[i], MemWrites[i], ALUOPs[i], ALUSrc1s[i], ALUSrc2s[i], Jumps[i], Branchs[i], funct3s[i], immediates[i], operand1_datas[i], operand2_datas[i]};
             end
         end
     end
