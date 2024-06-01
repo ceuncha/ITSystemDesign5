@@ -1,7 +1,7 @@
 module RS_EX_decoder(
     input clk,              // 클럭 신호
     input reset,            // 리셋 신호
-    input in_execute_on,    // 1-bit, 실행 여부 결정 신호
+
     input [6:0] in_opcode,  // 7-bit, 연산 코드
     input [31:0] in_operand1,  // 32-bit, 첫 번째 피연산자
     input [31:0] in_operand2,  // 32-bit, 두 번째 피연산자
@@ -159,7 +159,7 @@ always @(posedge reset) begin
 end
 
 always @(*) begin
-  if (in_execute_on) begin
+
         case (in_opcode)
             7'b0110011: begin // MUL 명령어
                 mul_alu_operand1 <= in_operand1;
@@ -231,7 +231,7 @@ always @(*) begin
                 out_add_Branch <= Branch;  
             end
         endcase
-    end
+
 end
 
 endmodule
