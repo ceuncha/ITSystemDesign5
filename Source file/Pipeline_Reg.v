@@ -163,11 +163,11 @@ module exmem_pipeline_register (
 
     output reg [31:0] mul_exec_value,
     output reg mul_exec_done,
-    output reg [31:0] mul_exec_index,
+    output reg [31:0] mul_exec_PC,
 
     output reg [31:0] div_exec_value,
     output reg div_exec_done,
-    output reg [31:0] div_exec_index
+    output reg [31:0] div_exec_PC
 );
         
     always @(posedge clk or posedge reset) begin
@@ -189,7 +189,6 @@ module exmem_pipeline_register (
             EX_MEM_MemToReg <= ID_EX_MemToReg;
             EX_MEM_MemRead <= ID_EX_MemRead;
             EX_MEM_MemWrite <= ID_EX_MemWrite;
-            EX_MEM_RWsel <= ID_EX_RWsel;
             EX_MEM_Rd <= ID_EX_Rd;
             EX_MEM_funct3 <= ID_EX_funct3;
             EX_MEM_ALUResult <= ALUResult;
@@ -214,7 +213,7 @@ module memwb_pipeline_register (
     output reg [31:0] MEM_WB_ALUResult,
     output reg [31:0] MEM_WB_RData,
     output reg alu_exec_done,
-    output reg [31:0] alu_exec_index
+    output reg [31:0] alu_exec_PC
 
 );
         
@@ -225,13 +224,13 @@ module memwb_pipeline_register (
             MEM_WB_ALUResult <= 32'b0;
             MEM_WB_RData <= 32'b0;
             alu_exec_done <= 1'b0;
-            alu_exec_index <= 32'b0;
+            alu_exec_PC <= 32'b0;
         end else begin
             // 정상 동작
             MEM_WB_MemToReg <= EX_MEM_MemToReg;
             MEM_WB_ALUResult <= EX_MEM_ALUResult;
             MEM_WB_RData <= RData;
-            alu_exec_index <= EX_MEM_alu_exec_index;
+            alu_exec_PC <= EX_MEM_alu_exec_PC;
             if (!mem_read) begin
                 alu_exec_done <= EX_MEM_alu_done;
             end else begin 
