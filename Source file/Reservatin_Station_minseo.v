@@ -44,6 +44,7 @@ endmodule
 module Reservation_station (
     input wire clk,
     input wire reset,
+    input wire start,
     input wire [6:0] opcode,
     input wire [31:0] PC,
     input wire [7:0] Rd,
@@ -105,10 +106,26 @@ module Reservation_station (
         if (reset) begin
             tail <= 0;
             for (i = 0; i < 32; i = i + 1) begin
-                valid_entries1[i] <= 1'b0; // 리셋 시 초기값으로 복원
-                valid_entries2[i] <= 1'b0; // 리셋 시 초기값으로 복원
+               opcodes[i] <= 0;
+                PCs[i] <= 0;
+                Rds[i] <= 0;
+                MemToRegs[i] <= 0;
+                MemReads[i] <= 0;
+                MemWrites[i] <= 0;
+                ALUOPs[i] <= 0;
+                ALUSrc1s[i] <= 0;
+                ALUSrc2s[i] <= 0;
+                Jumps[i] <= 0;
+                Branchs[i] <= 0;
+                funct3s[i] <= 0;
+                operand1s[i] <= 0;
+                operand2s[i] <= 0;
+                operand1_datas[i] <= 0;
+                operand2_datas[i] <= 0;
+                valid_entries1[i] <= 1'b0; 
+                valid_entries2[i] <= 1'b0; 
             end
-        end else begin
+        end else if (start) begin
             if (operand1 == ALU_result_dest) begin  // ALU에서 operand1의 연산이 끝났을때
                 opcodes[tail] <= opcode;
                 PCs[tail] <= PC;
