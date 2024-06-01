@@ -345,7 +345,7 @@ control_unit_top u_control_unit_top(
     assign ALU_Done=result_out_alu[174];
     RS_mul rs_mul (
         .clk(clk),
-        .reset(reset),
+        .reset(rst),
         .RS_mul_start(RS_mul_start),
         .RS_mul_PC(RS_mul_PC),
         .RS_mul_Rd(RS_mul_Rd),
@@ -536,7 +536,7 @@ control_unit_top u_control_unit_top(
     // logical_address_register instantiation
     logical_address_register logical_reg (
         .clk(clk),
-        .reset(reset),
+        .reset(rst),
         .mem_to_write(out_reg_write),
         .logical_address(out_dest),
         .write_data(out_value),
