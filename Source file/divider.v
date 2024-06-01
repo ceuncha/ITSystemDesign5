@@ -7,9 +7,7 @@ module divider (
     input wire [6:0] Physical_address_in, 
     input wire [31:0] PC_in,
     input wire divider_op_in,
-    output reg [31:0] quotient,
-    output reg [31:0] remainder,
-    output reg  divider_op,
+    output reg [31:0] Result,
     output reg done,
     output reg [6:0] Physical_address_out,
     output reg [31:0] PC_out
@@ -75,8 +73,7 @@ module divider (
     // 결과 설정
    always @(posedge clk or posedge reset) begin
         if(reset) begin
-         quotient <= 0;
-         remainder <=0;
+         Result <=0;
          Physical_address_out <= 0;
          PC_out <= 0;
          done <= 0;
@@ -88,12 +85,18 @@ module divider (
                 end else begin
                     temp_dividend[31][0] = 1'b0;
                 end
-                quotient <= temp_dividend[31][31:0];
-                remainder <= temp_dividend[31][63:32];
+                if(divider_op_reg[31]) begin
+                Result <= temp_dividend[31][31:0];
                 Physical_address_out <= Physical_address_reg[31];
                 PC_out <= PC_reg[31];
-                divider_op <= divider_op_reg [31];
                 done <= done_reg[31];
+                end
+                else begin
+                Result <= temp_dividend[31][63:32];
+                Physical_address_out <= Physical_address_reg[31];
+                PC_out <= PC_reg[31];
+                done <= done_reg[31];
+                end
                 end
                 end
 endmodule
