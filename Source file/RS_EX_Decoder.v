@@ -76,10 +76,10 @@ module RS_EX_decoder(
     output reg [31:0] div_alu_pc,        // Div ALU로 보낼 프로그램 카운터
     output reg [31:0] div_alu_label,     // Div ALU로 보낼 Immediate 값
     
-    output reg out_mul_MemToReg,	
-    output reg out_mul_MemRead,
-    output reg out_mul_MemWrite,	
-    output reg [3:0] out_mul_ALUOP,
+    output reg out_div_MemToReg,	
+    output reg out_div_MemRead,
+    output reg out_div_MemWrite,	
+    output reg [3:0] out_div_ALUOP,
     output reg out_div_ALUSrc1,		
     output reg out_div_ALUSrc2,		
     output reg out_div_Jump,		
@@ -101,7 +101,6 @@ always @(posedge reset) begin
         add_alu_func3 <= 0;
         add_alu_pc <= 0;
         add_alu_label <= 0;
-        add_control <= 0;
         add_rd_phy_reg <= 0;
         out_add_Operand1_phy <= 0;
         out_add_Operand2_phy <= 0;
@@ -112,7 +111,6 @@ always @(posedge reset) begin
         mul_alu_func3 <= 0;
         mul_alu_pc <= 0;
         mul_alu_label <= 0;
-        mul_control <= 0;
         mul_rd_phy_reg <= 0;
         out_mul_Operand1_phy <= 0;
         out_mul_Operand2_phy <= 0;
@@ -123,7 +121,6 @@ always @(posedge reset) begin
         div_alu_func3 <= 0;
         div_alu_pc <= 0;
         div_alu_label <= 0;
-        div_control <= 0;
         div_rd_phy_reg <= 0;
         out_div_Operand1_phy <= 0;
         out_div_Operand2_phy <= 0;
@@ -131,6 +128,33 @@ always @(posedge reset) begin
         add_rs_on <= 0;
         mul_rs_on <= 0;
         div_rs_on <= 0;
+
+       out_add_MemToReg <= 0;	
+       out_add_MemRead <= 0;	
+       out_add_MemWrite <= 0;		
+       out_add_ALUOP <= 0;	
+       out_add_ALUSrc1 <= 0;
+       out_add_ALUSrc2 <= 0;		
+       out_add_Jump <= 0;		
+       out_add_Branch <= 0;  
+
+       out_mul_MemToReg <= 0;	
+       out_mul_MemRead <= 0;	
+       out_mul_MemWrite <= 0;		
+       out_mul_ALUOP <= 0;	
+       out_mul_ALUSrc1 <= 0;
+       out_mul_ALUSrc2 <= 0;		
+       out_mul_Jump <= 0;		
+       out_mul_Branch <= 0;  
+
+       out_div_MemToReg <= 0;	
+       out_div_MemRead <= 0;	
+       out_div_MemWrite <= 0;		
+       out_div_ALUOP <= 0;	
+       out_div_ALUSrc1 <= 0;
+       out_div_ALUSrc2 <= 0;		
+       out_div_Jump <= 0;		
+       out_div_Branch <= 0;  
         end
 end
 
@@ -143,7 +167,6 @@ always @(*) begin
                 mul_alu_func3 <= in_func3;
                 mul_alu_pc <= in_pc;
                 mul_alu_label <= in_label;
-                mul_control <= in_control;
                 mul_rd_phy_reg <= rd_phy_reg;
                 add_rs_on <= 0;
                 mul_rs_on <= 1;
@@ -152,6 +175,14 @@ always @(*) begin
                 out_mul_Operand2_phy  <= Operand2_phy;
                 out_mul_valid <= valid;
                 out_mul_immediate <= immediate;
+                out_mul_MemToReg <= MemToReg;	
+                out_mul_MemRead <= MemRead;	
+                out_mul_MemWrite <= MemWrite;		
+                out_mul_ALUOP <= ALUOP;	
+                out_mul_ALUSrc1 <= ALUSrc1;
+                out_mul_ALUSrc2 <= ALUSrc2;		
+                out_mul_Jump <= Jump;		
+                out_mul_Branch <= Branch;  
             end
             7'b1001111: begin // DIV 명령어
                 div_alu_operand1 <= in_operand1;
@@ -159,7 +190,6 @@ always @(*) begin
                 div_alu_func3 <= in_func3;
                 div_alu_pc <= in_pc;
                 div_alu_label <= in_label;
-                div_control <= in_control;
                 div_rd_phy_reg <= rd_phy_reg;
                 add_rs_on <= 0;
                 mul_rs_on <= 0;
@@ -168,6 +198,14 @@ always @(*) begin
                 out_div_Operand2_phy <= Operand2_phy;
                 out_div_valid <= valid;
                 out_div_immediate <= immediate;
+                out_div_MemToReg <= MemToReg;	
+                out_div_MemRead <= MemRead;	
+                out_div_MemWrite <= MemWrite;		
+                out_div_ALUOP <= ALUOP;	
+                out_div_ALUSrc1 <= ALUSrc1;
+                out_div_ALUSrc2 <= ALUSrc2;		
+                out_div_Jump <= Jump;		
+                out_div_Branch <= Branch;  
             end
             default: begin // ADD 명령어
                 add_alu_operand1 <= in_operand1;
@@ -175,7 +213,6 @@ always @(*) begin
                 add_alu_func3 <= in_func3;
                 add_alu_pc <= in_pc;
                 add_alu_label <= in_label;
-                add_control <= in_control;
                 add_rd_phy_reg <= rd_phy_reg;
                 add_rs_on <= 1;
                 mul_rs_on <= 0;
@@ -184,6 +221,14 @@ always @(*) begin
                 out_add_Operand2_phy <= Operand2_phy;
                 out_add_valid <= valid;
                 out_add_immediate <= immediate;
+                out_add_MemToReg <= MemToReg;	
+                out_add_MemRead <= MemRead;	
+                out_add_MemWrite <= MemWrite;		
+                out_add_ALUOP <= ALUOP;	
+                out_add_ALUSrc1 <= ALUSrc1;
+                out_add_ALUSrc2 <= ALUSrc2;		
+                out_add_Jump <= Jump;		
+                out_add_Branch <= Branch;  
             end
         endcase
     end
