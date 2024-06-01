@@ -41,7 +41,7 @@ always @(posedge clk or posedge rst) begin
             ready[tail] <= 1'b0;     // Set ready flag to 0
             tail_num <= tail;        //
             Copy_RAT <= 1;
-            tail <= tail + 1;        // Increment the tail pointer
+            tail <= (tail + 1) % 8;        // Increment the tail pointer
         end else begin
             Copy_RAT <= 0;
         end
