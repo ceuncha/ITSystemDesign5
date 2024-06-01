@@ -1,6 +1,6 @@
 module CPU_top(
     input clk,
-    input rst,
+    input rst
 );
 
 wire [31:0] PC, PC_Branch;   
