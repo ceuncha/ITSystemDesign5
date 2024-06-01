@@ -53,7 +53,7 @@ wire [2:0] save_page;
 wire restore_on;
 wire [2:0] restore_page;
 //Branch unit to BB
-wire [31:0] Branch_PC;
+wire [31:0] branch_index;
 //forwarding wb
 wire [31:0] ALU_Data;
 wire [31:0] DIV_Data;
@@ -151,7 +151,7 @@ BB u_BB(
     .rst(rst),                      // Reset signal
     .opcode(instOut_opcode),             // Input opcode
     .PCSrc(PCSrc),                    // Branch decision signal
-    .branch_PC(Branch_PC),         // Branch index in ROB
+    .branch_PC(branch_index),         // Branch index in ROB
     .PC(PC),                // Current PC value (expanded to 32 bits)
     .tail_num(save_page),           // Output value
     .Copy_RAT(save_on),                 // Output register destination extracted from instr[11:7]
