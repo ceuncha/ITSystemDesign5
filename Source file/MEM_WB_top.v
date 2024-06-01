@@ -22,11 +22,13 @@ module MEM_WB_top (
     input [31:0] PC_Return,
     input [31:0] branch_index,
     input [31:0] PC,
+    input ROB_Flush,
 
     output [31:0] out_value,
     output [4:0] out_dest,
     output out_reg_write,
-    output [31:0] read_data // 추가된 출력 신호
+    output [31:0] x0, x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11, x12, x13, x14, x15,
+    output [31:0] x16, x17, x18, x19, x20, x21, x22, x23, x24, x25, x26, x27, x28, x29, x30, x31
 );
     // Intermediate signals
     wire EX_MEM_MemToReg, EX_MEM_MemRead, EX_MEM_MemWrite, EX_MEM_alu_exec_done, mul_exec_done, div_exec_done;
@@ -35,7 +37,7 @@ module MEM_WB_top (
     wire [31:0] mul_exec_value, mul_exec_PC, div_exec_value, div_exec_PC;
     wire [31:0] RData;
     wire MEM_WB_MemToReg;
-    wire [31:0] MEM_WB_ALUResult, MEM_WB_RData, alu_exec_value, alu_exec_PC;
+    wire [31:32] MEM_WB_ALUResult, MEM_WB_RData, alu_exec_value, alu_exec_PC;
     wire alu_exec_done;
 
     // exmem_pipeline_register instantiation
@@ -112,6 +114,7 @@ module MEM_WB_top (
     ROB rob (
         .clk(clk),
         .rst(reset),
+        .ROB_Flush(ROB_Flush),
         .IF_ID_instOut(IF_ID_instOut),
         .reg_write(reg_write),
         .alu_exec_done(alu_exec_done),
@@ -136,9 +139,40 @@ module MEM_WB_top (
     logical_address_register logical_reg (
         .clk(clk),
         .reset(reset),
-        .mem_to_write(out_reg_write),
+        .Reg_write(out_reg_write),
         .logical_address(out_dest),
         .write_data(out_value),
-        .read_data(read_data)
+        .x0(x0),
+        .x1(x1),
+        .x2(x2),
+        .x3(x3),
+        .x4(x4),
+        .x5(x5),
+        .x6(x6),
+        .x7(x7),
+        .x8(x8),
+        .x9(x9),
+        .x10(x10),
+        .x11(x11),
+        .x12(x12),
+        .x13(x13),
+        .x14(x14),
+        .x15(x15),
+        .x16(x16),
+        .x17(x17),
+        .x18(x18),
+        .x19(x19),
+        .x20(x20),
+        .x21(x21),
+        .x22(x22),
+        .x23(x23),
+        .x24(x24),
+        .x25(x25),
+        .x26(x26),
+        .x27(x27),
+        .x28(x28),
+        .x29(x29),
+        .x30(x30),
+        .x31(x31)
     );
 endmodule
