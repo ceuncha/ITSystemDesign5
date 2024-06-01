@@ -21,6 +21,8 @@ reg [2:0] tail;
 // Reset BB entries
 task reset_bb_entries;
     begin
+        head <= 0;
+        tail <= 0;
         for (i = 0; i < 8; i = i + 1) begin
             BB_entry[i] <= 32'b0;     // Reset ROB entry with all fields set to 0
             ready[i] <= 1'b0;         // Reset ready flag
@@ -31,8 +33,6 @@ endtask
 // BB control logic
 always @(posedge clk or posedge rst) begin
     if (rst) begin
-        head <= 0;
-        tail <= 0;
         reset_bb_entries();
     end else begin
         // Check for jump or branch opcode
