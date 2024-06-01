@@ -52,7 +52,8 @@ module chuchu (
                     chuchu_array[i] <= shadow_data_out[restore_page][i];
                 end
                 shadow_write_enable[restore_page] <= 0;  // 복원 후 쓰기 비활성화
-            end else begin
+            end 
+            if (!restore_state) begin
                 chuchu_out <= chuchu_array[current_index];
                 chuchu_array[current_index] <= rat_data;
                 current_index <= (current_index + 1) % 128;
