@@ -8,7 +8,16 @@ module RS_EX_decoder(
     input [2:0] in_func3,   // 3-bit, 부가적 연산 정보
     input [31:0] in_pc,     // 32-bit, 프로그램 카운터
     input [31:0] in_label,  // 조건 분기 명령어에서 사용될 Immediate 값
-    input [6:0] in_control, // 7-bit, 제어 신호
+    
+    input wire MemToReg,	
+    input wire MemRead,
+    input wire MemWrite,	
+    input wire [3:0] ALUOP,
+    input wire ALUSrc1,		
+    input wire ALUSrc2,		
+    input wire Jump,		
+    input wire Branch,
+    
     input [7:0] rd_phy_reg, // 8-bit, 물리적 레지스터 주소
     input [7:0] Operand1_phy,  
     input [7:0] Operand2_phy,
@@ -20,7 +29,16 @@ module RS_EX_decoder(
     output reg [2:0] add_alu_func3,      // Add ALU로 보낼 func3
     output reg [31:0] add_alu_pc,        // Add ALU로 보낼 프로그램 카운터
     output reg [31:0] add_alu_label,     // Add ALU로 보낼 Immediate 값
-    output reg [6:0] add_control,        // Add ALU로 보낼 제어 신호
+    
+    output reg out_add_MemToReg,	
+    output reg out_add_MemRead,
+    output reg out_add_MemWrite,	
+    output reg [3:0] out_add_ALUOP,
+    output reg out_add_ALUSrc1,		
+    output reg out_add_ALUSrc2,		
+    output reg out_add_Jump,		
+    output reg out_add_Branch,      // Add ALU로 보낼 제어 신호
+
     output reg [7:0] add_rd_phy_reg,     // Add ALU로 보낼 물리적 레지스터 주소
     output reg add_rs_on,
     output reg [7:0] out_add_Operand1_phy,
@@ -33,7 +51,16 @@ module RS_EX_decoder(
     output reg [2:0] mul_alu_func3,      // Mul ALU로 보낼 func3
     output reg [31:0] mul_alu_pc,        // Mul ALU로 보낼 프로그램 카운터
     output reg [31:0] mul_alu_label,     // Mul ALU로 보낼 Immediate 값
-    output reg [6:0] mul_control,        // Mul ALU로 보낼 제어 신호
+    
+    output reg out_mul_MemToReg,	
+    output reg out_mul_MemRead,
+    output reg out_mul_MemWrite,	
+    output reg [3:0] out_mul_ALUOP,
+    output reg out_mul_ALUSrc1,		
+    output reg out_mul_ALUSrc2,		
+    output reg out_mul_Jump,		
+    output reg out_mul_Branch,      // Add ALU로 보낼 제어 신호     
+    
     output reg [7:0] mul_rd_phy_reg,     // Mul ALU로 보낼 물리적 레지스터 주소
     output reg mul_rs_on,
     output reg [7:0] out_mul_Operand1_phy,
@@ -41,12 +68,23 @@ module RS_EX_decoder(
     output reg [1:0] out_mul_valid,
     output reg [31:0] out_mul_immediate,
 
+    
+
     output reg [31:0] div_alu_operand1,  // Div ALU로 보낼 첫 번째 피연산자
     output reg [31:0] div_alu_operand2,  // Div ALU로 보낼 두 번째 피연산자
     output reg [2:0] div_alu_func3,      // Div ALU로 보낼 func3
     output reg [31:0] div_alu_pc,        // Div ALU로 보낼 프로그램 카운터
     output reg [31:0] div_alu_label,     // Div ALU로 보낼 Immediate 값
-    output reg [6:0] div_control,        // Div ALU로 보낼 제어 신호
+    
+    output reg out_mul_MemToReg,	
+    output reg out_mul_MemRead,
+    output reg out_mul_MemWrite,	
+    output reg [3:0] out_mul_ALUOP,
+    output reg out_div_ALUSrc1,		
+    output reg out_div_ALUSrc2,		
+    output reg out_div_Jump,		
+    output reg out_div_Branch,     
+
     output reg [7:0] div_rd_phy_reg,      // Div ALU로 보낼 물리적 레지스터 주소
     output reg div_rs_on,
     output reg [7:0] out_div_Operand1_phy,
