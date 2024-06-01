@@ -8,7 +8,7 @@ module multiplier (
     input [6:0] RS_address_in,
     input [31:0] PC_in,
     output reg [63:0] Product,
-    output reg done
+    output reg done,
     output reg [6:0] Physical_address_out,
     output reg [6:0] RS_address_out,
     output reg [31:0] PC_out
@@ -75,7 +75,7 @@ module multiplier (
                 stage1_carries_reg[j] <= 0;
                 stage1_done_reg <= 0;
                 stage1_Physical_address_reg <= 0;
-                stgae1_RS_address_reg <= 0;
+                stage1_RS_address_reg <= 0;
                 stage1_PC_reg <= 0;
             end
         end else begin
@@ -84,7 +84,7 @@ module multiplier (
                 stage1_carries_reg[j] <= stage1_carries[j];
                 stage1_done_reg <= done_reg;
                 stage1_Physical_address_reg <= Physical_address_reg;
-                stgae1_RS_address_reg <= RS_address_reg;
+                stage1_RS_address_reg <= RS_address_reg;
                 stage1_PC_reg <= PC_reg;
             end
         end
@@ -114,7 +114,7 @@ module multiplier (
                 stage2_carries_reg[j] <= 0;
                 stage2_done_reg <= 0;
                 stage2_Physical_address_reg <= 0;
-                stgae2_RS_address_reg <= 0;
+                stage2_RS_address_reg <= 0;
                 stage2_PC_reg <= 0;
             end
         end else begin
@@ -123,7 +123,7 @@ module multiplier (
                 stage2_carries_reg[j] <= stage2_carries[j];
                 stage2_done_reg <= stage1_done_reg;
                 stage2_Physical_address_reg <= stage1_Physical_address_reg;
-                stgae2_RS_address_reg <= stage1_RS_address_reg;
+                stage2_RS_address_reg <= stage1_RS_address_reg;
                 stage2_PC_reg <= stage1_PC_reg;
             end
         end
@@ -153,7 +153,7 @@ module multiplier (
                 stage3_carries_reg[j] <= 0;
                 stage3_done_reg <= 0;
                 stage3_Physical_address_reg <= 0;
-                stgae3_RS_address_reg <= 0;
+                stage3_RS_address_reg <= 0;
                 stage3_PC_reg <= 0;
             end
         end else begin
@@ -162,7 +162,7 @@ module multiplier (
                 stage3_carries_reg[j] <= stage3_carries[j];
                 stage3_done_reg <= stage2_done_reg;
                 stage3_Physical_address_reg <= stage2_Physical_address_reg;
-                stgae3_RS_address_reg <= stage2_RS_address_reg;
+                stage3_RS_address_reg <= stage2_RS_address_reg;
                 stage3_PC_reg <= stage2_PC_reg;
             end
         end
@@ -197,7 +197,7 @@ module multiplier (
                 stage4_carries_reg[j] <= stage4_carries[j];
                 stage4_done_reg <= stage3_done_reg;
                 stage4_Physical_address_reg <= stage3_Physical_address_reg;
-                stgae4_RS_address_reg <= stage3_RS_address_reg;
+                stage4_RS_address_reg <= stage3_RS_address_reg;
                 stage4_PC_reg <= stage3_PC_reg;
             end
         end
@@ -211,11 +211,12 @@ module multiplier (
             Physical_address_out <= 0;
             RS_address_out <= 0;
             PC_out <= 0;
-        end else begin
+            end    
+            else begin      
             Product <= stage4_sums_reg[0] + stage4_sums_reg[1] + stage4_carries_reg[0] + stage4_carries_reg[1];
             done <= stage4_done_reg;
             Physical_address_out <= stage4_Physical_address_reg;
-            RS_address_out <= stgae4_RS_address_reg;
+            RS_address_out <= stage4_RS_address_reg;
             PC_out <= stage4_PC_reg;
         end
     end
