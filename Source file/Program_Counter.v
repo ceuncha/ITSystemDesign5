@@ -7,19 +7,22 @@ module Program_Counter(
 );
 
     reg [31:0] PC_Plus4;
-
+    reg [31:0] PC_next
+    
     always @ (*) begin
         PC_Plus4 <= PC + 32'd4;
+        if (PCSrc) begin
+            PC_next <= PC_Branch;
+        end else begin
+            PC_next <= PC_Plus4;
     end
 
     always @ (posedge clk or posedge rst) begin
         if (rst) begin
             PC <= 32'd0;
             PC_Plus4 <= 32'd0;
-        end else if (PCSrc) begin
-            PC <= PC_Branch;
         end else begin
-            PC <= PC_Plus4;
+            PC <= PC_next;
         end
     end
 
