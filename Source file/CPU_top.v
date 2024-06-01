@@ -200,7 +200,7 @@ control_unit_top u_control_unit_top(
 
     wire [31:0] RS_mul_operand1_data, RS_mul_operand2_data, RS_mul_PC;
     wire [2:0] RS_mul_funct3;
-    wire RS_mul_MemToReg, RS_mul_MenRead, RS_mul_MemWrite, RS_mul_ALUSrc1, RS_mul_ALUSrc2, RS_mul_Jump, RS_mul_Branch;
+    wire RS_mul_MemToReg, RS_mul_MemRead, RS_mul_MemWrite, RS_mul_ALUSrc1, RS_mul_ALUSrc2, RS_mul_Jump, RS_mul_Branch;
     wire [3:0] RS_mul_ALUOP;
     wire [7:0] RS_mul_Rd, RS_mul_operand1, RS_mul_operand2;
     wire [1:0] RS_mul_valid;
@@ -278,7 +278,7 @@ control_unit_top u_control_unit_top(
         .div_alu_func3(RS_div_funct3),
        .div_alu_pc(RS_div_PC),
         .out_div_MemToReg(RS_div_MemToReg),
-        .out_div_MemRead(RS_div_MenRead),
+       .out_div_MemRead(RS_div_MemRead),
         .out_div_MemWrite(RS_div_MemWrite),
         .out_div_ALUOP(RS_div_ALUOP),
         .out_div_ALUSrc1(RS_div_ALUSrc1),
