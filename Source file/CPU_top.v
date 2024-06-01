@@ -292,6 +292,57 @@ control_unit_top u_control_unit_top(
         .out_div_valid(RS_div_valid),
         .out_div_immediate(RS_div_immediate)
     );
+        Reservation_station rs_alu (
+        .clk(clk),
+        .reset(reset),
+        .start(RS_alu_start),
+        .PC(RS_alu_PC),
+        .Rd(RS_alu_Rd),
+        .MemToReg(RS_alu_MemToReg),
+        .MemRead(RS_alu_MenRead),
+        .MemWrite(RS_alu_MemWrite),
+        .ALUOP(RS_alu_ALUOP),
+        .ALUSrc1(RS_alu_ALUSrc1),
+        .ALUSrc2(RS_alu_ALUSrc2),
+        .Jump(RS_alu_Jump),
+        .Branch(RS_alu_Branch),
+        .funct3(RS_alu_funct3),
+        .immediate(RS_alu_immediate),
+        .EX_MEM_MemRead(Load_Done),
+        .RData(Load_Data),
+        .EX_MEM_Physical_Address(Load_Phy),
+        .operand1(RS_alu_operand1),
+        .operand2(RS_alu_operand2),
+        .operand1_data(RS_mul_operand1_data),
+        .operand2_data(RS_mul_operand2_data),
+        .valid(RS_alu_valid),
+        .ALU_result(ALU_Data),
+        .ALU_result_dest(ALU_Phy),
+        .ALU_result_valid(ALU_Done),
+        .MUL_result(MUL_Data),
+        .MUL_result_dest(MUL_Phy),
+        .MUL_result_valid(MUL_Done),
+        .DIV_result(DIV_Data),
+        .DIV_result_dest(DIV_Phy),
+        .DIV_result_valid(DIV_Done),
+            .result_out(result_out_alu)
+    );
+    wire [174:0]result_out_alu;
+    assign Operand2_ALU=result_out_alu[0:31];
+    assign Operand1_ALU=result_out_alu[32:63];
+    assign immediate=result_out_alu[64:95];
+    assign RS_EX_fucnt3=result_out_alu[96:98];
+    assign RS_EX_Branch=result_out_alu[99];
+    assign RS_EX_Jumps=result_out_alu[100];
+    assign RS_EX_ALUSrc2=result_out_alu[101];
+    assign RS_EX_ALUSrc1=result_out_alu[102];
+    assign ALUop=result_out_alu[103:106];
+    assign RS_EX_MemWrite=result_out_alu[107];
+    assign RS_EX_MemRead=result_out_alu[108];
+    assign RS_EX_MemToReg=result_out_alu[109];
+    assign ALU_Phy=result_out_alu[110:141];
+    assign RS_EX_PC_ALU=result_out_alu[142:173];
+    assign ALU_Done=result_out_alu[174];
     RS_mul rs_mul (
         .clk(clk),
         .reset(reset),
