@@ -60,11 +60,6 @@ always @(posedge clk or posedge rst) begin
             if (BB_entry[i] == branch_PC) begin
                 if (PCSrc == 1'b1) begin
                     ready[i] <= 1'b1;   // Set the ready flag to 1
-                    if (i == head) begin
-                        head_num <= head; // Set head_num to the head pointer
-                        Paste_RAT <= 1;   // Set Paste_RAT to 1
-                        reset_bb_entries();  // Reset BB entries
-                    end
                 end
             end
          end
