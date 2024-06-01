@@ -7,7 +7,7 @@ module RS_EX_decoder(
     input [31:0] in_operand2,  // 32-bit, 두 번째 피연산자
     input [2:0] in_func3,   // 3-bit, 부가적 연산 정보
     input [31:0] in_pc,     // 32-bit, 프로그램 카운터
-    input [31:0] in_label,  // 조건 분기 명령어에서 사용될 Immediate 값
+
     
     input wire MemToReg,	
     input wire MemRead,
@@ -28,7 +28,7 @@ module RS_EX_decoder(
     output reg [31:0] add_alu_operand2,  // Add ALU로 보낼 두 번째 피연산자
     output reg [2:0] add_alu_func3,      // Add ALU로 보낼 func3
     output reg [31:0] add_alu_pc,        // Add ALU로 보낼 프로그램 카운터
-    output reg [31:0] add_alu_label,     // Add ALU로 보낼 Immediate 값
+
     
     output reg out_add_MemToReg,	
     output reg out_add_MemRead,
@@ -50,7 +50,7 @@ module RS_EX_decoder(
     output reg [31:0] mul_alu_operand2,  // Mul ALU로 보낼 두 번째 피연산자
     output reg [2:0] mul_alu_func3,      // Mul ALU로 보낼 func3
     output reg [31:0] mul_alu_pc,        // Mul ALU로 보낼 프로그램 카운터
-    output reg [31:0] mul_alu_label,     // Mul ALU로 보낼 Immediate 값
+
     
     output reg out_mul_MemToReg,	
     output reg out_mul_MemRead,
@@ -74,7 +74,7 @@ module RS_EX_decoder(
     output reg [31:0] div_alu_operand2,  // Div ALU로 보낼 두 번째 피연산자
     output reg [2:0] div_alu_func3,      // Div ALU로 보낼 func3
     output reg [31:0] div_alu_pc,        // Div ALU로 보낼 프로그램 카운터
-    output reg [31:0] div_alu_label,     // Div ALU로 보낼 Immediate 값
+
     
     output reg out_div_MemToReg,	
     output reg out_div_MemRead,
@@ -100,7 +100,7 @@ always @(posedge reset) begin
         add_alu_operand2 <= 0;
         add_alu_func3 <= 0;
         add_alu_pc <= 0;
-        add_alu_label <= 0;
+
         add_rd_phy_reg <= 0;
         out_add_Operand1_phy <= 0;
         out_add_Operand2_phy <= 0;
@@ -110,7 +110,7 @@ always @(posedge reset) begin
         mul_alu_operand2 <= 0;
         mul_alu_func3 <= 0;
         mul_alu_pc <= 0;
-        mul_alu_label <= 0;
+
         mul_rd_phy_reg <= 0;
         out_mul_Operand1_phy <= 0;
         out_mul_Operand2_phy <= 0;
@@ -120,7 +120,7 @@ always @(posedge reset) begin
         div_alu_operand2 <= 0;
         div_alu_func3 <= 0;
         div_alu_pc <= 0;
-        div_alu_label <= 0;
+
         div_rd_phy_reg <= 0;
         out_div_Operand1_phy <= 0;
         out_div_Operand2_phy <= 0;
@@ -166,7 +166,7 @@ always @(*) begin
                 mul_alu_operand2 <= in_operand2;
                 mul_alu_func3 <= in_func3;
                 mul_alu_pc <= in_pc;
-                mul_alu_label <= in_label;
+
                 mul_rd_phy_reg <= rd_phy_reg;
                 add_rs_on <= 0;
                 mul_rs_on <= 1;
@@ -189,7 +189,7 @@ always @(*) begin
                 div_alu_operand2 <= in_operand2;
                 div_alu_func3 <= in_func3;
                 div_alu_pc <= in_pc;
-                div_alu_label <= in_label;
+ 
                 div_rd_phy_reg <= rd_phy_reg;
                 add_rs_on <= 0;
                 mul_rs_on <= 0;
@@ -212,7 +212,7 @@ always @(*) begin
                 add_alu_operand2 <= in_operand2;
                 add_alu_func3 <= in_func3;
                 add_alu_pc <= in_pc;
-                add_alu_label <= in_label;
+
                 add_rd_phy_reg <= rd_phy_reg;
                 add_rs_on <= 1;
                 mul_rs_on <= 0;
@@ -235,3 +235,4 @@ always @(*) begin
 end
 
 endmodule
+
