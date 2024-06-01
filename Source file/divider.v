@@ -1,6 +1,6 @@
 module divider (
     input wire clk,
-    input wire reset,
+    input wire rst,
     input wire start,
     input wire [31:0] A,
     input wire [31:0] B,
@@ -21,8 +21,8 @@ module divider (
     reg done_reg[0:31];
 
     // 초기화 및 시작
-    always @(posedge clk or posedge reset) begin
-        if (reset) begin
+    always @(posedge clk or posedge rst) begin
+        if (rst) begin
             temp_dividend[0] <= 64'd0;
             divisor[0] <= 32'd0;
             Physical_address_reg[0] <= 7'd0;
@@ -41,8 +41,8 @@ module divider (
     genvar i;
     generate
         for (i = 0; i < 31; i = i + 1) begin : stages
-            always @(posedge clk or posedge reset) begin
-                if (reset) begin
+            always @(posedge clk or posedge rst) begin
+                if (rst) begin
                     temp_dividend[i+1] <= 64'd0;
                     divisor[i+1] <= 32'd0;
                     Physical_address_reg[i+1] <= 7'd0;
@@ -66,8 +66,8 @@ module divider (
     endgenerate
 
     // 결과 설정
-   always @(posedge clk or posedge reset) begin
-        if(reset) begin
+    always @(posedge clk or posedge rst) begin
+        if(rst) begin
          quotient <= 0;
          remainder <=0;
          Physical_address_out <= 0;
