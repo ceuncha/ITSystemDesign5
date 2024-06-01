@@ -16,6 +16,8 @@ module Program_Counter(
         if (rst) begin
             PC <= 32'd0;
             PC_Plus4 <= 32'd0;
+        end else if (PC_Stall) begin
+            PC <= PC;
         end else if (PCSrc) begin
             PC <= PC_Branch;
         end else begin
