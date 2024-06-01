@@ -219,6 +219,7 @@ module memwb_pipeline_register (
     input [31:0] Load_Data, // data memory
     input [31:0] EX_MEM_alu_exec_PC,
     input EX_MEM_alu_exec_done,
+    input Load_Done,
     
     output reg MEM_WB_MemToReg,
     output reg [31:0] MEM_WB_ALUResult,
@@ -240,8 +241,14 @@ module memwb_pipeline_register (
             MEM_WB_MemToReg <= EX_MEM_MemToReg;
             MEM_WB_ALUResult <= EX_MEM_ALUResult;
             MEM_WB_RData <= Load_Data;
-            alu_exec_done <= EX_MEM_alu_exec_done;
+
             alu_exec_PC <= EX_MEM_alu_exec_PC;
+            
+            if(!Load_Done) begin
+            alu_exec_done <= EX_MEM_alu_exec_done;
+            end else begin
+                alu_exec_done <= Load_Done;
+            end
             end
         end
    
