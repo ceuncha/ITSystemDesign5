@@ -17,6 +17,7 @@ reg ready [0:7];                       // Ready flag array for ROB entries
 integer i;
 reg [2:0] head;
 reg [2:0] tail;
+reg Paste_RAT_set;                    // 플래그 추가
 
 // Reset BB entries
 task reset_bb_entries;
@@ -27,6 +28,7 @@ task reset_bb_entries;
             BB_entry[i] <= 32'b0;     // Reset ROB entry with all fields set to 0
             ready[i] <= 1'b0;         // Reset ready flag
         end
+        Paste_RAT_set <= 1'b0;        // 플래그 초기화
     end
 endtask
 
@@ -50,11 +52,13 @@ always @(posedge clk or posedge rst) begin
         if (BB_entry[head] == branch_PC) begin
             if (PCSrc == 1'b1) begin
                 Paste_RAT <= 1;      // Set Paste_RAT to 1
+                Paste_RAT_set <= 1;  // 플래그 설정
                 head_num <= head;
                 reset_bb_entries();  // Reset BB entries
             end else begin
                 head <= head + 1;    // Increment head
                 Paste_RAT <= 0;      // Reset Paste_RAT to 0
+                Paste_RAT_set <= 0;  // 플래그 리셋
             end
         end
 
@@ -70,7 +74,14 @@ always @(posedge clk or posedge rst) begin
         if (ready[head] == 1'b1) begin
             head_num <= head;
             Paste_RAT <= 1;
+            Paste_RAT_set <= 1;  // 플래그 설정
             reset_bb_entries();  // Reset BB entries
+        end
+
+        // 플래그를 확인하여 Paste_RAT 리셋
+        if (Paste_RAT_set == 1) begin
+            Paste_RAT <= 0;
+            Paste_RAT_set <= 0;
         end
     end
 end
