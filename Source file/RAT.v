@@ -5,8 +5,7 @@ module RAT (
     input wire save_state,    // 사본 레지스터에 상태 저장 신호
     input wire restore_state, // 사본 레지스터에서 상태 복원 신호
     input wire [2:0] save_page,     // 상태 저장용 사본 레지스터 페이지 선택 신호
-    input wire [2:0] restore_page,  // 상태 복원용 사본 레지스터 페이지 선택 신호
-    
+    input wire [2:0] restore_page,  // 상태 복원 신호
     input wire [4:0] logical_addr1, // 오퍼랜드 1 논리 주소
     input wire [4:0] logical_addr2, // 오퍼랜드 2 논리 주소
     input wire [4:0] rd_logical_addr, // 쓰기 작업을 하는 논리 주소 (Rd)
@@ -35,14 +34,16 @@ module RAT (
     genvar i, j;
     generate
         for (i = 0; i < 8; i = i + 1) begin : shadow_RAT_reg_array
-            shadow_RAT_register u_shadow_RAT_register (
-                .clk(clk),
-                .reset(reset),
-                .addr(shadow_addr),
-                .data_in(shadow_data_in[i][shadow_addr]),
-                .data_out(shadow_data_out[i][shadow_addr]),
-                .write_enable(shadow_write_enable[i])
-            );
+            for (j = 0; j < 32; j = j + 1) begin : shadow_RAT_regs
+                shadow_RAT_register u_shadow_RAT_register (
+                    .clk(clk),
+                    .reset(reset),
+                    .addr(j[4:0]),  // 정수형을 5비트로 강제 변환
+                    .data_in(shadow_data_in[i][j]),
+                    .data_out(shadow_data_out[i][j]),
+                    .write_enable(shadow_write_enable[i])
+                );
+            end
         end
     endgenerate
 
@@ -85,11 +86,11 @@ module RAT (
             case (opcode)
                 7'b1100111, 7'b0000011, 7'b0010011: begin  // jalr, load, i-type
                     phy_addr_out1 <= phy_addr_table[logical_addr1];
-                    phy_addr_out2 <= 254;
+                    phy_addr_out2 <= 8'd254;
                 end
                 7'b0110111, 7'b0010111, 7'b1101111: begin // lui, auipc, jal
-                    phy_addr_out1 <= 0;
-                    phy_addr_out2 <= 254;
+                    phy_addr_out1 <= 8'd0;
+                    phy_addr_out2 <= 8'd254;
                 end
                 default: begin
                     phy_addr_out1 <= phy_addr_table[logical_addr1];
@@ -105,27 +106,26 @@ module RAT (
                 rd_log_out <= rd_logical_addr;
             end else begin
                 free_phy_addr_out <= free_phy_addr; // 프리리스트로 비어있는 주소 다시 전송
-                rd_phy_out <= 255;   
+                rd_phy_out <= 8'd255;   
             end
         end
     end
 
 endmodule
 
-
 module shadow_RAT_register(
     input wire clk,
     input wire reset,
     input wire [4:0] addr,    // 레지스터 주소 (0-31)
     input wire [7:0] data_in,
-    output wire [7:0] data_out,
+    output reg [7:0] data_out,
     input wire write_enable
 );
     reg [7:0] registers [0:31];  // 32개의 8비트 레지스터
-     integer l;
+    integer l;
+    
     always @(posedge clk or posedge reset) begin
         if (reset) begin
-
             for (l = 0; l < 32; l = l + 1) begin
                 registers[l] <= 8'b0;
             end
@@ -134,5 +134,7 @@ module shadow_RAT_register(
         end
     end
 
-    assign data_out = registers[addr];
+    always @(*) begin
+        data_out = registers[addr];
+    end
 endmodule
