@@ -50,7 +50,7 @@ module RAT (
     integer k;
 
     // 초기화
-    always @(posedge reset) begin
+    always @(posedge clk or posedge reset) begin
         if (reset) begin
             for (k = 0; k < 32; k = k + 1) begin
                 phy_addr_table[k] <= k;
@@ -59,7 +59,7 @@ module RAT (
     end
 
     // 사본 레지스터에 상태 저장
-    always @(posedge clk) begin
+    always @(posedge save_state or posedge restore_state) begin
         if (save_state) begin
             for (k = 0; k < 32; k = k + 1) begin
                 shadow_data_in[save_page][k] <= phy_addr_table[k];
@@ -68,19 +68,16 @@ module RAT (
         end else begin
             shadow_write_enable[save_page] <= 0;
         end
- 
 
-    // 사본 레지스터에서 상태 복원
-   
         if (restore_state) begin
             for (k = 0; k < 32; k = k + 1) begin
                 phy_addr_table[k] <= shadow_data_out[restore_page][k];
             end
         end
-
+    end
 
     // id_on이 1일 때 동작
-
+    always @(posedge clk) begin
         if (!restore_state) begin
             // 1. 오퍼랜드 유효성 검사 및 물리 주소 접근
             case (opcode)
@@ -129,12 +126,13 @@ module shadow_RAT_register(
             for (l = 0; l < 32; l = l + 1) begin
                 registers[l] <= 8'b0;
             end
-        end else if (write_enable) begin
-            registers[addr] <= data_in;
-        end
-    end
 
+    end
+end
     always @(*) begin
         data_out = registers[addr];
+        if (write_enable) begin
+            registers[addr] <= data_in;
+        end
     end
 endmodule
