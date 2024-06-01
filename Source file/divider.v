@@ -4,19 +4,19 @@ module divider (
     input wire start,
     input wire [31:0] A,
     input wire [31:0] B,
-    input wire [6:0] Physical_address_in, 
+    input wire [7:0] Physical_address_in, 
     input wire [31:0] PC_in,
     input wire [3:0] divider_op_in,
     output reg [31:0] Result,
     output reg done,
-    output reg [6:0] Physical_address_out,
+    output reg [7:0] Physical_address_out,
     output reg [31:0] PC_out
 );
 
     // 내부 레지스터
     reg [63:0] temp_dividend[0:31];
     reg [31:0] divisor[0:31];
-    reg [6:0] Physical_address_reg[0:31];
+    reg [7:0] Physical_address_reg[0:31];
     reg [31:0] PC_reg[0:31];
     reg [3:0] divider_op_reg[0:31];
     reg done_reg[0:31];
@@ -48,7 +48,7 @@ module divider (
                 if (reset) begin
                     temp_dividend[i+1] <= 64'd0;
                     divisor[i+1] <= 32'd0;
-                    Physical_address_reg[i+1] <= 7'd0;
+                    Physical_address_reg[i+1] <= 8'd0;
                     PC_reg[i+1] <= 32'd0;
                     divider_op_reg [i+1] <=1'd0; 
                     done_reg[i+1] <= 1'd0;                   
