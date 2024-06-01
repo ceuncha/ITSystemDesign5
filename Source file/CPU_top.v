@@ -292,6 +292,34 @@ control_unit_top u_control_unit_top(
         .out_div_valid(RS_div_valid),
         .out_div_immediate(RS_div_immediate)
     );
+
+            // Internal signals for Reservation_station
+    wire RS_alu_start;
+    wire [31:0] RS_alu_PC;
+    wire [7:0] RS_alu_Rd;
+    wire RS_alu_MemToReg;
+    wire RS_alu_MenRead;
+    wire RS_alu_MemWrite;
+    wire [3:0] RS_alu_ALUOP;
+    wire RS_alu_ALUSrc1;
+    wire RS_alu_ALUSrc2;
+    wire RS_alu_Jump;
+    wire RS_alu_Branch;
+    wire [2:0] RS_alu_funct3;
+    wire [31:0] RS_alu_immediate;
+
+    wire [7:0] RS_alu_operand1;
+    wire [7:0] RS_alu_operand2;
+    wire [31:0] RS_mul_operand1_data;
+    wire [31:0] RS_mul_operand2_data;
+    wire [1:0] RS_alu_valid;
+    
+
+ 
+
+  
+
+    
         Reservation_station rs_alu (
         .clk(clk),
         .reset(rst),
