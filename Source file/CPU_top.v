@@ -371,6 +371,34 @@ control_unit_top u_control_unit_top(
     assign ALU_Phy=result_out_alu[110:141];
     assign RS_EX_PC_ALU=result_out_alu[142:173];
     assign ALU_Done=result_out_alu[174];
+
+
+    // Internal signals for RS_mul
+    wire RS_mul_start;
+    wire [31:0] RS_mul_PC;
+    wire [7:0] RS_mul_Rd;
+    wire Load_Done;
+    wire [31:0] Load_Data;
+    wire [7:0] Load_Phy;
+    wire [7:0] RS_mul_operand1;
+    wire [7:0] RS_mul_operand2;
+    wire [31:0] RS_mul_operand1_data;
+    wire [31:0] RS_mul_operand2_data;
+    wire [1:0] RS_mul_valid;
+    wire [31:0] ALU_Data;
+    wire [7:0] ALU_Phy;
+    wire ALU_Done;
+    wire [31:0] MUL_Data;
+    wire [7:0] MUL_Phy;
+    wire MUL_Done;
+    wire [31:0] DIV_Data;
+    wire [7:0] DIV_Phy;
+    wire DIV_Done;
+
+
+
+
+    
     RS_mul rs_mul (
         .clk(clk),
         .reset(rst),
