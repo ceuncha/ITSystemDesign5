@@ -185,6 +185,8 @@ control_unit_top u_control_unit_top(
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //RS_EX_decoder top Line
     
+//RS_EX_decoder top Line
+    
     wire [31:0] RS_alu_operand1_data, RS_alu_operand2_data, RS_alu_PC;
     wire [2:0] RS_alu_funct3;
     wire RS_alu_MemToReg, RS_alu_MenRead, RS_alu_MemWrite, RS_alu_ALUSrc1, RS_alu_ALUSrc2, RS_alu_Jump, RS_alu_Branch;
@@ -219,7 +221,7 @@ control_unit_top u_control_unit_top(
         .in_operand1(operand1),
         .in_operand2(operand2),
         .in_func3(funct3),
-        .in_pc(pc),
+        .in_pc(PC),
         .MemToReg(MemToReg),
         .MemRead(MemRead),
         .MemWrite(MemWrite),
@@ -231,7 +233,7 @@ control_unit_top u_control_unit_top(
         .rd_phy_reg(Rd_phy),
         .Operand1_phy(Phy_addr_OP1),
         .Operand2_phy(Phy_addr_OP2),
-        .valid(valid),
+        .valid(Valid),
         .immediate(imm32),
         .add_alu_operand1(RS_alu_operand1_data),
         .add_alu_operand2(RS_alu_operand2_data),
