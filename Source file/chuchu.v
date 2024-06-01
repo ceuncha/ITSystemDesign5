@@ -41,28 +41,30 @@ module chuchu (
                 chuchu_array[i] <= 32 + i;
             end
             current_index <= 0;
-        end else begin
-            if (save_state) begin
-                for (i = 0; i < 128; i = i + 1) begin
-                    shadow_data_in[save_page][i] <= chuchu_array[i];
-                end
-                shadow_write_enable[save_page] <= 1;
-            end else if (restore_state) begin
-                for (i = 0; i < 128; i = i + 1) begin
-                    chuchu_array[i] <= shadow_data_out[restore_page][i];
-                end
-                shadow_write_enable[restore_page] <= 0;  // 복원 후 쓰기 비활성화
-            end 
-            if (!restore_state) begin
-                chuchu_out <= chuchu_array[current_index];
-                chuchu_array[current_index] <= rat_data;
-                current_index <= (current_index + 1) % 128;
-            end
+        end else if (!restore_state) begin
+            chuchu_out <= chuchu_array[current_index];
+            chuchu_array[current_index] <= rat_data;
+            current_index <= (current_index + 1) % 128;
         end
     end
 
-endmodule
+    always @(posedge save_state or posedge restore_state) begin
+        if (save_state) begin
+            for (i = 0; i < 128; i = i + 1) begin
+                shadow_data_in[save_page][i] = chuchu_array[i];
+            end
+            shadow_write_enable[save_page] = 1;
+        end else begin
+            shadow_write_enable[save_page] = 0;
+        end
 
+        if (restore_state) begin
+            for (i = 0; i < 128; i = i + 1) begin
+                chuchu_array[i] = shadow_data_out[restore_page][i];
+            end
+        end
+    end
+endmodule
 module shadow_chuchu(
     input wire clk,
     input wire reset,
@@ -79,12 +81,13 @@ module shadow_chuchu(
             for (i = 0; i < 128; i = i + 1) begin
                 registers[i] <= 8'b0;
             end
-        end else if (write_enable) begin
-            registers[addr] <= data_in;
         end
     end
 
-    always @(posedge clk) begin
-        data_out <= registers[addr];
+    always @(*) begin
+        if (write_enable) begin
+            registers[addr] = data_in;
+        end
+        data_out = registers[addr];
     end
 endmodule
