@@ -58,18 +58,6 @@ wire [2:0] restore_page;
 //Branch unit to BB
 wire [31:0] branch_index;
 //forwarding wb
-wire [31:0] ALU_Data;
-wire [31:0] DIV_Data;
-wire [31:0] MUL_Data;
-wire [31:0] Load_Data;
-
-wire [7:0] DIV_Phy;
-wire [7:0] MUL_Phy;
-wire [7:0] Load_Phy;
-
-wire DIV_Done;
-wire MUL_Done;
-wire Load_Done;
 
 /////////////////////RS_EX_decoder wires
     
@@ -156,7 +144,7 @@ wire ALU_Done = result_out_alu[150];
     wire [31:0] ALU_Data;
 
     wire ALU_Done;
-    wire [31:0] MUL_Data;
+    wire [63:0] MUL_Data;
     wire [7:0] MUL_Phy;
     wire MUL_Done;
     wire [31:0] DIV_Data;
@@ -311,7 +299,7 @@ physical_register_file u_physical_register_file(
     .ALU_div_Write(DIV_Done),
     .ALU_add_Data(ALU_Data),
     .ALU_load_Data(Load_Data),
-    .ALU_mul_Data(MUL_Data),
+    .ALU_mul_Data(MUL_Data[31:0]),
     .ALU_div_Data(DIV_Data),
     .ALU_add_phy(ALU_Phy),
     .ALU_load_phy(Load_Phy),
@@ -479,7 +467,7 @@ control_unit_top u_control_unit_top(
         .ALU_result(ALU_Data),
         .ALU_result_dest(ALU_Phy),
         .ALU_result_valid(ALU_Done),
-        .MUL_result(MUL_Data),
+        .MUL_result(MUL_Data[31:0]),
         .MUL_result_dest(MUL_Phy),
         .MUL_result_valid(MUL_Done),
         .DIV_result(DIV_Data),
@@ -512,7 +500,7 @@ control_unit_top u_control_unit_top(
         .ALU_result(ALU_Data),
         .ALU_result_dest(ALU_Phy),
         .ALU_result_valid(ALU_Done),
-        .MUL_result(MUL_Data),
+        .MUL_result(MUL_Data[31:0]),
         .MUL_result_dest(MUL_Phy),
         .MUL_result_valid(MUL_Done),
         .DIV_result(DIV_Data),
@@ -529,7 +517,7 @@ control_unit_top u_control_unit_top(
                    .RData(Load_Data),.EX_MEM_Physical_Address(Load_Phy),.RS_div_operand1(RS_div_operand1),
                    .RS_div_operand2(RS_div_operand2),.RS_div_operand1_data(RS_div_operand1_data),
                    .RS_div_operand2_data(RS_div_operand2_data),.RS_div_valid(RS_div_valid),.ALU_result(ALU_Data),
-                   .ALU_result_dest(ALU_Phy),.ALU_result_valid(ALU_Done),.MUL_result(MUL_Data),.MUL_result_dest(MUL_Phy),
+                   .ALU_result_dest(ALU_Phy),.ALU_result_valid(ALU_Done),.MUL_result(MUL_Data[31:0]),.MUL_result_dest(MUL_Phy),
                    .MUL_result_valid(MUL_Done),.DIV_result(DIV_Data),.DIV_result_dest(DIV_Phy),.DIV_result_valid(DIV_Done),
                    .result_out(result_out_div));
 
@@ -569,7 +557,7 @@ control_unit_top u_control_unit_top(
         .RS_EX_PC_ALU(RS_EX_PC_ALU),
         .ALU_done(ALU_Done),
         .RS_EX_alu_Physical_address(ALU_Phy),
-        .Mul_Result(MUL_Data),
+        .Mul_Result(MUL_Data[31:0]),
         .RS_EX_PC_Mul_out(RS_EX_PC_Mul_out),
         .Mul_done_out(MUL_Done),
         .Div_Result(DIV_Data),
