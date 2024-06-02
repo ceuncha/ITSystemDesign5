@@ -1,6 +1,6 @@
 module priority_encoder (
     input wire [31:0] ready, // 32비트 ready 신호
-    output reg [32:0] Y // 32비트 Y 출력
+    output reg [31:0] Y // 32비트 Y 출력
 );
 
     always @(*) begin
@@ -41,7 +41,7 @@ module priority_encoder (
     end
 endmodule
 
-module RS_mul (
+module RS_Mul (
     input wire clk,
     input wire reset,
     input wire RS_mul_start,
