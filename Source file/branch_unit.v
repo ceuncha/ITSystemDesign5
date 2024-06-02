@@ -22,7 +22,6 @@ always @(*) begin
         PCSrc = 0;
         PC_Branch = 0;  // 湲곕낯 遺꾧린 二쇱냼
         IF_ID_Flush = 0;
-        ROB_Flush = 0;
         if(ID_EX_Jump) begin
             PC_Branch = ALUResult; // ?젏?봽 泥섎━
             PCSrc = 1; // ?젏?봽 ?떆 PC ?냼?뒪 ?떊?샇 ?솢?꽦?솕
