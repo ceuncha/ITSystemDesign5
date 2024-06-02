@@ -1,6 +1,6 @@
 module priority_encoder (
     input wire [31:0] ready, // 32비트 ready 신호
-    output reg [31:0] Y // 32비트 Y 출력
+    output reg [32:0] Y // 32비트 Y 출력
 );
 
     always @(*) begin
@@ -41,21 +41,21 @@ module priority_encoder (
     end
 endmodule
 
-module RS_Mul (
+module RS_mul (
     input wire clk,
     input wire reset,
-    input wire RS_div_start,
-    input wire [31:0] RS_div_PC,
-    input wire [7:0] RS_div_Rd,
+    input wire RS_mul_start,
+    input wire [31:0] RS_mul_PC,
+    input wire [7:0] RS_mul_Rd,
     input wire EX_MEM_MemRead,
     input wire [31:0] RData,
     input wire [7:0] EX_MEM_Physical_Address,
-    input wire [7:0] RS_div_operand1,
-    input wire [7:0] RS_div_operand2,
-    input wire [31:0] RS_div_operand1_data,
-    input wire [31:0] RS_div_operand2_data,
-    input wire [1:0] RS_div_valid,
-    input wire [31:0] ALU_result,
+    input wire [7:0] RS_mul_operand1,
+    input wire [7:0] RS_mul_operand2,
+    input wire [31:0] RS_mul_operand1_data,
+    input wire [31:0] RS_mul_operand2_data,
+    input wire [1:0] RS_mul_valid,
+    input wire [31:0]ALU_result,
     input wire [7:0] ALU_result_dest,
     input wire ALU_result_valid,
     input wire [31:0] MUL_result,
@@ -66,7 +66,7 @@ module RS_Mul (
     input wire DIV_result_valid,
     output reg [104:0] result_out
 );
-    
+
     // Internal storage for reservation station entries
     reg [31:0] PCs [0:31];
     reg [7:0] Rds [0:31];
@@ -89,7 +89,6 @@ module RS_Mul (
             for (i = 0; i < 32; i = i + 1) begin
                 PCs[i] <= 0;
                 Rds[i] <= 0;
-                ALUOPs[i] <= 0;
                 operand1s[i] <= 0;
                 operand2s[i] <= 0;
                 operand1_datas[i] <= 0;
@@ -97,96 +96,96 @@ module RS_Mul (
                 valid_entries1[i] <= 1'b0; // 리셋 시 초기값으로 복원
                 valid_entries2[i] <= 1'b0; // 리셋 시 초기값으로 복원
             end
-        end else if (RS_div_start) begin
-            if (RS_div_operand1 == ALU_result_dest) begin  // ALU에서 operand1의 연산이 끝났을때
-                PCs[tail] <= RS_div_PC;
-                Rds[tail] <= RS_div_Rd;
-                operand1s[tail] <= RS_div_operand1;
-                operand2s[tail] <= RS_div_operand2;
+        end else if (RS_mul_start) begin
+            if (RS_mul_operand1 == ALU_result_dest) begin  // ALU에서 operand1의 연산이 끝났을때
+                PCs[tail] <= RS_mul_PC;
+                Rds[tail] <= RS_mul_Rd;
+                operand1s[tail] <= RS_mul_operand1;
+                operand2s[tail] <= RS_mul_operand2;
                 operand1_datas[tail] <= ALU_result;
-                operand2_datas[tail] <= RS_div_operand2_data;
+                operand2_datas[tail] <= RS_mul_operand2_data;
                 valid_entries1[tail] <= 1;
-                valid_entries2[tail] <= RS_div_valid[1];
+                valid_entries2[tail] <= RS_mul_valid[1];
                 tail <= (tail + 1) % 16;
-            end else if (RS_div_operand2 == ALU_result_dest) begin  // ALU에서 operand2의 연산이 끝났을때
-                PCs[tail] <= RS_div_PC;
-                Rds[tail] <= RS_div_Rd;
-                operand1s[tail] <= RS_div_operand1;
-                operand2s[tail] <= RS_div_operand2;
-                operand1_datas[tail] <= RS_div_operand1_data;
+            end else if (RS_mul_operand2 == ALU_result_dest) begin  // ALU에서 operand2의 연산이 끝났을때
+                PCs[tail] <= RS_mul_PC;
+                Rds[tail] <= RS_mul_Rd;
+                operand1s[tail] <= RS_mul_operand1;
+                operand2s[tail] <= RS_mul_operand2;
+                operand1_datas[tail] <= RS_mul_operand1_data;
                 operand2_datas[tail] <= ALU_result;
-                valid_entries1[tail] <= RS_div_valid[0];
+                valid_entries1[tail] <= RS_mul_valid[0];
                 valid_entries2[tail] <= 1; 
                 tail <= (tail + 1) % 16;   
-             end else if (RS_div_operand1 == MUL_result_dest) begin  // MUL에서 operand1의 연산이 끝났을때
-                PCs[tail] <= RS_div_PC;
-                Rds[tail] <= RS_div_Rd;
-                operand1s[tail] <= RS_div_operand1;
-                operand2s[tail] <= RS_div_operand2;
+             end else if (RS_mul_operand1 == MUL_result_dest) begin  // MUL에서 operand1의 연산이 끝났을때
+                PCs[tail] <= RS_mul_PC;
+                Rds[tail] <= RS_mul_Rd;
+                operand1s[tail] <= RS_mul_operand1;
+                operand2s[tail] <= RS_mul_operand2;
                 operand1_datas[tail] <= MUL_result;
-                operand2_datas[tail] <= RS_div_operand2_data;
+                operand2_datas[tail] <= RS_mul_operand2_data;
                 valid_entries1[tail] <= 1;
-                valid_entries2[tail] <= RS_div_valid[1];
+                valid_entries2[tail] <= RS_mul_valid[1];
                 tail <= (tail + 1) % 16;
-             end else if (RS_div_operand2 == MUL_result_dest) begin  // MUL에서 operand2의 연산이 끝났을때
-                PCs[tail] <= RS_div_PC;
-                Rds[tail] <= RS_div_Rd;
-                operand1s[tail] <= RS_div_operand1;
-                operand2s[tail] <= RS_div_operand2;
-                operand1_datas[tail] <= RS_div_operand1_data;
+             end else if (RS_mul_operand2 == MUL_result_dest) begin  // MUL에서 operand2의 연산이 끝났을때
+                PCs[tail] <= RS_mul_PC;
+                Rds[tail] <= RS_mul_Rd;
+                operand1s[tail] <= RS_mul_operand1;
+                operand2s[tail] <= RS_mul_operand2;
+                operand1_datas[tail] <= RS_mul_operand1_data;
                 operand2_datas[tail] <= MUL_result;
-                valid_entries1[tail] <= RS_div_valid[0];
+                valid_entries1[tail] <= RS_mul_valid[0];
                 valid_entries2[tail] <= 1; 
                 tail <= (tail + 1) % 16;
-              end else if (RS_div_operand1 == DIV_result_dest) begin  // DIV에서 operand1의 연산이 끝났을때
-                PCs[tail] <= RS_div_PC;
-                Rds[tail] <= RS_div_Rd;
-                operand1s[tail] <= RS_div_operand1;
-                operand2s[tail] <= RS_div_operand2;
+              end else if (RS_mul_operand1 == DIV_result_dest) begin  // DIV에서 operand1의 연산이 끝났을때
+                PCs[tail] <= RS_mul_PC;
+                Rds[tail] <= RS_mul_Rd;
+                operand1s[tail] <= RS_mul_operand1;
+                operand2s[tail] <= RS_mul_operand2;
                 operand1_datas[tail] <= DIV_result;
-                operand2_datas[tail] <= RS_div_operand2_data;
+                operand2_datas[tail] <= RS_mul_operand2_data;
                 valid_entries1[tail] <= 1;
-                valid_entries2[tail] <= RS_div_valid[1];
+                valid_entries2[tail] <= RS_mul_valid[1];
                 tail <= (tail + 1) % 16;
-              end else if (RS_div_operand2 == DIV_result_dest) begin  // MUL에서 operand2의 연산이 끝났을때
-                PCs[tail] <= RS_div_PC;
-                Rds[tail] <= RS_div_Rd;
-                operand1s[tail] <= RS_div_operand1;
-                operand2s[tail] <= RS_div_operand2;
-                operand1_datas[tail] <= RS_div_operand1_data;
+              end else if (RS_mul_operand2 == DIV_result_dest) begin  // MUL에서 operand2의 연산이 끝났을때
+                PCs[tail] <= RS_mul_PC;
+                Rds[tail] <= RS_mul_Rd;
+                operand1s[tail] <= RS_mul_operand1;
+                operand2s[tail] <= RS_mul_operand2;
+                operand1_datas[tail] <= RS_mul_operand1_data;
                 operand2_datas[tail] <= DIV_result;
-                valid_entries1[tail] <= RS_div_valid[0];
+                valid_entries1[tail] <= RS_mul_valid[0];
                 valid_entries2[tail] <= 1; 
                 tail <= (tail + 1) % 16;
-             end else if ( RS_div_operand1 == EX_MEM_Physical_Address && EX_MEM_MemRead ==1) begin
-                PCs[tail] <= RS_div_PC;
-                Rds[tail] <= RS_div_Rd;
-                operand1s[tail] <= RS_div_operand1;
-                operand2s[tail] <= RS_div_operand2;
+             end else if ( RS_mul_operand1 == EX_MEM_Physical_Address && EX_MEM_MemRead ==1) begin
+                PCs[tail] <= RS_mul_PC;
+                Rds[tail] <= RS_mul_Rd;
+                operand1s[tail] <= RS_mul_operand1;
+                operand2s[tail] <= RS_mul_operand2;
                 operand1_datas[tail] <= RData;
-                operand2_datas[tail] <= RS_div_operand2_data;
+                operand2_datas[tail] <= RS_mul_operand2_data;
                 valid_entries1[tail] <= 1;
-                valid_entries2[tail] <= RS_div_valid[1] ; 
+                valid_entries2[tail] <= RS_mul_valid[1] ; 
                 tail <= (tail + 1) % 16;
-              end else if ( RS_div_operand2 == EX_MEM_Physical_Address && EX_MEM_MemRead ==1) begin
-                PCs[tail] <= RS_div_PC;
-                Rds[tail] <= RS_div_Rd;
-                operand1s[tail] <= RS_div_operand1;
-                operand2s[tail] <= RS_div_operand2;
-                operand1_datas[tail] <= RS_div_operand1_data;
+              end else if ( RS_mul_operand2 == EX_MEM_Physical_Address && EX_MEM_MemRead ==1) begin
+                PCs[tail] <= RS_mul_PC;
+                Rds[tail] <= RS_mul_Rd;
+                operand1s[tail] <= RS_mul_operand1;
+                operand2s[tail] <= RS_mul_operand2;
+                operand1_datas[tail] <= RS_mul_operand1_data;
                 operand2_datas[tail] <= RData;
-                valid_entries1[tail] <= RS_div_valid[0];
+                valid_entries1[tail] <= RS_mul_valid[0];
                 valid_entries2[tail] <= 1 ; 
                 tail <= (tail + 1) % 16;
             end else begin
-                PCs[tail] <= RS_div_PC;
-                Rds[tail] <= RS_div_Rd;
-                operand1s[tail] <= RS_div_operand1;
-                operand2s[tail] <= RS_div_operand2;
-                operand1_datas[tail] <= RS_div_operand1_data;
-                operand2_datas[tail] <= RS_div_operand1_data ;
-                valid_entries1[tail] <= RS_div_valid[0];
-                valid_entries2[tail] <= RS_div_valid[1]; 
+                PCs[tail] <= RS_mul_PC;
+                Rds[tail] <= RS_mul_Rd;
+                operand1s[tail] <= RS_mul_operand1;
+                operand2s[tail] <= RS_mul_operand2;
+                operand1_datas[tail] <= RS_mul_operand1_data;
+                operand2_datas[tail] <= RS_mul_operand1_data ;
+                valid_entries1[tail] <= RS_mul_valid[0];
+                valid_entries2[tail] <= RS_mul_valid[1]; 
                 tail <= (tail + 1) % 16;
              end 
             if (ALU_result_valid) begin
@@ -239,15 +238,15 @@ module RS_Mul (
             end
          end
       end
-    
+
 
 
     always @(*) begin
         for (i = 0; i < 32; i = i + 1) begin
-            if (valid_entries1[i] && valid_entries2[i] ) begin
+            if (valid_entries1[i] && valid_entries2[i]) begin
                 readys[i] = 1;
                 result[i] = {1'b1, PCs[i], Rds[i], operand1_datas[i], operand2_datas[i]};
-            end
+            end 
         end
     end
 
@@ -426,4 +425,3 @@ module RS_Mul (
         end
     end
 endmodule
-
