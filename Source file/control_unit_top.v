@@ -18,6 +18,7 @@ wire [5:0] mapped_address;
 
 // address_mapper ?��?��?��?��
 address_mapper addr_mapper (
+    .reset(rst),
     .opcode(opcode),
     .funct3(funct3),
     .funct7(funct7),
