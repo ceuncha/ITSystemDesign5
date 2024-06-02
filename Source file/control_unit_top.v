@@ -1,5 +1,5 @@
 module control_unit_top(
-    input rst
+    input rst,
     input [6:0] opcode,
     input [2:0] funct3,
     input [6:0] funct7,
