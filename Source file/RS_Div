@@ -65,20 +65,20 @@ module Reservation_station (
     input wire [31:0] DIV_result,
     input wire [7:0] DIV_result_dest,
     input wire DIV_result_valid,
-    output reg [124:0] result_out
+    output reg [108:0] result_out
 );
     
     // Internal storage for reservation station entries
     reg [31:0] PCs [0:31];
-    reg [6:0] Rds [0:31];
+    reg [7:0] Rds [0:31];
     reg [3:0] ALUOPs [0:31];
-    reg [6:0] operand1s [0:31];
-    reg [6:0] operand2s [0:31];
+    reg [7:0] operand1s [0:31];
+    reg [7:0] operand2s [0:31];
     reg [31:0] operand1_datas [0:31];  // operand1 data
     reg [31:0] operand2_datas [0:31]; // operand2 data
     reg [31:0] valid_entries1;  // operand1이 valid한지
     reg [31:0] valid_entries2; // operand2가 valid한지
-    reg [124:0] result [0:31];
+    reg [108:0] result [0:31];
     reg [4:0] tail;
     reg [31:0] readys;
     wire [31:0] Y;
@@ -256,7 +256,7 @@ module Reservation_station (
         for (i = 0; i < 32; i = i + 1) begin
             if (valid_entries1[i] && valid_entries2[i] ) begin
                 readys[i] = 1;
-                result[i] = {1'b1, PCs[i], Rds[i], ALUOPs[i], operand1s[i], operand2s[i], operand1_datas[i], operand2_datas[i]};
+                result[i] = {1'b1, PCs[i], Rds[i], ALUOPs[i],operand1_datas[i], operand2_datas[i]};
             end
         end
     end
