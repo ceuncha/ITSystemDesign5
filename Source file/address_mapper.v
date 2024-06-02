@@ -59,7 +59,7 @@ always @(*) begin
                 endcase
             end
             // LUI
-            7'b0110117: mapped_address = 6'd23;
+            7'b0110111: mapped_address = 6'd23;
             // AUIPC
             7'b0010111: mapped_address = 6'd24;
             // JAL
