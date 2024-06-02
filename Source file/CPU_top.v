@@ -63,7 +63,7 @@ wire [31:0] Load_Data;
 wire [7:0] DIV_Phy;
 wire [7:0] MUL_Phy;
 wire [7:0] Load_Phy;
-wire ALU_Done;
+
 wire DIV_Done;
 wire MUL_Done;
 wire Load_Done;
