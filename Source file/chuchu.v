@@ -44,7 +44,7 @@ module chuchu (
 
             current_index <= 0;
             chuchu_out <= chuchu_array[0];
-            chuchu_array[current_index] <= rat_data;
+            chuchu_array[0] <= rat_data;
 
         end else begin
             chuchu_out <= chuchu_array[current_index];
