@@ -40,10 +40,10 @@ module chuchu (
             for (i = 0; i < 128; i = i + 1) begin
                 chuchu_array[i] <= 32 + i;
             end
-            current_index <= 0;
-            chuchu_out <= chuchu_array[current_index];
+            current_index <= 1;
+            chuchu_out <= chuchu_array[0];
             chuchu_array[current_index] <= rat_data;
-            current_index <= (current_index + 1) % 128;
+
         end else begin
             chuchu_out <= chuchu_array[current_index];
             chuchu_array[current_index] <= rat_data;
