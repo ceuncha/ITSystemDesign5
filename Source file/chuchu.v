@@ -34,7 +34,7 @@ module chuchu (
             end
         end
     endgenerate
-    always @(negedge reset) begin
+    always @(posedge reset) begin
             for (i = 0; i < 128; i = i + 1) begin
                 chuchu_array[i] <= 32 + i;
             end
