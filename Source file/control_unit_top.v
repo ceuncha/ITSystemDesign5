@@ -26,7 +26,7 @@ address_mapper addr_mapper (
 
 // control_rom ?��?��?��?��
 control_rom ctrl_rom (
-    .reset(rst)
+    .reset(rst),
     .mapped_address(mapped_address),
     .RegWrite(RegWrite),
     .MemToReg(MemToReg),
