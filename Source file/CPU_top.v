@@ -5,6 +5,8 @@ module CPU_top(
     output [31:0] x16, x17, x18, x19, x20, x21, x22, x23, x24, x25, x26, x27, x28, x29, x30, x31
 );
 
+//////////IF_ID_Wire    
+    
 wire [31:0] PC, PC_Branch;   
 wire  PCSrc;
 wire [31:0] instOut;
@@ -68,7 +70,179 @@ wire DIV_Done;
 wire MUL_Done;
 wire Load_Done;
 
+/////////////////////RS_EX_decoder wires
+    
+    wire [31:0] RS_alu_operand1_data, RS_alu_operand2_data, RS_alu_PC;
+    wire [2:0] RS_alu_funct3;
+    wire RS_alu_MemToReg, RS_alu_MenRead, RS_alu_MemWrite, RS_alu_ALUSrc1, RS_alu_ALUSrc2, RS_alu_Jump, RS_alu_Branch;
+    wire [3:0] RS_alu_ALUOP;
+    wire [7:0] RS_alu_Rd, RS_alu_operand1, RS_alu_operand2;
+    wire [1:0] RS_alu_valid;
+    wire [31:0] RS_alu_immediate;
+    wire RS_alu_start;
 
+    wire [31:0] RS_mul_operand1_data, RS_mul_operand2_data, RS_mul_PC;
+    wire [2:0] RS_mul_funct3;
+    wire RS_mul_MemToReg, RS_mul_MemRead, RS_mul_MemWrite, RS_mul_ALUSrc1, RS_mul_ALUSrc2, RS_mul_Jump, RS_mul_Branch;
+    wire [3:0] RS_mul_ALUOP;
+    wire [7:0] RS_mul_Rd, RS_mul_operand1, RS_mul_operand2;
+    wire [1:0] RS_mul_valid;
+    wire [31:0] RS_mul_immediate;
+    wire RS_mul_start;
+
+    wire [31:0] RS_div_operand1_data, RS_div_operand2_data, RS_div_PC;
+    wire [2:0] RS_div_funct3;
+    wire RS_div_MemToReg, RS_div_MenRead, RS_div_MemWrite, RS_div_ALUSrc1, RS_div_ALUSrc2, RS_div_Jump, RS_div_Branch;
+    wire [3:0] RS_div_ALUOP;
+    wire [7:0] RS_div_Rd, RS_div_operand1, RS_div_operand2;
+    wire [1:0] RS_div_valid;
+    wire [31:0] RS_div_immediate;
+    wire RS_div_start;
+
+            // rs_alu_wire
+    wire RS_alu_start;
+    wire [31:0] RS_alu_PC;
+    wire [7:0] RS_alu_Rd;
+    wire RS_alu_MemToReg;
+    wire RS_alu_MenRead;
+    wire RS_alu_MemWrite;
+    wire [3:0] RS_alu_ALUOP;
+    wire RS_alu_ALUSrc1;
+    wire RS_alu_ALUSrc2;
+    wire RS_alu_Jump;
+    wire RS_alu_Branch;
+    wire [2:0] RS_alu_funct3;
+    wire [31:0] RS_alu_immediate;
+
+    wire [7:0] RS_alu_operand1;
+    wire [7:0] RS_alu_operand2;
+    wire [31:0] RS_mul_operand1_data;
+    wire [31:0] RS_mul_operand2_data;
+    wire [1:0] RS_alu_valid;
+    wire [174:0]result_out_alu;
+
+
+    wire Operand2_ALU=result_out_alu[0:31];
+    wire Operand1_ALU=result_out_alu[32:63];
+    wire immediate=result_out_alu[64:95];
+    wire RS_EX_fucnt3=result_out_alu[96:98];
+    wire RS_EX_Branch=result_out_alu[99];
+    wire RS_EX_Jumps=result_out_alu[100];
+    wire RS_EX_ALUSrc2=result_out_alu[101];
+    wire RS_EX_ALUSrc1=result_out_alu[102];
+    wire ALUop=result_out_alu[103:106];
+    wire RS_EX_MemWrite=result_out_alu[107];
+    wire RS_EX_MemRead=result_out_alu[108];
+    wire RS_EX_MemToReg=result_out_alu[109];
+    wire ALU_Phy=result_out_alu[110:117];
+    wire RS_EX_PC_ALU=result_out_alu[118:149];
+    wire ALU_Done=result_out_alu[150];
+
+
+    // Internal signals for RS_mul wire
+    wire RS_mul_start;
+    wire [31:0] RS_mul_PC;
+    wire [7:0] RS_mul_Rd;
+    wire Load_Done;
+    wire [31:0] Load_Data;
+    wire [7:0] Load_Phy;
+    wire [7:0] RS_mul_operand1;
+    wire [7:0] RS_mul_operand2;
+    wire [31:0] RS_mul_operand1_data;
+    wire [31:0] RS_mul_operand2_data;
+    wire [1:0] RS_mul_valid;
+    wire [31:0] ALU_Data;
+
+    wire ALU_Done;
+    wire [31:0] MUL_Data;
+    wire [7:0] MUL_Phy;
+    wire MUL_Done;
+    wire [31:0] DIV_Data;
+    wire [7:0] DIV_Phy;
+    wire DIV_Done;
+   wire [104:0]result_out_mul;
+
+    wire Operand2_Mul=result_out_mul[0:31];
+    wire Operand1_Mul=result_out_mul[32:63];
+    wire RS_EX_Mul_Physical_address_in=result_out_mul[64:71];
+    wire RS_EX_PC_Mul_in=result_out_mul[72:103];
+    wire Mul_start_in=result_out_mul[104];
+
+
+
+  /////////////////////  //RS_div_wire
+
+
+        wire RS_div_start;
+    wire [31:0] RS_div_PC;
+    wire [7:0] RS_div_Rd;
+    wire [7:0] RS_div_operand1;
+    wire [7:0] RS_div_operand2;
+    wire [31:0] RS_div_operand1_data;
+    wire [31:0] RS_div_operand2_data;
+    wire [1:0] RS_div_valid;
+    wire [3:0] RS_div_ALUOP;
+    wire [108:0]result_out_div;
+
+        wire Operand2_Div=result_out_div[0:31];
+    wire Operand1_Div=result_out_div[32:63];
+    wire divider_op=result_out_div[64:67];
+    wire RS_EX_Div_Physical_address_in=result_out_div[68:75];
+    wire RS_EX_PC_Div_in=result_out_div[76:107];
+    wire Div_start_in=result_out_div[108];
+
+
+    ////////////////ex_mem wire
+    //////////
+   wire RS_EX_Branch;
+   wire RS_Ex_Jump;
+   wire RS_EX_MemRead;
+   wire RS_Ex_MemToReg;
+   wire RS_EX_ALU_Src1;
+   wire RS_EX_ALU_Src2;
+   wire RS_EX_MemWrite;
+   wire [3:0] ALUop;
+   wire [2:0] RS_EX_funct3;
+   wire negaive,overflow,zero,carry;
+   wire [31:0] ALU_A;
+   wire [31:0] ALU_B;
+   wire [31:0] ALUResult;
+   wire [31:0] PC_Return;
+   wire [31:0] Operand1_ALU;
+   wire ALU_done;
+   wire [31:0] RS_EX_PC_ALU;
+   wire [31:0] Operand2_ALU;
+   wire [31:0] immediate;
+   wire [31:0] Operand1_Mul;
+   wire [7:0] RS_EX_Mul_Physical_address_in;
+   wire Mul_start_in;
+   wire [31:0] RS_EX_PC_Mul_in;
+   wire [31:0] Operand2_Mul;
+   wire [31:0] RS_EX_PC_Mul_out;
+   wire [31:0] Operand1_Div;
+   wire [7:0] RS_EX_Div_Physical_address_in;
+   wire Div_start_in;
+   wire [31:0] RS_EX_PC_Div_in;
+   wire [31:0] Operand2_Div;
+   wire [31:0] RS_EX_PC_Div_out;
+   wire [3:0]divider_op;
+
+
+       //MEM_WB////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    wire EX_MEM_MemToReg, Load_Done, EX_MEM_MemWrite, EX_MEM_alu_exec_done, mul_exec_done, div_exec_done;
+    wire [2:0] EX_MEM_funct3;
+    wire [31:0] EX_MEM_Rdata2, EX_MEM_ALUResult, EX_MEM_alu_exec_PC, EX_MEM_alu_physical_address;
+    wire [31:0] mul_exec_value, mul_exec_PC, div_exec_value, div_exec_PC;
+    wire [31:0] Load_Data;
+    wire MEM_WB_MemToReg;
+    wire [31:0] MEM_WB_ALUResult, MEM_WB_RData, alu_exec_value, alu_exec_PC;
+    wire alu_exec_done;
+    wire [31:0] out_value;
+    wire [4:0] out_dest;
+    wire out_reg_write;
+
+    
+    
 ///////////////////////////IF_ID////////////////////////////////////////////////
 Program_Counter u_Program_Counter(
     .clk(clk),
@@ -188,34 +362,7 @@ control_unit_top u_control_unit_top(
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //RS_EX_decoder top Line
     
-//RS_EX_decoder top Line
-    
-    wire [31:0] RS_alu_operand1_data, RS_alu_operand2_data, RS_alu_PC;
-    wire [2:0] RS_alu_funct3;
-    wire RS_alu_MemToReg, RS_alu_MenRead, RS_alu_MemWrite, RS_alu_ALUSrc1, RS_alu_ALUSrc2, RS_alu_Jump, RS_alu_Branch;
-    wire [3:0] RS_alu_ALUOP;
-    wire [7:0] RS_alu_Rd, RS_alu_operand1, RS_alu_operand2;
-    wire [1:0] RS_alu_valid;
-    wire [31:0] RS_alu_immediate;
-    wire RS_alu_start;
 
-    wire [31:0] RS_mul_operand1_data, RS_mul_operand2_data, RS_mul_PC;
-    wire [2:0] RS_mul_funct3;
-    wire RS_mul_MemToReg, RS_mul_MemRead, RS_mul_MemWrite, RS_mul_ALUSrc1, RS_mul_ALUSrc2, RS_mul_Jump, RS_mul_Branch;
-    wire [3:0] RS_mul_ALUOP;
-    wire [7:0] RS_mul_Rd, RS_mul_operand1, RS_mul_operand2;
-    wire [1:0] RS_mul_valid;
-    wire [31:0] RS_mul_immediate;
-    wire RS_mul_start;
-
-    wire [31:0] RS_div_operand1_data, RS_div_operand2_data, RS_div_PC;
-    wire [2:0] RS_div_funct3;
-    wire RS_div_MemToReg, RS_div_MenRead, RS_div_MemWrite, RS_div_ALUSrc1, RS_div_ALUSrc2, RS_div_Jump, RS_div_Branch;
-    wire [3:0] RS_div_ALUOP;
-    wire [7:0] RS_div_Rd, RS_div_operand1, RS_div_operand2;
-    wire [1:0] RS_div_valid;
-    wire [31:0] RS_div_immediate;
-    wire RS_div_start;
 
    RS_EX_decoder rs_ex_decoder_inst (
         .clk(clk),
@@ -294,27 +441,6 @@ control_unit_top u_control_unit_top(
         .out_div_immediate(RS_div_immediate)
     );
 
-            // Internal signals for Reservation_station
-    wire RS_alu_start;
-    wire [31:0] RS_alu_PC;
-    wire [7:0] RS_alu_Rd;
-    wire RS_alu_MemToReg;
-    wire RS_alu_MenRead;
-    wire RS_alu_MemWrite;
-    wire [3:0] RS_alu_ALUOP;
-    wire RS_alu_ALUSrc1;
-    wire RS_alu_ALUSrc2;
-    wire RS_alu_Jump;
-    wire RS_alu_Branch;
-    wire [2:0] RS_alu_funct3;
-    wire [31:0] RS_alu_immediate;
-
-    wire [7:0] RS_alu_operand1;
-    wire [7:0] RS_alu_operand2;
-    wire [31:0] RS_mul_operand1_data;
-    wire [31:0] RS_mul_operand2_data;
-    wire [1:0] RS_alu_valid;
-    wire [174:0]result_out_alu;
 
  
 
@@ -357,45 +483,9 @@ control_unit_top u_control_unit_top(
             .result_out(result_out_alu)
     );
 
-    wire Operand2_ALU=result_out_alu[0:31];
-    wire Operand1_ALU=result_out_alu[32:63];
-    wire immediate=result_out_alu[64:95];
-    wire RS_EX_fucnt3=result_out_alu[96:98];
-    wire RS_EX_Branch=result_out_alu[99];
-    wire RS_EX_Jumps=result_out_alu[100];
-    wire RS_EX_ALUSrc2=result_out_alu[101];
-    wire RS_EX_ALUSrc1=result_out_alu[102];
-    wire ALUop=result_out_alu[103:106];
-    wire RS_EX_MemWrite=result_out_alu[107];
-    wire RS_EX_MemRead=result_out_alu[108];
-    wire RS_EX_MemToReg=result_out_alu[109];
-    wire ALU_Phy=result_out_alu[110:117];
-    wire RS_EX_PC_ALU=result_out_alu[118:149];
-    wire ALU_Done=result_out_alu[150];
 
 
-    // Internal signals for RS_mul
-    wire RS_mul_start;
-    wire [31:0] RS_mul_PC;
-    wire [7:0] RS_mul_Rd;
-    wire Load_Done;
-    wire [31:0] Load_Data;
-    wire [7:0] Load_Phy;
-    wire [7:0] RS_mul_operand1;
-    wire [7:0] RS_mul_operand2;
-    wire [31:0] RS_mul_operand1_data;
-    wire [31:0] RS_mul_operand2_data;
-    wire [1:0] RS_mul_valid;
-    wire [31:0] ALU_Data;
 
-    wire ALU_Done;
-    wire [31:0] MUL_Data;
-    wire [7:0] MUL_Phy;
-    wire MUL_Done;
-    wire [31:0] DIV_Data;
-    wire [7:0] DIV_Phy;
-    wire DIV_Done;
-   wire [104:0]result_out_mul;
 
 
 
@@ -426,65 +516,15 @@ control_unit_top u_control_unit_top(
         .result_out(result_out_mul)
     );
  
-    wire Operand2_Mul=result_out_mul[0:31];
-    wire Operand1_Mul=result_out_mul[32:63];
-    wire RS_EX_Mul_Physical_address_in=result_out_mul[64:71];
-    wire RS_EX_PC_Mul_in=result_out_mul[72:103];
-    wire Mul_start_in=result_out_mul[104];
 
-    wire RS_div_start;
-    wire [31:0] RS_div_PC;
-    wire [7:0] RS_div_Rd;
-    wire [7:0] RS_div_operand1;
-    wire [7:0] RS_div_operand2;
-    wire [31:0] RS_div_operand1_data;
-    wire [31:0] RS_div_operand2_data;
-    wire [1:0] RS_div_valid;
-    wire [3:0] RS_div_ALUOP;
-    wire [108:0]result_out_div;
+
+
     RS_Div RS_Div (.clk(clk),.reset(rst),.RS_div_start(RS_div_start),.RS_div_PC(RS_div_PC),.RS_div_Rd(RS_div_Rd),.RS_div_ALUOP(RS_div_ALUOP),.EX_MEM_MemRead(Load_Done),.RData(Load_Data),.EX_MEM_Physical_Address(Load_Phy),.RS_div_operand1(RS_div_operand1),.RS_div_operand2(RS_div_operand2),.RS_div_operand1_data(RS_div_operand1_data),.RS_div_operand2_data(RS_div_operand2_data),.RS_div_valid(RS_div_valid),.ALU_result(ALU_Data),.ALU_result_dest(ALU_Phy),.ALU_result_valid(ALU_Done),.MUL_result(MUL_Data),.MUL_result_dest(MUL_Phy),.MUL_result_valid(MUL_Done),.DIV_result(DIV_Data),.DIV_result_dest(DIV_Phy),.DIV_result_valid(DIV_Done),.result_out(result_out_div));
 
-    wire Operand2_Div=result_out_div[0:31];
-    wire Operand1_Div=result_out_div[32:63];
-    wire divider_op=result_out_div[64:67];
-    wire RS_EX_Div_Physical_address_in=result_out_div[68:75];
-    wire RS_EX_PC_Div_in=result_out_div[76:107];
-    wire Div_start_in=result_out_div[108];
-    // EX_MEM////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-   wire RS_EX_Branch;
-   wire RS_Ex_Jump;
-   wire RS_EX_MemRead;
-   wire RS_Ex_MemToReg;
-   wire RS_EX_ALU_Src1;
-   wire RS_EX_ALU_Src2;
-   wire RS_EX_MemWrite;
-   wire [3:0] ALUop;
-   wire [2:0] RS_EX_funct3;
-   wire negaive,overflow,zero,carry;
-   wire [31:0] ALU_A;
-   wire [31:0] ALU_B;
-   wire [31:0] ALUResult;
-   wire [31:0] PC_Return;
-   wire [31:0] Operand1_ALU;
-   wire ALU_done;
-   wire [31:0] RS_EX_PC_ALU;
-   wire [31:0] Operand2_ALU;
-   wire [31:0] immediate;
-   wire [31:0] Operand1_Mul;
-   wire [7:0] RS_EX_Mul_Physical_address_in;
-   wire Mul_start_in;
-   wire [31:0] RS_EX_PC_Mul_in;
-   wire [31:0] Operand2_Mul;
-   wire [31:0] RS_EX_PC_Mul_out;
-   wire [31:0] Operand1_Div;
-   wire [7:0] RS_EX_Div_Physical_address_in;
-   wire Div_start_in;
-   wire [31:0] RS_EX_PC_Div_in;
-   wire [31:0] Operand2_Div;
-   wire [31:0] RS_EX_PC_Div_out;
-   wire [3:0]divider_op;
-   
-   ALU ALU(.A(ALU_A),.B(Operand2),.ALUop(ALUop),.Result(ALUResult),.negative(negative),.overflow(overflow),.zero(zero),.carry(carry));
+
+
+  ////////////ALU
+    ALU ALU(.A(ALU_A),.B(Operand2),.ALUop(ALUop),.Result(ALUResult),.negative(negative),.overflow(overflow),.zero(zero),.carry(carry));
    BranchUnit branchUnit(.ID_EX_Jump(RS_EX_jump),.ID_EX_Branch(RS_EX_Branch),.ID_EX_funct3(RS_EX_func3),.ALUResult(ALUResult),.imm(immediate),.PC(RS_EX_PC_ALU),.ALUNegative(negative),.ALUZero(zero),.ALUOverflow(overflow),.ALUCarry(carry),.PC_Branch(PC_Branch),.branch_index(branch_index),.PCSrc(PCSrc),.IF_ID_Flush(IF_ID_Flush));
    add4 add4 (.in(RS_EX_PC_ALU),.out(PC_Return));
    MUX_2input pretty_mux (.a(ALUResult),.b(PC_Return),.sel(ID_EX_jump),.y(ALU_Data));
@@ -493,19 +533,8 @@ control_unit_top u_control_unit_top(
    multiplier multiplier (.clk(clk),.rst(rst),.start(Mul_start_in),.A(Operand1_Mul),.B(Operand2_Mul),.Physical_address_in(RS_EX_Mul_Physical_address_in),.PC_in(RS_EX_PC_Mul_in),.Product(MUL_Data),.done(MUL_Done),.Physical_address_out(MUL_phy),.PC_out(RS_EX_PC_Mul_out));
    divider divider (.clk(clk),.rst(rst),.start(Div_start_in),.A(Operand1_Div),.B(Operand2_Div),.Physical_address_in(RS_EX_Div_Physical_address_in),.PC_in(RS_EX_PC_Div_in),.Result(DIV_Data),.divider_op_in(divider_op),.done(DIV_Done),.Physical_address_out(DIV_Phy),.PC_out(RS_EX_PC_Div_out));
 
-   //MEM_WB////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    wire EX_MEM_MemToReg, Load_Done, EX_MEM_MemWrite, EX_MEM_alu_exec_done, mul_exec_done, div_exec_done;
-    wire [2:0] EX_MEM_funct3;
-    wire [31:0] EX_MEM_Rdata2, EX_MEM_ALUResult, EX_MEM_alu_exec_PC, EX_MEM_alu_physical_address;
-    wire [31:0] mul_exec_value, mul_exec_PC, div_exec_value, div_exec_PC;
-    wire [31:0] Load_Data;
-    wire MEM_WB_MemToReg;
-    wire [31:0] MEM_WB_ALUResult, MEM_WB_RData, alu_exec_value, alu_exec_PC;
-    wire alu_exec_done;
-    wire [31:0] out_value;
-    wire [4:0] out_dest;
-    wire out_reg_write;
 
+////////////////////EX_MEM
     exmem_pipeline_register exmem (
         .clk(clk),
         .reset(rst),
