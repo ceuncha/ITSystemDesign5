@@ -27,14 +27,14 @@ always @(*) begin
                                             6'd63;
                     3'b111: mapped_address = 6'd3; // AND
                     3'b110: mapped_address = (funct7 == 7'b0000001) ? 6'd29: 6'd4; // OR
-                    3'b100: mapped_address = 6'd5; // XOR
+                    3'b100: mapped_address = (funct7 == 7'b0000001)? 6'd28: 6'd5; // XOR
                     3'b001: mapped_address = 6'd6; // SLL
                     3'b101: mapped_address = (funct7 == 7'b0000000) ? 6'd7 : // SRL
                                             (funct7 == 7'b0100000) ? 6'd8 : // SRA
                                             6'd63;
                     3'b010: mapped_address = 6'd9; // SLT
                     3'b011: mapped_address = 6'd10; // SLTU
-                    3'b100: mapped_address = 6'd28 ; // DIV (몫)
+                 
                                           
                     default: mapped_address = 6'd63;
                 endcase
