@@ -54,7 +54,7 @@ module RAT (
             for (k = 0; k < 32; k = k + 1) begin
                 phy_addr_table[k] <= k;
             end
-            free_phy_addr_out <= 8'b10100001; // 초기 주소 전송 // 161번지지
+            free_phy_addr_out <= 8'b10100000; // 초기 주소 전송 // 160번지지
         end
     end
 
