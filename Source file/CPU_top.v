@@ -314,7 +314,7 @@ control_unit_top u_control_unit_top(
     wire [31:0] RS_mul_operand1_data;
     wire [31:0] RS_mul_operand2_data;
     wire [1:0] RS_alu_valid;
-    
+    wire [174:0]result_out_alu;
 
  
 
@@ -356,7 +356,7 @@ control_unit_top u_control_unit_top(
         .DIV_result_valid(DIV_Done),
             .result_out(result_out_alu)
     );
-    wire [174:0]result_out_alu;
+
     assign Operand2_ALU=result_out_alu[0:31];
     assign Operand1_ALU=result_out_alu[32:63];
     assign immediate=result_out_alu[64:95];
@@ -395,7 +395,7 @@ control_unit_top u_control_unit_top(
     wire [31:0] DIV_Data;
     wire [7:0] DIV_Phy;
     wire DIV_Done;
-
+   wire [104:0]result_out_mul;
 
 
 
@@ -425,12 +425,12 @@ control_unit_top u_control_unit_top(
         .DIV_result_valid(DIV_Done),
         .result_out(result_out_mul)
     );
-    wire [104:0]result_out_mul;
+ 
     assign Operand2_Mul=result_out_mul[0:31];
     assign Operand1_Mul=result_out_mul[32:63];
     assign RS_EX_Mul_Physical_address_in=result_out_mul[64:71];
     assign RS_EX_PC_Mul_in=result_out_mul[72:103];
-    assign Mul_start_in=result_out_mul[104]
+    assign Mul_start_in=result_out_mul[104];
 
     wire RS_div_start;
     wire [31:0] RS_div_PC;
@@ -441,9 +441,9 @@ control_unit_top u_control_unit_top(
     wire [31:0] RS_div_operand2_data;
     wire [1:0] RS_div_valid;
     wire [3:0] RS_div_ALUOP;
-
-    RS_div RS_Div (.clk(clk),.reset(rst),.RS_div_start(RS_div_start),.RS_div_PC(RS_div_PC),.RS_div_Rd(RS_div_Rd),.RS_div_ALUOP(RS_div_ALUOP),.EX_MEM_MemRead(Load_Done),.RData(Load_Data),.EX_MEM_Physical_Address(Load_Phy),.RS_div_operand1(RS_div_operand1),.RS_div_operand2(RS_div_operand2),.RS_div_operand1_data(RS_div_operand1_data),.RS_div_operand2_data(RS_div_operand2_data),.RS_div_valid(RS_div_valid),.ALU_result(ALU_Data),.ALU_result_dest(ALU_Phy),.ALU_result_valid(ALU_Done),.MUL_result(MUL_Data),.MUL_result_dest(MUL_Phy),.MUL_result_valid(MUL_Done),.DIV_result(DIV_Data),.DIV_result_dest(DIV_Phy),.DIV_result_valid(DIV_Done),.result_out(result_out_div));
     wire [108:0]result_out_div;
+    RS_div RS_Div (.clk(clk),.reset(rst),.RS_div_start(RS_div_start),.RS_div_PC(RS_div_PC),.RS_div_Rd(RS_div_Rd),.RS_div_ALUOP(RS_div_ALUOP),.EX_MEM_MemRead(Load_Done),.RData(Load_Data),.EX_MEM_Physical_Address(Load_Phy),.RS_div_operand1(RS_div_operand1),.RS_div_operand2(RS_div_operand2),.RS_div_operand1_data(RS_div_operand1_data),.RS_div_operand2_data(RS_div_operand2_data),.RS_div_valid(RS_div_valid),.ALU_result(ALU_Data),.ALU_result_dest(ALU_Phy),.ALU_result_valid(ALU_Done),.MUL_result(MUL_Data),.MUL_result_dest(MUL_Phy),.MUL_result_valid(MUL_Done),.DIV_result(DIV_Data),.DIV_result_dest(DIV_Phy),.DIV_result_valid(DIV_Done),.result_out(result_out_div));
+
     assign Operand2_Div=result_out_div[0:31];
     assign Operand1_Div=result_out_div[32:63];
     assign divider_op=result_out_div[64:67];
