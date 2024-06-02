@@ -571,7 +571,7 @@ control_unit_top u_control_unit_top(
         .RS_EX_alu_Physical_address(ALU_Phy),
         .Mul_Result(MUL_Data),
         .RS_EX_PC_Mul_out(RS_EX_PC_Mul_out),
-        .Mul_done_out(Mul_done_out),
+        .Mul_done_out(MUL_Done),
         .Div_Result(DIV_Data),
         .RS_EX_PC_Div_out(RS_EX_PC_Div_out),
         .Div_done_out(DIV_Done),
