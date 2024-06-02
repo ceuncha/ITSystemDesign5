@@ -120,7 +120,7 @@ wire Load_Done;
     wire [31:0] RS_mul_operand1_data;
     wire [31:0] RS_mul_operand2_data;
     wire [1:0] RS_alu_valid;
-    wire [174:0]result_out_alu;
+    wire [150:0]result_out_alu;
 
 
  wire [31:0] Operand2_ALU = result_out_alu[31:0];
