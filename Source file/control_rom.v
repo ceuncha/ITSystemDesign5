@@ -16,8 +16,8 @@ reg [12:0] ROM [0:63]; // ROM 크기를 13비트로 증가
 
 assign {RegWrite, MemToReg, MemRead, MemWrite, ALUOp, ALUSrc, RWsel, Branch, Jump} = ROM[mapped_address];
 
-always @(posedge reset) begin
-    if (reset) begin
+    always @(negedge reset) begin
+   
         // 모든 제어 신호를 주소 0에서 0으로 초기화
         ROM[0] = 13'b0_0_0_0_0000_00_0_0_0;
 
@@ -61,7 +61,7 @@ always @(posedge reset) begin
         ROM[27] = 13'b1_0_0_0_1010_10_0_0_0; // MUL
         ROM[28] = 13'b1_0_0_0_1011_10_0_0_0; // DIV (몫)
         ROM[29] = 13'b1_0_0_0_1100_10_0_0_0; // REM (나머지)
-    end
+
 end
 
 endmodule
