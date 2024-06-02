@@ -82,8 +82,8 @@ module RS_EX_decoder(
 
     output reg [7:0] div_rd_phy_reg,      // Div ALU로 보낼 물리적 레지스터 주소
     output reg div_rs_on,
-    output reg [7:8] out_div_Operand1_phy,
-    output reg [7:8] out_div_Operand2_phy,
+    output reg [7:0] out_div_Operand1_phy,
+    output reg [7:0] out_div_Operand2_phy,
     output reg [1:0] out_div_valid,
     output reg [31:0] out_div_immediate
 );
