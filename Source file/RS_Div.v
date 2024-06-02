@@ -41,7 +41,7 @@ module priority_encoder (
     end
 endmodule
 
-module Reservation_station (
+module RS_Div (
     input wire clk,
     input wire reset,
     input wire RS_div_start,
