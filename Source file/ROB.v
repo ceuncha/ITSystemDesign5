@@ -23,7 +23,7 @@ module ROB(
 );
 
 // ROB memory
-reg [96:0] rob_entry [0:31];          // ROB entry: ready(1), reg_write(1), value(32), instr(32), PC(32)
+reg [97:0] rob_entry [0:31];            // ROB entry: ready(1), reg_write(1), value(32), instr(32), PC(32)
 reg [4:0] head;                        // Head pointer (5 bits for 32 entries)
 reg [4:0] tail;                        // Tail pointer (5 bits for 32 entries)
 integer i;
@@ -32,7 +32,7 @@ integer i;
 task reset_rob_entries;
     begin
         for (i = 0; i < 32; i = i + 1) begin
-            rob_entry[i] <= 97'b0;     // Reset ROB entry with all fields set to 0
+            rob_entry[i] <= 98'b0;     // Reset ROB entry with all fields set to 0
         end
     end
 endtask
@@ -48,7 +48,7 @@ always @(posedge clk or posedge rst) begin
             // Update the branch entry with PC_Return value
             for (i = 0; i < 32; i = i + 1) begin
                 if (rob_entry[i][31:0] == branch_index) begin
-                    rob_entry[i][96:0] <= {1'b1, rob_entry[i][95], PC_Return, rob_entry[i][62:31], rob_entry[i][30:0]};
+                    rob_entry[i][97:0] <= {1'b1, rob_entry[i][96], PC_Return, rob_entry[i][63:32], rob_entry[i][31:0]};
                     tail <= (i + 1) % 32; // Move tail to the entry right after the branch entry
                 end
             end
@@ -68,13 +68,13 @@ always @(posedge clk or posedge rst) begin
         if (alu_exec_done || mul_exec_done || div_exec_done) begin
             for (i = 0; i < 32; i = i + 1) begin
                 if (alu_exec_done && rob_entry[i][31:0] == alu_exec_PC) begin
-                    rob_entry[i][96:0] <= {1'b1, rob_entry[i][95], alu_exec_value, rob_entry[i][62:31], rob_entry[i][30:0]}; // Update value and maintain reg_write, instr, PC
+                    rob_entry[i][97:0] <= {1'b1, rob_entry[i][96], alu_exec_value, rob_entry[i][63:32], rob_entry[i][31:0]}; // Update value and maintain reg_write, instr, PC
                 end
                 if (mul_exec_done && rob_entry[i][31:0] == mul_exec_PC) begin
-                    rob_entry[i][96:0] <= {1'b1, rob_entry[i][95], mul_exec_value, rob_entry[i][62:31], rob_entry[i][30:0]}; // Update value and maintain reg_write, instr, PC       
+                    rob_entry[i][97:0] <= {1'b1, rob_entry[i][96], mul_exec_value, rob_entry[i][63:32], rob_entry[i][31:0]}; // Update value and maintain reg_write, instr, PC       
                 end
                 if (div_exec_done && rob_entry[i][31:0] == div_exec_PC) begin
-                    rob_entry[i][96:0] <= {1'b1, rob_entry[i][95], div_exec_value, rob_entry[i][62:31], rob_entry[i][30:0]}; // Update value and maintain reg_write, instr, PC     
+                    rob_entry[i][97:0] <= {1'b1, rob_entry[i][96], div_exec_value, rob_entry[i][63:32], rob_entry[i][31:0]}; // Update value and maintain reg_write, instr, PC     
                 end
             end
         end
@@ -83,11 +83,11 @@ end
 
 // Output logic
 always @(posedge clk) begin
-    if (rob_entry[head][96]) begin       // Check if the entry is ready
-        out_value <= rob_entry[head][94:63];     // Output value
-        out_dest <= rob_entry[head][57:53];      // Extract out_dest from instr[11:7]
-        out_reg_write <= rob_entry[head][95];   // Output RegWrite status
-        rob_entry[head][96] <= 1'b0;            // Clear the ready flag after consuming the entry
+    if (rob_entry[head][97]) begin       // Check if the entry is ready
+        out_value <= rob_entry[head][95:64];     // Output value
+        out_dest <= rob_entry[head][42:38];      // Extract out_dest from instr[11:7]
+        out_reg_write <= rob_entry[head][96];   // Output RegWrite status
+        rob_entry[head][97] <= 1'b0;            // Clear the ready flag after consuming the entry
         head <= (head + 1) % 32;                 // Circular buffer handling
     end
 end
