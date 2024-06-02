@@ -536,23 +536,33 @@ control_unit_top u_control_unit_top(
 
 
   ////////////ALU
-    ALU ALU(.A(ALU_A),.B(Operand2),.ALUop(ALUop),.Result(ALUResult),.negative(negative),.overflow(overflow),.zero(zero),.carry(carry));
-   BranchUnit branchUnit(.ID_EX_Jump(RS_EX_jump),.ID_EX_Branch(RS_EX_Branch),.ID_EX_funct3(RS_EX_func3),.ALUResult(ALUResult),.imm(immediate),.PC(RS_EX_PC_ALU),.ALUNegative(negative),.ALUZero(zero),.ALUOverflow(overflow),.ALUCarry(carry),.PC_Branch(PC_Branch),.branch_index(branch_index),.PCSrc(PCSrc),.IF_ID_Flush(IF_ID_Flush));
+    ALU ALU(.A(ALU_A),.B(Operand2),.ALUop(ALUop),.Result(ALUResult),.negative(negative),.overflow(overflow),
+            .zero(zero),.carry(carry));
+   BranchUnit branchUnit(.ID_EX_Jump(RS_EX_jump),.ID_EX_Branch(RS_EX_Branch),.ID_EX_funct3(RS_EX_func3),
+                         .ALUResult(ALUResult),.imm(immediate),.PC(RS_EX_PC_ALU),.ALUNegative(negative),
+                         .ALUZero(zero),.ALUOverflow(overflow),.ALUCarry(carry),.PC_Branch(PC_Branch),
+                         .branch_index(branch_index),.PCSrc(PCSrc),.IF_ID_Flush(IF_ID_Flush));
    add4 add4 (.in(RS_EX_PC_ALU),.out(PC_Return));
-   MUX_2input pretty_mux (.a(ALUResult),.b(PC_Return),.sel(ID_EX_jump),.y(ALU_Data));
+    MUX_2input pretty_mux (.a(ALUResult),.b(PC_Return),.sel(RS_EX_jump),.y(ALU_Data));
    MUX_2input MUX_A (.a(RS_EX_PC_ALU),.b(Operand1_ALU),.sel(RS_EX_ALU_Src1),.y(ALU_A));
    MUX_2input MUX_B (.a(Operand2_ALU),.b(immediate),.sel(RS_EX_ALU_Src2),.y(ALU_B));
-   multiplier multiplier (.clk(clk),.rst(rst),.start(Mul_start_in),.A(Operand1_Mul),.B(Operand2_Mul),.Physical_address_in(RS_EX_Mul_Physical_address_in),.PC_in(RS_EX_PC_Mul_in),.Product(MUL_Data),.done(MUL_Done),.Physical_address_out(MUL_phy),.PC_out(RS_EX_PC_Mul_out));
-    divider divider (.clk(clk),.reset(rst),.start(Div_start_in),.A(Operand1_Div),.B(Operand2_Div),.Physical_address_in(RS_EX_Div_Physical_address_in),.PC_in(RS_EX_PC_Div_in),.Result(DIV_Data),.divider_op_in(divider_op),.done(DIV_Done),.Physical_address_out(DIV_Phy),.PC_out(RS_EX_PC_Div_out));
+   multiplier multiplier (.clk(clk),.rst(rst),.start(Mul_start_in),.A(Operand1_Mul),.B(Operand2_Mul),
+                          .Physical_address_in(RS_EX_Mul_Physical_address_in),
+                          .PC_in(RS_EX_PC_Mul_in),.Product(MUL_Data),.done(MUL_Done),.Physical_address_out(MUL_phy),
+                          .PC_out(RS_EX_PC_Mul_out));
+    divider divider (.clk(clk),.reset(rst),.start(Div_start_in),.A(Operand1_Div),.B(Operand2_Div),
+                     .Physical_address_in(RS_EX_Div_Physical_address_in),
+                     .PC_in(RS_EX_PC_Div_in),.Result(DIV_Data),.divider_op_in(divider_op),.done(DIV_Done),
+                     .Physical_address_out(DIV_Phy),.PC_out(RS_EX_PC_Div_out));
 
 
 ////////////////////EX_MEM
     exmem_pipeline_register exmem (
         .clk(clk),
         .reset(rst),
-        .ID_EX_MemToReg(ID_EX_MemToReg),
-        .ID_EX_MemRead(ID_EX_MemRead),
-        .ID_EX_MemWrite(ID_EX_MemWrite),
+        .ID_EX_MemToReg(RS_EX_MemToReg),
+        .ID_EX_MemRead(RS_EX_MemRead),
+        .ID_EX_MemWrite(RS_EX_MemWrite),
         .RS_EX_funt3(RS_EX_funt3),
         .operand2_Phy_Data(operand2_Phy_Data),
         .RS_EX_ALUResult(RS_EX_ALUResult),
