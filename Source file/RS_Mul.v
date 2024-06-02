@@ -1,6 +1,6 @@
 module priority_encoder (
     input wire [31:0] ready, // 32비트 ready 신호
-    output reg [32:0] Y // 32비트 Y 출력
+    output reg [31:0] Y // 32비트 Y 출력
 );
 
     always @(*) begin
