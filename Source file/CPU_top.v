@@ -321,7 +321,7 @@ control_unit_top u_control_unit_top(
   
 
     
-        Reservation_station rs_alu (
+        RS_ALU rs_alu (
         .clk(clk),
         .reset(rst),
         .start(RS_alu_start),
