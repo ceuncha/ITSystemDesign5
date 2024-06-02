@@ -138,7 +138,7 @@ module shadow_RAT_register(
     end
 end
 
-    always @(write_enable) begin
+    always @(posedge write_enable) begin
         registers[addr] <= data_in;
     end
 
