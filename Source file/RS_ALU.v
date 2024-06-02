@@ -79,7 +79,7 @@ module RS_ALU (
     
     // Internal storage for reservation station entries
     reg [31:0] PCs [0:31];
-    reg [6:0] Rds [0:31];
+    reg [7:0] Rds [0:31];
     reg [31:0] MemToRegs;
     reg [31:0] MemReads;
     reg [31:0] MemWrites;
@@ -90,8 +90,8 @@ module RS_ALU (
     reg [31:0] Branchs;
     reg [2:0] funct3s [0:31];
     reg [31:0] immediates [0:31];
-    reg [6:0] operand1s [0:31];
-    reg [6:0] operand2s [0:31];
+    reg [7:0] operand1s [0:31];
+    reg [7:0] operand2s [0:31];
     reg [31:0] operand1_datas [0:31];  // operand1 data
     reg [31:0] operand2_datas [0:31]; // operand2 data
     reg [31:0] valid_entries1;  // operand1?씠 valid?븳吏?
