@@ -34,13 +34,15 @@ module chuchu (
             end
         end
     endgenerate
-
-    always @(posedge clk or posedge reset) begin
-        if (reset) begin
+    always @(negedge reset) begin
             for (i = 0; i < 128; i = i + 1) begin
                 chuchu_array[i] <= 32 + i;
             end
-            current_index <= 1;
+    end
+    
+    always @(posedge clk) begin
+
+            current_index <= 0;
             chuchu_out <= chuchu_array[0];
             chuchu_array[current_index] <= rat_data;
 
