@@ -54,6 +54,7 @@ module RAT (
             for (k = 0; k < 32; k = k + 1) begin
                 phy_addr_table[k] <= k;
             end
+            free_phy_addr_out <= 8'b10100001; // 초기 주소 전송 // 161번지지
         end
     end
 
@@ -91,11 +92,11 @@ module RAT (
             case (opcode)
                 7'b1100111, 7'b0000011, 7'b0010011: begin  // jalr, load, i-type
                     phy_addr_out1 <= phy_addr_table[logical_addr1];
-                    phy_addr_out2 <= 8'd254;
+                    phy_addr_out2 <= 8'b00000000;
                 end
                 7'b0110111, 7'b0010111, 7'b1101111: begin // lui, auipc, jal
-                    phy_addr_out1 <= 8'd0;
-                    phy_addr_out2 <= 8'd254;
+                    phy_addr_out1 <= 8'b00000000;
+                    phy_addr_out2 <= 8'b11111110;
                 end
                 default: begin
                     phy_addr_out1 <= phy_addr_table[logical_addr1];
@@ -111,7 +112,7 @@ module RAT (
    
             end else begin
                 free_phy_addr_out <= free_phy_addr; // 프리리스트로 비어있는 주소 다시 전송
-                rd_phy_out <= 8'd255;   
+                rd_phy_out <= 8'b11111111;   
             end
         end
 
