@@ -368,9 +368,9 @@ control_unit_top u_control_unit_top(
     assign RS_EX_MemWrite=result_out_alu[107];
     assign RS_EX_MemRead=result_out_alu[108];
     assign RS_EX_MemToReg=result_out_alu[109];
-    assign ALU_Phy=result_out_alu[110:141];
-    assign RS_EX_PC_ALU=result_out_alu[142:173];
-    assign ALU_Done=result_out_alu[174];
+    assign ALU_Phy=result_out_alu[110:117];
+    assign RS_EX_PC_ALU=result_out_alu[118:149];
+    assign ALU_Done=result_out_alu[150];
 
 
     // Internal signals for RS_mul
