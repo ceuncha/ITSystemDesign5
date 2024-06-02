@@ -40,8 +40,8 @@ wire [7:0] original_phy_addr;
 //chuchu to RAT
 wire [7:0] chuchu_addr;
 //RAT to pfile
-wire Phy_addr_OP1;
-wire Phy_addr_OP2;
+wire [7:0] Phy_addr_OP1;
+wire [7:0] Phy_addr_OP2;
 //pfile to decoder
 wire Valid1;
 wire Valid2;
