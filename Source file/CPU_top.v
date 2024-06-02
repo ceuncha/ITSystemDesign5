@@ -59,7 +59,7 @@ wire [31:0] ALU_Data;
 wire [31:0] DIV_Data;
 wire [31:0] MUL_Data;
 wire [31:0] Load_Data;
-wire [7:0] ALU_Phy;
+
 wire [7:0] DIV_Phy;
 wire [7:0] MUL_Phy;
 wire [7:0] Load_Phy;
@@ -387,7 +387,7 @@ control_unit_top u_control_unit_top(
     wire [31:0] RS_mul_operand2_data;
     wire [1:0] RS_mul_valid;
     wire [31:0] ALU_Data;
-    wire [7:0] ALU_Phy;
+
     wire ALU_Done;
     wire [31:0] MUL_Data;
     wire [7:0] MUL_Phy;
