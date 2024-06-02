@@ -38,7 +38,7 @@ always @(posedge clk or posedge rst) begin
         reset_bb_entries();
     end else begin
         // Check for jump or branch opcode
-        if (opcode == 7'b1101111 || opcode == 7'b1100111) begin // Assuming these are jump or branch opcodes
+        if (opcode == 7'b1100011 || opcode == 7'b1101111 || opcode == 7'b1100111) begin // Assuming these are jump or branch opcodes
             BB_entry[tail] <= PC;    // Store the current PC value in ROB at tail position
             ready[tail] <= 1'b0;     // Set ready flag to 0
             tail_num <= tail;        //
