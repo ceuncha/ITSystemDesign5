@@ -23,6 +23,7 @@ wire ROB_Flush;
 wire [6:0] funct7 = IF_ID_instOut[31:25];
 wire [2:0] funct3 = IF_ID_instOut[14:12];
 wire [6:0] opcode = IF_ID_instOut[6:0];
+
 wire [31:0] imm32;
 wire RegWrite;
 wire MemToReg;
@@ -374,6 +375,7 @@ control_unit_top u_control_unit_top(
         .in_operand1(RData1),
         .in_operand2(RData2),
         .in_func3(funct3),
+        .in_funct7(funct7),
         .in_pc(IF_ID_PC),
         .MemToReg(MemToReg),
         .MemRead(MemRead),
