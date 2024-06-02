@@ -23,7 +23,7 @@ module ROB(
 );
 
 // ROB memory
-reg [97:0] rob_entry [0:31];            // ROB entry: ready(1), reg_write(1), value(32), instr(32), PC(32)
+reg [98:0] rob_entry [0:31];            // ROB entry: new_bit(1), ready(1), reg_write(1), value(32), instr(32), PC(32)
 reg [4:0] head;                        // Head pointer (5 bits for 32 entries)
 reg [4:0] tail;                        // Tail pointer (5 bits for 32 entries)
 integer i;
@@ -32,7 +32,7 @@ integer i;
 task reset_rob_entries;
     begin
         for (i = 0; i < 32; i = i + 1) begin
-            rob_entry[i] <= 98'b0;     // Reset ROB entry with all fields set to 0
+            rob_entry[i] <= 99'b0;     // Reset ROB entry with all fields set to 0
         end
     end
 endtask
@@ -48,7 +48,7 @@ always @(posedge clk or posedge rst) begin
             // Update the branch entry with PC_Return value
             for (i = 0; i < 32; i = i + 1) begin
                 if (rob_entry[i][31:0] == branch_index) begin
-                    rob_entry[i][97:0] <= {1'b1, rob_entry[i][96], PC_Return, rob_entry[i][63:32], rob_entry[i][31:0]};
+                    rob_entry[i][98:0] <= {rob_entry[i][98], 1'b1, rob_entry[i][96], PC_Return, rob_entry[i][63:32], rob_entry[i][31:0]};
                     tail <= (i + 1) % 32; // Move tail to the entry right after the branch entry
                 end
             end
@@ -60,21 +60,23 @@ always @(posedge clk or posedge rst) begin
                 tail <= tail - 1;
             end
         end else if (IF_ID_instOut != 32'b0) begin  // Only increment tail if the instruction is not invalid (i.e., not a bubble)
-            rob_entry[tail] <= {1'b0, reg_write, 32'b0, IF_ID_instOut, PC}; // Store input data in the ROB entry with value set to 32'b0
+            rob_entry[tail] <= {1'b1, 1'b0, reg_write, 32'b0, IF_ID_instOut, PC}; // Store input data in the ROB entry with value set to 32'b0 and new_bit set to 1
             tail <= (tail + 1) % 32;                // Circular buffer handling
         end
 
         // Update the value and set ready flag upon execution completion
         if (alu_exec_done || mul_exec_done || div_exec_done) begin
             for (i = 0; i < 32; i = i + 1) begin
-                if (alu_exec_done && rob_entry[i][31:0] == alu_exec_PC) begin
-                    rob_entry[i][97:0] <= {1'b1, rob_entry[i][96], alu_exec_value, rob_entry[i][63:32], rob_entry[i][31:0]}; // Update value and maintain reg_write, instr, PC
-                end
-                if (mul_exec_done && rob_entry[i][31:0] == mul_exec_PC) begin
-                    rob_entry[i][97:0] <= {1'b1, rob_entry[i][96], mul_exec_value, rob_entry[i][63:32], rob_entry[i][31:0]}; // Update value and maintain reg_write, instr, PC       
-                end
-                if (div_exec_done && rob_entry[i][31:0] == div_exec_PC) begin
-                    rob_entry[i][97:0] <= {1'b1, rob_entry[i][96], div_exec_value, rob_entry[i][63:32], rob_entry[i][31:0]}; // Update value and maintain reg_write, instr, PC     
+                if (rob_entry[i][98]) begin // Check if the new bit is set to 1
+                    if (alu_exec_done && rob_entry[i][31:0] == alu_exec_PC) begin
+                        rob_entry[i][98:0] <= {rob_entry[i][98], 1'b1, rob_entry[i][96], alu_exec_value, rob_entry[i][63:32], rob_entry[i][31:0]}; // Update value and maintain new_bit, reg_write, instr, PC
+                    end
+                    if (mul_exec_done && rob_entry[i][31:0] == mul_exec_PC) begin
+                        rob_entry[i][98:0] <= {rob_entry[i][98], 1'b1, rob_entry[i][96], mul_exec_value, rob_entry[i][63:32], rob_entry[i][31:0]}; // Update value and maintain new_bit, reg_write, instr, PC       
+                    end
+                    if (div_exec_done && rob_entry[i][31:0] == div_exec_PC) begin
+                        rob_entry[i][98:0] <= {rob_entry[i][98], 1'b1, rob_entry[i][96], div_exec_value, rob_entry[i][63:32], rob_entry[i][31:0]}; // Update value and maintain new_bit, reg_write, instr, PC     
+                    end
                 end
             end
         end
