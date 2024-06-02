@@ -1,3 +1,4 @@
+
 module chuchu (
     input clk,
     input reset,
@@ -38,21 +39,20 @@ module chuchu (
             for (i = 0; i < 128; i = i + 1) begin
                 chuchu_array[i] <= 32 + i;
             end
+            current_index <= 1;
+            chuchu_out <= chuchu_array[0];
+            chuchu_array[0] <= rat_data;
     end
     
     always @(posedge clk) begin
 
-            current_index <= 1;
-            chuchu_out <= chuchu_array[0];
-            chuchu_array[0] <= rat_data;
 
-        end else begin
             chuchu_out <= chuchu_array[current_index];
             chuchu_array[current_index] <= rat_data;
             current_index <= (current_index + 1) % 128;
 
         end
-    end
+   
 
     always @(posedge save_state) begin
 
