@@ -304,7 +304,7 @@ module RS_ALU (
                 operand1s[tail] <= operand1;
                 operand2s[tail] <= operand2;
                 operand1_datas[tail] <= operand1_data;
-                operand2_datas[tail] <= operand1_data ;
+                operand2_datas[tail] <= operand2_data;
                 valid_entries1[tail] <= valid[0];
                 valid_entries2[tail] <= valid[1]; 
                 tail <= (tail + 1) % 16;
