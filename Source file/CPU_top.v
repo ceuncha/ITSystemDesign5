@@ -126,7 +126,7 @@ wire Load_Done;
  wire [31:0] Operand2_ALU = result_out_alu[31:0];
 wire [31:0] Operand1_ALU = result_out_alu[63:32];
 wire [31:0] immediate = result_out_alu[95:64];
-wire [2:0] RS_EX_fucnt3 = result_out_alu[98:96];
+wire [2:0] RS_EX_funct3 = result_out_alu[98:96];
 wire RS_EX_Branch = result_out_alu[99];
 wire RS_EX_Jump = result_out_alu[100];
 wire RS_EX_ALU_Src1 = result_out_alu[101];
