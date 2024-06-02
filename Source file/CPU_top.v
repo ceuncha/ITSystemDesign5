@@ -378,7 +378,7 @@ control_unit_top u_control_unit_top(
         .MemToReg(MemToReg),
         .MemRead(MemRead),
         .MemWrite(MemWrite),
-        .ALUOP(ALUOP),
+        .ALUOP(ALUOp),
         .ALUSrc1(ALUSrc1),
         .ALUSrc2(ALUSrc2),
         .Jump(Jump),
