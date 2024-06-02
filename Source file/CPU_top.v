@@ -543,7 +543,7 @@ control_unit_top u_control_unit_top(
                          .ALUZero(zero),.ALUOverflow(overflow),.ALUCarry(carry),.PC_Branch(PC_Branch),
                          .branch_index(branch_index),.PCSrc(PCSrc),.IF_ID_Flush(IF_ID_Flush));
    add4 add4 (.in(RS_EX_PC_ALU),.out(PC_Return));
-    MUX_2input pretty_mux (.a(ALUResult),.b(PC_Return),.sel(RS_EX_jump),.y(ALU_Data));
+    MUX_2input pretty_mux (.a(ALUResult),.b(PC_Return),.sel(RS_EX_Jump),.y(ALU_Data));
     MUX_2input MUX_A (.a(RS_EX_PC_ALU),.b(Operand1_ALU),.sel(RS_EX_ALU_Src1),.y(ALU_A)); 
     MUX_2input MUX_B (.a(Operand2_ALU),.b(immediate),.sel(RS_EX_ALU_Src2),.y(ALU_B)); 
    multiplier multiplier (.clk(clk),.rst(rst),.start(Mul_start_in),.A(Operand1_Mul),.B(Operand2_Mul),
