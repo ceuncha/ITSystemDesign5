@@ -646,7 +646,7 @@ control_unit_top u_control_unit_top(
         .PcSrc(PCSrc),
         .PC_Return(PC_Return),
         .branch_index(branch_index),
-        .PC(PC),
+        .PC(IF_ID_PC),
         .out_value(out_value),
         .out_dest(out_dest),
         .out_reg_write(out_reg_write)
