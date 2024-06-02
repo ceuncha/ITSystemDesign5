@@ -201,7 +201,13 @@ always @(*) begin
                 out_div_MemToReg <= MemToReg;	
                 out_div_MemRead <= MemRead;	
                 out_div_MemWrite <= MemWrite;		
-                out_div_ALUOP <= ALUOP;	
+                
+                if(ALUOP == 1011) begin
+                out_div_ALUOP <= 4'b0001;	
+                end else begin
+                out_add_ALUOP <= 4'b0000;	
+                end
+                
                 out_div_ALUSrc1 <= ALUSrc1;
                 out_div_ALUSrc2 <= ALUSrc2;		
                 out_div_Jump <= Jump;		
