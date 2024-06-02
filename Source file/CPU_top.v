@@ -459,7 +459,7 @@ control_unit_top u_control_unit_top(
         .PC(RS_alu_PC),
         .Rd(RS_alu_Rd),
         .MemToReg(RS_alu_MemToReg),
-        .MemRead(RS_alu_MenRead),
+        .MemRead(RS_alu_MemRead),
         .MemWrite(RS_alu_MemWrite),
         .ALUOP(RS_alu_ALUOP),
         .ALUSrc1(RS_alu_ALUSrc1),
