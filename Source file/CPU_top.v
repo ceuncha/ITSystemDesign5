@@ -123,19 +123,19 @@ wire Load_Done;
 
 
  wire [31:0] Operand2_ALU = result_out_alu[31:0];
-wire [63:32] Operand1_ALU = result_out_alu[63:32];
-wire [95:64] immediate = result_out_alu[95:64];
-wire [98:96] RS_EX_fucnt3 = result_out_alu[98:96];
+wire [31:0] Operand1_ALU = result_out_alu[63:32];
+wire [31:0] immediate = result_out_alu[95:64];
+wire [2:0] RS_EX_fucnt3 = result_out_alu[98:96];
 wire RS_EX_Branch = result_out_alu[99];
 wire RS_EX_Jumps = result_out_alu[100];
 wire RS_EX_ALUSrc2 = result_out_alu[101];
 wire RS_EX_ALUSrc1 = result_out_alu[102];
-wire [106:103] ALUop = result_out_alu[106:103];
+wire [3:0] ALUop = result_out_alu[106:103];
 wire RS_EX_MemWrite = result_out_alu[107];
 wire RS_EX_MemRead = result_out_alu[108];
 wire RS_EX_MemToReg = result_out_alu[109];
-wire [117:110] ALU_Phy = result_out_alu[117:110];
-wire [149:118] RS_EX_PC_ALU = result_out_alu[149:118];
+wire [7:0] ALU_Phy = result_out_alu[117:110];
+wire [31:0] RS_EX_PC_ALU = result_out_alu[149:118];
 wire ALU_Done = result_out_alu[150];
 
 
@@ -164,9 +164,9 @@ wire ALU_Done = result_out_alu[150];
    wire [104:0]result_out_mul;
 
 wire [31:0] Operand2_Mul = result_out_mul[31:0];
-wire [63:32] Operand1_Mul = result_out_mul[63:32];
-wire [71:64] RS_EX_Mul_Physical_address_in = result_out_mul[71:64];
-wire [103:72] RS_EX_PC_Mul_in = result_out_mul[103:72];
+wire [31:0] Operand1_Mul = result_out_mul[63:32];
+wire [7:0] RS_EX_Mul_Physical_address_in = result_out_mul[71:64];
+wire [31:0] RS_EX_PC_Mul_in = result_out_mul[103:72];
 wire Mul_start_in = result_out_mul[104];
 
 
@@ -175,7 +175,7 @@ wire Mul_start_in = result_out_mul[104];
   /////////////////////  //RS_div_wire
 
 
-        wire RS_div_start;
+    wire RS_div_start;
     wire [31:0] RS_div_PC;
     wire [7:0] RS_div_Rd;
     wire [7:0] RS_div_operand1;
@@ -187,10 +187,10 @@ wire Mul_start_in = result_out_mul[104];
     wire [108:0]result_out_div;
 
 wire [31:0] Operand2_Div = result_out_div[31:0];
-wire [63:32] Operand1_Div = result_out_div[63:32];
-wire [67:64] divider_op = result_out_div[67:64];
-wire [75:68] RS_EX_Div_Physical_address_in = result_out_div[75:68];
-wire [107:76] RS_EX_PC_Div_in = result_out_div[107:76];
+wire [31:0] Operand1_Div = result_out_div[63:32];
+wire [4:0] divider_op = result_out_div[67:64];
+wire [7:0] RS_EX_Div_Physical_address_in = result_out_div[75:68];
+wire [31:0] RS_EX_PC_Div_in = result_out_div[107:76];
 wire Div_start_in = result_out_div[108];
 
 
