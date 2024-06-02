@@ -42,7 +42,7 @@ module chuchu (
     
     always @(posedge clk) begin
 
-            current_index <= 0;
+            current_index <= 1;
             chuchu_out <= chuchu_array[0];
             chuchu_array[0] <= rat_data;
 
