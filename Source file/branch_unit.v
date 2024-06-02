@@ -1,6 +1,6 @@
 
 module BranchUnit(
-    input rst
+    input rst,
     input wire ID_EX_Jump,
     input wire ID_EX_Branch,
     input wire [2:0] ID_EX_funct3,
@@ -14,7 +14,7 @@ module BranchUnit(
     output reg [31:0] PC_Branch,
     output reg [31:0] branch_index
     output reg PCSrc,
-    output reg IF_ID_Flush,
+    output reg IF_ID_Flush
 
 );
 
@@ -29,7 +29,7 @@ always @(*) begin
             PC_Branch = ALUResult; // 점프 처리
             PCSrc = 1; // 점프 시 PC 소스 신호 활성화
             IF_ID_Flush = 1'b1;
-            branch_index = PC
+            branch_index = PC;
         end
         else if(ID_EX_Branch) begin
             case(ID_EX_funct3)
@@ -44,7 +44,7 @@ always @(*) begin
             if(PCSrc) begin
                 PC_Branch = imm + PC + 4; // 분기 주소 업데이트
                 IF_ID_Flush = 1'b1;
-                branch_index = PC
+                branch_index = PC;
             end
         end
         else begin
