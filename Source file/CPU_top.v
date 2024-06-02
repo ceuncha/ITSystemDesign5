@@ -171,6 +171,7 @@ chuchu u_chuchu(
 );
 
 control_unit_top u_control_unit_top(
+    .rst(rst),
     .opcode(opcode),
     .funct3(funct3),
     .funct7(funct7),
