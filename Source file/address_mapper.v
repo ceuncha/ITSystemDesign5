@@ -11,7 +11,7 @@ initial begin
 end
 
 always @(*) begin
-    if (posedge reset) begin
+    if (reset) begin
         mapped_address = 6'd0;
     end else begin
         case(opcode)
