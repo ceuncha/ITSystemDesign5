@@ -12,7 +12,7 @@ module BranchUnit(
     input wire ALUOverflow, // ALU에서 오는 Overflow 플래그
     input wire ALUCarry,    // ALU에서 오는 Carry 플래그
     output reg [31:0] PC_Branch,
-    output reg [31:0] branch_index
+    output reg [31:0] branch_index,
     output reg PCSrc,
     output reg IF_ID_Flush
 
