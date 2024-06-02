@@ -36,7 +36,7 @@ module exmem_pipeline_register (
     input ID_EX_MemToReg,
     input ID_EX_MemRead,
     input ID_EX_MemWrite,
-    input [3:0] RS_EX_funt3,
+    input [2:0] RS_EX_funt3,
     input [31:0] operand2_Phy_Data,
     input [31:0] RS_EX_ALUResult,
     input [31:0] RS_EX_PC_ALU,
