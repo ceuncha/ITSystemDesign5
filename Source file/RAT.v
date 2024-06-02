@@ -49,7 +49,7 @@ module RAT (
     integer k;
 
     // 초기화
-    always @(posedge clk or posedge reset) begin
+    always @(posedge reset) begin
         if (reset) begin
             for (k = 0; k < 32; k = k + 1) begin
                 phy_addr_table[k] <= k;
