@@ -59,8 +59,8 @@ assign {RegWrite, MemToReg, MemRead, MemWrite, ALUOp, ALUSrc, RWsel, Branch, Jum
 
         // 추가된 명령어
         ROM[27] = 13'b1_0_0_0_1010_10_0_0_0; // MUL
-        ROM[28] = 13'b1_0_0_0_1011_10_0_0_0; // DIV (몫)
-        ROM[29] = 13'b1_0_0_0_1100_10_0_0_0; // REM (나머지)
+        ROM[28] = 13'b1_0_0_0_0001_10_0_0_0; // DIV (몫)
+        ROM[29] = 13'b1_0_0_0_0000_10_0_0_0; // REM (나머지)
 
 end
 
