@@ -395,7 +395,7 @@ control_unit_top u_control_unit_top(
         .add_alu_func3(RS_alu_funct3),
         .add_alu_pc(RS_alu_PC),
         .out_add_MemToReg(RS_alu_MemToReg),
-        .out_add_MemRead(RS_alu_MenRead),
+       .out_add_MemRead(RS_alu_MemRead),
         .out_add_MemWrite(RS_alu_MemWrite),
         .out_add_ALUOP(RS_alu_ALUOP),
         .out_add_ALUSrc1(RS_alu_ALUSrc1),
