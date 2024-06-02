@@ -637,7 +637,7 @@ control_unit_top u_control_unit_top(
     logical_address_register logical_reg (
         .clk(clk),
         .reset(rst),
-        .mem_to_write(out_reg_write),
+        .Reg_write(out_reg_write),
         .logical_address(out_dest),
         .write_data(out_value),
         .x0(x0),
