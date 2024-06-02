@@ -128,7 +128,7 @@ wire [31:0] Operand1_ALU = result_out_alu[63:32];
 wire [31:0] immediate = result_out_alu[95:64];
 wire [2:0] RS_EX_fucnt3 = result_out_alu[98:96];
 wire RS_EX_Branch = result_out_alu[99];
-wire RS_EX_Jumps = result_out_alu[100];
+wire RS_EX_Jump = result_out_alu[100];
 wire RS_EX_ALU_Src1 = result_out_alu[101];
 wire RS_EX_ALU_Src2 = result_out_alu[102];
 wire [3:0] ALUop = result_out_alu[106:103];
@@ -199,7 +199,7 @@ wire Div_start_in = result_out_div[108];
     ////////////////ex_mem wire
     //////////
    wire RS_EX_Branch;
-   wire RS_Ex_Jump;
+ 
    wire RS_EX_MemRead;
    wire RS_Ex_MemToReg;
    wire RS_EX_ALU_Src1;
