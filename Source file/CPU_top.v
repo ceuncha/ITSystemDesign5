@@ -400,7 +400,7 @@ control_unit_top u_control_unit_top(
 
 
     
-    RS_mul rs_mul (
+    RS_Mul rs_mul (
         .clk(clk),
         .reset(rst),
         .RS_mul_start(RS_mul_start),
@@ -442,7 +442,7 @@ control_unit_top u_control_unit_top(
     wire [1:0] RS_div_valid;
     wire [3:0] RS_div_ALUOP;
     wire [108:0]result_out_div;
-    RS_div RS_Div (.clk(clk),.reset(rst),.RS_div_start(RS_div_start),.RS_div_PC(RS_div_PC),.RS_div_Rd(RS_div_Rd),.RS_div_ALUOP(RS_div_ALUOP),.EX_MEM_MemRead(Load_Done),.RData(Load_Data),.EX_MEM_Physical_Address(Load_Phy),.RS_div_operand1(RS_div_operand1),.RS_div_operand2(RS_div_operand2),.RS_div_operand1_data(RS_div_operand1_data),.RS_div_operand2_data(RS_div_operand2_data),.RS_div_valid(RS_div_valid),.ALU_result(ALU_Data),.ALU_result_dest(ALU_Phy),.ALU_result_valid(ALU_Done),.MUL_result(MUL_Data),.MUL_result_dest(MUL_Phy),.MUL_result_valid(MUL_Done),.DIV_result(DIV_Data),.DIV_result_dest(DIV_Phy),.DIV_result_valid(DIV_Done),.result_out(result_out_div));
+    RS_Div RS_Div (.clk(clk),.reset(rst),.RS_div_start(RS_div_start),.RS_div_PC(RS_div_PC),.RS_div_Rd(RS_div_Rd),.RS_div_ALUOP(RS_div_ALUOP),.EX_MEM_MemRead(Load_Done),.RData(Load_Data),.EX_MEM_Physical_Address(Load_Phy),.RS_div_operand1(RS_div_operand1),.RS_div_operand2(RS_div_operand2),.RS_div_operand1_data(RS_div_operand1_data),.RS_div_operand2_data(RS_div_operand2_data),.RS_div_valid(RS_div_valid),.ALU_result(ALU_Data),.ALU_result_dest(ALU_Phy),.ALU_result_valid(ALU_Done),.MUL_result(MUL_Data),.MUL_result_dest(MUL_Phy),.MUL_result_valid(MUL_Done),.DIV_result(DIV_Data),.DIV_result_dest(DIV_Phy),.DIV_result_valid(DIV_Done),.result_out(result_out_div));
 
     assign Operand2_Div=result_out_div[0:31];
     assign Operand1_Div=result_out_div[32:63];
@@ -485,7 +485,7 @@ control_unit_top u_control_unit_top(
    wire [3:0]divider_op;
    
    ALU ALU(.A(ALU_A),.B(Operand2),.ALUop(ALUop),.Result(ALUResult),.negative(negative),.overflow(overflow),.zero(zero),.carry(carry));
-   branchUnit branchUnit(.ID_EX_Jump(RS_EX_jump),.ID_EX_Branch(RS_EX_Branch),.ID_EX_funct3(RS_EX_func3),.ALUResult(ALUResult),.imm(immediate),.PC(RS_EX_PC_ALU),.ALUNegative(negative),.ALUZero(zero),.ALUOverflow(overflow),.ALUCarry(carry),.PC_Branch(PC_Branch),.branch_index(branch_index),.PCSrc(PCSrc),.IF_ID_Flush(IF_ID_Flush));
+   BranchUnit branchUnit(.ID_EX_Jump(RS_EX_jump),.ID_EX_Branch(RS_EX_Branch),.ID_EX_funct3(RS_EX_func3),.ALUResult(ALUResult),.imm(immediate),.PC(RS_EX_PC_ALU),.ALUNegative(negative),.ALUZero(zero),.ALUOverflow(overflow),.ALUCarry(carry),.PC_Branch(PC_Branch),.branch_index(branch_index),.PCSrc(PCSrc),.IF_ID_Flush(IF_ID_Flush));
    add4 add4 (.in(RS_EX_PC_ALU),.out(PC_Return));
    MUX_2input pretty_mux (.a(ALUResult),.b(PC_Return),.sel(ID_EX_jump),.y(ALU_Data));
    MUX_2input MUX_A (.a(RS_EX_PC_ALU),.b(Operand1_ALU),.sel(RS_EX_ALU_Src1),.y(ALU_A));
