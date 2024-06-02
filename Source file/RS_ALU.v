@@ -1,6 +1,6 @@
 module priority_encoder (
     input wire [31:0] ready, // 32비트 ready 신호
-    output reg [31:0] Y // 32비트 Y 출력
+    output reg [32:0] Y // 32비트 Y 출력
 );
 
     always @(*) begin
@@ -60,7 +60,8 @@ module Reservation_station (
     input wire EX_MEM_MemRead,
     input wire [31:0] RData,
     input wire [7:0] EX_MEM_Physical_Address,
-
+    input wire [7:0] operand1,
+    input wire [7:0] operand2,
     input wire [31:0] operand1_data,
     input wire [31:0] operand2_data,
     input wire [1:0] valid,
@@ -73,7 +74,7 @@ module Reservation_station (
     input wire [31:0] DIV_result,
     input wire [7:0] DIV_result_dest,
     input wire DIV_result_valid,
-    output reg [173:0] result_out
+    output reg [150:0] result_out
 );
     
     // Internal storage for reservation station entries
@@ -89,11 +90,13 @@ module Reservation_station (
     reg [31:0] Branchs;
     reg [2:0] funct3s [0:31];
     reg [31:0] immediates [0:31];
+    reg [6:0] operand1s [0:31];
+    reg [6:0] operand2s [0:31];
     reg [31:0] operand1_datas [0:31];  // operand1 data
     reg [31:0] operand2_datas [0:31]; // operand2 data
     reg [31:0] valid_entries1;  // operand1이 valid한지
     reg [31:0] valid_entries2; // operand2가 valid한지
-    reg [173:0] result [0:31];
+    reg [150:0] result [0:31];
     reg [4:0] tail;
     reg [31:0] readys;
     wire [31:0] Y;
@@ -103,7 +106,6 @@ module Reservation_station (
         if (reset) begin
             tail <= 0;
             for (i = 0; i < 32; i = i + 1) begin
-               opcodes[i] <= 0;
                 PCs[i] <= 0;
                 Rds[i] <= 0;
                 MemToRegs[i] <= 0;
@@ -115,17 +117,16 @@ module Reservation_station (
                 Jumps[i] <= 0;
                 Branchs[i] <= 0;
                 funct3s[i] <= 0;
-                immediates[i] <= 0;
+                immediates[i] <=0;
                 operand1s[i] <= 0;
                 operand2s[i] <= 0;
                 operand1_datas[i] <= 0;
                 operand2_datas[i] <= 0;
-                valid_entries1[i] <= 1'b0; 
-                valid_entries2[i] <= 1'b0; 
+                valid_entries1[i] <= 1'b0; // 리셋 시 초기값으로 복원
+                valid_entries2[i] <= 1'b0; // 리셋 시 초기값으로 복원
             end
         end else if (start) begin
             if (operand1 == ALU_result_dest) begin  // ALU에서 operand1의 연산이 끝났을때
-                opcodes[tail] <= opcode;
                 PCs[tail] <= PC;
                 Rds[tail] <= Rd;
                 MemToRegs[tail] <= MemToReg;
@@ -146,7 +147,6 @@ module Reservation_station (
                 valid_entries2[tail] <= valid[1];
                 tail <= (tail + 1) % 16;
             end else if (operand2 == ALU_result_dest) begin  // ALU에서 operand2의 연산이 끝났을때
-                opcodes[tail] <= opcode;
                 PCs[tail] <= PC;
                 Rds[tail] <= Rd;
                 MemToRegs[tail] <= MemToReg;
@@ -167,7 +167,6 @@ module Reservation_station (
                 valid_entries2[tail] <= 1; 
                 tail <= (tail + 1) % 16;   
              end else if (operand1 == MUL_result_dest) begin  // MUL에서 operand1의 연산이 끝났을때
-                opcodes[tail] <= opcode;
                 PCs[tail] <= PC;
                 Rds[tail] <= Rd;
                 MemToRegs[tail] <= MemToReg;
@@ -188,7 +187,6 @@ module Reservation_station (
                 valid_entries2[tail] <= valid[1];
                 tail <= (tail + 1) % 16;
              end else if (operand2 == MUL_result_dest) begin  // MUL에서 operand2의 연산이 끝났을때
-                opcodes[tail] <= opcode;
                 PCs[tail] <= PC;
                 Rds[tail] <= Rd;
                 MemToRegs[tail] <= MemToReg;
@@ -209,85 +207,6 @@ module Reservation_station (
                 valid_entries2[tail] <= 1; 
                 tail <= (tail + 1) % 16;
               end else if (operand1 == DIV_result_dest) begin  // DIV에서 operand1의 연산이 끝났을때
-                opcodes[tail] <= opcode;
-                PCs[tail] <= PC;
-                Rds[tail] <= Rd;
-                MemToRegs[tail] <= MemToReg;
-                MemReads[tail] <= MemRead;
-                MemWrites[tail] <= MemWrite;
-                ALUOPs[tail] <= ALUOP;
-                ALUSrc1s[tail] <= ALUSrc1;
-                ALUSrc2s[tail] <= ALUSrc2;
-                Jumps[tail] <= Jump;
-                Branchs[tail] <= Branch;
-                funct3s[tail] <= funct3;
-                immediates[tail] <= immediate;  
-                operand1s[tail] <= operand1;
-                operand2s[tail] <= operand2;
-                operand1_datas[tail] <= DIV_result;
-                operand2_datas[tail] <= operand2_data;
-                valid_entries1[tail] <= 1;
-                valid_entries2[tail] <= valid[1];
-                tail <= (tail + 1) % 16;
-              end else if (operand2 == DIV_result_dest) begin  // MUL에서 operand2의 연산이 끝났을때
-                opcodes[tail] <= opcode;
-                PCs[tail] <= PC;
-                Rds[tail] <= Rd;
-                MemToRegs[tail] <= MemToReg;
-                MemReads[tail] <= MemRead;
-                MemWrites[tail] <= MemWrite;
-                ALUOPs[tail] <= ALUOP;
-                ALUSrc1s[tail] <= ALUSrc1;
-                ALUSrc2s[tail] <= ALUSrc2;
-                Jumps[tail] <= Jump;
-                Branchs[tail] <= Branch;
-                funct3s[tail] <= funct3;
-                immediates[tail] <= immediate;  
-                operand1_datas[tail] <= operand1_data;
-                operand2_datas[tail] <= DIV_result;
-                valid_entries1[tail] <= valid[0];
-                valid_entries2[tail] <= 1; 
-                tail <= (tail + 1) % 16;
-             end else if ( operand1 == EX_MEM_Physical_Address && EX_MEM_MemRead ==1) begin
-                opcodes[tail] <= opcode;
-                PCs[tail] <= PC;
-                Rds[tail] <= Rd;
-                MemToRegs[tail] <= MemToReg;
-                MemReads[tail] <= MemRead;
-                MemWrites[tail] <= MemWrite;
-                ALUOPs[tail] <= ALUOP;
-                ALUSrc1s[tail] <= ALUSrc1;
-                ALUSrc2s[tail] <= ALUSrc2;
-                Jumps[tail] <= Jump;
-                Branchs[tail] <= Branch;
-                funct3s[tail] <= funct3;
-                immediates[tail] <= immediate; 
-                operand1_datas[tail] <= RData;
-                operand2_datas[tail] <= operand2_data;
-                valid_entries1[tail] <= 1;
-                valid_entries2[tail] <= valid[1] ; 
-                tail <= (tail + 1) % 16;
-              end else if ( operand2 == EX_MEM_Physical_Address && EX_MEM_MemRead ==1) begin
-                opcodes[tail] <= opcode;
-                PCs[tail] <= PC;
-                Rds[tail] <= Rd;
-                MemToRegs[tail] <= MemToReg;
-                MemReads[tail] <= MemRead;
-                MemWrites[tail] <= MemWrite;
-                ALUOPs[tail] <= ALUOP;
-                ALUSrc1s[tail] <= ALUSrc1;
-                ALUSrc2s[tail] <= ALUSrc2;
-                Jumps[tail] <= Jump;
-                Branchs[tail] <= Branch;
-                funct3s[tail] <= funct3;
-                immediates[tail] <= immediate;  
-                operand1_datas[tail] <= operand1_data;
-                operand2_datas[tail] <= RData;
-                valid_entries1[tail] <= valid[0];
-                valid_entries2[tail] <= 1 ; 
-                tail <= (tail + 1) % 16;
-            end else begin
-               opcodes[tail] <= opcode;
                 PCs[tail] <= PC;
                 Rds[tail] <= Rd;
                 MemToRegs[tail] <= MemToReg;
@@ -300,6 +219,88 @@ module Reservation_station (
                 Branchs[tail] <= Branch;
                 funct3s[tail] <= funct3;
                 immediates[tail] <= immediate;
+                operand1s[tail] <= operand1;
+                operand2s[tail] <= operand2;
+                operand1_datas[tail] <= DIV_result;
+                operand2_datas[tail] <= operand2_data;
+                valid_entries1[tail] <= 1;
+                valid_entries2[tail] <= valid[1];
+                tail <= (tail + 1) % 16;
+              end else if (operand2 == DIV_result_dest) begin  // DIV에서 operand2의 연산이 끝났을때
+                PCs[tail] <= PC;
+                Rds[tail] <= Rd;
+                MemToRegs[tail] <= MemToReg;
+                MemReads[tail] <= MemRead;
+                MemWrites[tail] <= MemWrite;
+                ALUOPs[tail] <= ALUOP;
+                ALUSrc1s[tail] <= ALUSrc1;
+                ALUSrc2s[tail] <= ALUSrc2;
+                Jumps[tail] <= Jump;
+                Branchs[tail] <= Branch;
+                funct3s[tail] <= funct3;
+                immediates[tail] <= immediate;
+                operand1s[tail] <= operand1;
+                operand2s[tail] <= operand2;
+                operand1_datas[tail] <= operand1_data;
+                operand2_datas[tail] <= DIV_result;
+                valid_entries1[tail] <= valid[0];
+                valid_entries2[tail] <= 1; 
+                tail <= (tail + 1) % 16;
+             end else if ( operand1 == EX_MEM_Physical_Address && EX_MEM_MemRead ==1) begin
+                PCs[tail] <= PC;
+                Rds[tail] <= Rd;
+                MemToRegs[tail] <= MemToReg;
+                MemReads[tail] <= MemRead;
+                MemWrites[tail] <= MemWrite;
+                ALUOPs[tail] <= ALUOP;
+                ALUSrc1s[tail] <= ALUSrc1;
+                ALUSrc2s[tail] <= ALUSrc2;
+                Jumps[tail] <= Jump;
+                Branchs[tail] <= Branch;
+                funct3s[tail] <= funct3;
+                immediates[tail] <= immediate;
+                operand1s[tail] <= operand1;
+                operand2s[tail] <= operand2;
+                operand1_datas[tail] <= RData;
+                operand2_datas[tail] <= operand2_data;
+                valid_entries1[tail] <= 1;
+                valid_entries2[tail] <= valid[1] ; 
+                tail <= (tail + 1) % 16;
+              end else if ( operand2 == EX_MEM_Physical_Address && EX_MEM_MemRead ==1) begin
+                PCs[tail] <= PC;
+                Rds[tail] <= Rd;
+                MemToRegs[tail] <= MemToReg;
+                MemReads[tail] <= MemRead;
+                MemWrites[tail] <= MemWrite;
+                ALUOPs[tail] <= ALUOP;
+                ALUSrc1s[tail] <= ALUSrc1;
+                ALUSrc2s[tail] <= ALUSrc2;
+                Jumps[tail] <= Jump;
+                Branchs[tail] <= Branch;
+                funct3s[tail] <= funct3;
+                immediates[tail] <= immediate;
+                operand1s[tail] <= operand1;
+                operand2s[tail] <= operand2;
+                operand1_datas[tail] <= operand1_data;
+                operand2_datas[tail] <= RData;
+                valid_entries1[tail] <= valid[0];
+                valid_entries2[tail] <= 1 ; 
+                tail <= (tail + 1) % 16;
+            end else begin
+                PCs[tail] <= PC;
+                Rds[tail] <= Rd;
+                MemToRegs[tail] <= MemToReg;
+                MemReads[tail] <= MemRead;
+                MemWrites[tail] <= MemWrite;
+                ALUOPs[tail] <= ALUOP;
+                ALUSrc1s[tail] <= ALUSrc1;
+                ALUSrc2s[tail] <= ALUSrc2;
+                Jumps[tail] <= Jump;
+                Branchs[tail] <= Branch;
+                funct3s[tail] <= funct3;
+                immediates[tail] <= immediate;
+                operand1s[tail] <= operand1;
+                operand2s[tail] <= operand2;
                 operand1_datas[tail] <= operand1_data;
                 operand2_datas[tail] <= operand1_data ;
                 valid_entries1[tail] <= valid[0];
@@ -363,10 +364,10 @@ module Reservation_station (
         for (i = 0; i < 32; i = i + 1) begin
             if (valid_entries1[i] && valid_entries2[i] && !MemReads[i]) begin
                 readys[i] = 1;
-                result[i] = 1'b1, PCs[i], Rds[i], MemToRegs[i], MemReads[i], MemWrites[i], ALUOPs[i], ALUSrc1s[i], ALUSrc2s[i], Jumps[i], Branchs[i], funct3s[i], immediates[i],  operand1_datas[i], operand2_datas[i]};
+                result[i] = {1'b1, PCs[i], Rds[i], MemToRegs[i], MemReads[i], MemWrites[i], ALUOPs[i], ALUSrc1s[i], ALUSrc2s[i], Jumps[i], Branchs[i], funct3s[i],immediates[i], operand1_datas[i], operand2_datas[i]};
             end else if (valid_entries1[i] && valid_entries2[i] && MemReads[i]) begin
                 readys[i] = 1;
-                result[i] = {1'b0, PCs[i], Rds[i], MemToRegs[i], MemReads[i], MemWrites[i], ALUOPs[i], ALUSrc1s[i], ALUSrc2s[i], Jumps[i], Branchs[i], funct3s[i], immediates[i], operand1_datas[i], operand2_datas[i]};
+                result[i] = {1'b0, PCs[i], Rds[i], MemToRegs[i], MemReads[i], MemWrites[i], ALUOPs[i], ALUSrc1s[i], ALUSrc2s[i], Jumps[i], Branchs[i], funct3s[i],immediates[i], operand1_datas[i], operand2_datas[i]};
             end
         end
     end
