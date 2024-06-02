@@ -538,7 +538,7 @@ control_unit_top u_control_unit_top(
   ////////////ALU
     ALU ALU(.A(ALU_A),.B(ALU_B),.ALUop(ALUop),.Result(ALUResult),.negative(negative),.overflow(overflow),
             .zero(zero),.carry(carry));
-    BranchUnit branchUnit(.ID_EX_Jump(RS_EX_Jump),.ID_EX_Branch(RS_EX_Branch),.ID_EX_funct3(RS_EX_func3),
+    BranchUnit branchUnit(.ID_EX_Jump(RS_EX_Jump),.ID_EX_Branch(RS_EX_Branch),.ID_EX_funct3(RS_EX_funct3),
                          .ALUResult(ALUResult),.imm(immediate),.PC(RS_EX_PC_ALU),.ALUNegative(negative),
                          .ALUZero(zero),.ALUOverflow(overflow),.ALUCarry(carry),.PC_Branch(PC_Branch),
                          .branch_index(branch_index),.PCSrc(PCSrc),.IF_ID_Flush(IF_ID_Flush));
