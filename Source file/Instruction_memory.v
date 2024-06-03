@@ -6,8 +6,8 @@ module Instruction_memory(pc, instOut);
 
 initial begin
     // 기존 명령어들
-   {memory[0], memory[1], memory[2], memory[3]} <= 32'b0000001_00100_01000_100_00111_0110011; // div x7, x8, x4
-{memory[4], memory[5], memory[6], memory[7]} <= 32'b000000000000_00101_010_00100_0000011; // load x4, 0(x5)
+{memory[0], memory[1], memory[2], memory[3]} <= 32'b0000001_00100_01000_100_00111_0110011; // div x7, x8, x4
+{memory[4], memory[5], memory[6], memory[7]} <= 32'b000000000001_00101_010_00100_0000011; // load x4, 1(x5)
 {memory[8], memory[9], memory[10], memory[11]} <= 32'b0000000_00100_00001_000_00110_0110011; // add x6, x1, x4
 {memory[12], memory[13], memory[14], memory[15]} <= 32'b0100000_00010_00011_000_00001_0110011; // sub x1, x3, x2
 {memory[16], memory[17], memory[18], memory[19]} <= 32'b0000000_01000_00111_000_00100_0110011; // add x4, x7, x8
