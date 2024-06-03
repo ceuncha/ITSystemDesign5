@@ -106,10 +106,10 @@ module RS_Div (
     reg [3:0] ALUOPs [0:63];
     reg [7:0] operand1s [0:63];
     reg [7:0] operand2s [0:63];
-    reg [63:0] operand1_datas [0:63];  // operand1 data
-    reg [63:0] operand2_datas [0:63]; // operand2 data
-    reg [31:0] valid_entries1;  // operand1이 valid한지
-    reg [31:0] valid_entries2; // operand2가 valid한지
+    reg [31:0] operand1_datas [0:63];  // operand1 data
+    reg [31:0] operand2_datas [0:63]; // operand2 data
+    reg [63:0] valid_entries1;  // operand1이 valid한지
+    reg [63:0] valid_entries2; // operand2가 valid한지
     reg [108:0] result [0:63];
     reg [5:0] tail;
     reg [63:0] readys;
