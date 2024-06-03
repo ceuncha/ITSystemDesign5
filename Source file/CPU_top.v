@@ -536,7 +536,7 @@ control_unit_top u_control_unit_top(
     MUX_2input MUX_B (.a(Operand2_ALU),.b(immediate),.sel(RS_EX_ALU_Src2),.y(ALU_B)); 
    multiplier multiplier (.clk(clk),.rst(rst),.start(Mul_start_in),.A(Operand1_Mul),.B(Operand2_Mul),
                           .Physical_address_in(RS_EX_Mul_Physical_address_in),
-                          .PC_in(RS_EX_PC_Mul_in),.Product(MUL_Data),.done(MUL_Done),.Physical_address_out(MUL_phy),
+                          .PC_in(RS_EX_PC_Mul_in),.Product(MUL_Data),.done(MUL_Done),.Physical_address_out(MUL_Phy),
                           .PC_out(RS_EX_PC_Mul_out));
     divider divider (.clk(clk),.reset(rst),.start(Div_start_in),.A(Operand1_Div),.B(Operand2_Div),
                      .Physical_address_in(RS_EX_Div_Physical_address_in),
