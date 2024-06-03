@@ -12,17 +12,21 @@ module ifid_pipeline_register (
     
     always @(posedge clk or posedge reset) begin
         if (reset) begin
-            // 리셋 신호가 활성화되면 초기화
+            // 由ъ뀑 ?떊?샇媛? ?솢?꽦?솕?릺硫? 珥덇린?솕
             IF_ID_instOut <= 32'b0;
             IF_ID_PC <= 32'b0;
+            ROB_Flush <= 1'b0;
+
         end else if (IF_ID_Flush) begin
             IF_ID_instOut <= 32'b0;
             IF_ID_PC <= 32'b0;
             ROB_Flush <= 1'b1;
         end else begin
-            // 플러시가 아니고 스톨도 아닐 때 정상 동작
+            // ?뵆?윭?떆媛? ?븘?땲怨? ?뒪?넧?룄 ?븘?땺 ?븣 ?젙?긽 ?룞?옉
             IF_ID_instOut <= instOut;
             IF_ID_PC <= PC;
+            ROB_Flush <= 1'b0;
+
         end
     end
 
@@ -68,7 +72,7 @@ module exmem_pipeline_register (
         
     always @(posedge clk or posedge reset) begin
         if (reset) begin
-            // 리셋 신호가 활성화되면 초기화
+            // 由ъ뀑 ?떊?샇媛? ?솢?꽦?솕?릺硫? 珥덇린?솕
             EX_MEM_MemToReg <= 1'b0;
             Load_Done <= 1'b0;
             EX_MEM_MemWrite <= 1'b0;
@@ -85,7 +89,7 @@ module exmem_pipeline_register (
             div_exec_PC <= 32'b0;
             div_exec_done <= 1'b0; 
         end else begin
-            // 정상 동작
+            // ?젙?긽 ?룞?옉
             EX_MEM_MemToReg <= ID_EX_MemToReg;
             Load_Done <= ID_EX_MemRead;
             EX_MEM_MemWrite <= ID_EX_MemWrite; 
@@ -125,14 +129,14 @@ module memwb_pipeline_register (
         
     always @(posedge clk or posedge reset) begin
         if (reset) begin
-            // 리셋 신호가 활성화되면 초기화
+            // 由ъ뀑 ?떊?샇媛? ?솢?꽦?솕?릺硫? 珥덇린?솕
             MEM_WB_MemToReg <= 1'b0;
             MEM_WB_ALUResult <= 32'b0;
             MEM_WB_RData <= 32'b0;
             alu_exec_done <= 1'b0;
             alu_exec_PC <= 32'b0;
         end else begin
-            // 정상 동작
+            // ?젙?긽 ?룞?옉
             MEM_WB_MemToReg <= EX_MEM_MemToReg;
             MEM_WB_ALUResult <= EX_MEM_ALUResult;
             MEM_WB_RData <= Load_Data;
