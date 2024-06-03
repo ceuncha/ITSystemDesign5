@@ -28,7 +28,6 @@ task reset_bb_entries;
             BB_entry[i] <= 32'b0;     // Reset ROB entry with all fields set to 0
             ready[i] <= 1'b0;         // Reset ready flag
         end
-        Paste_RAT_set <= 1'b0;        // 플래그 초기화
     end
 endtask
 
