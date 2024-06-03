@@ -78,34 +78,34 @@ module RS_ALU (
 );
     
     // Internal storage for reservation station entries
-    reg [31:0] PCs [0:31];
-    reg [7:0] Rds [0:31];
-    reg [31:0] MemToRegs;
-    reg [31:0] MemReads;
-    reg [31:0] MemWrites;
-    reg [3:0] ALUOPs [0:31];
-    reg [31:0] ALUSrc1s;
-    reg [31:0] ALUSrc2s;
-    reg [31:0] Jumps;
-    reg [31:0] Branchs;
-    reg [2:0] funct3s [0:31];
-    reg [31:0] immediates [0:31];
-    reg [7:0] operand1s [0:31];
-    reg [7:0] operand2s [0:31];
-    reg [31:0] operand1_datas [0:31];  // operand1 data
-    reg [31:0] operand2_datas [0:31]; // operand2 data
-    reg [31:0] valid_entries1;  // operand1?씠 valid?븳吏?
-    reg [31:0] valid_entries2; // operand2媛? valid?븳吏?
-    reg [150:0] result [0:31];
-    reg [4:0] tail;
-    reg [31:0] readys;
-    wire [31:0] Y;
+    reg [31:0] PCs [0:63];
+    reg [7:0] Rds [0:63];
+    reg [63:0] MemToRegs;
+    reg [63:0] MemReads;
+    reg [63:0] MemWrites;
+    reg [3:0] ALUOPs [0:63];
+    reg [63:0] ALUSrc1s;
+    reg [63:0] ALUSrc2s;
+    reg [63:0] Jumps;
+    reg [63:0] Branchs;
+    reg [2:0] funct3s [0:63];
+    reg [31:0] immediates [0:63];
+    reg [7:0] operand1s [0:63];
+    reg [7:0] operand2s [0:63];
+    reg [31:0] operand1_datas [0:63];  // operand1 data
+    reg [31:0] operand2_datas [0:63]; // operand2 data
+    reg [63:0] valid_entries1;  // operand1?씠 valid?븳吏?
+    reg [63:0] valid_entries2; // operand2媛? valid?븳吏?
+    reg [150:0] result [0:63];
+    reg [5:0] tail;
+    reg [63:0] readys;
+    wire [63:0] Y;
     integer i;
 
     always @(posedge clk or posedge reset) begin
         if (reset) begin
             tail <= 0;
-            for (i = 0; i < 32; i = i + 1) begin
+            for (i = 0; i < 64; i = i + 1) begin
                 PCs[i] <= 0;
                 Rds[i] <= 0;
                 result[i] <= 0;
@@ -147,7 +147,7 @@ module RS_ALU (
                 operand2_datas[tail] <= operand2_data;
                 valid_entries1[tail] <= 1;
                 valid_entries2[tail] <= valid[1];
-                tail <= (tail + 1) % 16;
+                tail <= (tail + 1) % 64;
             end else if (operand2 == ALU_result_dest) begin  // ALU?뿉?꽌 operand2?쓽 ?뿰?궛?씠 ?걹?궗?쓣?븣
                 PCs[tail] <= PC;
                 Rds[tail] <= Rd;
@@ -167,7 +167,7 @@ module RS_ALU (
                 operand2_datas[tail] <= ALU_result;
                 valid_entries1[tail] <= valid[0];
                 valid_entries2[tail] <= 1; 
-                tail <= (tail + 1) % 16;   
+                tail <= (tail + 1) % 64;   
              end else if (operand1 == MUL_result_dest) begin  // MUL?뿉?꽌 operand1?쓽 ?뿰?궛?씠 ?걹?궗?쓣?븣
                 PCs[tail] <= PC;
                 Rds[tail] <= Rd;
@@ -187,7 +187,7 @@ module RS_ALU (
                 operand2_datas[tail] <= operand2_data;
                 valid_entries1[tail] <= 1;
                 valid_entries2[tail] <= valid[1];
-                tail <= (tail + 1) % 16;
+                tail <= (tail + 1) % 64;
              end else if (operand2 == MUL_result_dest) begin  // MUL?뿉?꽌 operand2?쓽 ?뿰?궛?씠 ?걹?궗?쓣?븣
                 PCs[tail] <= PC;
                 Rds[tail] <= Rd;
@@ -207,7 +207,7 @@ module RS_ALU (
                 operand2_datas[tail] <= MUL_result;
                 valid_entries1[tail] <= valid[0];
                 valid_entries2[tail] <= 1; 
-                tail <= (tail + 1) % 16;
+                tail <= (tail + 1) % 64;
               end else if (operand1 == DIV_result_dest) begin  // DIV?뿉?꽌 operand1?쓽 ?뿰?궛?씠 ?걹?궗?쓣?븣
                 PCs[tail] <= PC;
                 Rds[tail] <= Rd;
@@ -227,7 +227,7 @@ module RS_ALU (
                 operand2_datas[tail] <= operand2_data;
                 valid_entries1[tail] <= 1;
                 valid_entries2[tail] <= valid[1];
-                tail <= (tail + 1) % 16;
+                tail <= (tail + 1) % 64;
               end else if (operand2 == DIV_result_dest) begin  // DIV?뿉?꽌 operand2?쓽 ?뿰?궛?씠 ?걹?궗?쓣?븣
                 PCs[tail] <= PC;
                 Rds[tail] <= Rd;
@@ -247,7 +247,7 @@ module RS_ALU (
                 operand2_datas[tail] <= DIV_result;
                 valid_entries1[tail] <= valid[0];
                 valid_entries2[tail] <= 1; 
-                tail <= (tail + 1) % 16;
+                tail <= (tail + 1) % 64;
              end else if ( operand1 == EX_MEM_Physical_Address && EX_MEM_MemRead ==1) begin
                 PCs[tail] <= PC;
                 Rds[tail] <= Rd;
@@ -267,7 +267,7 @@ module RS_ALU (
                 operand2_datas[tail] <= operand2_data;
                 valid_entries1[tail] <= 1;
                 valid_entries2[tail] <= valid[1] ; 
-                tail <= (tail + 1) % 16;
+                tail <= (tail + 1) % 64;
               end else if ( operand2 == EX_MEM_Physical_Address && EX_MEM_MemRead ==1) begin
                 PCs[tail] <= PC;
                 Rds[tail] <= Rd;
@@ -287,7 +287,7 @@ module RS_ALU (
                 operand2_datas[tail] <= RData;
                 valid_entries1[tail] <= valid[0];
                 valid_entries2[tail] <= 1 ; 
-                tail <= (tail + 1) % 16;
+                tail <= (tail + 1) % 64;
             end else begin
                 PCs[tail] <= PC;
                 Rds[tail] <= Rd;
@@ -307,13 +307,13 @@ module RS_ALU (
                 operand2_datas[tail] <= operand2_data;
                 valid_entries1[tail] <= valid[0];
                 valid_entries2[tail] <= valid[1]; 
-                tail <= (tail + 1) % 16;
+                tail <= (tail + 1) % 64;
              end 
              end
              end
              always@(*) begin
             if (ALU_result_valid) begin
-                for (i = 0; i < 32; i = i + 1) begin
+                for (i = 0; i < 64; i = i + 1) begin
                     if (!valid_entries1[i] && operand1s[i] == ALU_result_dest) begin
                         operand1_datas[i] = ALU_result;
                         valid_entries1[i] <= 1;
@@ -325,7 +325,7 @@ module RS_ALU (
                 end
             end
             if (MUL_result_valid) begin
-                for (i = 0; i < 32; i = i + 1) begin
+                for (i = 0; i < 64; i = i + 1) begin
                     if (!valid_entries1[i] && operand1s[i] == MUL_result_dest) begin
                         operand1_datas[i] = MUL_result;
                         valid_entries1[i] = 1;
@@ -337,7 +337,7 @@ module RS_ALU (
                 end
             end
             if (DIV_result_valid) begin
-                for (i = 0; i < 32; i = i + 1) begin
+                for (i = 0; i < 64; i = i + 1) begin
                     if (!valid_entries1[i] && operand1s[i] == DIV_result_dest) begin
                         operand1_datas[i] = DIV_result;
                         valid_entries1[i] = 1;
@@ -349,7 +349,7 @@ module RS_ALU (
                 end
             end
            if (EX_MEM_MemRead) begin
-           for (i = 0; i < 32; i = i + 1) begin
+           for (i = 0; i < 64; i = i + 1) begin
                     if (!valid_entries1[i] && operand1s[i] == EX_MEM_Physical_Address) begin
                         operand1_datas[i] = RData;
                         valid_entries1[i] = 1;
@@ -366,7 +366,7 @@ module RS_ALU (
 
 
     always @(*) begin
-        for (i = 0; i < 32; i = i + 1) begin
+        for (i = 0; i < 64; i = i + 1) begin
             if (valid_entries1[i] && valid_entries2[i] && !MemReads[i]) begin
                 readys[i] = 1;
                 result[i] = {1'b1, PCs[i], Rds[i], MemToRegs[i], MemReads[i], MemWrites[i], ALUOPs[i], ALUSrc1s[i], ALUSrc2s[i], Jumps[i], Branchs[i], funct3s[i],immediates[i], operand1_datas[i], operand2_datas[i]};
