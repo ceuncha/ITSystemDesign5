@@ -44,6 +44,8 @@ initial begin
 
     // 새로운 마지막 명령어
     {memory[132], memory[133], memory[134], memory[135]} <= 32'b0000000_00100_00111_000_00110_0110011; // add x6, x7, x4
+    {memory[136], memory[137], memory[138], memory[139]} <= 32'b0000001_00111_00101_110_01001_0110011; // rem x9, x7, x5
+
 
 
 end
