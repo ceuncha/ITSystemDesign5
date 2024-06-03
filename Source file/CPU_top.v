@@ -571,7 +571,7 @@ control_unit_top u_control_unit_top(
         .EX_MEM_ALUResult(EX_MEM_ALUResult),
         .EX_MEM_alu_exec_PC(EX_MEM_alu_exec_PC),
         .EX_MEM_alu_exec_done(EX_MEM_alu_exec_done),
-        .EX_MEM_alu_physical_address(EX_MEM_alu_physical_address),
+        .EX_MEM_alu_physical_address(Load_Phy),
         .mul_exec_value(mul_exec_value),
         .mul_exec_PC(mul_exec_PC),
         .mul_exec_done(mul_exec_done),
