@@ -694,3 +694,4 @@ always @(posedge clk or posedge reset) begin
         endcase
     end
 end
+endmodule
