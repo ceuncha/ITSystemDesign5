@@ -38,7 +38,7 @@ assign {RegWrite, MemToReg, MemRead, MemWrite, ALUOp, ALUSrc, RWsel, Branch, Jum
         ROM[12] = 13'b0_0_0_1_0010_11_0_0_0; // 스토어
 
         // Branch 명령어
-        ROM[13] = 13'b0_0_0_0_0110_01_0_1_0; // 분기 명령어에 대한 ALUOp 설정
+        ROM[13] = 13'b0_0_0_0_0110_10_0_1_0; // 분기 명령어에 대한 ALUOp 설정
 
         // I-타입 즉시값 연산 및 ALU 명령어
         ROM[14] = 13'b1_0_0_0_0010_11_0_0_0; // ADDI
