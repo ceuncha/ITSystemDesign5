@@ -129,7 +129,7 @@ module RS_ALU (
     reg [63:0] valid_entries1;  // operand1?씠 valid?븳吏?
     reg [63:0] valid_entries2; // operand2媛? valid?븳吏?
     reg [150:0] result [0:63];
-    reg [5:0] tail;
+    reg [6:0] tail;
     reg [63:0] readys;
     wire [63:0] Y;
     integer i;
@@ -342,52 +342,52 @@ module RS_ALU (
                 tail <= (tail + 1) % 64;
              end 
              end
-             end
-             always@(*) begin
+            
+           
             if (ALU_result_valid) begin
                 for (i = 0; i < 64; i = i + 1) begin
                     if (!valid_entries1[i] && operand1s[i] == ALU_result_dest) begin
-                        operand1_datas[i] = ALU_result;
+                        operand1_datas[i] <= ALU_result;
                         valid_entries1[i] <= 1;
                     end
                     if (!valid_entries2[i] && operand2s[i] == ALU_result_dest) begin
-                        operand2_datas[i] = ALU_result;
-                        valid_entries2[i] = 1;
+                        operand2_datas[i] <= ALU_result;
+                        valid_entries2[i] <= 1;
                     end
                 end
             end
             if (MUL_result_valid) begin
                 for (i = 0; i < 64; i = i + 1) begin
                     if (!valid_entries1[i] && operand1s[i] == MUL_result_dest) begin
-                        operand1_datas[i] = MUL_result;
-                        valid_entries1[i] = 1;
+                        operand1_datas[i] <= MUL_result;
+                        valid_entries1[i] <= 1;
                     end
                     if (!valid_entries2[i] && operand2s[i] == MUL_result_dest) begin
-                        operand2_datas[i] = MUL_result;
-                        valid_entries2[i] = 1;
+                        operand2_datas[i] <= MUL_result;
+                        valid_entries2[i] <= 1;
                     end
                 end
             end
             if (DIV_result_valid) begin
                 for (i = 0; i < 64; i = i + 1) begin
                     if (!valid_entries1[i] && operand1s[i] == DIV_result_dest) begin
-                        operand1_datas[i] = DIV_result;
-                        valid_entries1[i] = 1;
+                        operand1_datas[i] <= DIV_result;
+                        valid_entries1[i] <= 1;
                     end
                     if (!valid_entries2[i] && operand2s[i] == DIV_result_dest) begin
-                        operand2_datas[i] = DIV_result;
-                        valid_entries2[i] = 1;
+                        operand2_datas[i] <= DIV_result;
+                        valid_entries2[i] <= 1;
                     end
                 end
             end
            if (EX_MEM_MemRead) begin
            for (i = 0; i < 64; i = i + 1) begin
                     if (!valid_entries1[i] && operand1s[i] == EX_MEM_Physical_Address) begin
-                        operand1_datas[i] = RData;
-                        valid_entries1[i] = 1;
+                        operand1_datas[i] <= RData;
+                        valid_entries1[i] <= 1;
                     end
                     if (!valid_entries2[i] && operand2s[i] == EX_MEM_Physical_Address) begin
-                        operand2_datas[i] = RData;
+                        operand2_datas[i] <= RData;
                         valid_entries2[i] <= 1;
                     end
                 end     
