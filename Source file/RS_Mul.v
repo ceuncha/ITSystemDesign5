@@ -77,7 +77,7 @@ module RS_Mul (
     reg [31:0] operand2_datas [0:63]; // operand2 data
     reg [63:0] valid_entries1;  // operand1이 valid한지
     reg [63:0] valid_entries2; // operand2가 valid한지
-    reg [104:0] result [0:31];
+    reg [104:0] result [0:63];
     reg [5:0] tail;
     reg [63:0] readys;
     wire [63:0] Y;
