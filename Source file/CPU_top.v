@@ -245,6 +245,12 @@ Program_Counter u_Program_Counter(
     .PCSrc(PCSrc),
     .PC(PC)
 );
+
+ROB_Counter u_ROB_Counter(
+    .clk(clk),
+    .rst(rst),
+    .inst_num(inst_num)
+);
 Instruction_memory u_Instruction_memory(
     .pc(PC),
     .instOut(instOut)
@@ -321,8 +327,8 @@ BB u_BB(
     .rst(rst),                      // Reset signal
     .opcode(instOut_opcode),             // Input opcode
     .PCSrc(PCSrc),                    // Branch decision signal
-    .branch_PC(branch_index),         // Branch index in ROB
-    .PC(PC),                // Current PC value (expanded to 32 bits)
+    .branch_PC(RS_EX_inst_num),         // Branch index in ROB
+    .PC(inst_num),                // Current PC value (expanded to 32 bits)
     .tail_num(save_page),           // Output value
     .Copy_RAT(save_on),                 // Output register destination extracted from instr[11:7]
     .head_num(restore_page),           // Output RegWrite signal to indicate a register write operation
@@ -616,7 +622,7 @@ control_unit_top u_control_unit_top(
         .reg_write(RegWrite),
         .alu_exec_done(alu_exec_done),
         .alu_exec_value(alu_exec_value),
-        .alu_exec_PC(EX_MEM_alu_exec_PC),
+        .alu_exec_PC(EX_MEM_alu_inst_num),
         .mul_exec_done(mul_exec_done),
         .mul_exec_value(mul_exec_value),
         .mul_exec_PC(mul_exec_PC),
@@ -625,8 +631,8 @@ control_unit_top u_control_unit_top(
         .div_exec_PC(div_exec_PC),
         .PcSrc(PCSrc),
         .PC_Return(PC_Return),
-        .branch_index(branch_index),
-        .PC(IF_ID_PC),
+        .branch_index(RS_EX_inst_num),
+        .PC(IF_ID_inst_num),
         .out_value(out_value),
         .out_dest(out_dest),
         .out_reg_write(out_reg_write)
