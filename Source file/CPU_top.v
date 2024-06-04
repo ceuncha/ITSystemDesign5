@@ -590,30 +590,18 @@ control_unit_top u_control_unit_top(
         .Load_Data(Load_Data)
     );
 
-    // memwb_pipeline_register instantiation
-    memwb_pipeline_register memwb (
-        .clk(clk),
-        .reset(rst),
-        .EX_MEM_MemToReg(EX_MEM_MemToReg),
-        .EX_MEM_ALUResult(EX_MEM_ALUResult),
-        .Load_Data(Load_Data),
-        .EX_MEM_alu_exec_PC(EX_MEM_alu_exec_PC),
-        .EX_MEM_alu_exec_done(EX_MEM_alu_exec_done),
-        .Load_Done(Load_Done),
-        .MEM_WB_MemToReg(MEM_WB_MemToReg),
-        .MEM_WB_ALUResult(MEM_WB_ALUResult),
-        .MEM_WB_RData(MEM_WB_RData),
-        .alu_exec_done(alu_exec_done),
-        .alu_exec_PC(alu_exec_PC)
-    );
+  
 
     // WbMux instantiation
     WbMux wb_mux (
-        .MEM_WB_ALUResult(MEM_WB_ALUResult),
-        .MEM_WB_RData(MEM_WB_RData),
+        .MEM_WB_ALUResult(EX_MEM_ALUResult),
+        .MEM_WB_RData(Load_Data),
         .MEM_WB_MemToReg(MEM_WB_MemToReg),
         .alu_exec_value(alu_exec_value)
     );
+    
+    MUX_2input Savage_Mux (.a(EX_MEM_alu_exec_done),.b(Load_Done),
+    .sel(Load_Done),.y(alu_exec_done)); 
 
     // ROB instantiation
     ROB rob (
@@ -624,7 +612,7 @@ control_unit_top u_control_unit_top(
         .reg_write(RegWrite),
         .alu_exec_done(alu_exec_done),
         .alu_exec_value(alu_exec_value),
-        .alu_exec_PC(alu_exec_PC),
+        .alu_exec_PC(EX_MEM_alu_exec_PC),
         .mul_exec_done(mul_exec_done),
         .mul_exec_value(mul_exec_value),
         .mul_exec_PC(mul_exec_PC),
