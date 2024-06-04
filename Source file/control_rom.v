@@ -52,7 +52,7 @@ assign {RegWrite, MemToReg, MemRead, MemWrite, ALUOp, ALUSrc, RWsel, Branch, Jum
         ROM[22] = 13'b1_0_0_0_0111_11_0_0_0; // SRAI
 
         // LUI, AUIPC, JAL, JALR
-        ROM[23] = 13'b1_0_0_0_1011_11_0_0_0; // LUI
+        ROM[23] = 13'b1_0_0_0_0010_11_0_0_0; // LUI
         ROM[24] = 13'b1_0_0_0_0010_01_0_0_0; // AUIPC
         ROM[25] = 13'b1_0_0_0_0010_01_1_0_1; // JAL
         ROM[26] = 13'b1_0_0_0_0010_11_1_0_1; // JALR
