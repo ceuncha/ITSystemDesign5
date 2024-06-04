@@ -596,7 +596,7 @@ control_unit_top u_control_unit_top(
     WbMux wb_mux (
         .MEM_WB_ALUResult(EX_MEM_ALUResult),
         .MEM_WB_RData(Load_Data),
-        .MEM_WB_MemToReg(MEM_WB_MemToReg),
+        .MEM_WB_MemToReg(EX_MEM_MemToReg),
         .alu_exec_value(alu_exec_value)
     );
     
