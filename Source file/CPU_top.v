@@ -110,7 +110,7 @@ wire [31:0] branch_index;
     wire [31:0] RS_mul_operand1_data;
     wire [31:0] RS_mul_operand2_data;
     wire [1:0] RS_alu_valid;
-    wire [150:0]result_out_alu;
+    wire [182:0]result_out_alu;
 
 
  wire [31:0] Operand2_ALU = result_out_alu[31:0];
@@ -128,6 +128,7 @@ wire RS_EX_MemToReg = result_out_alu[109];
 wire [7:0] ALU_Phy = result_out_alu[117:110];
 wire [31:0] RS_EX_PC_ALU = result_out_alu[149:118];
 wire ALU_Done = result_out_alu[150];
+wire [31:0] RS_EX_inst_num = result_out_alu[151:182];
 
 
 
@@ -406,6 +407,7 @@ control_unit_top u_control_unit_top(
         .out_add_Operand2_phy(RS_alu_operand2),
         .out_add_valid(RS_alu_valid),
         .out_add_immediate(RS_alu_immediate),
+        .out_add_inst_num(RS_EX_inst_num),
         .mul_alu_operand1(RS_mul_operand1_data),
         .mul_alu_operand2(RS_mul_operand2_data),
         .mul_alu_func3(RS_mul_funct3),
@@ -564,7 +566,7 @@ control_unit_top u_control_unit_top(
         .RS_EX_funt3(RS_EX_funct3),
         .operand2_Phy_Data(Operand2_ALU),
         .RS_EX_ALUResult(ALU_Data),
-        .RS_EX_PC_ALU(RS_EX_PC_ALU),
+        .RS_EX_PC_ALU(RS_EX_inst_num),
         .ALU_done(ALU_Done),
         .RS_EX_alu_Physical_address(ALU_Phy),
         .Mul_Result(MUL_Data[31:0]),
@@ -579,7 +581,7 @@ control_unit_top u_control_unit_top(
         .EX_MEM_funct3(EX_MEM_funct3),
         .EX_MEM_Rdata2(EX_MEM_Rdata2),
         .EX_MEM_ALUResult(EX_MEM_ALUResult),
-        .EX_MEM_alu_exec_PC(EX_MEM_alu_exec_PC),
+        .EX_MEM_alu_exec_PC(EX_MEM_inst_num),
         .EX_MEM_alu_exec_done(EX_MEM_alu_exec_done),
         .EX_MEM_alu_physical_address(Load_Phy),
         .mul_exec_value(mul_exec_value),
