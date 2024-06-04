@@ -1,7 +1,7 @@
 module ROB_Counter(
     input clk,
     input rst,
-    output reg inst_num
+    output reg [31:0] inst_num
 );
 
     always @ (posedge clk or posedge rst) begin
