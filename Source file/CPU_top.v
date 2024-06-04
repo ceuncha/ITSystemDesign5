@@ -10,6 +10,7 @@ module CPU_top(
 wire [31:0] PC, PC_Branch;   
 wire  PCSrc;
 wire [31:0] instOut;
+wire [31:0] inst_num;
 wire [4:0] Rs1 = instOut[19:15];
 wire [4:0] Rs2 = instOut[24:20];
 wire [4:0] Rd =instOut[11:7];
@@ -17,6 +18,7 @@ wire [6:0] instOut_opcode = instOut[6:0];
 // ID stage
 wire [31:0] IF_ID_instOut;
 wire [31:0] IF_ID_PC;
+wire [31:0] IF_ID_inst_num;
 wire IF_ID_Flush;
 wire ROB_Flush;
     // parse instOut
@@ -255,6 +257,8 @@ ifid_pipeline_register u_ifid_pipeline_register(
     .PC(PC),
     .IF_ID_Flush(IF_ID_Flush),
     .IF_ID_instOut(IF_ID_instOut),  
+    .inst_num(inst_num),
+    .IF_ID_inst_num(IF_ID_inst_num),
     .IF_ID_PC(IF_ID_PC),
     .ROB_Flush(ROB_Flush)
 );
