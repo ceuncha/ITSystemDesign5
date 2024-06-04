@@ -23,6 +23,7 @@ module RS_EX_decoder(
     input [7:0] Operand2_phy,
     input [1:0] valid,
     input [31:0] immediate,
+    input [31:0] inst_num,
 
     output reg [31:0] add_alu_operand1,  // Add ALU로 보낼 첫 번째 피연산자
     output reg [31:0] add_alu_operand2,  // Add ALU로 보낼 두 번째 피연산자
@@ -44,6 +45,7 @@ module RS_EX_decoder(
     output reg [7:0] out_add_Operand2_phy,
     output reg [1:0] out_add_valid,
     output reg [31:0] out_add_immediate,
+    output reg [31:0] out_add_inst_num,
     
     output reg [31:0] mul_alu_operand1,  // Mul ALU로 보낼 첫 번째 피연산자
     output reg [31:0] mul_alu_operand2,  // Mul ALU로 보낼 두 번째 피연산자
@@ -65,7 +67,8 @@ module RS_EX_decoder(
     output reg [7:0] out_mul_Operand2_phy,
     output reg [1:0] out_mul_valid,
     output reg [31:0] out_mul_immediate,
-
+    output reg [31:0] out_mul_inst_num,
+    
     output reg [31:0] div_alu_operand1,  // Div ALU로 보낼 첫 번째 피연산자
     output reg [31:0] div_alu_operand2,  // Div ALU로 보낼 두 번째 피연산자
     output reg [2:0] div_alu_func3,      // Div ALU로 보낼 func3
@@ -85,7 +88,8 @@ module RS_EX_decoder(
     output reg [7:0] out_div_Operand1_phy,
     output reg [7:0] out_div_Operand2_phy,
     output reg [1:0] out_div_valid,
-    output reg [31:0] out_div_immediate
+    output reg [31:0] out_div_immediate,
+    output reg [31:0] out_div_inst_num
 );
 
 always @(posedge reset) begin
@@ -100,16 +104,19 @@ always @(posedge reset) begin
         out_add_Operand1_phy <= 0;
         out_add_Operand2_phy <= 0;
         out_add_valid <= 0;
-
+        out_add_inst_num<=0;
+        
         mul_alu_operand1 <= 0;
         mul_alu_operand2 <= 0;
         mul_alu_func3 <= 0;
         mul_alu_pc <= 0;
 
+
         mul_rd_phy_reg <= 0;
         out_mul_Operand1_phy <= 0;
         out_mul_Operand2_phy <= 0;
         out_mul_valid <= 0;
+        out_mul_inst_num<=0;
 
         div_alu_operand1 <= 0;
         div_alu_operand2 <= 0;
@@ -149,7 +156,8 @@ always @(posedge reset) begin
         out_div_ALUSrc1 <= 0;
         out_div_ALUSrc2 <= 0;		
         out_div_Jump <= 0;		
-        out_div_Branch <= 0;  
+        out_div_Branch <= 0; 
+        out_div_inst_num<=0; 
     end
 end
 
@@ -182,6 +190,7 @@ always @(*) begin
                             out_mul_ALUSrc2 <= ALUSrc2;		
                             out_mul_Jump <= Jump;		
                             out_mul_Branch <= Branch;
+                            out_mul_inst_num<=inst_num;
                         end
                         3'b100: begin // DIV
                             div_alu_operand1 <= in_operand1;
@@ -205,6 +214,7 @@ always @(*) begin
                             out_div_ALUSrc2 <= ALUSrc2;		
                             out_div_Jump <= Jump;		
                             out_div_Branch <= Branch;
+                            out_div_inst_num<=inst_num;
                         end
                         3'b110: begin // REM
                             div_alu_operand1 <= in_operand1;
@@ -228,6 +238,7 @@ always @(*) begin
                             out_div_ALUSrc2 <= ALUSrc2;		
                             out_div_Jump <= Jump;		
                             out_div_Branch <= Branch;
+                            out_div_inst_num<=inst_num;
                         end
                         default: begin
                             // 다른 R-type 명령어는 ADD ALU로 보내기
@@ -252,6 +263,7 @@ always @(*) begin
                             out_add_ALUSrc2 <= ALUSrc2;		
                             out_add_Jump <= Jump;		
                             out_add_Branch <= Branch;
+                            out_add_inst_num<=inst_num;
                         end
                     endcase
                 end
@@ -278,6 +290,7 @@ always @(*) begin
                     out_add_ALUSrc2 <= ALUSrc2;		
                     out_add_Jump <= Jump;		
                     out_add_Branch <= Branch;
+                    out_add_inst_num<=inst_num;
                 end
             endcase
         end
@@ -304,6 +317,7 @@ always @(*) begin
             out_add_ALUSrc2 <= ALUSrc2;		
             out_add_Jump <= Jump;		
             out_add_Branch <= Branch;
+            out_add_inst_num<=inst_num;
         end
     endcase
 end
