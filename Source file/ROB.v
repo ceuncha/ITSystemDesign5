@@ -52,13 +52,7 @@ always @(posedge clk or posedge rst) begin
                     tail <= (i + 1) % 64; // Move tail to the entry right after the branch entry
                 end
             end
-        end else if (ROB_Flush) begin
-            // Decrement tail on ROB_Flush signal
-            if (tail == 0) begin
-                tail <= 63; // Wrap around to 31 if tail is 0
-            end else begin
-                tail <= tail - 1;
-            end
+      
         end else if (IF_ID_instOut != 32'b0) begin  // Only increment tail if the instruction is not invalid (i.e., not a bubble)
             rob_entry[tail] <= {1'b1, 1'b0, reg_write, 32'b0, IF_ID_instOut, PC}; // Store input data in the ROB entry with value set to 32'b0 and new_bit set to 1
             tail <= (tail + 1) % 64;                // Circular buffer handling
