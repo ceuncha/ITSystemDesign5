@@ -3,9 +3,11 @@ module ifid_pipeline_register (
     input clk,
     input reset,
     input [31:0] instOut,
+    input [31:0] inst_num,
     input [31:0] PC,
     input IF_ID_Flush,
     output reg [31:0] IF_ID_instOut,  
+    output reg [31:0] IF_ID_inst_num,
     output reg [31:0] IF_ID_PC,
     output reg ROB_Flush
 );
@@ -14,16 +16,19 @@ module ifid_pipeline_register (
         if (reset) begin
             // 由ъ뀑 ?떊?샇媛? ?솢?꽦?솕?릺硫? 珥덇린?솕
             IF_ID_instOut <= 32'b0;
+            IF_ID_inst_num <= 32'b0;
             IF_ID_PC <= 32'b0;
             ROB_Flush <= 1'b0;
 
         end else if (IF_ID_Flush) begin
             IF_ID_instOut <= 32'b0;
+            IF_ID_inst_num <= 32'b0;
             IF_ID_PC <= 32'b0;
             ROB_Flush <= 1'b1;
         end else begin
             // ?뵆?윭?떆媛? ?븘?땲怨? ?뒪?넧?룄 ?븘?땺 ?븣 ?젙?긽 ?룞?옉
             IF_ID_instOut <= instOut;
+            IF_ID_inst_num <= inst_num;
             IF_ID_PC <= PC;
             ROB_Flush <= 1'b0;
 
