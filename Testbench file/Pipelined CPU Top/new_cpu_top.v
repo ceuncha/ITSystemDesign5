@@ -35,7 +35,7 @@ module CPU_top_tb;
         // Example: Apply some input stimuli and observe the outputs
         
         // Run the simulation for a certain period
-        #2000;
+        #5000;
         
         // Finish simulation
         $finish;
