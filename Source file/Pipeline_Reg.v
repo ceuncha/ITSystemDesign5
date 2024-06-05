@@ -39,6 +39,42 @@ endmodule
 
 
 //EXMEM PIPELINE REGISTER
+//IFID PIPELINE REGISTER
+module ifid_pipeline_register (
+    input clk,
+    input reset,
+    input [31:0] instOut,
+    input [31:0] PC,
+    input IF_ID_Flush,
+    output reg [31:0] IF_ID_instOut,  
+    output reg [31:0] IF_ID_PC,
+    output reg ROB_Flush
+);
+    
+    always @(posedge clk or posedge reset) begin
+        if (reset) begin
+            // 由ъ뀑 ?떊?샇媛? ?솢?꽦?솕?릺硫? 珥덇린?솕
+            IF_ID_instOut <= 32'b0;
+            IF_ID_PC <= 32'b0;
+            ROB_Flush <= 1'b0;
+
+        end else if (IF_ID_Flush) begin
+            IF_ID_instOut <= 32'b0;
+            IF_ID_PC <= 32'b0;
+            ROB_Flush <= 1'b1;
+        end else begin
+            // ?뵆?윭?떆媛? ?븘?땲怨? ?뒪?넧?룄 ?븘?땺 ?븣 ?젙?긽 ?룞?옉
+            IF_ID_instOut <= instOut;
+            IF_ID_PC <= PC;
+            ROB_Flush <= 1'b0;
+
+        end
+    end
+
+endmodule
+
+
+//EXMEM PIPELINE REGISTER
 module exmem_pipeline_register (
     input clk,
     input reset,
@@ -56,8 +92,10 @@ module exmem_pipeline_register (
     input Mul_done_out,
     input [31:0] Div_Result,
     input [31:0] RS_EX_PC_Div_out,
-    input [31:0] Div_done_out,
-
+    input Div_done_out,
+    input RS_EX_RegWrite,
+    
+    output reg EX_MEM_RegWrite,
     output reg EX_MEM_MemToReg,
     output reg Load_Done,
     output reg EX_MEM_MemWrite,
@@ -77,7 +115,8 @@ module exmem_pipeline_register (
         
     always @(posedge clk or posedge reset) begin
         if (reset) begin
-            // �뵳�딅�� ?�뻿?�깈揶�? ?�넞?苑�?�넅?由븝쭖? �룯�뜃由�?�넅
+            // 由ъ뀑 ?떊?샇媛? ?솢?꽦?솕?릺硫? 珥덇린?솕
+            EX_MEM_RegWrite <= 1'b0;
             EX_MEM_MemToReg <= 1'b0;
             Load_Done <= 1'b0;
             EX_MEM_MemWrite <= 1'b0;
@@ -94,7 +133,8 @@ module exmem_pipeline_register (
             div_exec_PC <= 32'b0;
             div_exec_done <= 1'b0; 
         end else begin
-            // ?�젟?湲� ?猷�?�삂
+            // ?젙?긽 ?룞?옉
+            EX_MEM_RegWrite <= RS_EX_RegWrite;
             EX_MEM_MemToReg <= ID_EX_MemToReg;
             Load_Done <= ID_EX_MemRead;
             EX_MEM_MemWrite <= ID_EX_MemWrite; 
@@ -113,6 +153,7 @@ module exmem_pipeline_register (
         end
     end
 endmodule
+
 
 
    
