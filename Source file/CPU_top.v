@@ -334,7 +334,9 @@ BB u_BB(
     .tail_num(save_page),           // Output value
     .Copy_RAT(save_on),                 // Output register destination extracted from instr[11:7]
     .head_num(restore_page),           // Output RegWrite signal to indicate a register write operation
-    .Paste_RAT(restore_on)
+    .Paste_RAT(restore_on),
+    .RS_EX_Branch(RS_EX_Branch), 
+    .RS_EX_Jump(RS_EX_Jump)
 );
 
 chuchu u_chuchu(
