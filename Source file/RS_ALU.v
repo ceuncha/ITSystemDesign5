@@ -946,7 +946,7 @@ always @(posedge clk or posedge reset) begin
                 valid_entries1[63] <= 0;
                 valid_entries2[63] <= 0;
                 heads <= (heads + 1) % 64;
-                head <= (heads + 1) % 64;
+             
             end                                                                              
             default: begin
                 result_out <= 0;
