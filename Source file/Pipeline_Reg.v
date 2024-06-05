@@ -14,7 +14,7 @@ module ifid_pipeline_register (
     
     always @(posedge clk or posedge reset) begin
         if (reset) begin
-            // 由ъ뀑 ?떊?샇媛? ?솢?꽦?솕?릺硫? 珥덇린?솕
+            // �뵳�딅�� ?�뻿?�깈揶�? ?�넞?苑�?�넅?由븝쭖? �룯�뜃由�?�넅
             IF_ID_instOut <= 32'b0;
             IF_ID_inst_num <= 32'b0;
             IF_ID_PC <= 32'b0;
@@ -26,7 +26,7 @@ module ifid_pipeline_register (
             IF_ID_PC <= 32'b0;
             ROB_Flush <= 1'b1;
         end else begin
-            // ?뵆?윭?떆媛? ?븘?땲怨? ?뒪?넧?룄 ?븘?땺 ?븣 ?젙?긽 ?룞?옉
+            // ?逾�?�쑎?�뻻揶�? ?釉�?�빍��? ?�뮞?�꽘?猷� ?釉�?�빜 ?釉� ?�젟?湲� ?猷�?�삂
             IF_ID_instOut <= instOut;
             IF_ID_inst_num <= inst_num;
             IF_ID_PC <= PC;
@@ -77,7 +77,7 @@ module exmem_pipeline_register (
         
     always @(posedge clk or posedge reset) begin
         if (reset) begin
-            // 由ъ뀑 ?떊?샇媛? ?솢?꽦?솕?릺硫? 珥덇린?솕
+            // �뵳�딅�� ?�뻿?�깈揶�? ?�넞?苑�?�넅?由븝쭖? �룯�뜃由�?�넅
             EX_MEM_MemToReg <= 1'b0;
             Load_Done <= 1'b0;
             EX_MEM_MemWrite <= 1'b0;
@@ -94,7 +94,7 @@ module exmem_pipeline_register (
             div_exec_PC <= 32'b0;
             div_exec_done <= 1'b0; 
         end else begin
-            // ?젙?긽 ?룞?옉
+            // ?�젟?湲� ?猷�?�삂
             EX_MEM_MemToReg <= ID_EX_MemToReg;
             Load_Done <= ID_EX_MemRead;
             EX_MEM_MemWrite <= ID_EX_MemWrite; 
@@ -114,46 +114,6 @@ module exmem_pipeline_register (
     end
 endmodule
 
-//MEMWB PIPELINE REGISTER
-module memwb_pipeline_register (
-    input clk,
-    input reset,
-    input EX_MEM_MemToReg,
-    input [31:0] EX_MEM_ALUResult,
-    input [31:0] Load_Data, // data memory
-    input [31:0] EX_MEM_alu_exec_PC,
-    input EX_MEM_alu_exec_done,
-    input Load_Done,
-    
-    output reg MEM_WB_MemToReg,
-    output reg [31:0] MEM_WB_ALUResult,
-    output reg [31:0] MEM_WB_RData,
-    output reg alu_exec_done,
-    output reg [31:0] alu_exec_PC
-);
-        
-    always @(posedge clk or posedge reset) begin
-        if (reset) begin
-            // 由ъ뀑 ?떊?샇媛? ?솢?꽦?솕?릺硫? 珥덇린?솕
-            MEM_WB_MemToReg <= 1'b0;
-            MEM_WB_ALUResult <= 32'b0;
-            MEM_WB_RData <= 32'b0;
-            alu_exec_done <= 1'b0;
-            alu_exec_PC <= 32'b0;
-        end else begin
-            // ?젙?긽 ?룞?옉
-            MEM_WB_MemToReg <= EX_MEM_MemToReg;
-            MEM_WB_ALUResult <= EX_MEM_ALUResult;
-            MEM_WB_RData <= Load_Data;
 
-            alu_exec_PC <= EX_MEM_alu_exec_PC;
-            
-            if(!Load_Done) begin
-            alu_exec_done <= EX_MEM_alu_exec_done;
-            end else begin
-                alu_exec_done <= Load_Done;
-            end
-            end
-        end
    
-endmodule
+
