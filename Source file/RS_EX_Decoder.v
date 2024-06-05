@@ -157,7 +157,7 @@ always @(posedge reset) begin
         out_div_ALUSrc2 <= 0;		
         out_div_Jump <= 0;		
         out_div_Branch <= 0; 
-        out_div_inst_num<=0; 
+        out_div_inst_num <= 0; 
     end
 end
 
@@ -190,7 +190,7 @@ always @(*) begin
                             out_mul_ALUSrc2 <= ALUSrc2;		
                             out_mul_Jump <= Jump;		
                             out_mul_Branch <= Branch;
-                            out_mul_inst_num<=inst_num;
+                            out_mul_inst_num <= inst_num;
                         end
                         3'b100: begin // DIV
                             div_alu_operand1 <= in_operand1;
@@ -214,7 +214,7 @@ always @(*) begin
                             out_div_ALUSrc2 <= ALUSrc2;		
                             out_div_Jump <= Jump;		
                             out_div_Branch <= Branch;
-                            out_div_inst_num<=inst_num;
+                            out_div_inst_num <= inst_num;
                         end
                         3'b110: begin // REM
                             div_alu_operand1 <= in_operand1;
@@ -238,7 +238,7 @@ always @(*) begin
                             out_div_ALUSrc2 <= ALUSrc2;		
                             out_div_Jump <= Jump;		
                             out_div_Branch <= Branch;
-                            out_div_inst_num<=inst_num;
+                            out_div_inst_num <= inst_num;
                         end
                         default: begin
                             // 다른 R-type 명령어는 ADD ALU로 보내기
@@ -263,7 +263,7 @@ always @(*) begin
                             out_add_ALUSrc2 <= ALUSrc2;		
                             out_add_Jump <= Jump;		
                             out_add_Branch <= Branch;
-                            out_add_inst_num<=inst_num;
+                            out_add_inst_num <= inst_num;
                         end
                     endcase
                 end
@@ -290,7 +290,7 @@ always @(*) begin
                     out_add_ALUSrc2 <= ALUSrc2;		
                     out_add_Jump <= Jump;		
                     out_add_Branch <= Branch;
-                    out_add_inst_num<=inst_num;
+                    out_add_inst_num <= inst_num;
                 end
             endcase
         end
@@ -317,7 +317,7 @@ always @(*) begin
             out_add_ALUSrc2 <= ALUSrc2;		
             out_add_Jump <= Jump;		
             out_add_Branch <= Branch;
-            out_add_inst_num<=inst_num;
+            out_add_inst_num <= inst_num;
         end
     endcase
 end
