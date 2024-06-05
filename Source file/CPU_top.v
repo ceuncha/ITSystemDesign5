@@ -224,7 +224,18 @@ wire Div_start_in = result_out_div[108];
    wire [3:0]divider_op;
 
 
-
+       //MEM_WB////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    wire EX_MEM_MemToReg, Load_Done, EX_MEM_MemWrite, EX_MEM_alu_exec_done, mul_exec_done, div_exec_done;
+    wire [2:0] EX_MEM_funct3;
+    wire [31:0] EX_MEM_Rdata2, EX_MEM_ALUResult, EX_MEM_alu_inst_num, EX_MEM_alu_physical_address;
+    wire [31:0] mul_exec_value, mul_exec_PC, div_exec_value, div_exec_PC;
+    wire [31:0] Load_Data;
+    wire MEM_WB_MemToReg;
+    wire [31:0] MEM_WB_ALUResult, MEM_WB_RData, alu_exec_value, alu_exec_PC;
+    wire alu_exec_done;
+    wire [31:0] out_value;
+    wire [4:0] out_dest;
+    wire out_reg_write;
     
     
 ///////////////////////////IF_ID////////////////////////////////////////////////
@@ -490,7 +501,7 @@ control_unit_top u_control_unit_top(
         .clk(clk),
         .reset(rst),
         .RS_mul_start(RS_mul_start),
-        .RS_mul_PC(RS_mul_inst_num),
+        .RS_mul_PC(RS_mul_PC),
         .RS_mul_Rd(RS_mul_Rd),
         .EX_MEM_MemRead(Load_Done),
         .RData(Load_Data),
@@ -515,7 +526,7 @@ control_unit_top u_control_unit_top(
 
 
 
-    RS_Div RS_Div (.clk(clk),.reset(rst),.RS_div_start(RS_div_start),.RS_div_PC(RS_div_inst_num),
+    RS_Div RS_Div (.clk(clk),.reset(rst),.RS_div_start(RS_div_start),.RS_div_PC(RS_div_PC),
                    .RS_div_Rd(RS_div_Rd),.RS_div_ALUOP(RS_div_ALUOP),.EX_MEM_MemRead(Load_Done),
                    .RData(Load_Data),.EX_MEM_Physical_Address(Load_Phy),.RS_div_operand1(RS_div_operand1),
                    .RS_div_operand2(RS_div_operand2),.RS_div_operand1_data(RS_div_operand1_data),
