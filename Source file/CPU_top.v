@@ -150,17 +150,15 @@ wire [31:0] RS_EX_inst_num = result_out_alu[182:151];
     wire ALU_Done;
     wire [63:0] MUL_Data;
     wire [7:0] MUL_Phy;
-    wire MUL_Done;
     wire [31:0] DIV_Data;
     wire [7:0] DIV_Phy;
-    wire DIV_Done;
    wire [104:0]result_out_mul;
 
 wire [31:0] Operand2_Mul = result_out_mul[31:0];
 wire [31:0] Operand1_Mul = result_out_mul[63:32];
 wire [7:0] RS_EX_Mul_Physical_address_in = result_out_mul[71:64];
 wire [31:0] RS_EX_inst_num_Mul_in = result_out_mul[103:72];
-wire Mul_start_in = result_out_mul[104];
+wire  Mul_start_in= result_out_mul[104];
 
 
 
@@ -183,7 +181,7 @@ wire [31:0] Operand2_Div = result_out_div[31:0];
 wire [31:0] Operand1_Div = result_out_div[63:32];
 wire [4:0] divider_op = result_out_div[67:64];
 wire [7:0] RS_EX_Div_Physical_address_in = result_out_div[75:68];
-wire [31:0] RS_EX_Div_inst_num = result_out_div[107:76];
+wire [31:0] RS_EX_Div_inst_num= result_out_div[107:76];
 wire Div_start_in = result_out_div[108];
 
 
@@ -222,6 +220,7 @@ wire Div_start_in = result_out_div[108];
    wire [31:0] Operand2_Div;
    wire [31:0] RS_EX_PC_Div_out;
    wire [3:0]divider_op;
+   wire [31:0] RS_EX_Div_inst_num_out;
 
 
        //MEM_WB////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -236,6 +235,7 @@ wire Div_start_in = result_out_div[108];
     wire [31:0] out_value;
     wire [4:0] out_dest;
     wire out_reg_write;
+    wire [31:0] EX_MEM_div_inst_num;
     
     
 ///////////////////////////IF_ID////////////////////////////////////////////////
