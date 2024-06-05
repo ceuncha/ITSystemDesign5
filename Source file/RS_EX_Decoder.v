@@ -8,7 +8,7 @@ module RS_EX_decoder(
     input [2:0] in_func3,   // 3-bit, 부가적 연산 정보
     input [6:0] in_funct7,  // 7-bit, 부가적 연산 정보 (funct7 추가)
     input [31:0] in_pc,     // 32-bit, 프로그램 카운터
-
+        
     input wire MemToReg,	
     input wire MemRead,
     input wire MemWrite,	
