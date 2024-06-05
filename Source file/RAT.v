@@ -1,3 +1,4 @@
+
 module RAT (
     input wire clk,
     input wire reset,
@@ -9,7 +10,8 @@ module RAT (
     input wire [4:0] logical_addr1, 
     input wire [4:0] logical_addr2, 
     input wire [4:0] rd_logical_addr, 
-    input wire [7:0] free_phy_addr,   
+    input wire [7:0] free_phy_addr,  
+    input wire if_id_flush, 
 
     input wire [6:0] opcode,
 
@@ -87,7 +89,14 @@ module RAT (
 
     
     always @(posedge clk) begin
-  
+        if(if_id_flush) begin
+                free_phy_addr_out <= free_phy_addr; 
+                rd_phy_out <= 8'b11111111; 
+        end
+        
+        if(!if_id_flush) begin
+        
+       
            
             case (opcode)
                 7'b1100111, 7'b0000011, 7'b0010011: begin  // jalr, load, i-type
@@ -115,7 +124,7 @@ module RAT (
                 rd_phy_out <= 8'b11111111;   
             end
         end
-
+end
 
 endmodule
 
