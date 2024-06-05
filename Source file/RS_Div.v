@@ -1,5 +1,6 @@
 module priority_encoder (
     input wire [63:0] ready, // 64비트 ready 신호
+    input wire [6:0]
     output reg [63:0] Y // 64비트 Y 출력
 );
 
@@ -114,6 +115,7 @@ module RS_Div (
     reg [5:0] tail;
     reg [63:0] readys;
     wire [63:0] Y;
+    reg [6:0] heads;
     integer i;
 
     always @(posedge clk or posedge reset) begin
