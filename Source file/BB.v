@@ -5,6 +5,8 @@ module BB(
     input wire PCSrc,                    // Branch decision signal
     input wire [31:0] branch_PC,         // Branch index in ROB
     input wire [31:0] PC,                // Current PC value (expanded to 32 bits)
+    input wire RS_EX_Branch,            //
+    input wire RS_EX_Jump,
     output reg [2:0] tail_num,           // Output value
     output reg Copy_RAT,                 // Output register destination extracted from instr[11:7]
     output reg [2:0] head_num,           // Output RegWrite signal to indicate a register write operation
@@ -25,7 +27,7 @@ task reset_bb_entries;
         head <= 0;
         tail <= 0;
         for (i = 0; i < 8; i = i + 1) begin
-            BB_entry[i] <= 32'b0;     // Reset ROB entry with all fields set to 0
+            BB_entry[i] <= 32'b1;     // Reset ROB entry with all fields set to 0
             ready[i] <= 1'b0;         // Reset ready flag
         end
     end
@@ -48,6 +50,7 @@ always @(posedge clk or posedge rst) begin
         end
 
         // Compare branch_PC with head's PC and check PCSrc
+    if (RS_EX_Branch || RS_EX_Jump) begin
         if (BB_entry[head] == branch_PC) begin
             if (PCSrc == 1'b1) begin
                 Paste_RAT <= 1;      // Set Paste_RAT to 1
@@ -60,6 +63,7 @@ always @(posedge clk or posedge rst) begin
                 Paste_RAT_set <= 0;  // 플래그 리셋
             end
         end
+    end
 
         for (i = 0; i < 8; i = i + 1) begin
             if (BB_entry[i] == branch_PC) begin
