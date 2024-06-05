@@ -58,7 +58,7 @@ always @(posedge clk or posedge rst) begin
                 head_num <= head;
                 reset_bb_entries();  // Reset BB entries
             end else begin
-                head <= head + 1;    // Increment head
+                head <= (head + 1)% 8;    // Increment head
                 Paste_RAT <= 0;      // Reset Paste_RAT to 0
                 Paste_RAT_set <= 0;  // 플래그 리셋
             end
