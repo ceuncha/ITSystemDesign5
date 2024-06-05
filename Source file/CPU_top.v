@@ -73,7 +73,7 @@ wire [31:0] branch_index;
     wire [31:0] RS_alu_immediate;
     wire RS_alu_start;
 
-    wire [31:0] RS_mul_operand1_data, RS_mul_operand2_data, RS_mul_PC;
+    wire [31:0] RS_mul_operand1_data, RS_mul_operand2_data, RS_mul_inst_num;
     wire [2:0] RS_mul_funct3;
     wire RS_mul_MemToReg, RS_mul_MemRead, RS_mul_MemWrite, RS_mul_ALUSrc1, RS_mul_ALUSrc2, RS_mul_Jump, RS_mul_Branch;
     wire [3:0] RS_mul_ALUOP;
@@ -82,7 +82,7 @@ wire [31:0] branch_index;
     wire [31:0] RS_mul_immediate;
     wire RS_mul_start;
 
-    wire [31:0] RS_div_operand1_data, RS_div_operand2_data, RS_div_PC;
+    wire [31:0] RS_div_operand1_data, RS_div_operand2_data, RS_div_inst_num;
     wire [2:0] RS_div_funct3;
     wire RS_div_MemToReg, RS_div_MenRead, RS_div_MemWrite, RS_div_ALUSrc1, RS_div_ALUSrc2, RS_div_Jump, RS_div_Branch;
     wire [3:0] RS_div_ALUOP;
@@ -159,7 +159,7 @@ wire [31:0] RS_EX_inst_num = result_out_alu[182:151];
 wire [31:0] Operand2_Mul = result_out_mul[31:0];
 wire [31:0] Operand1_Mul = result_out_mul[63:32];
 wire [7:0] RS_EX_Mul_Physical_address_in = result_out_mul[71:64];
-wire [31:0] RS_EX_PC_Mul_in = result_out_mul[103:72];
+wire [31:0] RS_mul_inst_num = result_out_mul[103:72];
 wire Mul_start_in = result_out_mul[104];
 
 
@@ -183,7 +183,7 @@ wire [31:0] Operand2_Div = result_out_div[31:0];
 wire [31:0] Operand1_Div = result_out_div[63:32];
 wire [4:0] divider_op = result_out_div[67:64];
 wire [7:0] RS_EX_Div_Physical_address_in = result_out_div[75:68];
-wire [31:0] RS_EX_PC_Div_in = result_out_div[107:76];
+wire [31:0] RS_div_inst_num = result_out_div[107:76];
 wire Div_start_in = result_out_div[108];
 
 
@@ -412,7 +412,7 @@ control_unit_top u_control_unit_top(
         .mul_alu_operand1(RS_mul_operand1_data),
         .mul_alu_operand2(RS_mul_operand2_data),
         .mul_alu_func3(RS_mul_funct3),
-        .mul_alu_pc(RS_mul_PC),
+        .out_mul_inst_num(RS_mul_inst_num),
         .out_mul_MemToReg(RS_mul_MemToReg),
         .out_mul_MemRead(RS_mul_MenRead),
         .out_mul_MemWrite(RS_mul_MemWrite),
@@ -430,7 +430,7 @@ control_unit_top u_control_unit_top(
         .div_alu_operand1(RS_div_operand1_data),
         .div_alu_operand2(RS_div_operand2_data),
         .div_alu_func3(RS_div_funct3),
-       .div_alu_pc(RS_div_PC),
+       .out_div_inst_num(RS_div_inst_num),
         .out_div_MemToReg(RS_div_MemToReg),
        .out_div_MemRead(RS_div_MemRead),
         .out_div_MemWrite(RS_div_MemWrite),
@@ -550,8 +550,8 @@ control_unit_top u_control_unit_top(
     MUX_2input MUX_B (.a(Operand2_ALU),.b(immediate),.sel(RS_EX_ALU_Src2),.y(ALU_B)); 
    multiplier multiplier (.clk(clk),.rst(rst),.start(Mul_start_in),.A(Operand1_Mul),.B(Operand2_Mul),
                           .Physical_address_in(RS_EX_Mul_Physical_address_in),
-                          .PC_in(RS_EX_PC_Mul_in),.Product(MUL_Data),.done(MUL_Done),.Physical_address_out(MUL_Phy),
-                          .PC_out(RS_EX_PC_Mul_out));
+                          .PC_in(RS_EX_inst_num_Mul_in),.Product(MUL_Data),.done(MUL_Done),.Physical_address_out(MUL_Phy),
+                          .PC_out(RS_EX_inst_num_Mul_out));
     divider divider (.clk(clk),.reset(rst),.start(Div_start_in),.A(Operand1_Div),.B(Operand2_Div),
                      .Physical_address_in(RS_EX_Div_Physical_address_in),
                      .PC_in(RS_EX_PC_Div_in),.Result(DIV_Data),.divider_op_in(divider_op),.done(DIV_Done),
@@ -572,10 +572,10 @@ control_unit_top u_control_unit_top(
         .ALU_done(ALU_Done),
         .RS_EX_alu_Physical_address(ALU_Phy),
         .Mul_Result(MUL_Data[31:0]),
-        .RS_EX_PC_Mul_out(RS_EX_PC_Mul_out),
+        .RS_EX_PC_Mul_out(RS_EX_inst_num_Mul_out),
         .Mul_done_out(MUL_Done),
         .Div_Result(DIV_Data),
-        .RS_EX_PC_Div_out(RS_EX_PC_Div_out),
+        .RS_EX_PC_Div_out(RS_EX_Div_inst_num_out),
         .Div_done_out(DIV_Done),
         .EX_MEM_MemToReg(EX_MEM_MemToReg),
         .Load_Done(Load_Done),
@@ -587,10 +587,10 @@ control_unit_top u_control_unit_top(
         .EX_MEM_alu_exec_done(EX_MEM_alu_exec_done),
         .EX_MEM_alu_physical_address(Load_Phy),
         .mul_exec_value(mul_exec_value),
-        .mul_exec_PC(mul_exec_PC),
+        .mul_exec_PC(EX_MEM_mul_inst_num),
         .mul_exec_done(mul_exec_done),
         .div_exec_value(div_exec_value),
-        .div_exec_PC(div_exec_PC),
+        .div_exec_PC(EX_MEM_div_inst_num),
         .div_exec_done(div_exec_done)
     );
 
@@ -629,10 +629,10 @@ control_unit_top u_control_unit_top(
         .alu_exec_PC(EX_MEM_alu_inst_num),
         .mul_exec_done(mul_exec_done),
         .mul_exec_value(mul_exec_value),
-        .mul_exec_PC(mul_exec_PC),
+        .mul_exec_PC(EX_MEM_mul_inst_num),
         .div_exec_done(div_exec_done),
         .div_exec_value(div_exec_value),
-        .div_exec_PC(div_exec_PC),
+        .div_exec_PC(EX_MEM_div_inst_num),
         .PcSrc(PCSrc),
         .PC_Return(PC_Return),
         .branch_index(RS_EX_inst_num),
