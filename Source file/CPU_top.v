@@ -555,8 +555,8 @@ control_unit_top u_control_unit_top(
                           .PC_out(RS_EX_inst_num_Mul_out));
     divider divider (.clk(clk),.reset(rst),.start(Div_start_in),.A(Operand1_Div),.B(Operand2_Div),
                      .Physical_address_in(RS_EX_Div_Physical_address_in),
-                     .PC_in(RS_EX_PC_Div_in),.Result(DIV_Data),.divider_op_in(divider_op),.done(DIV_Done),
-                     .Physical_address_out(DIV_Phy),.PC_out(RS_EX_PC_Div_out));
+                     .PC_in(RS_EX_Div_inst_num),.Result(DIV_Data),.divider_op_in(divider_op),.done(DIV_Done),
+                     .Physical_address_out(DIV_Phy),.PC_out(RS_EX_Div_inst_num_out));
 
 
 ////////////////////EX_MEM
