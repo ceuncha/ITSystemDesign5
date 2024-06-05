@@ -26,6 +26,7 @@ wire [6:0] funct7 = IF_ID_instOut[31:25];
 wire [2:0] funct3 = IF_ID_instOut[14:12];
 wire [6:0] opcode = IF_ID_instOut[6:0];
 
+wire [31:0] RS_alu_inst_num;
 wire [31:0] imm32;
 wire RegWrite;
 wire MemToReg;
@@ -128,7 +129,7 @@ wire RS_EX_MemToReg = result_out_alu[109];
 wire [7:0] ALU_Phy = result_out_alu[117:110];
 wire [31:0] RS_EX_PC_ALU = result_out_alu[149:118];
 wire ALU_Done = result_out_alu[150];
-wire [31:0] RS_EX_inst_num = result_out_alu[151:182];
+wire [31:0] RS_EX_inst_num = result_out_alu[182:151];
 
 
 
@@ -190,7 +191,7 @@ wire Div_start_in = result_out_div[108];
     ////////////////ex_mem wire
     //////////
    wire RS_EX_Branch;
- 
+   
    wire RS_EX_MemRead;
    wire RS_Ex_MemToReg;
    wire RS_EX_ALU_Src1;
@@ -226,7 +227,7 @@ wire Div_start_in = result_out_div[108];
        //MEM_WB////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     wire EX_MEM_MemToReg, Load_Done, EX_MEM_MemWrite, EX_MEM_alu_exec_done, mul_exec_done, div_exec_done;
     wire [2:0] EX_MEM_funct3;
-    wire [31:0] EX_MEM_Rdata2, EX_MEM_ALUResult, EX_MEM_alu_exec_PC, EX_MEM_alu_physical_address;
+    wire [31:0] EX_MEM_Rdata2, EX_MEM_ALUResult, EX_MEM_alu_inst_num, EX_MEM_alu_physical_address;
     wire [31:0] mul_exec_value, mul_exec_PC, div_exec_value, div_exec_PC;
     wire [31:0] Load_Data;
     wire MEM_WB_MemToReg;
@@ -235,7 +236,6 @@ wire Div_start_in = result_out_div[108];
     wire [31:0] out_value;
     wire [4:0] out_dest;
     wire out_reg_write;
-
     
     
 ///////////////////////////IF_ID////////////////////////////////////////////////
@@ -376,6 +376,7 @@ control_unit_top u_control_unit_top(
         .in_func3(funct3),
         .in_funct7(funct7),
         .in_pc(IF_ID_PC),
+        .inst_num(IF_ID_inst_num),
         .MemToReg(MemToReg),
         .MemRead(MemRead),
         .MemWrite(MemWrite),
@@ -407,7 +408,7 @@ control_unit_top u_control_unit_top(
         .out_add_Operand2_phy(RS_alu_operand2),
         .out_add_valid(RS_alu_valid),
         .out_add_immediate(RS_alu_immediate),
-        .out_add_inst_num(RS_EX_inst_num),
+        .out_add_inst_num(RS_alu_inst_num),
         .mul_alu_operand1(RS_mul_operand1_data),
         .mul_alu_operand2(RS_mul_operand2_data),
         .mul_alu_func3(RS_mul_funct3),
@@ -458,6 +459,7 @@ control_unit_top u_control_unit_top(
         .start(RS_alu_start),
         .PC(RS_alu_PC),
         .Rd(RS_alu_Rd),
+        .RS_alu_inst_num(RS_alu_inst_num),
         .MemToReg(RS_alu_MemToReg),
         .MemRead(RS_alu_MemRead),
         .MemWrite(RS_alu_MemWrite),
@@ -581,7 +583,7 @@ control_unit_top u_control_unit_top(
         .EX_MEM_funct3(EX_MEM_funct3),
         .EX_MEM_Rdata2(EX_MEM_Rdata2),
         .EX_MEM_ALUResult(EX_MEM_ALUResult),
-        .EX_MEM_alu_exec_PC(EX_MEM_inst_num),
+        .EX_MEM_alu_exec_PC(EX_MEM_alu_inst_num),
         .EX_MEM_alu_exec_done(EX_MEM_alu_exec_done),
         .EX_MEM_alu_physical_address(Load_Phy),
         .mul_exec_value(mul_exec_value),
