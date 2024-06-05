@@ -153,7 +153,7 @@ end
     end
 
     always @(*) begin
-        data_out = registers[addr];
+        data_out <= registers[addr];
 
     end
 endmodule
