@@ -77,7 +77,6 @@ module RS_Div (
     input wire clk,
     input wire reset,
     input wire RS_div_start,
-    input wire [31:0] RS_div_inst_num,
     input wire [31:0] RS_div_PC,
     input wire [7:0] RS_div_Rd,
     input wire [3:0] RS_div_ALUOP,
@@ -98,11 +97,10 @@ module RS_Div (
     input wire [31:0] DIV_result,
     input wire [7:0] DIV_result_dest,
     input wire DIV_result_valid,
-    output reg [140:0] result_out
+    output reg [108:0] result_out
 );
     
     // Internal storage for reservation station entries
-    reg [31:0] inst_nums[0:63];
     reg [31:0] PCs [0:63];
     reg [7:0] Rds [0:63];
     reg [3:0] ALUOPs [0:63];
@@ -112,7 +110,7 @@ module RS_Div (
     reg [31:0] operand2_datas [0:63]; // operand2 data
     reg [63:0] valid_entries1;  // operand1이 valid한지
     reg [63:0] valid_entries2; // operand2가 valid한지
-    reg [140:0] result [0:63];
+    reg [108:0] result [0:63];
     reg [5:0] tail;
     reg [63:0] readys;
     wire [63:0] Y;
@@ -122,7 +120,6 @@ module RS_Div (
         if (reset) begin
             tail <= 0;
             for (i = 0; i < 64; i = i + 1) begin
-                inst_nums[i] <=0;
                 PCs[i] <= 0;
                 Rds[i] <= 0;
                 ALUOPs[i] <= 0;
@@ -135,7 +132,6 @@ module RS_Div (
             end
         end else if (RS_div_start) begin
             if (RS_div_operand1 == ALU_result_dest) begin  // ALU에서 operand1의 연산이 끝났을때
-                inst_nums[tail] <= RS_div_inst_num;
                 PCs[tail] <= RS_div_PC;
                 Rds[tail] <= RS_div_Rd;
                 ALUOPs[tail] <= RS_div_ALUOP;
@@ -147,7 +143,6 @@ module RS_Div (
                 valid_entries2[tail] <= RS_div_valid[1];
                 tail <= (tail + 1) % 64;
             end else if (RS_div_operand2 == ALU_result_dest) begin  // ALU에서 operand2의 연산이 끝났을때
-               inst_nums[tail] <= RS_div_inst_num;
                 PCs[tail] <= RS_div_PC;
                 Rds[tail] <= RS_div_Rd;
                 ALUOPs[tail] <= RS_div_ALUOP;
@@ -159,7 +154,6 @@ module RS_Div (
                 valid_entries2[tail] <= 1; 
                 tail <= (tail + 1) % 64;   
              end else if (RS_div_operand1 == MUL_result_dest) begin  // MUL에서 operand1의 연산이 끝났을때
-                inst_nums[tail] <= RS_div_inst_num;
                 PCs[tail] <= RS_div_PC;
                 Rds[tail] <= RS_div_Rd;
                 ALUOPs[tail] <= RS_div_ALUOP;
@@ -171,7 +165,6 @@ module RS_Div (
                 valid_entries2[tail] <= RS_div_valid[1];
                 tail <= (tail + 1) % 64;
              end else if (RS_div_operand2 == MUL_result_dest) begin  // MUL에서 operand2의 연산이 끝났을때
-                inst_nums[tail] <= RS_div_inst_num;
                 PCs[tail] <= RS_div_PC;
                 Rds[tail] <= RS_div_Rd;
                 ALUOPs[tail] <= RS_div_ALUOP;
@@ -183,7 +176,6 @@ module RS_Div (
                 valid_entries2[tail] <= 1; 
                 tail <= (tail + 1) % 64;
               end else if (RS_div_operand1 == DIV_result_dest) begin  // DIV에서 operand1의 연산이 끝났을때
-                inst_nums[tail] <= RS_div_inst_num;
                 PCs[tail] <= RS_div_PC;
                 Rds[tail] <= RS_div_Rd;
                 ALUOPs[tail] <= RS_div_ALUOP;
@@ -195,7 +187,6 @@ module RS_Div (
                 valid_entries2[tail] <= RS_div_valid[1];
                 tail <= (tail + 1) % 64;
               end else if (RS_div_operand2 == DIV_result_dest) begin  // MUL에서 operand2의 연산이 끝났을때
-                inst_nums[tail] <= RS_div_inst_num;
                 PCs[tail] <= RS_div_PC;
                 Rds[tail] <= RS_div_Rd;
                 ALUOPs[tail] <= RS_div_ALUOP;
@@ -207,7 +198,6 @@ module RS_Div (
                 valid_entries2[tail] <= 1; 
                 tail <= (tail + 1) % 64;
              end else if ( RS_div_operand1 == EX_MEM_Physical_Address && EX_MEM_MemRead ==1) begin
-                inst_nums[tail] <= RS_div_inst_num;
                 PCs[tail] <= RS_div_PC;
                 Rds[tail] <= RS_div_Rd;
                 ALUOPs[tail] <= RS_div_ALUOP;
@@ -219,7 +209,6 @@ module RS_Div (
                 valid_entries2[tail] <= RS_div_valid[1] ; 
                 tail <= (tail + 1) % 64;
               end else if ( RS_div_operand2 == EX_MEM_Physical_Address && EX_MEM_MemRead ==1) begin
-                inst_nums[tail] <= RS_div_inst_num;
                 PCs[tail] <= RS_div_PC;
                 Rds[tail] <= RS_div_Rd;
                 ALUOPs[tail] <= RS_div_ALUOP;
@@ -231,7 +220,6 @@ module RS_Div (
                 valid_entries2[tail] <= 1 ; 
                 tail <= (tail + 1) % 64;
             end else begin
-                inst_nums[tail] <= RS_div_inst_num;
                 PCs[tail] <= RS_div_PC;
                 Rds[tail] <= RS_div_Rd;
                 ALUOPs[tail] <= RS_div_ALUOP;
@@ -300,7 +288,7 @@ module RS_Div (
         for (i = 0; i < 64; i = i + 1) begin
             if (valid_entries1[i] && valid_entries2[i]) begin
                 readys[i] = 1;
-                result[i] = {inst_nums[i],1'b1, PCs[i], Rds[i], ALUOPs[i],operand1_datas[i], operand2_datas[i]};
+                result[i] = {1'b1, PCs[i], Rds[i], ALUOPs[i],operand1_datas[i], operand2_datas[i]};
             end
         end
     end
