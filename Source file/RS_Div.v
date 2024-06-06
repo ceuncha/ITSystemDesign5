@@ -317,7 +317,7 @@ always @(posedge clk or posedge reset) begin
         result_out <= 0;
         head <= 0;
     end else begin
-      if (RS_ALU_on[head]) begin
+        if (RS_DIV_on[head]) begin
       head <= (head+1)%64;
       end
         case (Y)
