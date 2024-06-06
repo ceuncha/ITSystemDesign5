@@ -45,12 +45,12 @@ module chuchu (
     end
     
     always @(posedge clk) begin
-
+        if(!reset) begin
 
             chuchu_out <= chuchu_array[current_index];
             chuchu_array[current_index] <= rat_data;
             current_index <= (current_index + 1) % 128;
-
+        end
         end
    
 
