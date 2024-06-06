@@ -16,7 +16,7 @@ always @(*) begin
     end else begin
         case(opcode)
             // New operation at address 0
-            7'b0000000: mapped_address = 6'd0;
+            7'bxxxxxxx: mapped_address = 6'd0;
             
             // R-type
             7'b0110011: begin
