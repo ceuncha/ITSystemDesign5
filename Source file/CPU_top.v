@@ -153,12 +153,14 @@ wire [31:0] RS_EX_inst_num = result_out_alu[182:151];
     wire [31:0] DIV_Data;
     wire [7:0] DIV_Phy;
    wire [104:0]result_out_mul;
+   wire [31:0] RS_EX_inst_num_Mul_out;
 
 wire [31:0] Operand2_Mul = result_out_mul[31:0];
 wire [31:0] Operand1_Mul = result_out_mul[63:32];
 wire [7:0] RS_EX_Mul_Physical_address_in = result_out_mul[71:64];
 wire [31:0] RS_EX_inst_num_Mul_in = result_out_mul[103:72];
 wire  Mul_start_in= result_out_mul[104];
+wire MUL_Done;
 
 
 
