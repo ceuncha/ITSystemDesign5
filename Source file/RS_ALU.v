@@ -107,7 +107,7 @@ module RS_ALU (
     input wire [31:0] DIV_result,
     input wire [7:0] DIV_result_dest,
     input wire DIV_result_valid,
-    output reg [182:0] result_out,
+    output reg [182:0] result_out
 );
     
     // Internal storage for reservation station entries
