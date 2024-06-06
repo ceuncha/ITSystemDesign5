@@ -142,7 +142,6 @@ module RS_ALU (
         if (reset) begin
             tail <= 0;
             heads <=0;
-            RS_ALU_on <=0;
             for (i = 0; i < 64; i = i + 1) begin
                 inst_nums[i] <=0;
                 PCs[i] <= 0;
@@ -450,7 +449,7 @@ always @(posedge clk or posedge reset) begin
         heads <= 0;
     end else begin
       if (RS_ALU_on[heads]) begin
-      heads <= (head+1)%64;
+      heads <= (heads+1)%64;
       end
         case (Y)
             64'b0000000000000000000000000000000000000000000000000000000000000001: begin
