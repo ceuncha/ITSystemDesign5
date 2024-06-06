@@ -465,7 +465,7 @@ always @(posedge clk or posedge reset) begin
                 readys[1] <= 0;
                 valid_entries1[1] <= 0;
                 valid_entries2[1] <= 0;
-               ;
+               
             
             end
             64'b0000000000000000000000000000000000000000000000000000000000000100: begin
