@@ -57,6 +57,9 @@ module RAT (
                 phy_addr_table[k] <= k;
             end
             free_phy_addr_out <= 8'b10100000; 
+            rd_phy_out <= 8'b11111111; 
+            phy_addr_out1 <= 8'b11111110;
+            phy_addr_out2 <= 8'b11111110;
         end
     end
 
@@ -153,7 +156,7 @@ end
     end
 
     always @(*) begin
-        data_out <= registers[addr];
+        data_out = registers[addr];
 
     end
 endmodule
