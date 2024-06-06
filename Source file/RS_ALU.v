@@ -136,11 +136,13 @@ module RS_ALU (
     reg [63:0] readys;
     wire [63:0] Y;
     integer i;
+    reg RS_ALU_on[0:63];
 
     always @(posedge clk or posedge reset) begin
         if (reset) begin
             tail <= 0;
             heads <=0;
+            RS_ALU_on <=0;
             for (i = 0; i < 64; i = i + 1) begin
                 inst_nums[i] <=0;
                 PCs[i] <= 0;
@@ -163,6 +165,7 @@ module RS_ALU (
                 operand2_datas[i] <= 0;
                 valid_entries1[i] <= 1'b0; // 由ъ뀑 ?떆 珥덇린媛믪쑝濡? 蹂듭썝
                 valid_entries2[i] <= 1'b0; // 由ъ뀑 ?떆 珥덇린媛믪쑝濡? 蹂듭썝
+                RS_ALU_on[i] <=0;
             end
         end else if (start) begin
             if (operand1 == ALU_result_dest) begin  // ALU?뿉?꽌 operand1?쓽 ?뿰?궛?씠 ?걹?궗?쓣?븣
@@ -186,6 +189,7 @@ module RS_ALU (
                 valid_entries1[tail] <= 1;
                 valid_entries2[tail] <= valid[1];
                 tail <= (tail + 1) % 64;
+                RS_ALU_on[tail] <=0;
             end else if (operand2 == ALU_result_dest) begin  // ALU?뿉?꽌 operand2?쓽 ?뿰?궛?씠 ?걹?궗?쓣?븣
                 inst_nums[tail] <= RS_alu_inst_num;
                 PCs[tail] <= PC;
@@ -206,7 +210,8 @@ module RS_ALU (
                 operand2_datas[tail] <= ALU_result;
                 valid_entries1[tail] <= valid[0];
                 valid_entries2[tail] <= 1; 
-                tail <= (tail + 1) % 64;   
+                tail <= (tail + 1) % 64;  
+                 RS_ALU_on[tail] <=0; 
              end else if (operand1 == MUL_result_dest) begin  // MUL?뿉?꽌 operand1?쓽 ?뿰?궛?씠 ?걹?궗?쓣?븣
                 inst_nums[tail] <= RS_alu_inst_num;
                 PCs[tail] <= PC;
@@ -228,6 +233,7 @@ module RS_ALU (
                 valid_entries1[tail] <= 1;
                 valid_entries2[tail] <= valid[1];
                 tail <= (tail + 1) % 64;
+                 RS_ALU_on[tail] <=0;
              end else if (operand2 == MUL_result_dest) begin  // MUL?뿉?꽌 operand2?쓽 ?뿰?궛?씠 ?걹?궗?쓣?븣
                 inst_nums[tail] <= RS_alu_inst_num;
                 PCs[tail] <= PC;
@@ -249,6 +255,7 @@ module RS_ALU (
                 valid_entries1[tail] <= valid[0];
                 valid_entries2[tail] <= 1; 
                 tail <= (tail + 1) % 64;
+                 RS_ALU_on[tail] <=0;
               end else if (operand1 == DIV_result_dest) begin  // DIV?뿉?꽌 operand1?쓽 ?뿰?궛?씠 ?걹?궗?쓣?븣
                  inst_nums[tail] <= RS_alu_inst_num;
                 PCs[tail] <= PC;
@@ -270,6 +277,7 @@ module RS_ALU (
                 valid_entries1[tail] <= 1;
                 valid_entries2[tail] <= valid[1];
                 tail <= (tail + 1) % 64;
+                 RS_ALU_on[tail] <=0;
               end else if (operand2 == DIV_result_dest) begin  // DIV?뿉?꽌 operand2?쓽 ?뿰?궛?씠 ?걹?궗?쓣?븣
                 inst_nums[tail] <= RS_alu_inst_num;
                 PCs[tail] <= PC;
@@ -291,6 +299,7 @@ module RS_ALU (
                 valid_entries1[tail] <= valid[0];
                 valid_entries2[tail] <= 1; 
                 tail <= (tail + 1) % 64;
+                 RS_ALU_on[tail] <=0;
              end else if ( operand1 == EX_MEM_Physical_Address && EX_MEM_MemRead ==1) begin
                 inst_nums[tail] <= RS_alu_inst_num;
                 PCs[tail] <= PC;
@@ -312,6 +321,7 @@ module RS_ALU (
                 valid_entries1[tail] <= 1;
                 valid_entries2[tail] <= valid[1] ; 
                 tail <= (tail + 1) % 64;
+                 RS_ALU_on[tail] <=0;
               end else if ( operand2 == EX_MEM_Physical_Address && EX_MEM_MemRead ==1) begin
                 inst_nums[tail] <= RS_alu_inst_num;
                 PCs[tail] <= PC;
@@ -333,6 +343,7 @@ module RS_ALU (
                 valid_entries1[tail] <= valid[0];
                 valid_entries2[tail] <= 1 ; 
                 tail <= (tail + 1) % 64;
+                 RS_ALU_on[tail] <=0;
             end else begin
                 inst_nums[tail] <= RS_alu_inst_num;
                 PCs[tail] <= PC;
@@ -354,6 +365,7 @@ module RS_ALU (
                 valid_entries1[tail] <= valid[0];
                 valid_entries2[tail] <= valid[1]; 
                 tail <= (tail + 1) % 64;
+                 RS_ALU_on[tail] <=0;
              end 
              end
             
@@ -415,9 +427,11 @@ module RS_ALU (
         for (i = 0; i < 64; i = i + 1) begin
             if (valid_entries1[i] && valid_entries2[i] && !MemReads[i]) begin
                 readys[i] = 1;
+                RS_ALU_on[i] =1;
                 result[i] = {inst_nums[i],1'b1, PCs[i], Rds[i], MemToRegs[i], MemReads[i], MemWrites[i], ALUOPs[i], ALUSrc1s[i], ALUSrc2s[i], Jumps[i], Branchs[i], funct3s[i],immediates[i], operand1_datas[i], operand2_datas[i]};
             end else if (valid_entries1[i] && valid_entries2[i] && MemReads[i]) begin
                 readys[i] = 1;
+                RS_ALU_on[i] =1;
                 result[i] = {inst_nums[i],1'b0, PCs[i], Rds[i], MemToRegs[i], MemReads[i], MemWrites[i], ALUOPs[i], ALUSrc1s[i], ALUSrc2s[i], Jumps[i], Branchs[i], funct3s[i],immediates[i], operand1_datas[i], operand2_datas[i]};
             end
         end
@@ -435,13 +449,16 @@ always @(posedge clk or posedge reset) begin
         result_out <= 0;
         heads <= 0;
     end else begin
+      if (RS_ALU_on[heads]) begin
+      heads <= (head+1)%64;
+      end
         case (Y)
             64'b0000000000000000000000000000000000000000000000000000000000000001: begin
                 result_out <= result[0];
                 readys[0] <= 0;
                 valid_entries1[0] <= 0;
                 valid_entries2[0] <= 0;
-                heads <= (heads + 1) % 64;
+          
            
             end
             64'b0000000000000000000000000000000000000000000000000000000000000010: begin
@@ -449,7 +466,7 @@ always @(posedge clk or posedge reset) begin
                 readys[1] <= 0;
                 valid_entries1[1] <= 0;
                 valid_entries2[1] <= 0;
-                heads <= (heads + 1) % 64;
+               ;
             
             end
             64'b0000000000000000000000000000000000000000000000000000000000000100: begin
@@ -457,7 +474,7 @@ always @(posedge clk or posedge reset) begin
                 readys[2] <= 0;
                 valid_entries1[2] <= 0;
                 valid_entries2[2] <= 0;
-                heads <= (heads + 1) % 64;
+            
           
             end
             64'b0000000000000000000000000000000000000000000000000000000000001000: begin
@@ -465,7 +482,7 @@ always @(posedge clk or posedge reset) begin
                 readys[3] <= 0;
                 valid_entries1[3] <= 0;
                 valid_entries2[3] <= 0;
-                heads <= (heads + 1) % 64;
+             
             
             end
             64'b0000000000000000000000000000000000000000000000000000000000010000: begin
@@ -473,7 +490,7 @@ always @(posedge clk or posedge reset) begin
                 readys[4] <= 0;
                 valid_entries1[4] <= 0;
                 valid_entries2[4] <= 0;
-                heads <= (heads + 1) % 64;
+         
           
             end
             64'b0000000000000000000000000000000000000000000000000000000000100000: begin
@@ -481,7 +498,7 @@ always @(posedge clk or posedge reset) begin
                 readys[5] <= 0;
                 valid_entries1[5] <= 0;
                 valid_entries2[5] <= 0;
-                heads <= (heads + 1) % 64;
+               
             
             end
             64'b0000000000000000000000000000000000000000000000000000000001000000: begin
@@ -489,7 +506,7 @@ always @(posedge clk or posedge reset) begin
                 readys[6] <= 0;
                 valid_entries1[6] <= 0;
                 valid_entries2[6] <= 0;
-                heads <= (heads + 1) % 64;
+           
           
             end
             64'b0000000000000000000000000000000000000000000000000000000010000000: begin
@@ -497,7 +514,7 @@ always @(posedge clk or posedge reset) begin
                 readys[7] <= 0;
                 valid_entries1[7] <= 0;
                 valid_entries2[7] <= 0;
-                heads <= (heads + 1) % 64;
+             
            
             end
             64'b0000000000000000000000000000000000000000000000000000000100000000: begin
@@ -505,7 +522,7 @@ always @(posedge clk or posedge reset) begin
                 readys[8] <= 0;
                 valid_entries1[8] <= 0;
                 valid_entries2[8] <= 0;
-                heads <= (heads + 1) % 64;
+             
               
             end
             64'b0000000000000000000000000000000000000000000000000000001000000000: begin
@@ -513,7 +530,7 @@ always @(posedge clk or posedge reset) begin
                 readys[9] <= 0;
                 valid_entries1[9] <= 0;
                 valid_entries2[9] <= 0;
-                heads <= (heads + 1) % 64;
+             
             
             end
             64'b0000000000000000000000000000000000000000000000000000010000000000: begin
@@ -521,7 +538,7 @@ always @(posedge clk or posedge reset) begin
                 readys[10] <= 0;
                 valid_entries1[10] <= 0;
                 valid_entries2[10] <= 0;
-                heads <= (heads + 1) % 64;
+          
              
             end
             64'b0000000000000000000000000000000000000000000000000000100000000000: begin
@@ -529,7 +546,7 @@ always @(posedge clk or posedge reset) begin
                 readys[11] <= 0;
                 valid_entries1[11] <= 0;
                 valid_entries2[11] <= 0;
-                heads <= (heads + 1) % 64;
+              
               
             end
             64'b0000000000000000000000000000000000000000000000000001000000000000: begin
@@ -537,7 +554,7 @@ always @(posedge clk or posedge reset) begin
                 readys[12] <= 0;
                 valid_entries1[12] <= 0;
                 valid_entries2[12] <= 0;
-                heads <= (heads + 1) % 64;
+          
             
             end
             64'b0000000000000000000000000000000000000000000000000010000000000000: begin
@@ -545,7 +562,7 @@ always @(posedge clk or posedge reset) begin
                 readys[13] <= 0;
                 valid_entries1[13] <= 0;
                 valid_entries2[13] <= 0;
-                heads <= (heads + 1) % 64;
+            
            
             end
             64'b0000000000000000000000000000000000000000000000000100000000000000: begin
@@ -553,7 +570,7 @@ always @(posedge clk or posedge reset) begin
                 readys[14] <= 0;
                 valid_entries1[14] <= 0;
                 valid_entries2[14] <= 0;
-                heads <= (heads + 1) % 64;
+          
           
             end
             64'b0000000000000000000000000000000000000000000000001000000000000000: begin
@@ -561,7 +578,7 @@ always @(posedge clk or posedge reset) begin
                 readys[15] <= 0;
                 valid_entries1[15] <= 0;
                 valid_entries2[15] <= 0;
-                heads <= (heads + 1) % 64;
+              
             
             end
             64'b0000000000000000000000000000000000000000000000010000000000000000: begin
@@ -569,7 +586,7 @@ always @(posedge clk or posedge reset) begin
                 readys[16] <= 0;
                 valid_entries1[16] <= 0;
                 valid_entries2[16] <= 0;
-                heads <= (heads + 1) % 64;
+              
                
             end
             64'b0000000000000000000000000000000000000000000000100000000000000000: begin
@@ -577,7 +594,7 @@ always @(posedge clk or posedge reset) begin
                 readys[17] <= 0;
                 valid_entries1[17] <= 0;
                 valid_entries2[17] <= 0;
-                heads <= (heads + 1) % 64;
+            
             
             end
             64'b0000000000000000000000000000000000000000000001000000000000000000: begin
@@ -585,7 +602,7 @@ always @(posedge clk or posedge reset) begin
                 readys[18] <= 0;
                 valid_entries1[18] <= 0;
                 valid_entries2[18] <= 0;
-                heads <= (heads + 1) % 64;
+              
               
             end
             64'b0000000000000000000000000000000000000000000010000000000000000000: begin
@@ -593,7 +610,7 @@ always @(posedge clk or posedge reset) begin
                 readys[19] <= 0;
                 valid_entries1[19] <= 0;
                 valid_entries2[19] <= 0;
-                heads <= (heads + 1) % 64;
+             
              
             end
             64'b0000000000000000000000000000000000000000000100000000000000000000: begin
@@ -601,7 +618,7 @@ always @(posedge clk or posedge reset) begin
                 readys[20] <= 0;
                 valid_entries1[20] <= 0;
                 valid_entries2[20] <= 0;
-                heads <= (heads + 1) % 64;
+              
               
             end
             64'b0000000000000000000000000000000000000000001000000000000000000000: begin
@@ -609,7 +626,7 @@ always @(posedge clk or posedge reset) begin
                 readys[21] <= 0;
                 valid_entries1[21] <= 0;
                 valid_entries2[21] <= 0;
-                heads <= (heads + 1) % 64;
+           
                
             end
             64'b0000000000000000000000000000000000000000010000000000000000000000: begin
@@ -617,7 +634,7 @@ always @(posedge clk or posedge reset) begin
                 readys[22] <= 0;
                 valid_entries1[22] <= 0;
                 valid_entries2[22] <= 0;
-                heads <= (heads + 1) % 64;
+             
               
             end                
             64'b0000000000000000000000000000000000000000100000000000000000000000: begin
@@ -625,7 +642,7 @@ always @(posedge clk or posedge reset) begin
                 readys[23] <= 0;
                 valid_entries1[23] <= 0;
                 valid_entries2[23] <= 0;
-                heads <= (heads + 1) % 64;
+            
              
             end                
             64'b0000000000000000000000000000000000000001000000000000000000000000: begin
@@ -633,7 +650,7 @@ always @(posedge clk or posedge reset) begin
                 readys[24] <= 0;
                 valid_entries1[24] <= 0;
                 valid_entries2[24] <= 0;
-                heads <= (heads + 1) % 64;
+         
              
             end                
             64'b0000000000000000000000000000000000000010000000000000000000000000: begin
@@ -641,7 +658,7 @@ always @(posedge clk or posedge reset) begin
                 readys[25] <= 0;
                 valid_entries1[25] <= 0;
                 valid_entries2[25] <= 0;
-                heads <= (heads + 1) % 64;
+              
              
             end                
             64'b0000000000000000000000000000000000000100000000000000000000000000: begin
@@ -649,7 +666,7 @@ always @(posedge clk or posedge reset) begin
                 readys[26] <= 0;
                 valid_entries1[26] <= 0;
                 valid_entries2[26] <= 0;
-                heads <= (heads + 1) % 64;
+         
             
             end                
             64'b0000000000000000000000000000000000001000000000000000000000000000: begin
@@ -657,7 +674,7 @@ always @(posedge clk or posedge reset) begin
                 readys[27] <= 0;
                 valid_entries1[27] <= 0;
                 valid_entries2[27] <= 0;
-                heads <= (heads + 1) % 64;
+           
               
             end                
             64'b0000000000000000000000000000000000010000000000000000000000000000: begin
@@ -665,7 +682,7 @@ always @(posedge clk or posedge reset) begin
                 readys[28] <= 0;
                 valid_entries1[28] <= 0;
                 valid_entries2[28] <= 0;
-                heads <= (heads + 1) % 64;
+            
               
             end                
             64'b0000000000000000000000000000000000100000000000000000000000000000: begin
@@ -673,7 +690,7 @@ always @(posedge clk or posedge reset) begin
                 readys[29] <= 0;
                 valid_entries1[29] <= 0;
                 valid_entries2[29] <= 0;
-                heads <= (heads + 1) % 64;
+             
               
             end                
             64'b0000000000000000000000000000000001000000000000000000000000000000: begin
@@ -681,7 +698,7 @@ always @(posedge clk or posedge reset) begin
                 readys[30] <= 0;
                 valid_entries1[30] <= 0;
                 valid_entries2[30] <= 0;
-                heads <= (heads + 1) % 64;
+         
             
             end                
             64'b0000000000000000000000000000000010000000000000000000000000000000: begin
@@ -689,7 +706,7 @@ always @(posedge clk or posedge reset) begin
                 readys[31] <= 0;
                 valid_entries1[31] <= 0;
                 valid_entries2[31] <= 0;
-                heads <= (heads + 1) % 64;
+            
             
             end                                                                              
             64'b0000000000000000000000000000000100000000000000000000000000000000: begin
@@ -697,7 +714,7 @@ always @(posedge clk or posedge reset) begin
                 readys[32] <= 0;
                 valid_entries1[32] <= 0;
                 valid_entries2[32] <= 0;
-                heads <= (heads + 1) % 64;
+           
         
             end
             64'b0000000000000000000000000000001000000000000000000000000000000000: begin
@@ -705,7 +722,7 @@ always @(posedge clk or posedge reset) begin
                 readys[33] <= 0;
                 valid_entries1[33] <= 0;
                 valid_entries2[33] <= 0;
-                heads <= (heads + 1) % 64;
+             
               
             end
             64'b0000000000000000000000000000010000000000000000000000000000000000: begin
@@ -713,15 +730,14 @@ always @(posedge clk or posedge reset) begin
                 readys[34] <= 0;
                 valid_entries1[34] <= 0;
                 valid_entries2[34] <= 0;
-                heads <= (heads + 1) % 64;
-           
+          
             end
             64'b0000000000000000000000000000100000000000000000000000000000000000: begin
                 result_out <= result[35];
                 readys[35] <= 0;
                 valid_entries1[35] <= 0;
                 valid_entries2[35] <= 0;
-                heads <= (heads + 1) % 64;
+      
             
             end
             64'b0000000000000000000000000001000000000000000000000000000000000000: begin
@@ -729,15 +745,14 @@ always @(posedge clk or posedge reset) begin
                 readys[36] <= 0;
                 valid_entries1[36] <= 0;
                 valid_entries2[36] <= 0;
-                heads <= (heads + 1) % 64;
-             
+            
             end
             64'b0000000000000000000000000010000000000000000000000000000000000000: begin
                 result_out <= result[37];
                 readys[37] <= 0;
                 valid_entries1[37] <= 0;
                 valid_entries2[37] <= 0;
-                heads <= (heads + 1) % 64;
+             
               
             end
             64'b0000000000000000000000000100000000000000000000000000000000000000: begin
@@ -745,7 +760,7 @@ always @(posedge clk or posedge reset) begin
                 readys[38] <= 0;
                 valid_entries1[38] <= 0;
                 valid_entries2[38] <= 0;
-                heads <= (heads + 1) % 64;
+             
               
             end
             64'b0000000000000000000000001000000000000000000000000000000000000000: begin
@@ -753,7 +768,7 @@ always @(posedge clk or posedge reset) begin
                 readys[39] <= 0;
                 valid_entries1[39] <= 0;
                 valid_entries2[39] <= 0;
-                heads <= (heads + 1) % 64;
+          
              
             end
             64'b0000000000000000000000010000000000000000000000000000000000000000: begin
@@ -761,7 +776,7 @@ always @(posedge clk or posedge reset) begin
                 readys[40] <= 0;
                 valid_entries1[40] <= 0;
                 valid_entries2[40] <= 0;
-                heads <= (heads + 1) % 64;
+              
            
             end
             64'b0000000000000000000000100000000000000000000000000000000000000000: begin
@@ -769,7 +784,7 @@ always @(posedge clk or posedge reset) begin
                 readys[41] <= 0;
                 valid_entries1[41] <= 0;
                 valid_entries2[41] <= 0;
-                heads <= (heads + 1) % 64;
+            
             
             end
             64'b0000000000000000000001000000000000000000000000000000000000000000: begin
@@ -777,7 +792,7 @@ always @(posedge clk or posedge reset) begin
                 readys[42] <= 0;
                 valid_entries1[42] <= 0;
                 valid_entries2[42] <= 0;
-                heads <= (heads + 1) % 64;
+              
               
             end
             64'b0000000000000000000010000000000000000000000000000000000000000000: begin
@@ -785,15 +800,14 @@ always @(posedge clk or posedge reset) begin
                 readys[43] <= 0;
                 valid_entries1[43] <= 0;
                 valid_entries2[43] <= 0;
-                heads <= (heads + 1) % 64;
-          
+           
             end
             64'b0000000000000000000100000000000000000000000000000000000000000000: begin
                 result_out <= result[44];
                 readys[44] <= 0;
                 valid_entries1[44] <= 0;
                 valid_entries2[44] <= 0;
-                heads <= (heads + 1) % 64;
+                
           
             end
             64'b0000000000000000001000000000000000000000000000000000000000000000: begin
@@ -801,7 +815,7 @@ always @(posedge clk or posedge reset) begin
                 readys[45] <= 0;
                 valid_entries1[45] <= 0;
                 valid_entries2[45] <= 0;
-                heads <= (heads + 1) % 64;
+               
       
             end
             64'b0000000000000000010000000000000000000000000000000000000000000000: begin
@@ -809,7 +823,7 @@ always @(posedge clk or posedge reset) begin
                 readys[46] <= 0;
                 valid_entries1[46] <= 0;
                 valid_entries2[46] <= 0;
-                heads <= (heads + 1) % 64;
+            
      
             end
             64'b0000000000000000100000000000000000000000000000000000000000000000: begin
@@ -817,7 +831,7 @@ always @(posedge clk or posedge reset) begin
                 readys[47] <= 0;
                 valid_entries1[47] <= 0;
                 valid_entries2[47] <= 0;
-                heads <= (heads + 1) % 64;
+          
            
             end
             64'b0000000000000001000000000000000000000000000000000000000000000000: begin
@@ -825,7 +839,7 @@ always @(posedge clk or posedge reset) begin
                 readys[48] <= 0;
                 valid_entries1[48] <= 0;
                 valid_entries2[48] <= 0;
-                heads <= (heads + 1) % 64;
+             
             
             end
             64'b0000000000000010000000000000000000000000000000000000000000000000: begin
@@ -833,7 +847,7 @@ always @(posedge clk or posedge reset) begin
                 readys[49] <= 0;
                 valid_entries1[49] <= 0;
                 valid_entries2[49] <= 0;
-                heads <= (heads + 1) % 64;
+            
               
             end
             64'b0000000000000100000000000000000000000000000000000000000000000000: begin
@@ -841,7 +855,7 @@ always @(posedge clk or posedge reset) begin
                 readys[50] <= 0;
                 valid_entries1[50] <= 0;
                 valid_entries2[50] <= 0;
-                heads <= (heads + 1) % 64;
+            
                
             end
             64'b0000000000001000000000000000000000000000000000000000000000000000: begin
@@ -849,7 +863,7 @@ always @(posedge clk or posedge reset) begin
                 readys[51] <= 0;
                 valid_entries1[51] <= 0;
                 valid_entries2[51] <= 0;
-                heads <= (heads + 1) % 64;
+          
               
             end                
             64'b0000000000010000000000000000000000000000000000000000000000000000: begin
@@ -857,7 +871,7 @@ always @(posedge clk or posedge reset) begin
                 readys[52] <= 0;
                 valid_entries1[52] <= 0;
                 valid_entries2[52] <= 0;
-                heads <= (heads + 1) % 64;
+            
                
             end                
             64'b0000000000100000000000000000000000000000000000000000000000000000: begin
@@ -865,7 +879,7 @@ always @(posedge clk or posedge reset) begin
                 readys[53] <= 0;
                 valid_entries1[53] <= 0;
                 valid_entries2[53] <= 0;
-                heads <= (heads + 1) % 64;
+               
               
             end                
             64'b0000000001000000000000000000000000000000000000000000000000000000: begin
@@ -873,7 +887,7 @@ always @(posedge clk or posedge reset) begin
                 readys[54] <= 0;
                 valid_entries1[54] <= 0;
                 valid_entries2[54] <= 0;
-                heads <= (heads + 1) % 64;
+               
                 
             end                
             64'b0000000010000000000000000000000000000000000000000000000000000000: begin
@@ -881,7 +895,7 @@ always @(posedge clk or posedge reset) begin
                 readys[55] <= 0;
                 valid_entries1[55] <= 0;
                 valid_entries2[55] <= 0;
-                heads <= (heads + 1) % 64;
+               
             
             end                
             64'b0000000100000000000000000000000000000000000000000000000000000000: begin
@@ -889,7 +903,7 @@ always @(posedge clk or posedge reset) begin
                 readys[56] <= 0;
                 valid_entries1[56] <= 0;
                 valid_entries2[56] <= 0;
-                heads <= (heads + 1) % 64;
+             
                
             end                
             64'b0000001000000000000000000000000000000000000000000000000000000000: begin
@@ -897,7 +911,7 @@ always @(posedge clk or posedge reset) begin
                 readys[57] <= 0;
                 valid_entries1[57] <= 0;
                 valid_entries2[57] <= 0;
-                heads <= (heads + 1) % 64;
+            
                 
             end                
             64'b0000010000000000000000000000000000000000000000000000000000000000: begin
@@ -905,7 +919,7 @@ always @(posedge clk or posedge reset) begin
                 readys[58] <= 0;
                 valid_entries1[58] <= 0;
                 valid_entries2[58] <= 0;
-                heads <= (heads + 1) % 64;
+         
                 
             end                
             64'b0000100000000000000000000000000000000000000000000000000000000000: begin
@@ -913,7 +927,7 @@ always @(posedge clk or posedge reset) begin
                 readys[59] <= 0;
                 valid_entries1[59] <= 0;
                 valid_entries2[59] <= 0;
-                heads <= (heads + 1) % 64;
+          
               
             end                
             64'b0001000000000000000000000000000000000000000000000000000000000000: begin
@@ -921,7 +935,7 @@ always @(posedge clk or posedge reset) begin
                 readys[60] <= 0;
                 valid_entries1[60] <= 0;
                 valid_entries2[60] <= 0;
-                heads <= (heads + 1) % 64;
+            
               
             end                
             64'b0010000000000000000000000000000000000000000000000000000000000000: begin
@@ -929,7 +943,7 @@ always @(posedge clk or posedge reset) begin
                 readys[61] <= 0;
                 valid_entries1[61] <= 0;
                 valid_entries2[61] <= 0;
-                heads <= (heads + 1) % 64;
+         
                
             end                
             64'b0100000000000000000000000000000000000000000000000000000000000000: begin
@@ -937,7 +951,7 @@ always @(posedge clk or posedge reset) begin
                 readys[62] <= 0;
                 valid_entries1[62] <= 0;
                 valid_entries2[62] <= 0;
-                heads <= (heads + 1) % 64;
+       
                 
             end  
             64'b1000000000000000000000000000000000000000000000000000000000000000: begin
@@ -945,13 +959,12 @@ always @(posedge clk or posedge reset) begin
                 readys[63] <= 0;
                 valid_entries1[63] <= 0;
                 valid_entries2[63] <= 0;
-                heads <= (heads + 1) % 64;
+          
              
             end                                                                              
             default: begin
                 result_out <= 0;
                 readys <= 0;
-                heads <= (heads + 1) % 64;
                
             end
         endcase
