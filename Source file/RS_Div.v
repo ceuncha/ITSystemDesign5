@@ -114,7 +114,7 @@ module RS_Div (
     reg [5:0] tail;
     reg [63:0] readys;
     wire [63:0] Y;
-    reg [6:0] heads;
+    reg [6:0] head;
     integer i;
     reg RS_DIV_on[0:63];
 
@@ -131,6 +131,7 @@ module RS_Div (
                 operand2_datas[i] <= 0;
                 valid_entries1[i] <= 1'b0; // 리셋 시 초기값으로 복원
                 valid_entries2[i] <= 1'b0; // 리셋 시 초기값으로 복원
+                RS_DIV_on[i] <= 0;
             end
         end else if (RS_div_start) begin
             if (RS_div_operand1 == ALU_result_dest) begin  // ALU에서 operand1의 연산이 끝났을때
@@ -144,6 +145,7 @@ module RS_Div (
                 valid_entries1[tail] <= 1;
                 valid_entries2[tail] <= RS_div_valid[1];
                 tail <= (tail + 1) % 64;
+                RS_DIV_on[tail] <= 0;
             end else if (RS_div_operand2 == ALU_result_dest) begin  // ALU에서 operand2의 연산이 끝났을때
                 PCs[tail] <= RS_div_PC;
                 Rds[tail] <= RS_div_Rd;
@@ -155,6 +157,7 @@ module RS_Div (
                 valid_entries1[tail] <= RS_div_valid[0];
                 valid_entries2[tail] <= 1; 
                 tail <= (tail + 1) % 64;   
+                RS_DIV_on[tail] <= 0;
              end else if (RS_div_operand1 == MUL_result_dest) begin  // MUL에서 operand1의 연산이 끝났을때
                 PCs[tail] <= RS_div_PC;
                 Rds[tail] <= RS_div_Rd;
@@ -166,6 +169,7 @@ module RS_Div (
                 valid_entries1[tail] <= 1;
                 valid_entries2[tail] <= RS_div_valid[1];
                 tail <= (tail + 1) % 64;
+                 RS_DIV_on[tail] <= 0;
              end else if (RS_div_operand2 == MUL_result_dest) begin  // MUL에서 operand2의 연산이 끝났을때
                 PCs[tail] <= RS_div_PC;
                 Rds[tail] <= RS_div_Rd;
@@ -177,6 +181,7 @@ module RS_Div (
                 valid_entries1[tail] <= RS_div_valid[0];
                 valid_entries2[tail] <= 1; 
                 tail <= (tail + 1) % 64;
+                 RS_DIV_on[tail] <= 0;
               end else if (RS_div_operand1 == DIV_result_dest) begin  // DIV에서 operand1의 연산이 끝났을때
                 PCs[tail] <= RS_div_PC;
                 Rds[tail] <= RS_div_Rd;
@@ -188,6 +193,7 @@ module RS_Div (
                 valid_entries1[tail] <= 1;
                 valid_entries2[tail] <= RS_div_valid[1];
                 tail <= (tail + 1) % 64;
+                RS_DIV_on[tail] <= 0;
               end else if (RS_div_operand2 == DIV_result_dest) begin  // MUL에서 operand2의 연산이 끝났을때
                 PCs[tail] <= RS_div_PC;
                 Rds[tail] <= RS_div_Rd;
@@ -199,6 +205,7 @@ module RS_Div (
                 valid_entries1[tail] <= RS_div_valid[0];
                 valid_entries2[tail] <= 1; 
                 tail <= (tail + 1) % 64;
+                RS_DIV_on[tail] <= 0;
              end else if ( RS_div_operand1 == EX_MEM_Physical_Address && EX_MEM_MemRead ==1) begin
                 PCs[tail] <= RS_div_PC;
                 Rds[tail] <= RS_div_Rd;
@@ -210,6 +217,7 @@ module RS_Div (
                 valid_entries1[tail] <= 1;
                 valid_entries2[tail] <= RS_div_valid[1] ; 
                 tail <= (tail + 1) % 64;
+                RS_DIV_on[tail] <= 0;
               end else if ( RS_div_operand2 == EX_MEM_Physical_Address && EX_MEM_MemRead ==1) begin
                 PCs[tail] <= RS_div_PC;
                 Rds[tail] <= RS_div_Rd;
@@ -221,6 +229,7 @@ module RS_Div (
                 valid_entries1[tail] <= RS_div_valid[0];
                 valid_entries2[tail] <= 1 ; 
                 tail <= (tail + 1) % 64;
+                RS_DIV_on[tail] <= 0;
             end else begin
                 PCs[tail] <= RS_div_PC;
                 Rds[tail] <= RS_div_Rd;
@@ -232,6 +241,7 @@ module RS_Div (
                 valid_entries1[tail] <= RS_div_valid[0];
                 valid_entries2[tail] <= RS_div_valid[1]; 
                 tail <= (tail + 1) % 64;
+                RS_DIV_on[i] <= 0;
              end 
             if (ALU_result_valid) begin
                 for (i = 0; i < 64; i = i + 1) begin
@@ -290,6 +300,7 @@ module RS_Div (
         for (i = 0; i < 64; i = i + 1) begin
             if (valid_entries1[i] && valid_entries2[i]) begin
                 readys[i] = 1;
+                RS_DIV_on[i] <= 1;
                 result[i] = {1'b1, PCs[i], Rds[i], ALUOPs[i],operand1_datas[i], operand2_datas[i]};
             end
         end
