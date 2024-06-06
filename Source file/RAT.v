@@ -51,15 +51,12 @@ module RAT (
     integer k;
 
    
-    always @(posedge reset) begin
+    always @(posedge clk or posedge reset) begin
         if (reset) begin
             for (k = 0; k < 32; k = k + 1) begin
                 phy_addr_table[k] <= k;
             end
-            free_phy_addr_out <= 8'b10100001; 
-            rd_phy_out <= 8'b11111111; 
-            phy_addr_out1 <= 8'b11111110;
-            phy_addr_out2 <= 8'b11111110;
+            free_phy_addr_out <= 8'b10100000; 
         end
     end
 
@@ -91,8 +88,16 @@ module RAT (
 
 
     
-    always @(posedge clk) begin
-        if(!reset) begin
+    always @(posedge clk or posedge reset) begin
+        if (reset) begin
+         phy_addr_out1 <=0;
+         phy_addr_out2 <=0;
+         rd_phy_out <=0;
+         free_phy_addr_out <=0;
+         end else begin
+         
+         
+         
         if(if_id_flush) begin
                 free_phy_addr_out <= free_phy_addr; 
  
@@ -128,9 +133,8 @@ module RAT (
                 rd_phy_out <= 8'b11111111;   
             end
         end
-        end
 end
-
+end
 endmodule
 
 module shadow_RAT_register(
@@ -158,7 +162,7 @@ end
     end
 
     always @(*) begin
-        data_out = registers[addr];
+        data_out <= registers[addr];
 
     end
 endmodule
