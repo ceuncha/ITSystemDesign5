@@ -40,7 +40,7 @@ module chuchu (
                 chuchu_array[i] <= 32 + i;
             end
             current_index <= 1;
-            chuchu_out <= chuchu_array[0];
+            chuchu_out <= 32;
             chuchu_array[0] <= rat_data;
     end
     
