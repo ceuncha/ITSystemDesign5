@@ -241,7 +241,7 @@ module RS_Div (
                 valid_entries1[tail] <= RS_div_valid[0];
                 valid_entries2[tail] <= RS_div_valid[1]; 
                 tail <= (tail + 1) % 64;
-                RS_DIV_on[i] <= 0;
+                RS_DIV_on[tail] <= 0;
              end 
             if (ALU_result_valid) begin
                 for (i = 0; i < 64; i = i + 1) begin
