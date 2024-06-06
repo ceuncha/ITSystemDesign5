@@ -92,6 +92,7 @@ module RAT (
 
     
     always @(posedge clk) begin
+        if(!reset) begin
         if(if_id_flush) begin
                 free_phy_addr_out <= free_phy_addr; 
  
@@ -126,6 +127,7 @@ module RAT (
                 free_phy_addr_out <= free_phy_addr; 
                 rd_phy_out <= 8'b11111111;   
             end
+        end
         end
 end
 
