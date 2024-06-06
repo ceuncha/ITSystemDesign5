@@ -66,7 +66,7 @@ wire [31:0] branch_index;
     
     wire [31:0] RS_alu_operand1_data, RS_alu_operand2_data, RS_alu_PC;
     wire [2:0] RS_alu_funct3;
-    wire RS_alu_MemToReg, RS_alu_MenRead, RS_alu_MemWrite, RS_alu_ALUSrc1, RS_alu_ALUSrc2, RS_alu_Jump, RS_alu_Branch;
+    wire RS_alu_MemToReg, RS_alu_MemRead, RS_alu_MemWrite, RS_alu_ALUSrc1, RS_alu_ALUSrc2, RS_alu_Jump, RS_alu_Branch;
     wire [3:0] RS_alu_ALUOP;
     wire [7:0] RS_alu_Rd, RS_alu_operand1, RS_alu_operand2;
     wire [1:0] RS_alu_valid;
@@ -96,7 +96,6 @@ wire [31:0] branch_index;
     wire [31:0] RS_alu_PC;
     wire [7:0] RS_alu_Rd;
     wire RS_alu_MemToReg;
-    wire RS_alu_MenRead;
     wire RS_alu_MemWrite;
     wire [3:0] RS_alu_ALUOP;
     wire RS_alu_ALUSrc1;
