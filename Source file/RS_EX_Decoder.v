@@ -92,7 +92,7 @@ module RS_EX_decoder(
     output reg [31:0] out_div_inst_num
 );
 
-always @(posedge reset) begin
+always @(posedge clk or posedge reset) begin
     if (reset) begin
         // 모든 출력을 리셋
         add_alu_operand1 <= 0;
@@ -163,10 +163,10 @@ end
 
 always @(*) begin
     case (in_opcode)
-        7'b0000000: begin
-                            add_rs_on <= 0;
-                            mul_rs_on <= 0;
-                            div_rs_on <= 0;
+         7'b0000000: begin
+                            add_rs_on = 0;
+                            mul_rs_on = 0;
+                            div_rs_on = 0;
         end
         7'b0110011: begin // R-type 명령어
             case (in_funct7)
@@ -174,155 +174,155 @@ always @(*) begin
                     // MUL, DIV, REM 명령어 처리
                     case (in_func3)
                         3'b000: begin // MUL
-                            mul_alu_operand1 <= in_operand1;
-                            mul_alu_operand2 <= in_operand2;
-                            mul_alu_func3 <= in_func3;
-                            mul_alu_pc <= in_pc;
+                            mul_alu_operand1= in_operand1;
+                            mul_alu_operand2 = in_operand2;
+                            mul_alu_func3 = in_func3;
+                            mul_alu_pc = in_pc;
 
-                            mul_rd_phy_reg <= rd_phy_reg;
-                            add_rs_on <= 0;
-                            mul_rs_on <= 1;
-                            div_rs_on <= 0;
-                            out_mul_Operand1_phy <= Operand1_phy;  
-                            out_mul_Operand2_phy  <= Operand2_phy;
-                            out_mul_valid <= valid;
-                            out_mul_immediate <= immediate;
-                            out_mul_MemToReg <= MemToReg;	
-                            out_mul_MemRead <= MemRead;	
-                            out_mul_MemWrite <= MemWrite;		
-                            out_mul_ALUOP <= ALUOP;	
-                            out_mul_ALUSrc1 <= ALUSrc1;
-                            out_mul_ALUSrc2 <= ALUSrc2;		
-                            out_mul_Jump <= Jump;		
-                            out_mul_Branch <= Branch;
-                            out_mul_inst_num <= inst_num;
+                            mul_rd_phy_reg = rd_phy_reg;
+                            add_rs_on = 0;
+                            mul_rs_on = 1;
+                            div_rs_on = 0;
+                            out_mul_Operand1_phy = Operand1_phy;  
+                            out_mul_Operand2_phy  = Operand2_phy;
+                            out_mul_valid = valid;
+                            out_mul_immediate = immediate;
+                            out_mul_MemToReg = MemToReg;	
+                            out_mul_MemRead = MemRead;	
+                            out_mul_MemWrite = MemWrite;		
+                            out_mul_ALUOP = ALUOP;	
+                            out_mul_ALUSrc1 = ALUSrc1;
+                            out_mul_ALUSrc2 = ALUSrc2;		
+                            out_mul_Jump = Jump;		
+                            out_mul_Branch = Branch;
+                            out_mul_inst_num = inst_num;
                         end
                         3'b100: begin // DIV
-                            div_alu_operand1 <= in_operand1;
-                            div_alu_operand2 <= in_operand2;
-                            div_alu_func3 <= in_func3;
-                            div_alu_pc <= in_pc;
+                            div_alu_operand1 = in_operand1;
+                            div_alu_operand2 = in_operand2;
+                            div_alu_func3 = in_func3;
+                            div_alu_pc = in_pc;
 
-                            div_rd_phy_reg <= rd_phy_reg;
-                            add_rs_on <= 0;
-                            mul_rs_on <= 0;
-                            div_rs_on <= 1;
-                            out_div_Operand1_phy <= Operand1_phy;  
-                            out_div_Operand2_phy <= Operand2_phy;
-                            out_div_valid <= valid;
-                            out_div_immediate <= immediate;
-                            out_div_MemToReg <= MemToReg;	
-                            out_div_MemRead <= MemRead;	
-                            out_div_MemWrite <= MemWrite;		
-                            out_div_ALUOP <= ALUOP;	
-                            out_div_ALUSrc1 <= ALUSrc1;
-                            out_div_ALUSrc2 <= ALUSrc2;		
-                            out_div_Jump <= Jump;		
-                            out_div_Branch <= Branch;
-                            out_div_inst_num <= inst_num;
+                            div_rd_phy_reg= rd_phy_reg;
+                            add_rs_on = 0;
+                            mul_rs_on = 0;
+                            div_rs_on = 1;
+                            out_div_Operand1_phy = Operand1_phy;  
+                            out_div_Operand2_phy = Operand2_phy;
+                            out_div_valid = valid;
+                            out_div_immediate = immediate;
+                            out_div_MemToReg = MemToReg;	
+                            out_div_MemRead = MemRead;	
+                            out_div_MemWrite = MemWrite;		
+                            out_div_ALUOP = ALUOP;	
+                            out_div_ALUSrc1 = ALUSrc1;
+                            out_div_ALUSrc2 = ALUSrc2;		
+                            out_div_Jump = Jump;		
+                            out_div_Branch = Branch;
+                            out_div_inst_num = inst_num;
                         end
                         3'b110: begin // REM
-                            div_alu_operand1 <= in_operand1;
-                            div_alu_operand2 <= in_operand2;
-                            div_alu_func3 <= in_func3;
-                            div_alu_pc <= in_pc;
+                            div_alu_operand1 = in_operand1;
+                            div_alu_operand2 = in_operand2;
+                            div_alu_func3 = in_func3;
+                            div_alu_pc = in_pc;
 
-                            div_rd_phy_reg <= rd_phy_reg;
-                            add_rs_on <= 0;
-                            mul_rs_on <= 0;
-                            div_rs_on <= 1;
-                            out_div_Operand1_phy <= Operand1_phy;  
-                            out_div_Operand2_phy <= Operand2_phy;
-                            out_div_valid <= valid;
-                            out_div_immediate <= immediate;
-                            out_div_MemToReg <= MemToReg;	
-                            out_div_MemRead <= MemRead;	
-                            out_div_MemWrite <= MemWrite;		
-                            out_div_ALUOP <= ALUOP;	
-                            out_div_ALUSrc1 <= ALUSrc1;
-                            out_div_ALUSrc2 <= ALUSrc2;		
-                            out_div_Jump <= Jump;		
-                            out_div_Branch <= Branch;
-                            out_div_inst_num <= inst_num;
+                            div_rd_phy_reg = rd_phy_reg;
+                            add_rs_on = 0;
+                            mul_rs_on = 0;
+                            div_rs_on = 1;
+                            out_div_Operand1_phy = Operand1_phy;  
+                            out_div_Operand2_phy = Operand2_phy;
+                            out_div_valid = valid;
+                            out_div_immediate = immediate;
+                            out_div_MemToReg = MemToReg;	
+                            out_div_MemRead = MemRead;	
+                            out_div_MemWrite = MemWrite;		
+                            out_div_ALUOP = ALUOP;	
+                            out_div_ALUSrc1 = ALUSrc1;
+                            out_div_ALUSrc2 = ALUSrc2;		
+                            out_div_Jump = Jump;		
+                            out_div_Branch = Branch;
+                            out_div_inst_num = inst_num;
                         end
                         default: begin
                             // 다른 R-type 명령어는 ADD ALU로 보내기
-                            add_alu_operand1 <= in_operand1;
-                            add_alu_operand2 <= in_operand2;
-                            add_alu_func3 <= in_func3;
-                            add_alu_pc <= in_pc;
+                            add_alu_operand1 = in_operand1;
+                            add_alu_operand2 = in_operand2;
+                            add_alu_func3 = in_func3;
+                            add_alu_pc = in_pc;
 
-                            add_rd_phy_reg <= rd_phy_reg;
-                            add_rs_on <= 1;
-                            mul_rs_on <= 0;
-                            div_rs_on <= 0;
-                            out_add_Operand1_phy <= Operand1_phy;
-                            out_add_Operand2_phy <= Operand2_phy;
-                            out_add_valid <= valid;
-                            out_add_immediate <= immediate;
-                            out_add_MemToReg <= MemToReg;	
-                            out_add_MemRead <= MemRead;	
-                            out_add_MemWrite <= MemWrite;		
-                            out_add_ALUOP <= ALUOP;	
-                            out_add_ALUSrc1 <= ALUSrc1;
-                            out_add_ALUSrc2 <= ALUSrc2;		
-                            out_add_Jump <= Jump;		
-                            out_add_Branch <= Branch;
-                            out_add_inst_num <= inst_num;
+                            add_rd_phy_reg = rd_phy_reg;
+                            add_rs_on = 1;
+                            mul_rs_on = 0;
+                            div_rs_on = 0;
+                            out_add_Operand1_phy = Operand1_phy;
+                            out_add_Operand2_phy = Operand2_phy;
+                            out_add_valid = valid;
+                            out_add_immediate = immediate;
+                            out_add_MemToReg = MemToReg;	
+                            out_add_MemRead = MemRead;	
+                            out_add_MemWrite = MemWrite;		
+                            out_add_ALUOP = ALUOP;	
+                            out_add_ALUSrc1 = ALUSrc1;
+                            out_add_ALUSrc2 = ALUSrc2;		
+                            out_add_Jump = Jump;		
+                            out_add_Branch = Branch;
+                            out_add_inst_num = inst_num;
                         end
                     endcase
                 end
                 default: begin
                     // 다른 R-type 명령어는 ADD ALU로 보내기
-                    add_alu_operand1 <= in_operand1;
-                    add_alu_operand2 <= in_operand2;
-                    add_alu_func3 <= in_func3;
-                    add_alu_pc <= in_pc;
+                    add_alu_operand1 = in_operand1;
+                    add_alu_operand2 = in_operand2;
+                    add_alu_func3 = in_func3;
+                    add_alu_pc = in_pc;
 
                     add_rd_phy_reg <= rd_phy_reg;
-                    add_rs_on <= 1;
-                    mul_rs_on <= 0;
-                    div_rs_on <= 0;
-                    out_add_Operand1_phy <= Operand1_phy;
-                    out_add_Operand2_phy <= Operand2_phy;
-                    out_add_valid <= valid;
-                    out_add_immediate <= immediate;
-                    out_add_MemToReg <= MemToReg;	
-                    out_add_MemRead <= MemRead;	
-                    out_add_MemWrite <= MemWrite;		
-                    out_add_ALUOP <= ALUOP;	
-                    out_add_ALUSrc1 <= ALUSrc1;
-                    out_add_ALUSrc2 <= ALUSrc2;		
-                    out_add_Jump <= Jump;		
-                    out_add_Branch <= Branch;
-                    out_add_inst_num <= inst_num;
+                    add_rs_on = 1;
+                    mul_rs_on = 0;
+                    div_rs_on = 0;
+                    out_add_Operand1_phy = Operand1_phy;
+                    out_add_Operand2_phy = Operand2_phy;
+                    out_add_valid = valid;
+                    out_add_immediate = immediate;
+                    out_add_MemToReg = MemToReg;	
+                    out_add_MemRead = MemRead;	
+                    out_add_MemWrite = MemWrite;		
+                    out_add_ALUOP = ALUOP;	
+                    out_add_ALUSrc1 = ALUSrc1;
+                    out_add_ALUSrc2 = ALUSrc2;		
+                    out_add_Jump = Jump;		
+                    out_add_Branch = Branch;
+                    out_add_inst_num = inst_num;
                 end
             endcase
         end
         default: begin
             // 기본적으로 모든 명령어를 ADD ALU로 보냄
-            add_alu_operand1 <= in_operand1;
-            add_alu_operand2 <= in_operand2;
-            add_alu_func3 <= in_func3;
-            add_alu_pc <= in_pc;
+            add_alu_operand1 = in_operand1;
+            add_alu_operand2 = in_operand2;
+            add_alu_func3 = in_func3;
+            add_alu_pc = in_pc;
 
-            add_rd_phy_reg <= rd_phy_reg;
-            add_rs_on <= 1;
-            mul_rs_on <= 0;
-            div_rs_on <= 0;
-            out_add_Operand1_phy <= Operand1_phy;
-            out_add_Operand2_phy <= Operand2_phy;
-            out_add_valid <= valid;
-            out_add_immediate <= immediate;
-            out_add_MemToReg <= MemToReg;	
-            out_add_MemRead <= MemRead;	
-            out_add_MemWrite <= MemWrite;		
-            out_add_ALUOP <= ALUOP;	
-            out_add_ALUSrc1 <= ALUSrc1;
-            out_add_ALUSrc2 <= ALUSrc2;		
-            out_add_Jump <= Jump;		
-            out_add_Branch <= Branch;
-            out_add_inst_num <= inst_num;
+            add_rd_phy_reg = rd_phy_reg;
+            add_rs_on = 1;
+            mul_rs_on = 0;
+            div_rs_on = 0;
+            out_add_Operand1_phy = Operand1_phy;
+            out_add_Operand2_phy = Operand2_phy;
+            out_add_valid = valid;
+            out_add_immediate = immediate;
+            out_add_MemToReg = MemToReg;	
+            out_add_MemRead = MemRead;	
+            out_add_MemWrite = MemWrite;		
+            out_add_ALUOP = ALUOP;	
+            out_add_ALUSrc1 = ALUSrc1;
+            out_add_ALUSrc2 = ALUSrc2;		
+            out_add_Jump = Jump;		
+            out_add_Branch = Branch;
+            out_add_inst_num = inst_num;
         end
     endcase
 end
