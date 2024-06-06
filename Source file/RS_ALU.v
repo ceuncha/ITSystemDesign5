@@ -132,7 +132,7 @@ module RS_ALU (
     reg [63:0] valid_entries2; // operand2媛? valid?븳吏?
     reg [182:0] result [0:63];
     reg [6:0] tail;
-    reg [6:0] heads;
+    reg [6:0] head;
     reg [63:0] readys;
     wire [63:0] Y;
     integer i;
@@ -141,7 +141,7 @@ module RS_ALU (
     always @(posedge clk or posedge reset) begin
         if (reset) begin
             tail <= 0;
-            heads <=0;
+            head <=0;
             for (i = 0; i < 64; i = i + 1) begin
                 inst_nums[i] <=0;
                 PCs[i] <= 0;
@@ -438,7 +438,7 @@ module RS_ALU (
 
     priority_encoder encoder (
         .ready(readys),
-        .head(heads),
+        .head(head),
         .Y(Y)
     );
 
@@ -446,518 +446,725 @@ module RS_ALU (
 always @(posedge clk or posedge reset) begin
     if (reset) begin
         result_out <= 0;
-        heads <= 0;
+        head <= 0;
     end else begin
-      if (RS_ALU_on[heads]) begin
-      heads <= (heads+1)%64;
+      if (RS_ALU_on[head]) begin
+      head <= (head+1)%64;
       end
         case (Y)
-            64'b0000000000000000000000000000000000000000000000000000000000000001: begin
-                result_out <= result[0];
-                readys[0] <= 0;
-                valid_entries1[0] <= 0;
-                valid_entries2[0] <= 0;
+           64'b0000000000000000000000000000000000000000000000000000000000000001: begin
+                result_out <= result[(head+0)%64];
+                readys[(head+0)%64] <= 0;
+                valid_entries1[(head+0)%64] <= 0;
+                valid_entries2[(head+0)%64] <= 0;
           
            
             end
             64'b0000000000000000000000000000000000000000000000000000000000000010: begin
-                result_out <= result[1];
-                readys[1] <= 0;
-                valid_entries1[1] <= 0;
-                valid_entries2[1] <= 0;
+                result_out <= result[(head+1)%64];
+                readys[(head+1)%64] <= 0;
+                valid_entries1[(head+1)%64] <= 0;
+                valid_entries2[(head+1)%64] <= 0;
                
             
             end
             64'b0000000000000000000000000000000000000000000000000000000000000100: begin
-                result_out <= result[2];
-                readys[2] <= 0;
-                valid_entries1[2] <= 0;
-                valid_entries2[2] <= 0;
+                result_out <= result[(head+2)%64];
+                readys[(head+2)%64] <= 0;
+                valid_entries1[(head+2)%64] <= 0;
+                valid_entries2[(head+2)%64] <= 0;
             
           
             end
             64'b0000000000000000000000000000000000000000000000000000000000001000: begin
-                result_out <= result[3];
-                readys[3] <= 0;
-                valid_entries1[3] <= 0;
-                valid_entries2[3] <= 0;
+                result_out <= result[(head+3)%64];
+                readys[(head+3)%64] <= 0;
+                valid_entries1[(head+3)%64] <= 0;
+                valid_entries2[(head+3)%64] <= 0;
              
             
             end
             64'b0000000000000000000000000000000000000000000000000000000000010000: begin
-                result_out <= result[4];
-                readys[4] <= 0;
-                valid_entries1[4] <= 0;
-                valid_entries2[4] <= 0;
+                result_out <= result[(head+4)%64];
+                readys[(head+4)%64] <= 0;
+                valid_entries1[(head+4)%64] <= 0;
+                valid_entries2[(head+4)%64] <= 0;
          
           
             end
             64'b0000000000000000000000000000000000000000000000000000000000100000: begin
-                result_out <= result[5];
-                readys[5] <= 0;
-                valid_entries1[5] <= 0;
-                valid_entries2[5] <= 0;
+                result_out <= result[(head+5)%64];
+                readys[(head+5)%64] <= 0;
+                valid_entries1[(head+5)%64] <= 0;
+                valid_entries2[(head+5)%64] <= 0;
                
             
             end
             64'b0000000000000000000000000000000000000000000000000000000001000000: begin
-                result_out <= result[6];
-                readys[6] <= 0;
-                valid_entries1[6] <= 0;
-                valid_entries2[6] <= 0;
+                result_out <= result[(head+6)%64];
+                readys[(head+6)%64] <= 0;
+                valid_entries1[(head+6)%64] <= 0;
+                valid_entries2[(head+6)%64] <= 0;
            
           
             end
             64'b0000000000000000000000000000000000000000000000000000000010000000: begin
-                result_out <= result[7];
-                readys[7] <= 0;
-                valid_entries1[7] <= 0;
-                valid_entries2[7] <= 0;
+                result_out <= result[(head+7)%64];
+                readys[(head+7)%64] <= 0;
+                valid_entries1[(head+7)%64] <= 0;
+                valid_entries2[(head+7)%64] <= 0;
              
            
             end
             64'b0000000000000000000000000000000000000000000000000000000100000000: begin
-                result_out <= result[8];
-                readys[8] <= 0;
-                valid_entries1[8] <= 0;
-                valid_entries2[8] <= 0;
+                result_out <= result[(head+8)%64];
+                readys[(head+8)%64] <= 0;
+                valid_entries1[(head+8)%64] <= 0;
+                valid_entries2[(head+8)%64] <= 0;
              
               
             end
             64'b0000000000000000000000000000000000000000000000000000001000000000: begin
-                result_out <= result[9];
-                readys[9] <= 0;
-                valid_entries1[9] <= 0;
-                valid_entries2[9] <= 0;
+                result_out <= result[(head+9)%64];
+                readys[(head+9)%64] <= 0;
+                valid_entries1[(head+9)%64] <= 0;
+                valid_entries2[(head+9)%64] <= 0;
              
             
             end
             64'b0000000000000000000000000000000000000000000000000000010000000000: begin
-                result_out <= result[10];
-                readys[10] <= 0;
-                valid_entries1[10] <= 0;
-                valid_entries2[10] <= 0;
+                result_out <= result[(head+10)%64];
+                readys[(head+10)%64] <= 0;
+                valid_entries1[(head+10)%64] <= 0;
+                valid_entries2[(head+10)%64] <= 0;
           
              
             end
             64'b0000000000000000000000000000000000000000000000000000100000000000: begin
-                result_out <= result[11];
-                readys[11] <= 0;
-                valid_entries1[11] <= 0;
-                valid_entries2[11] <= 0;
+                result_out <= result[(head+11)%64];
+                readys[(head+11)%64] <= 0;
+                valid_entries1[(head+11)%64] <= 0;
+                valid_entries2[(head+11)%64] <= 0;
               
               
             end
             64'b0000000000000000000000000000000000000000000000000001000000000000: begin
-                result_out <= result[12];
-                readys[12] <= 0;
-                valid_entries1[12] <= 0;
-                valid_entries2[12] <= 0;
+                result_out <= result[(head+12)%64];
+                readys[(head+12)%64] <= 0;
+                valid_entries1[(head+12)%64] <= 0;
+                valid_entries2[(head+12)%64] <= 0;
           
             
             end
             64'b0000000000000000000000000000000000000000000000000010000000000000: begin
-                result_out <= result[13];
-                readys[13] <= 0;
-                valid_entries1[13] <= 0;
-                valid_entries2[13] <= 0;
+                result_out <= result[(head+13)%64];
+                readys[(head+13)%64] <= 0;
+                valid_entries1[(head+13)%64] <= 0;
+                valid_entries2[(head+13)%64] <= 0;
             
            
             end
             64'b0000000000000000000000000000000000000000000000000100000000000000: begin
-                result_out <= result[14];
-                readys[14] <= 0;
-                valid_entries1[14] <= 0;
-                valid_entries2[14] <= 0;
+                result_out <= result[(head+14)%64];
+                readys[(head+14)%64] <= 0;
+                valid_entries1[(head+14)%64] <= 0;
+                valid_entries2[(head+14)%64] <= 0;
           
           
             end
             64'b0000000000000000000000000000000000000000000000001000000000000000: begin
-                result_out <= result[15];
-                readys[15] <= 0;
-                valid_entries1[15] <= 0;
-                valid_entries2[15] <= 0;
+                result_out <= result[(head+15)%64];
+                readys[(head+15)%64] <= 0;
+                valid_entries1[(head+15)%64] <= 0;
+                valid_entries2[(head+15)%64] <= 0;
               
             
             end
-            64'b0000000000000000000000000000000000000000000000010000000000000000: begin
-                result_out <= result[16];
-                readys[16] <= 0;
-                valid_entries1[16] <= 0;
-                valid_entries2[16] <= 0;
+           64'b0000000000000000000000000000000000000000000000010000000000000000: begin
+                result_out <= result[(head+16)%64];
+                readys[(head+16)%64] <= 0;
+                valid_entries1[(head+16)%64] <= 0;
+                valid_entries2[(head+16)%64] <= 0;
               
                
             end
             64'b0000000000000000000000000000000000000000000000100000000000000000: begin
-                result_out <= result[17];
-                readys[17] <= 0;
-                valid_entries1[17] <= 0;
+                result_out <= result[(head+17)%64];
+                readys[(head+17)%64] <= 0;
+                valid_entries1[(head+17)%64] <= 0;
                 valid_entries2[17] <= 0;
             
             
             end
             64'b0000000000000000000000000000000000000000000001000000000000000000: begin
-                result_out <= result[18];
-                readys[18] <= 0;
-                valid_entries1[18] <= 0;
-                valid_entries2[18] <= 0;
+                result_out <= result[(head+18)%64];
+                readys[(head+18)%64] <= 0;
+                valid_entries1[(head+18)%64] <= 0;
+                valid_entries2[(head+18)%64] <= 0;
               
               
             end
             64'b0000000000000000000000000000000000000000000010000000000000000000: begin
-                result_out <= result[19];
-                readys[19] <= 0;
-                valid_entries1[19] <= 0;
-                valid_entries2[19] <= 0;
+                result_out <= result[(head+19)%64];
+                readys[(head+19)%64] <= 0;
+                valid_entries1[(head+19)%64] <= 0;
+                valid_entries2[(head+19)%64] <= 0;
              
              
             end
             64'b0000000000000000000000000000000000000000000100000000000000000000: begin
-                result_out <= result[20];
-                readys[20] <= 0;
-                valid_entries1[20] <= 0;
-                valid_entries2[20] <= 0;
+                result_out <= result[(head+20)%64];
+                readys[(head+20)%64] <= 0;
+                valid_entries1[(head+20)%64] <= 0;
+                valid_entries2[(head+20)%64] <= 0;
               
               
             end
             64'b0000000000000000000000000000000000000000001000000000000000000000: begin
-                result_out <= result[21];
-                readys[21] <= 0;
-                valid_entries1[21] <= 0;
-                valid_entries2[21] <= 0;
+                result_out <= result[(head+21)%64];
+                readys[(head+21)%64] <= 0;
+                valid_entries1[(head+21)%64] <= 0;
+                valid_entries2[(head+21)%64] <= 0;
            
                
             end
             64'b0000000000000000000000000000000000000000010000000000000000000000: begin
-                result_out <= result[22];
-                readys[22] <= 0;
-                valid_entries1[22] <= 0;
-                valid_entries2[22] <= 0;
+                result_out <= result[(head+22)%64];
+                readys[(head+22)%64] <= 0;
+                valid_entries1[(head+22)%64] <= 0;
+                valid_entries2[(head+22)%64] <= 0;
              
               
             end                
             64'b0000000000000000000000000000000000000000100000000000000000000000: begin
-                result_out <= result[23];
-                readys[23] <= 0;
-                valid_entries1[23] <= 0;
-                valid_entries2[23] <= 0;
+                result_out <= result[(head+23)%64];
+                readys[(head+23)%64] <= 0;
+                valid_entries1[(head+23)%64] <= 0;
+                valid_entries2[(head+23)%64] <= 0;
             
              
             end                
             64'b0000000000000000000000000000000000000001000000000000000000000000: begin
-                result_out <= result[24];
-                readys[24] <= 0;
-                valid_entries1[24] <= 0;
-                valid_entries2[24] <= 0;
+                result_out <= result[(head+24)%64];
+                readys[(head+24)%64] <= 0;
+                valid_entries1[(head+24)%64] <= 0;
+                valid_entries2[(head+24)%64] <= 0;
          
              
             end                
             64'b0000000000000000000000000000000000000010000000000000000000000000: begin
-                result_out <= result[25];
-                readys[25] <= 0;
-                valid_entries1[25] <= 0;
-                valid_entries2[25] <= 0;
+                result_out <= result[(head+25)%64];
+                readys[(head+25)%64] <= 0;
+                valid_entries1[(head+25)%64] <= 0;
+                valid_entries2[(head+25)%64] <= 0;
               
              
             end                
             64'b0000000000000000000000000000000000000100000000000000000000000000: begin
-                result_out <= result[26];
-                readys[26] <= 0;
-                valid_entries1[26] <= 0;
-                valid_entries2[26] <= 0;
+                result_out <= result[(head+26)%64];
+                readys[(head+26)%64] <= 0;
+                valid_entries1[(head+26)%64] <= 0;
+                valid_entries2[(head+26)%64] <= 0;
          
             
             end                
             64'b0000000000000000000000000000000000001000000000000000000000000000: begin
-                result_out <= result[27];
-                readys[27] <= 0;
-                valid_entries1[27] <= 0;
-                valid_entries2[27] <= 0;
+                result_out <= result[(head+27)%64];
+                readys[(head+27)%64] <= 0;
+                valid_entries1[(head+27)%64] <= 0;
+                valid_entries2[(head+27)%64] <= 0;
            
               
             end                
             64'b0000000000000000000000000000000000010000000000000000000000000000: begin
-                result_out <= result[28];
-                readys[28] <= 0;
-                valid_entries1[28] <= 0;
-                valid_entries2[28] <= 0;
+                result_out <= result[(head+28)%64];
+                readys[(head+28)%64] <= 0;
+                valid_entries1[(head+28)%64] <= 0;
+                valid_entries2[(head+28)%64] <= 0;
             
               
             end                
             64'b0000000000000000000000000000000000100000000000000000000000000000: begin
-                result_out <= result[29];
-                readys[29] <= 0;
-                valid_entries1[29] <= 0;
-                valid_entries2[29] <= 0;
+                result_out <= result[(head+29)%64];
+                readys[(head+29)%64] <= 0;
+                valid_entries1[(head+29)%64] <= 0;
+                valid_entries2[(head+29)%64] <= 0;
              
               
             end                
             64'b0000000000000000000000000000000001000000000000000000000000000000: begin
-                result_out <= result[30];
-                readys[30] <= 0;
-                valid_entries1[30] <= 0;
-                valid_entries2[30] <= 0;
+                result_out <= result[(head+30)%64];
+                readys[(head+30)%64] <= 0;
+                valid_entries1[(head+30)%64] <= 0;
+                valid_entries2[(head+30)%64] <= 0;
          
             
             end                
             64'b0000000000000000000000000000000010000000000000000000000000000000: begin
-                result_out <= result[31];
-                readys[31] <= 0;
-                valid_entries1[31] <= 0;
-                valid_entries2[31] <= 0;
+                result_out <= result[(head+31)%64];
+                readys[(head+31)%64] <= 0;
+                valid_entries1[(head+31)%64] <= 0;
+                valid_entries2[(head+31)%64] <= 0;
             
             
-            end                                                                              
-            64'b0000000000000000000000000000000100000000000000000000000000000000: begin
-                result_out <= result[32];
-                readys[32] <= 0;
-                valid_entries1[32] <= 0;
-                valid_entries2[32] <= 0;
-           
-        
+            end                         
+           64'b0000000000000000000000000000000000000000000000010000000000000000: begin
+
+                result_out <= result[(head+32)%64];
+
+                readys[(head+32)%64] <= 0;
+
+                valid_entries1[(head+32)%64] <= 0;
+
+                valid_entries2[(head+32)%64] <= 0;
+
+
+             
+
+
             end
-            64'b0000000000000000000000000000001000000000000000000000000000000000: begin
-                result_out <= result[33];
-                readys[33] <= 0;
-                valid_entries1[33] <= 0;
+
+
+            64'b0000000000000000000000000000000000000000000000100000000000000000: begin
+
+
+                result_out <= result[(head+33)%64];
+
+                readys[(head+33)%64] <= 0;
+
+                valid_entries1[(head+33)%64] <= 0;
+
                 valid_entries2[33] <= 0;
-             
-              
-            end
-            64'b0000000000000000000000000000010000000000000000000000000000000000: begin
-                result_out <= result[34];
-                readys[34] <= 0;
-                valid_entries1[34] <= 0;
-                valid_entries2[34] <= 0;
-          
-            end
-            64'b0000000000000000000000000000100000000000000000000000000000000000: begin
-                result_out <= result[35];
-                readys[35] <= 0;
-                valid_entries1[35] <= 0;
-                valid_entries2[35] <= 0;
-      
-            
-            end
-            64'b0000000000000000000000000001000000000000000000000000000000000000: begin
-                result_out <= result[36];
-                readys[36] <= 0;
-                valid_entries1[36] <= 0;
-                valid_entries2[36] <= 0;
-            
-            end
-            64'b0000000000000000000000000010000000000000000000000000000000000000: begin
-                result_out <= result[37];
-                readys[37] <= 0;
-                valid_entries1[37] <= 0;
-                valid_entries2[37] <= 0;
-             
-              
-            end
-            64'b0000000000000000000000000100000000000000000000000000000000000000: begin
-                result_out <= result[38];
-                readys[38] <= 0;
-                valid_entries1[38] <= 0;
-                valid_entries2[38] <= 0;
-             
-              
-            end
-            64'b0000000000000000000000001000000000000000000000000000000000000000: begin
-                result_out <= result[39];
-                readys[39] <= 0;
-                valid_entries1[39] <= 0;
-                valid_entries2[39] <= 0;
-          
-             
-            end
-            64'b0000000000000000000000010000000000000000000000000000000000000000: begin
-                result_out <= result[40];
-                readys[40] <= 0;
-                valid_entries1[40] <= 0;
-                valid_entries2[40] <= 0;
-              
+
+
            
-            end
-            64'b0000000000000000000000100000000000000000000000000000000000000000: begin
-                result_out <= result[41];
-                readys[41] <= 0;
-                valid_entries1[41] <= 0;
-                valid_entries2[41] <= 0;
-            
-            
-            end
-            64'b0000000000000000000001000000000000000000000000000000000000000000: begin
-                result_out <= result[42];
-                readys[42] <= 0;
-                valid_entries1[42] <= 0;
-                valid_entries2[42] <= 0;
-              
-              
-            end
-            64'b0000000000000000000010000000000000000000000000000000000000000000: begin
-                result_out <= result[43];
-                readys[43] <= 0;
-                valid_entries1[43] <= 0;
-                valid_entries2[43] <= 0;
+
+
            
+
+
             end
-            64'b0000000000000000000100000000000000000000000000000000000000000000: begin
-                result_out <= result[44];
-                readys[44] <= 0;
-                valid_entries1[44] <= 0;
-                valid_entries2[44] <= 0;
-                
-          
+
+
+            64'b0000000000000000000000000000000000000000000001000000000000000000: begin
+
+
+                result_out <= result[(head+34)%64];
+
+                readys[(head+34)%64] <= 0;
+
+                valid_entries1[(head+34)%64] <= 0;
+
+                valid_entries2[(head+34)%64] <= 0;
+
+
+             
+
+
+             
+
+
             end
-            64'b0000000000000000001000000000000000000000000000000000000000000000: begin
-                result_out <= result[45];
-                readys[45] <= 0;
-                valid_entries1[45] <= 0;
-                valid_entries2[45] <= 0;
-               
-      
-            end
-            64'b0000000000000000010000000000000000000000000000000000000000000000: begin
-                result_out <= result[46];
-                readys[46] <= 0;
-                valid_entries1[46] <= 0;
-                valid_entries2[46] <= 0;
-            
-     
-            end
-            64'b0000000000000000100000000000000000000000000000000000000000000000: begin
-                result_out <= result[47];
-                readys[47] <= 0;
-                valid_entries1[47] <= 0;
-                valid_entries2[47] <= 0;
-          
+
+
+            64'b0000000000000000000000000000000000000000000010000000000000000000: begin
+
+
+                result_out <= result[(head+35)%64];
+
+                readys[(head+35)%64] <= 0;
+
+                valid_entries1[(head+35)%64] <= 0;
+
+                valid_entries2[(head+35)%64] <= 0;
+
+
            
+
+
+           
+
+
             end
+
+
+            64'b0000000000000000000000000000000000000000000100000000000000000000: begin
+
+
+                result_out <= result[(head+36)%64];
+
+                readys[(head+36)%64] <= 0;
+
+                valid_entries1[(head+36)%64] <= 0;
+
+                valid_entries2[(head+36)%64] <= 0;
+
+
+             
+
+
+             
+
+
+            end
+
+
+            64'b0000000000000000000000000000000000000000001000000000000000000000: begin
+
+
+                result_out <= result[(head+37)%64];
+
+                readys[(head+37)%64] <= 0;
+
+                valid_entries1[(head+37)%64] <= 0;
+
+                valid_entries2[(head+37)%64] <= 0;
+
+
+         
+
+
+             
+
+
+            end
+
+
+            64'b0000000000000000000000000000000000000000010000000000000000000000: begin
+
+
+                result_out <= result[(head+38)%64];
+
+                readys[(head+38)%64] <= 0;
+
+                valid_entries1[(head+38)%64] <= 0;
+
+                valid_entries2[(head+38)%64] <= 0;
+
+
+           
+
+
+             
+
+
+            end              
+
+
+            64'b0000000000000000000000000000000000000000100000000000000000000000: begin
+
+
+                result_out <= result[(head+39)%64];
+
+                readys[(head+39)%64] <= 0;
+
+                valid_entries1[(head+39)%64] <= 0;
+
+                valid_entries2[(head+39)%64] <= 0;
+
+
+           
+
+
+           
+
+
+            end              
+
+
+            64'b0000000000000000000000000000000000000001000000000000000000000000: begin
+
+
+                result_out <= result[(head+40)%64];
+
+                readys[(head+40)%64] <= 0;
+
+                valid_entries1[(head+40)%64] <= 0;
+
+                valid_entries2[(head+40)%64] <= 0;
+
+
+       
+
+
+           
+
+
+            end              
+
+
+            64'b0000000000000000000000000000000000000010000000000000000000000000: begin
+
+
+                result_out <= result[(head+41)%64];
+
+                readys[(head+41)%64] <= 0;
+
+                valid_entries1[(head+41)%64] <= 0;
+
+                valid_entries2[(head+41)%64] <= 0;
+
+
+             
+
+
+           
+
+
+            end              
+
+
+            64'b0000000000000000000000000000000000000100000000000000000000000000: begin
+
+
+                result_out <= result[(head+42)%64];
+
+                readys[(head+42)%64] <= 0;
+
+                valid_entries1[(head+42)%64] <= 0;
+
+                valid_entries2[(head+42)%64] <= 0;
+
+
+       
+
+
+           
+
+
+            end              
+
+
+            64'b0000000000000000000000000000000000001000000000000000000000000000: begin
+
+
+                result_out <= result[(head+43)%64];
+
+                readys[(head+43)%64] <= 0;
+
+                valid_entries1[(head+43)%64] <= 0;
+
+                valid_entries2[(head+43)%64] <= 0;
+
+
+         
+
+
+             
+
+
+            end              
+
+
+            64'b0000000000000000000000000000000000010000000000000000000000000000: begin
+
+
+                result_out <= result[(head+44)%64];
+
+                readys[(head+44)%64] <= 0;
+
+                valid_entries1[(head+44)%64] <= 0;
+
+                valid_entries2[(head+44)%64] <= 0;
+
+
+           
+
+
+             
+
+
+            end              
+
+
+            64'b0000000000000000000000000000000000100000000000000000000000000000: begin
+
+
+                result_out <= result[(head+45)%64];
+
+                readys[(head+45)%64] <= 0;
+
+                valid_entries1[(head+45)%64] <= 0;
+
+                valid_entries2[(head+45)%64] <= 0;
+
+
+           
+
+
+             
+
+
+            end              
+
+
+            64'b0000000000000000000000000000000001000000000000000000000000000000: begin
+
+
+                result_out <= result[(head+46)%64];
+
+                readys[(head+46)%64] <= 0;
+
+                valid_entries1[(head+46)%64] <= 0;
+
+                valid_entries2[(head+46)%64] <= 0;
+
+
+       
+
+
+           
+
+
+            end              
+
+
+            64'b0000000000000000000000000000000010000000000000000000000000000000: begin
+
+
+                result_out <= result[(head+47)%64];
+
+                readys[(head+47)%64] <= 0;
+
+                valid_entries1[(head+47)%64] <= 0;
+
+                valid_entries2[(head+47)%64] <= 0;
+
+
+           
+
+
+           
+
+
+            end  
+
+
             64'b0000000000000001000000000000000000000000000000000000000000000000: begin
-                result_out <= result[48];
-                readys[48] <= 0;
-                valid_entries1[48] <= 0;
-                valid_entries2[48] <= 0;
+                result_out <= result[(head+48)%64];
+                readys[(head+48)%64] <= 0;
+                valid_entries1[(head+48)%64] <= 0;
+                valid_entries2[(head+48)%64] <= 0;
              
             
             end
             64'b0000000000000010000000000000000000000000000000000000000000000000: begin
-                result_out <= result[49];
-                readys[49] <= 0;
-                valid_entries1[49] <= 0;
-                valid_entries2[49] <= 0;
+                result_out <= result[(head+49)%64];
+                readys[(head+49)%64] <= 0;
+                valid_entries1[(head+49)%64] <= 0;
+                valid_entries2[(head+49)%64] <= 0;
             
               
             end
             64'b0000000000000100000000000000000000000000000000000000000000000000: begin
-                result_out <= result[50];
-                readys[50] <= 0;
-                valid_entries1[50] <= 0;
-                valid_entries2[50] <= 0;
+                result_out <= result[(head+50)%64];
+                readys[(head+50)%64] <= 0;
+                valid_entries1[(head+50)%64] <= 0;
+                valid_entries2[(head+50)%64] <= 0;
             
                
             end
             64'b0000000000001000000000000000000000000000000000000000000000000000: begin
-                result_out <= result[51];
-                readys[51] <= 0;
-                valid_entries1[51] <= 0;
-                valid_entries2[51] <= 0;
+                result_out <= result[(head+51)%64];
+                readys[(head+51)%64] <= 0;
+                valid_entries1[(head+51)%64] <= 0;
+                valid_entries2[(head+51)%64] <= 0;
           
               
             end                
             64'b0000000000010000000000000000000000000000000000000000000000000000: begin
-                result_out <= result[52];
-                readys[52] <= 0;
-                valid_entries1[52] <= 0;
-                valid_entries2[52] <= 0;
+                result_out <= result[(head+52)%64];
+                readys[(head+52)%64] <= 0;
+                valid_entries1[(head+52)%64] <= 0;
+                valid_entries2[(head+52)%64] <= 0;
             
                
             end                
             64'b0000000000100000000000000000000000000000000000000000000000000000: begin
-                result_out <= result[53];
-                readys[53] <= 0;
-                valid_entries1[53] <= 0;
-                valid_entries2[53] <= 0;
+                result_out <= result[(head+53)%64];
+                readys[(head+53)%64] <= 0;
+                valid_entries1[(head+53)%64] <= 0;
+                valid_entries2[(head+53)%64] <= 0;
                
               
             end                
             64'b0000000001000000000000000000000000000000000000000000000000000000: begin
-                result_out <= result[54];
-                readys[54] <= 0;
-                valid_entries1[54] <= 0;
-                valid_entries2[54] <= 0;
+                result_out <= result[(head+54)%64];
+                readys[(head+54)%64] <= 0;
+                valid_entries1[(head+54)%64] <= 0;
+                valid_entries2[(head+54)%64] <= 0;
                
                 
             end                
             64'b0000000010000000000000000000000000000000000000000000000000000000: begin
-                result_out <= result[55];
-                readys[55] <= 0;
-                valid_entries1[55] <= 0;
-                valid_entries2[55] <= 0;
+                result_out <= result[(head+55)%64];
+                readys[(head+55)%64] <= 0;
+                valid_entries1[(head+55)%64] <= 0;
+                valid_entries2[(head+55)%64] <= 0;
                
             
             end                
             64'b0000000100000000000000000000000000000000000000000000000000000000: begin
-                result_out <= result[56];
-                readys[56] <= 0;
-                valid_entries1[56] <= 0;
-                valid_entries2[56] <= 0;
+                result_out <= result[(head+56)%64];
+                readys[(head+56)%64] <= 0;
+                valid_entries1[(head+56)%64] <= 0;
+                valid_entries2[(head+56)%64] <= 0;
              
                
             end                
             64'b0000001000000000000000000000000000000000000000000000000000000000: begin
-                result_out <= result[57];
-                readys[57] <= 0;
-                valid_entries1[57] <= 0;
-                valid_entries2[57] <= 0;
+                result_out <= result[(head+57)%64];
+                readys[(head+57)%64] <= 0;
+                valid_entries1[(head+57)%64] <= 0;
+                valid_entries2[(head+57)%64] <= 0;
             
                 
             end                
             64'b0000010000000000000000000000000000000000000000000000000000000000: begin
-                result_out <= result[58];
-                readys[58] <= 0;
-                valid_entries1[58] <= 0;
-                valid_entries2[58] <= 0;
+                result_out <= result[(head+58)%64];
+                readys[(head+58)%64] <= 0;
+                valid_entries1[(head+58)%64] <= 0;
+                valid_entries2[(head+58)%64] <= 0;
          
                 
             end                
             64'b0000100000000000000000000000000000000000000000000000000000000000: begin
-                result_out <= result[59];
-                readys[59] <= 0;
-                valid_entries1[59] <= 0;
-                valid_entries2[59] <= 0;
+                result_out <= result[(head+59)%64];
+                readys[(head+59)%64] <= 0;
+                valid_entries1[(head+59)%64] <= 0;
+                valid_entries2[(head+59)%64] <= 0;
           
               
             end                
             64'b0001000000000000000000000000000000000000000000000000000000000000: begin
-                result_out <= result[60];
-                readys[60] <= 0;
-                valid_entries1[60] <= 0;
-                valid_entries2[60] <= 0;
+                result_out <= result[(head+60)%64];
+                readys[(head+60)%64] <= 0;
+                valid_entries1[(head+60)%64] <= 0;
+                valid_entries2[(head+60)%64] <= 0;
             
               
             end                
             64'b0010000000000000000000000000000000000000000000000000000000000000: begin
-                result_out <= result[61];
-                readys[61] <= 0;
-                valid_entries1[61] <= 0;
-                valid_entries2[61] <= 0;
+                result_out <= result[(head+61)%64];
+                readys[(head+61)%64] <= 0;
+                valid_entries1[(head+61)%64] <= 0;
+                valid_entries2[(head+61)%64] <= 0;
          
                
             end                
             64'b0100000000000000000000000000000000000000000000000000000000000000: begin
-                result_out <= result[62];
-                readys[62] <= 0;
-                valid_entries1[62] <= 0;
-                valid_entries2[62] <= 0;
+                result_out <= result[(head+62)%64];
+                readys[(head+62)%64] <= 0;
+                valid_entries1[(head+62)%64] <= 0;
+                valid_entries2[(head+62)%64] <= 0;
        
                 
             end  
             64'b1000000000000000000000000000000000000000000000000000000000000000: begin
-                result_out <= result[63];
-                readys[63] <= 0;
-                valid_entries1[63] <= 0;
-                valid_entries2[63] <= 0;
+                result_out <= result[(head+63)%64];
+                readys[(head+63)%64] <= 0;
+                valid_entries1[(head+63)%64] <= 0;
+                valid_entries2[(head+63)%64] <= 0;
           
              
             end                                                                              
