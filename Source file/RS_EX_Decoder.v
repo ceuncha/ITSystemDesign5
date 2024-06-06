@@ -163,6 +163,11 @@ end
 
 always @(*) begin
     case (in_opcode)
+        7'b0000000: begin
+                            add_rs_on <= 0;
+                            mul_rs_on <= 0;
+                            div_rs_on <= 0;
+        end
         7'b0110011: begin // R-type 명령어
             case (in_funct7)
                 7'b0000001: begin
