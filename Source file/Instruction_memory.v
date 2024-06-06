@@ -38,7 +38,7 @@ module Instruction_memory(pc, instOut);
 
         // bne x1, x7, -20 (branch succes)
 
-        {memory[20], memory[21], memory[22], memory[23]} <= 32'b1111111_00100_00011_001_01101_1100011; 
+        {memory[20], memory[21], memory[22], memory[23]} <= 32'b1111111_00111_00001_001_01101_1100011; 
 
         // 32'b0000000 01000 01000 111 01001 0110011 //and x9, x8, x8  
 
