@@ -6,10 +6,12 @@ module BranchUnit(
     input wire [31:0] ALUResult,
     input wire [31:0] imm,
     input wire [31:0] PC,
-    input wire ALUNegative, // ALU?뿉?꽌 ?삤?뒗 Negative ?뵆?옒洹?
-    input wire ALUZero,     // ALU?뿉?꽌 ?삤?뒗 Zero ?뵆?옒洹?
-    input wire ALUOverflow, // ALU?뿉?꽌 ?삤?뒗 Overflow ?뵆?옒洹?
-    input wire ALUCarry,    // ALU?뿉?꽌 ?삤?뒗 Carry ?뵆?옒洹?
+    
+    input wire ALUNegative, // Negative flag from ALU
+    input wire ALUZero,     // Zero flag from ALU
+    input wire ALUOverflow, // Overflow flag from ALU
+    input wire ALUCarry,     // Carry flag from ALU
+
     output reg [31:0] PC_Branch,
     output reg [31:0] branch_index,
     output reg PCSrc,
@@ -31,13 +33,14 @@ always @(*) begin
         end
         else if(ID_EX_Branch) begin
             case(ID_EX_funct3)
-                3'b000: PCSrc = ALUZero; // BEQ: Zero ?뵆?옒洹멸? 1?씠硫? 李?
-                3'b001: PCSrc = ~ALUZero; // BNE: Zero ?뵆?옒洹멸? 0?씠硫? 李?
-                3'b100: PCSrc = ALUNegative; // BLT: Negative ?뵆?옒洹멸? 1?씠硫? 李?
-                3'b101: PCSrc = ~ALUNegative; // BGE: Negative ?뵆?옒洹멸? 0?씠硫? 李?
-                3'b110: PCSrc = ALUCarry; // BLTU: Carry ?뵆?옒洹멸? 1?씠硫? 李?
-                3'b111: PCSrc = ~ALUCarry; // BGEU: Carry ?뵆?옒洹멸? 0?씠硫? 李?
-                default: PCSrc = 0;
+            3'b000: PCSrc = ALUZero; // BEQ: Branch if Zero flag is 1
+            3'b001: PCSrc = ~ALUZero; // BNE: Branch if Zero flag is 0
+            3'b100: PCSrc = ALUNegative; // BLT: Branch if Negative flag is 1
+            3'b101: PCSrc = ~ALUNegative; // BGE: Branch if Negative flag is 0
+            3'b110: PCSrc = ALUCarry; // BLTU: Branch if Carry flag is 1
+            3'b111: PCSrc = ~ALUCarry; // BGEU: Branch if Carry flag is 0
+
+            default: PCSrc = 0;
             endcase
             if(PCSrc) begin
                 PC_Branch = imm + PC + 4; // 遺꾧린 二쇱냼 ?뾽?뜲?씠?듃
