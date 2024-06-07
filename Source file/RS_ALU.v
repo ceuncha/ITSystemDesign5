@@ -170,16 +170,9 @@ module RS_ALU (
                 RS_ALU_on[i] <=0;
             end
         end else if (start) begin
-            if(PCSrc) begin
-                for (i = 0; i < 64; i = i + 1) begin
-                if(PCs[i] == ROB_Counter) begin
-                tail <= i+1;
-               
-                end
-                end
-            end
+
             
-            else begin
+   
             if (operand1 == ALU_result_dest) begin  // ALU?뿉?꽌 operand1?쓽 ?뿰?궛?씠 ?걹?궗?쓣?븣
                 inst_nums[tail] <= RS_alu_inst_num;
                 PCs[tail] <= PC;
@@ -431,7 +424,7 @@ module RS_ALU (
                 end     
             end
          end
-    end
+
     
 
 
