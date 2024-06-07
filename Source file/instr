@@ -31,7 +31,7 @@ module Instruction_memory(pc, instOut);
 {memory[44], memory[45], memory[46], memory[47]} <= 32'b0100000_00010_00011_000_00001_0110011; // sub x1, x3, x2
 {memory[548], memory[549], memory[550], memory[551]} <= 32'b0000000_01000_00111_000_00100_0110011; // add x4, x7, x8
 {memory[552], memory[553], memory[554], memory[555]} <= 32'b0000001_00100_00010_000_01011_0110011; // mul x11, x2, x4
-{memory[556], memory[557], memory[558], memory[559]} <= 32'b0000001_00001_00010_000_01011_0110011; // mul x11, x1, x4
+{memory[556], memory[557], memory[558], memory[559]} <= 32'b0000001_00001_00010_000_01011_0110011; // mul x11, x1, x2
 
 // JALR x31, x30, 0
 {memory[560], memory[561], memory[562], memory[563]} <= 32'b00000000000011110000111111100111; // JALR x31, x30, 0
