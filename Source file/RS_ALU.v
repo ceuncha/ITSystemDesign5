@@ -173,7 +173,8 @@ module RS_ALU (
             if(PCSrc) begin
                 for (i = 0; i < 64; i = i + 1) begin
                 if(PCs[i] == ROB_Counter) begin
-                tail <= i+1;
+                tail <= i;
+               
                 end
                 end
             end
