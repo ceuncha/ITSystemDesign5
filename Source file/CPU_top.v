@@ -1,11 +1,14 @@
 module CPU_top(
     input clk,
-    output instOut
+    input reset,
+    output [7:0] debug_PC
 );
+
 
 // wire declarations
 // IF stage
 (* keep = "true" *)wire [31:0] PC, PC_Branch;
+assign debug_PC = PC[7:0];
 (* keep = "true" *)wire PC_Stall, PCSrc;
 (* keep = "true" *)wire [31:0] instOut;
 (* keep = "true" *)wire IF_ID_Stall, IF_ID_Flush;
@@ -76,22 +79,32 @@ module CPU_top(
 // WB stage
 (* keep = "true" *)wire [31:0] mem_out;
 (* keep = "true" *)wire [31:0] MEM_WB_Result;
+(* keep = "true" *)wire [2:0] MEM_WB_funct3; 
 
 // module declaraions
 // IF stage
 (* keep_hierarchy = "yes" *)
 Program_Counter u_Program_Counter(
     .clk (clk),
+    .reset(reset),
     .PC_Branch(PC_Branch),
     .PC_Stall (PC_Stall),
     .PCSrc(PCSrc),
     .PC (PC)
 );
+
+
+
 (* keep_hierarchy = "yes" *)
-Instruction_memory u_Instruction_memory(
-    .pc (PC),
-    .instOut (instOut)
+Inst_mem u_InstructionMemory (
+    .clk(clk),           // input wire clka           // input wire ena (always enabled)
+    .a(PC[11:2]),     // input wire [9:0] addra (assuming 1024 depth)
+    .spo(instOut),
+    .we(1'b0)
+          // output wire [31:0] douta
 );
+
+
 (* keep_hierarchy = "yes" *)
 ifid_pipeline_register u_ifid_pipeline_register(
     .clk (clk),
@@ -106,6 +119,7 @@ ifid_pipeline_register u_ifid_pipeline_register(
 (* keep_hierarchy = "yes" *)
 register_file u_register_file(
     .clk (clk),
+    .reset(reset),
     .Rs1 (IF_ID_Rs1),.Rs2 (IF_ID_Rs2),.RD (MEM_WB_Rd),
     .MEM_WB_RegWrite (MEM_WB_RegWrite),
     .Write_Data (MEM_WB_Result),
@@ -133,7 +147,7 @@ control_unit_top u_control_unit_top(
 );
 (* keep_hierarchy = "yes" *)
 Hazard_Detection_unit u_Hazard_Detection_unit(
-    .ID_EX_MemRead(ID_EX_MemRead),.MemRead(MemRead),
+    .ID_EX_MemRead(ID_EX_MemRead),
     .IF_ID_Rs1(IF_ID_Rs1),.IF_ID_Rs2(IF_ID_Rs2),
     .ID_EX_Rd(ID_EX_Rd),
     .PC_Stall(PC_Stall),
@@ -222,7 +236,7 @@ exmem_pipeline_register u_exmem_pipeline_register(
     .ID_EX_Rd(ID_EX_Rd),
     .ALUResult(ALUResult),
     .Rd_data(Rd_data),
-    .ID_EX_RData2(ID_EX_RData2),
+    .ResultB(ResultB),
     .EX_MEM_MemRead(EX_MEM_MemRead),
     .EX_MEM_RWsel(EX_MEM_RWsel),
     .EX_MEM_MemToReg(EX_MEM_MemToReg),
@@ -238,12 +252,13 @@ exmem_pipeline_register u_exmem_pipeline_register(
 (* keep_hierarchy = "yes" *)
 DataMemory u_DataMemory(
     .clk(clk),
-    .MemRead(EX_MEM_MemRead),
+    .reset(reset),
     .MemWrite(EX_MEM_MemWrite),
     .funct3(EX_MEM_funct3),
     .ALUResult(EX_MEM_ALUResult),
     .WriteData(EX_MEM_RData2),
     .ReadData(RData)
+  
 );
 (* keep_hierarchy = "yes" *)
 memwb_pipeline_register u_memwb_pipeline_register(
@@ -254,22 +269,25 @@ memwb_pipeline_register u_memwb_pipeline_register(
     .EX_MEM_Rd(EX_MEM_Rd),
     .EX_MEM_Rd_data(EX_MEM_Rd_data),
     .EX_MEM_ALUResult(EX_MEM_ALUResult),
-    .RData(RData),
+    .EX_MEM_funct3(EX_MEM_funct3),
+    
     .MEM_WB_RegWrite(MEM_WB_RegWrite),
     .MEM_WB_MemToReg(MEM_WB_MemToReg),
     .MEM_WB_RWsel(MEM_WB_RWsel),
     .MEM_WB_Rd(MEM_WB_Rd),
     .MEM_WB_Rd_data(MEM_WB_Rd_data),
     .MEM_WB_ALUResult(MEM_WB_ALUResult),
-    .MEM_WB_RData(MEM_WB_RData)
+    .MEM_WB_funct3(MEM_WB_funct3)
+    
 );
 //WB stage
 (* keep_hierarchy = "yes" *)
 WbMux u_WbMux(
     .Address(MEM_WB_ALUResult),
-    .RData(MEM_WB_RData),
+    .RData(RData),
     .wm2reg(MEM_WB_MemToReg),
-    .mem_out(mem_out)
+    .mem_out(mem_out),
+    .MEM_WB_funct3(MEM_WB_funct3)
 );
 (* keep_hierarchy = "yes" *)
 pretty_mux u_pretty_mux(
@@ -278,4 +296,15 @@ pretty_mux u_pretty_mux(
     .MEM_WB_RWsel(MEM_WB_RWsel),
     .Write_Data(MEM_WB_Result)
 );
+
+// Buffered MEM_WB_Rd
+wire [31:0] buffered_MEM_WB_Rd;
+
+// ���� ���?? �ν��Ͻ�ȭ
+Buffer #(.DELAY(0.03)) buffer_inst (
+    .clk(clk),
+    .in_data(MEM_WB_Rd),
+    .out_data(buffered_MEM_WB_Rd)
+);
+
 endmodule
