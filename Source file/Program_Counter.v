@@ -1,35 +1,26 @@
 module Program_Counter(
-    input clk,
-    input reset,  // Active-low reset
-    input [31:0] PC_Branch,
-    input PC_Stall,
-    input PCSrc,
+    input wire clk,
+    input wire reset, // 동기식 리셋 신호 추가
+    input wire PC_Stall,
+    input wire [31:0] PC_final_next,
     output reg [31:0] PC
 );
-   
-    reg [31:0] PC_Plus4;
-   
-    initial begin
-        PC = 32'd0;
-        PC_Plus4 = 32'd0;
-    end
-   
-    always @ (*) begin
-        PC_Plus4 = PC + 32'd4;  // �񵿱� �Ҵ����� ����
-    end
 
-    always @ (posedge clk) begin
-        if (!reset) begin
-            PC <= 32'd0;  // ����� ���� ó��, active-low
-        end else if (PC_Stall) begin
-            // stall signal = 1 , keep PC unchanged
-            PC <= PC;
-        end else begin
-            if (PCSrc == 1) begin
-                PC <= PC_Branch;
-            end else if (PCSrc == 0) begin
-                PC <= PC_Plus4;
-            end
-        end
+initial begin
+    PC = 32'd0; // PC 초기값 설정
+end
+
+always @(posedge clk) begin
+    if (!reset) begin
+        // reset 신호가 활성화된 경우 PC 초기화
+        PC <= 32'd0;
+    end else if (PC_Stall) begin
+        // stall 신호가 활성화된 경우 PC 유지
+        PC <= PC;
+    end else begin
+        // PC를 PC_final_next 값으로 업데이트
+        PC <= PC_final_next;
     end
+end
+
 endmodule
