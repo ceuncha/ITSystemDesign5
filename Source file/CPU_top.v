@@ -9,6 +9,7 @@ module CPU_top(
 // IF stage
 (* keep = "true" *)wire [31:0] PC, PC_Branch;
 assign debug_PC = PC[7:0];
+wire first_and_Pcsrc, Wrong;
 (* keep = "true" *)wire PC_Stall, PCSrc;
 (* keep = "true" *)wire [31:0] instOut;
 (* keep = "true" *)wire IF_ID_Stall, IF_ID_Flush;
@@ -84,13 +85,18 @@ assign debug_PC = PC[7:0];
 // module declaraions
 // IF stage
 (* keep_hierarchy = "yes" *)
-Program_Counter u_Program_Counter(
-    .clk (clk),
+global_prediction_top u_global_prediction_top(
+    .clk(clk),
     .reset(reset),
+    .ID_EX_Branch(ID_EX_Branch),
+    .Pcsrc(PCSrc),
+    .PC_Stall(PC_Stall),
+    .ID_EX_PC(ID_EX_PC),
     .PC_Branch(PC_Branch),
-    .PC_Stall (PC_Stall),
-    .PCSrc(PCSrc),
-    .PC (PC)
+    .ID_EX_Jump(ID_EX_Jump),
+    .PC(PC),
+    .Wrong(Wrong),
+    .first_and_Pcsrc(first_and_Pcsrc)
 );
 
 
@@ -113,7 +119,9 @@ ifid_pipeline_register u_ifid_pipeline_register(
     .instOut (instOut),
     .PC (PC),
     .IF_ID_instOut (IF_ID_instOut),
-    .IF_ID_PC (IF_ID_PC)
+    .IF_ID_PC (IF_ID_PC),
+    .Wrong(Wrong),
+    .first_and_Pcsrc(first_and_Pcsrc)
 );
 // ID stage
 (* keep_hierarchy = "yes" *)
@@ -186,7 +194,9 @@ idex_pipeline_register u_idex_pipeline_register(
     .ID_EX_RData1(ID_EX_RData1), .ID_EX_RData2(ID_EX_RData2),
     .ID_EX_imm32(ID_EX_imm32),
     .ID_EX_PC(ID_EX_PC),
-    .ID_EX_Flush(ID_EX_Flush)
+    .ID_EX_Flush(ID_EX_Flush),
+    .Wrong(Wrong),
+    .first_and_Pcsrc(first_and_Pcsrc)
 );
 // EX stage
 (* keep_hierarchy = "yes" *)
@@ -301,10 +311,5 @@ pretty_mux u_pretty_mux(
 wire [31:0] buffered_MEM_WB_Rd;
 
 // ���� ���?? �ν��Ͻ�ȭ
-Buffer #(.DELAY(0.03)) buffer_inst (
-    .clk(clk),
-    .in_data(MEM_WB_Rd),
-    .out_data(buffered_MEM_WB_Rd)
-);
 
 endmodule
