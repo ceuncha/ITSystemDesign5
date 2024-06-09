@@ -5,14 +5,31 @@ module sign_extend(
 
 // Opcode는 명령어의 가장 낮은 7비트에 위치
 wire [6:0] opcode = inst[6:0];
+wire [2:0] funct3 = inst[14:12]; // funct3 필드
 
 // Opcode를 기반으로 명령어 유형 판별 및 적절한 즉시값 추출 및 신호 확장
 always @(*) begin
     case(opcode)
         // I-type (예: load, immediate, JALR)
-        7'b0000011, 7'b0010011, 7'b1100111: begin
+        7'b0000011, 7'b1100111: begin
             Imm[11:0] = inst[31:20];
             Imm[31:12] = {20{inst[31]}};
+        end
+        7'b0010011: begin // I-type with differentiation for shift instructions
+            case(funct3)
+                3'b001: begin // SLLI
+                    Imm[4:0] = inst[24:20];
+                    Imm[31:5] = 27'b0;
+                end
+                3'b101: begin // SRLI, SRAI
+                    Imm[4:0] = inst[24:20];
+                    Imm[31:5] = 27'b0;
+                end
+                default: begin // Other I-type instructions
+                    Imm[11:0] = inst[31:20];
+                    Imm[31:12] = {20{inst[31]}};
+                end
+            endcase
         end
         // S-type (store)
         7'b0100011: begin
@@ -48,4 +65,3 @@ always @(*) begin
 end
 
 endmodule
-
