@@ -33,7 +33,7 @@ module RAT (
     reg [4:0] shadow_addr;
 
     genvar i, j;
-    generate
+    generate                                                                //branch 경우 해당 매핑정보 저장을 위한 shadow rat 모듈.
         for (i = 0; i < 8; i = i + 1) begin : shadow_RAT_reg_array
             for (j = 0; j < 32; j = j + 1) begin : shadow_RAT_regs
                 shadow_RAT_register u_shadow_RAT_register (
@@ -51,7 +51,7 @@ module RAT (
     integer k;
 
    
-    always @(posedge reset) begin
+    always @(posedge reset) begin                   //초기값 설정.
         if (reset) begin
             for (k = 0; k < 32; k = k + 1) begin
                 phy_addr_table[k] <= k;
@@ -64,7 +64,7 @@ module RAT (
     end
 
     
-    always @(posedge save_state) begin
+    always @(posedge save_state) begin          //branch 가 들어오면 당시의 매핑정보 shadow rat로 전송.
 
             for (k = 0; k < 32; k = k + 1) begin
                 shadow_data_in[save_page][k] <= phy_addr_table[k];
@@ -74,14 +74,14 @@ module RAT (
 
     end
     
-        always @(negedge save_state) begin
+        always @(negedge save_state) begin      //branch 신호가 들어오지 않는 평소의 상황일때는 shadow register에 저장하지 않음.
 
             shadow_write_enable[save_page] <= 0;
       
 
     end
     
-        always @(posedge restore_state) begin
+        always @(posedge restore_state) begin       //분기가 실행되면 당시의 매핑정보 복구
 
             for (k = 0; k < 32; k = k + 1) begin
                 phy_addr_table[k] <= shadow_data_out[restore_page][k];
@@ -91,7 +91,7 @@ module RAT (
 
 
     
-    always @(posedge clk) begin
+    always @(posedge clk) begin     //평소의 상황 rat의 작동
         if(!reset) begin
         if(if_id_flush) begin
                 free_phy_addr_out <= free_phy_addr; 
@@ -102,28 +102,28 @@ module RAT (
         
        
            
-            case (opcode)
-                7'b1100111, 7'b0000011, 7'b0010011: begin  // jalr, load, i-type
+            case (opcode)       
+                7'b1100111, 7'b0000011, 7'b0010011: begin  // jalr, load, i-type 의 경우 r1을 이용하지 않기때문에 프리리스트에 존재하지 않는 물리주소인 254번지 값을 적어줌,
                     phy_addr_out1 <= phy_addr_table[logical_addr1];
                     phy_addr_out2 <= 8'b11111110;
                 end
-                7'b0110111, 7'b0010111, 7'b1101111: begin // lui, auipc, jal
+                7'b0110111, 7'b0010111, 7'b1101111: begin // lui, auipc, jal 의 경우 r1, r2을 이용하지 않기때문에 프리리스트에 존재하지 않는 물리주소인 255번지 값을 적어줌,
                     phy_addr_out1 <= 8'b11111110;
                     phy_addr_out2 <= 8'b11111110;
                 end
                 default: begin
-                    phy_addr_out1 <= phy_addr_table[logical_addr1];
+                    phy_addr_out1 <= phy_addr_table[logical_addr1];     // 평소의 명령어의 경우 rat에 매핑되어 있는 물리주소 값을 전송
                     phy_addr_out2 <= phy_addr_table[logical_addr2];
                 end
             endcase
 
             // 2. Rd 
-            if ((opcode != 7'b1100011) && (opcode != 7'b0100011)) begin  // beq, store need no Rd
+            if ((opcode != 7'b1100011) && (opcode != 7'b0100011)) begin  //  조건분기 명령어, store 명령어가 모두 아닌경우에는 rd에 해당되는 번지수의 매핑정보를 변환. 프리리스트로부터 온 물리주소 값으로 변환해준다.
                 free_phy_addr_out <= phy_addr_table[rd_logical_addr]; 
                 phy_addr_table[rd_logical_addr] <= free_phy_addr; 
                 rd_phy_out <= free_phy_addr;
    
-            end else begin
+            end else begin              // beq, store need no Rd. 그러므로 매핑정보 변환하지 않고 그대로 유지. 프리리스트로부터 온 물리주소는 그대로 프리리스트로 다시 반환.
                 free_phy_addr_out <= free_phy_addr; 
                 rd_phy_out <= 8'b11111111;   
             end
@@ -133,7 +133,7 @@ end
 
 endmodule
 
-module shadow_RAT_register(
+module shadow_RAT_register(         //branch 시에 이용하는 shadow register code. 평소의 상황에서는 이용하지 않는다.
 
     input wire reset,
     input wire [4:0] addr,    
