@@ -37,7 +37,6 @@ module Local_Predictor(
     assign mustBranch = IF_ID_BPredValid && !IF_ID_BPred && PCSrc;
     wire [31:0] PC_Pred; // between PC Prediction MUX and PC Correction MUX
     wire [31:0] PC_Correct; // between PC Correction MUX and PC Control MUX
-    reg [31:0] PC_reg;
 
     // reset registers
     always @(posedge clk or negedge reset) begin
@@ -60,7 +59,7 @@ module Local_Predictor(
     (* keep_hierarchy = "yes" *)
     Branch_History_Table u_BHT(
         .clk(clk), .reset(reset),
-        .ID_EX_BPred(IF_ID_BPred), .ID_EX_BPredValid(IF_ID_BPredValid), .PCSrc(PCSrc),
+        .PCSrc(PCSrc),
         .ID_EX_Branch(ID_EX_Branch),
         .ID_EX_PC(ID_EX_PC), .IF_ID_PC(IF_ID_PC),
         .PHTrd(PHTrd),
@@ -85,5 +84,4 @@ assign PC_Correct = unpredicted ? PC_Branch : // not predicted
                     PC_Pred; 
 // PC Control MUX
 assign o_PC = !reset ? 0 : PC_Stall ? IF_ID_PC : PC_Correct;
-//assign o_PC = PC_reg;
 endmodule
