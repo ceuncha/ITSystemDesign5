@@ -34,15 +34,14 @@ module Branch_History_Table(
     // update BHT
     assign Whistory = (ID_EX_Branch && BHT_valid[BHT_Windex]) ? {BHT[BHT_Windex][2:0], PCSrc} : {3'b000, PCSrc};
 
-    always @(posedge clk or posedge reset) begin
-        // this code is written for ACTIVE HIGH reset. must be corrected.
-        if (reset) begin // reset registers
+    always @(posedge clk or negedge reset) begin
+        if (!reset) begin // reset registers
             for (i = 0; i < BHT_depth; i = i + 1) begin
                 BHT[i] <= 0;
                 BHT_valid[i] <= 0;
             end
         end
-        else if(ID_EX_Branch && !reset) begin // if ID_EX_PC is branch inst.
+        else if(ID_EX_Branch && reset) begin // if ID_EX_PC is branch inst.
             if(BHT_valid[BHT_Windex]) begin
                 BHT[BHT_Windex] <= {BHT[BHT_Windex][2:0], PCSrc};
             end else begin
