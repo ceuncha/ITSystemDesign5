@@ -418,7 +418,7 @@ control_unit_top u_control_unit_top(
         .mul_alu_func3(RS_mul_funct3),
         .out_mul_inst_num(RS_mul_inst_num),
         .out_mul_MemToReg(RS_mul_MemToReg),
-        .out_mul_MemRead(RS_mul_MenRead),
+       .out_mul_MemRead(RS_mul_MemRead),
         .out_mul_MemWrite(RS_mul_MemWrite),
         .out_mul_ALUOP(RS_mul_ALUOP),
         .out_mul_ALUSrc1(RS_mul_ALUSrc1),
