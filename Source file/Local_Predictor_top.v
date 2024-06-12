@@ -40,9 +40,8 @@ module Local_Predictor(
     reg [31:0] PC_reg;
 
     // reset registers
-    // this code is written for ACTIVE HIGH reset. must be corrected.
-    always @(posedge clk or posedge reset) begin
-        if (reset) begin
+    always @(posedge clk or negedge reset) begin
+        if (!reset) begin
             PC_Plus4 <= 4;
         end else begin
             PC_Plus4 <= o_PC + 4;
@@ -85,16 +84,6 @@ assign PC_Correct = unpredicted ? PC_Branch : // not predicted
                     mustBranch ? PC_Branch : // must branch, but didn't branch
                     PC_Pred; 
 // PC Control MUX
-/*
-always @(posedge clk or posedge reset) begin
-    if (reset) begin
-        PC_reg <= 0;
-    end else if (!PC_Stall) begin
-        PC_reg <= PC_Correct;
-    end else begin
-    end
-end
-*/
-assign o_PC = reset ? 0 : PC_Stall ? IF_ID_PC : PC_Correct;
+assign o_PC = !reset ? 0 : PC_Stall ? IF_ID_PC : PC_Correct;
 //assign o_PC = PC_reg;
 endmodule
