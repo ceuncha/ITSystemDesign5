@@ -1,12 +1,14 @@
 module CPU_top(
     input clk,
-    input reset
+    input reset,
+    output [31:0] PC
     //output instOut
 );
 
 // wire declarations
 // IF stage
-(* keep = "true" *)wire [31:0] PC, PC_Branch, PC_Next;
+(* keep = "true" *)wire [31:0] PC;
+(* keep = "true" *)wire [31:0] PC_Branch, PC_Next;
 (* keep = "true" *)wire PC_Stall, PCSrc;
 (* keep = "true" *)wire BPred, BPredValid;
 (* keep = "true" *)wire [31:0] instOut;
@@ -87,8 +89,8 @@ module CPU_top(
 (* keep_hierarchy = "yes" *)
 Local_Predictor u_local_predictor (
         .clk(clk), .reset(reset),
-        .ID_EX_BPred(IF_ID_BPred),
-        .ID_EX_BPredValid(IF_ID_BPredValid),
+        .IF_ID_BPred(IF_ID_BPred),
+        .IF_ID_BPredValid(IF_ID_BPredValid),
         .PCSrc(PCSrc), .PC_Stall(PC_Stall),
         .ID_EX_PC(ID_EX_PC), .ID_EX_Branch(ID_EX_Branch),
         .PC_Branch(PC_Branch),
@@ -119,9 +121,9 @@ Instruction_memory u_Instruction_memory(
 Inst_mem u_InstructionMemory (
     .clk(clk),           // input wire clka           // input wire ena (always enabled)
     .a(PC[11:2]),     // input wire [9:0] addra (assuming 1024 depth)
+    .d(PC[11:2]), // not actually for writing something
     .spo(instOut),
-    .we(1'b0)
-          // output wire [31:0] douta
+    .we(1'b0) // output wire [31:0] douta
 );
 (* keep_hierarchy = "yes" *)
 ifid_pipeline_register u_ifid_pipeline_register(
@@ -207,7 +209,7 @@ idex_pipeline_register u_idex_pipeline_register(
     .ID_EX_imm32(ID_EX_imm32),
     .ID_EX_PC(ID_EX_PC),
     .ID_EX_BPred(ID_EX_BPred), .ID_EX_BPredValid(ID_EX_BPredValid),
-    .ID_EX_Flush(ID_EX_Flush)
+    .ID_EX_Flush(ID_EX_Flush), .PCSrc(PCSrc)
 );
 // EX stage
 (* keep_hierarchy = "yes" *)
@@ -224,13 +226,16 @@ ALU_top u_ALU_top(
 );
 (* keep_hierarchy = "yes" *)
 branch_unit u_branch_unit (
+    //.clk(clk), .reset(reset),
     .ResultA(ResultA),      
-    .ResultB(ResultB),       
+    .ResultB(ResultB),      
+    .IF_ID_PC(IF_ID_PC), 
     .ID_EX_PC(ID_EX_PC),     
     .ID_EX_Branch(ID_EX_Branch),   
     .ID_EX_funct3(ID_EX_funct3),  
     .ALUResult(ALUResult),  
-    .ID_EX_BPred(ID_EX_BPred), .ID_EX_BPredValid(ID_EX_BPredValid), 
+    //.ID_EX_BPred(ID_EX_BPred), .ID_EX_BPredValid(ID_EX_BPredValid), 
+    .ID_EX_BPred(IF_ID_BPred), .ID_EX_BPredValid(IF_ID_BPredValid), 
     //.IF_ID_BPred(IF_ID_BPred), .IF_ID_BPredValid(IF_ID_BPredValid), 
     .ID_EX_Jump(ID_EX_Jump), 
     .PCSrc(PCSrc),           
