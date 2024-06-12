@@ -1,48 +1,55 @@
 // IFID PIPELINE REGISTER
 module ifid_pipeline_register (
     input clk,
+    input reset,  // Active low reset
     input IF_ID_Stall, IF_ID_Flush, first_and_Pcsrc, Wrong,
     input [31:0] instOut,
     input [31:0] PC,
-    output reg [31:0] IF_ID_instOut,  
+    input hit,
+    output reg IF_ID_hit,
+    output reg [31:0] IF_ID_instOut,
     output reg [31:0] IF_ID_PC
 );
 
-    always @(posedge clk) begin
-        if (IF_ID_Flush) begin
-            // IF_ID_Flush ������ �� NOP ���ɾ� ���
-            IF_ID_instOut <= 32'h00000013; // RV32I������ NOP ���ɾ�
-            IF_ID_PC <= PC; // PC�� NOP ���¿����� ������Ʈ �� �� �ֵ��� ����
+    always @(posedge clk or negedge reset) begin
+        if (!reset) begin
+            // Active low reset
+            IF_ID_instOut <= 32'h00000013; // RV32I NOP instruction
+            IF_ID_PC <= 32'b0;
         end
-        else if (first_and_Pcsrc) begin
-            // first_and_Pcsrc ������ �� NOP ���ɾ� ���
-            IF_ID_instOut <= 32'h00000013; // RV32I������ NOP ���ɾ�
-            IF_ID_PC <= PC; // PC�� NOP ���¿����� ������Ʈ �� �� �ֵ��� ����
-        end
-        else if (Wrong) begin
-            // Wrong ������ �� NOP ���ɾ� ���
-            IF_ID_instOut <= 32'h00000013; // RV32I������ NOP ���ɾ�
-            IF_ID_PC <= PC; // PC�� NOP ���¿����� ������Ʈ �� �� �ֵ��� ����
-        end
-        else if (!IF_ID_Stall) begin
-            // �÷��ð� �ƴϰ� ���絵 �ƴ� �� ���� ����
-            IF_ID_instOut <= instOut;
+        else if (IF_ID_Flush) begin
+            // Flush condition
+            IF_ID_instOut <= 32'h00000013; // RV32I NOP instruction
             IF_ID_PC <= PC;
         end
-        // �߰����� else ���� �ʿ����� ����. ���� ���¿����� ���� ���¸� �����ϸ� ��.
+        else if (first_and_Pcsrc) begin
+            // First and PC source condition
+            IF_ID_instOut <= 32'h00000013; // RV32I NOP instruction
+            IF_ID_PC <= PC;
+        end
+        else if (Wrong) begin
+            // Wrong condition
+            IF_ID_instOut <= 32'h00000013; // RV32I NOP instruction
+            IF_ID_PC <= PC;
+        end
+        else if (!IF_ID_Stall) begin
+            // Normal operation
+            IF_ID_instOut <= instOut;
+            IF_ID_PC <= PC;
+            IF_ID_hit <= hit;
+        end
     end
 
-    // Initial block to set default values
-    initial begin
-        IF_ID_instOut = 32'h00000013;
-        IF_ID_PC = 32'b0;
-    end
+
+    
 endmodule
 
 
 // IDEX PIPELINE REGISTER
 module idex_pipeline_register (
-    input clk, first_and_Pcsrc, Wrong,
+    input clk,
+    input reset,  // Active low reset
+    input first_and_Pcsrc, Wrong,
     input Control_Sig_Stall,
     input RegWrite,
     input MemToReg,
@@ -59,7 +66,8 @@ module idex_pipeline_register (
     input Branch,
     input [31:0] IF_ID_PC,
     input ID_EX_Flush,
-
+    input IF_ID_hit,
+    output reg ID_EX_hit,
     output reg ID_EX_RWsel,
     output reg [1:0] ID_EX_ALUSrc,
     output reg [3:0] ID_EX_ALUOp,
@@ -76,9 +84,29 @@ module idex_pipeline_register (
     output reg [31:0] ID_EX_PC
 );
 
-    always @(posedge clk) begin
-        if (ID_EX_Flush) begin
-            // On a flush, reset the pipeline stage to NOP
+    always @(posedge clk or negedge reset) begin
+        if (!reset) begin
+            // Active low reset
+            ID_EX_RWsel <= 1'b0;
+            ID_EX_ALUSrc <= 2'b00;
+            ID_EX_ALUOp <= 4'b0000;
+            ID_EX_MemWrite <= 1'b0;
+            ID_EX_MemRead <= 1'b0;
+            ID_EX_MemToReg <= 1'b0;
+            ID_EX_RegWrite <= 1'b0;
+            ID_EX_Rs1 <= 5'b00000;
+            ID_EX_Rs2 <= 5'b00000;
+            ID_EX_Rd <= 5'b00000;
+            ID_EX_funct3 <= 3'b000;
+            ID_EX_RData1 <= 32'b0;
+            ID_EX_RData2 <= 32'b0;
+            ID_EX_imm32 <= 32'b0;
+            ID_EX_Jump <= 1'b0;
+            ID_EX_Branch <= 1'b0;
+            ID_EX_PC <= 32'b0;
+        end
+        else if (ID_EX_Flush) begin
+            // Flush condition
             ID_EX_RWsel <= 1'b0;
             ID_EX_ALUSrc <= 2'b00;
             ID_EX_ALUOp <= 4'b0000;
@@ -98,7 +126,7 @@ module idex_pipeline_register (
             ID_EX_PC <= 32'b0;
         end
         else if (first_and_Pcsrc) begin
-            // On a first_and_Pcsrc condition, reset the pipeline stage to NOP
+            // First and PC source condition
             ID_EX_RWsel <= 1'b0;
             ID_EX_ALUSrc <= 2'b00;
             ID_EX_ALUOp <= 4'b0000;
@@ -118,7 +146,7 @@ module idex_pipeline_register (
             ID_EX_PC <= 32'b0;
         end
         else if (Wrong) begin
-            // On a Wrong condition, reset the pipeline stage to NOP
+            // Wrong condition
             ID_EX_RWsel <= 1'b0;
             ID_EX_ALUSrc <= 2'b00;
             ID_EX_ALUOp <= 4'b0000;
@@ -156,45 +184,19 @@ module idex_pipeline_register (
             ID_EX_Jump <= Jump;
             ID_EX_Branch <= Branch;
             ID_EX_PC <= IF_ID_PC;
-        end
-        else begin
-            // Stall condition
-            ID_EX_RWsel <= 1'b0;
-            ID_EX_ALUSrc <= 2'b00;
-            ID_EX_ALUOp <= 4'b0000;
-            ID_EX_MemWrite <= 1'b0;
-            ID_EX_MemRead <= 1'b0;
-            ID_EX_MemToReg <= 1'b0;
-            ID_EX_RegWrite <= 1'b0;
+            ID_EX_hit <= IF_ID_hit;
         end
     end
-    
-    // Initial block to set default values
-    initial begin
-        ID_EX_RWsel = 1'b0;
-        ID_EX_ALUSrc = 2'b00;
-        ID_EX_ALUOp = 4'b0000;
-        ID_EX_MemWrite = 1'b0;
-        ID_EX_MemRead = 1'b0;
-        ID_EX_MemToReg = 1'b0;
-        ID_EX_RegWrite = 1'b0;
-        ID_EX_Rs1 = 5'b00000;
-        ID_EX_Rs2 = 5'b00000;
-        ID_EX_Rd = 5'b00000;
-        ID_EX_funct3 = 3'b000;
-        ID_EX_RData1 = 32'b0;
-        ID_EX_RData2 = 32'b0;
-        ID_EX_imm32 = 32'b0;
-        ID_EX_Jump = 1'b0;
-        ID_EX_Branch = 1'b0;
-        ID_EX_PC = 32'b0;
-    end
+
+   
 endmodule
+
 
 
 // EXMEM PIPELINE REGISTER
 module exmem_pipeline_register (
     input clk,
+    input reset,  // Active low reset
     input ID_EX_RegWrite,
     input ID_EX_MemToReg,
     input ID_EX_MemRead,
@@ -218,37 +220,43 @@ module exmem_pipeline_register (
     output reg [31:0] EX_MEM_Rd_data
 );
         
-    always @(posedge clk) begin
-        EX_MEM_RegWrite <= ID_EX_RegWrite;
-        EX_MEM_MemToReg <= ID_EX_MemToReg;
-        EX_MEM_MemRead <= ID_EX_MemRead;
-        EX_MEM_MemWrite <= ID_EX_MemWrite;
-        EX_MEM_RWsel <= ID_EX_RWsel;
-        EX_MEM_Rd <= ID_EX_Rd;
-        EX_MEM_funct3 <= ID_EX_funct3;
-        EX_MEM_ALUResult <= ALUResult;
-        EX_MEM_RData2 <= ResultB;
-        EX_MEM_Rd_data <= Rd_data;
-    end 
-
-    // Initial block to set default values
-    initial begin
-        EX_MEM_RegWrite = 1'b0;
-        EX_MEM_MemToReg = 1'b0;
-        EX_MEM_MemRead = 1'b0;
-        EX_MEM_MemWrite = 1'b0;
-        EX_MEM_RWsel = 1'b0;
-        EX_MEM_Rd = 5'b00000;
-        EX_MEM_funct3 = 3'b000;
-        EX_MEM_ALUResult = 32'b0;
-        EX_MEM_RData2 = 32'b0;
-        EX_MEM_Rd_data = 32'b0;
+    always @(posedge clk or negedge reset) begin
+        if (!reset) begin
+            // Active low reset
+            EX_MEM_RegWrite <= 1'b0;
+            EX_MEM_MemToReg <= 1'b0;
+            EX_MEM_MemRead <= 1'b0;
+            EX_MEM_MemWrite <= 1'b0;
+            EX_MEM_RWsel <= 1'b0;
+            EX_MEM_Rd <= 5'b00000;
+            EX_MEM_funct3 <= 3'b000;
+            EX_MEM_ALUResult <= 32'b0;
+            EX_MEM_RData2 <= 32'b0;
+            EX_MEM_Rd_data <= 32'b0;
+        end
+        else begin
+            // Normal operation
+            EX_MEM_RegWrite <= ID_EX_RegWrite;
+            EX_MEM_MemToReg <= ID_EX_MemToReg;
+            EX_MEM_MemRead <= ID_EX_MemRead;
+            EX_MEM_MemWrite <= ID_EX_MemWrite;
+            EX_MEM_RWsel <= ID_EX_RWsel;
+            EX_MEM_Rd <= ID_EX_Rd;
+            EX_MEM_funct3 <= ID_EX_funct3;
+            EX_MEM_ALUResult <= ALUResult;
+            EX_MEM_RData2 <= ResultB;
+            EX_MEM_Rd_data <= Rd_data;
+        end
     end
+
+
 endmodule
+
 
 // MEMWB PIPELINE REGISTER
 module memwb_pipeline_register (
     input clk,
+    input reset,  // Active low reset
     input EX_MEM_RegWrite,
     input EX_MEM_MemToReg,
     input EX_MEM_RWsel,
@@ -264,27 +272,31 @@ module memwb_pipeline_register (
     output reg [31:0] MEM_WB_Rd_data,
     output reg [31:0] MEM_WB_ALUResult,
     output reg [31:0] MEM_WB_RData,
-    output [2:0] MEM_WB_funct3
+    output reg [2:0] MEM_WB_funct3
 );
         
-    always @(posedge clk) begin
-        MEM_WB_RegWrite <= EX_MEM_RegWrite;
-        MEM_WB_MemToReg <= EX_MEM_MemToReg;
-        MEM_WB_RWsel <= EX_MEM_RWsel;
-        MEM_WB_Rd <= EX_MEM_Rd;
-        MEM_WB_Rd_data <= EX_MEM_Rd_data;
-        MEM_WB_ALUResult <= EX_MEM_ALUResult;
-        MEM_WB_RData <= RData;
-    end 
-
-    // Initial block to set default values
-    initial begin
-        MEM_WB_RegWrite = 1'b0;
-        MEM_WB_MemToReg = 1'b0;
-        MEM_WB_RWsel = 1'b0;
-        MEM_WB_Rd = 5'b00000;
-        MEM_WB_Rd_data = 32'b0;
-        MEM_WB_ALUResult = 32'b0;
-        MEM_WB_RData = 32'b0;
+    always @(posedge clk or negedge reset) begin
+        if (!reset) begin
+            // Active low reset
+            MEM_WB_RegWrite <= 1'b0;
+            MEM_WB_MemToReg <= 1'b0;
+            MEM_WB_RWsel <= 1'b0;
+            MEM_WB_Rd <= 5'b00000;
+            MEM_WB_Rd_data <= 32'b0;
+            MEM_WB_ALUResult <= 32'b0;
+            MEM_WB_RData <= 32'b0;
+        end
+        else begin
+            // Normal operation
+            MEM_WB_RegWrite <= EX_MEM_RegWrite;
+            MEM_WB_MemToReg <= EX_MEM_MemToReg;
+            MEM_WB_RWsel <= EX_MEM_RWsel;
+            MEM_WB_Rd <= EX_MEM_Rd;
+            MEM_WB_Rd_data <= EX_MEM_Rd_data;
+            MEM_WB_ALUResult <= EX_MEM_ALUResult;
+            MEM_WB_RData <= RData;
+        end
     end
+
+
 endmodule
