@@ -92,76 +92,76 @@ module RS_EX_decoder(
     output reg [31:0] out_div_inst_num
 );
 
+always @(posedge clk or posedge reset) begin
+    if (reset) begin
+        // 모든 출력을 리셋
+        add_alu_operand1 <= 0;
+        add_alu_operand2 <= 0;
+        add_alu_func3 <= 0;
+        add_alu_pc <= 0;
+
+        add_rd_phy_reg <= 0;
+        out_add_Operand1_phy <= 0;
+        out_add_Operand2_phy <= 0;
+        out_add_valid <= 0;
+        out_add_inst_num<=0;
+        
+        mul_alu_operand1 <= 0;
+        mul_alu_operand2 <= 0;
+        mul_alu_func3 <= 0;
+        mul_alu_pc <= 0;
+
+
+        mul_rd_phy_reg <= 0;
+        out_mul_Operand1_phy <= 0;
+        out_mul_Operand2_phy <= 0;
+        out_mul_valid <= 0;
+        out_mul_inst_num<=0;
+
+        div_alu_operand1 <= 0;
+        div_alu_operand2 <= 0;
+        div_alu_func3 <= 0;
+        div_alu_pc <= 0;
+
+        div_rd_phy_reg <= 0;
+        out_div_Operand1_phy <= 0;
+        out_div_Operand2_phy <= 0;
+        out_div_valid <= 0;
+        add_rs_on <= 0;
+        mul_rs_on <= 0;
+        div_rs_on <= 0;
+
+        out_add_MemToReg <= 0;	
+        out_add_MemRead <= 0;	
+        out_add_MemWrite <= 0;		
+        out_add_ALUOP <= 0;	
+        out_add_ALUSrc1 <= 0;
+        out_add_ALUSrc2 <= 0;		
+        out_add_Jump <= 0;		
+        out_add_Branch <= 0;  
+
+        out_mul_MemToReg <= 0;	
+        out_mul_MemRead <= 0;	
+        out_mul_MemWrite <= 0;		
+        out_mul_ALUOP <= 0;	
+        out_mul_ALUSrc1 <= 0;
+        out_mul_ALUSrc2 <= 0;		
+        out_mul_Jump <= 0;		
+        out_mul_Branch <= 0;  
+
+        out_div_MemToReg <= 0;	
+        out_div_MemRead <= 0;	
+        out_div_MemWrite <= 0;		
+        out_div_ALUOP <= 0;	
+        out_div_ALUSrc1 <= 0;
+        out_div_ALUSrc2 <= 0;		
+        out_div_Jump <= 0;		
+        out_div_Branch <= 0; 
+        out_div_inst_num <= 0; 
+    end
+end
 
 always @(*) begin
-  if (reset) begin
-        // 모든 출력을 리셋
-        add_alu_operand1 = 0;
-        add_alu_operand2 = 0;
-        add_alu_func3 = 0;
-        add_alu_pc = 0;
-
-        add_rd_phy_reg = 0;
-        out_add_Operand1_phy = 0;
-        out_add_Operand2_phy = 0;
-        out_add_valid = 0;
-        out_add_inst_num = 0;
-        
-        mul_alu_operand1 = 0;
-        mul_alu_operand2 = 0;
-        mul_alu_func3 = 0;
-        mul_alu_pc = 0;
-
-
-        mul_rd_phy_reg = 0;
-        out_mul_Operand1_phy = 0;
-        out_mul_Operand2_phy = 0;
-        out_mul_valid = 0;
-        out_mul_inst_num = 0;
-
-        div_alu_operand1 = 0;
-        div_alu_operand2 = 0;
-        div_alu_func3 = 0;
-        div_alu_pc = 0;
-
-        div_rd_phy_reg = 0;
-        out_div_Operand1_phy = 0;
-        out_div_Operand2_phy = 0;
-        out_div_valid = 0;
-        add_rs_on = 0;
-        mul_rs_on = 0;
-        div_rs_on = 0;
-
-        out_add_MemToReg = 0;	
-        out_add_MemRead = 0;	
-        out_add_MemWrite = 0;		
-        out_add_ALUOP = 0;	
-        out_add_ALUSrc1 = 0;
-        out_add_ALUSrc2 = 0;		
-        out_add_Jump = 0;		
-        out_add_Branch = 0;  
-
-        out_mul_MemToReg = 0;	
-        out_mul_MemRead = 0;	
-        out_mul_MemWrite = 0;		
-        out_mul_ALUOP = 0;	
-        out_mul_ALUSrc1 = 0;
-        out_mul_ALUSrc2 = 0;		
-        out_mul_Jump = 0;		
-        out_mul_Branch = 0;  
-
-        out_div_MemToReg = 0;	
-        out_div_MemRead = 0;	
-        out_div_MemWrite = 0;		
-        out_div_ALUOP = 0;	
-        out_div_ALUSrc1 = 0;
-        out_div_ALUSrc2 = 0;		
-        out_div_Jump = 0;		
-        out_div_Branch = 0; 
-        out_div_inst_num = 0; 
-    end
-    
-    if(!reset) begin
     case (in_opcode)
          7'b0000000: begin
                             add_rs_on = 0;
@@ -325,7 +325,6 @@ always @(*) begin
             out_add_inst_num = inst_num;
         end
     endcase
-end
 end
 
 endmodule
