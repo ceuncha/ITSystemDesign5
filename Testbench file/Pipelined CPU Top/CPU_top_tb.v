@@ -1,45 +1,30 @@
 `timescale 1ns / 1ps
-//////////////////////////////////////////////////////////////////////////////////
-// Company: 
-// Engineer: 
-// 
-// Create Date: 2024/04/06 21:57:09
-// Design Name: 
-// Module Name: tb_CPU_top
-// Project Name: 
-// Target Devices: 
-// Tool Versions: 
-// Description: 
-// 
-// Dependencies: 
-// 
-// Revision:
-// Revision 0.01 - File Created
-// Additional Comments:
-// 
-//////////////////////////////////////////////////////////////////////////////////
-
 
 module tb_CPU_top();
-
 reg clk;
+reg reset;
+wire [31:0] PC;
+integer file;
 
-CPU_top CPU_top(.clk(clk));
+CPU_top CPU_top(
+    .clk(clk),
+    .reset(reset),
+    .PC(PC)
+);
 
 initial begin
-    clk=1'b1;
-    $dumpfile("pipeline cpu.vcd");
-    $dumpvars(0);
- end
- 
- always begin
-    clk =~ clk;
-    #15;
- end    
-initial begin
-#2000;
-$finish;
+    clk = 1'b1;
+    reset = 1'b0; // Reset 신호 활성화
+    #20;          // 몇 클럭 사이클 기다림
+    reset = 1'b1; // Reset 신호 비활성화
 end
 
+always begin
+    #10 clk = ~clk; // 10ns마다 클럭 반전
+end    
 
+initial begin
+    #2000;
+    $finish;
+end
 endmodule
