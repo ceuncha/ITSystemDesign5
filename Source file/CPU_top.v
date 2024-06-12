@@ -4,12 +4,12 @@ module CPU_top(
     output [7:0] debug_PC
 );
 
-
+(* keep = "true" *) wire hit, IF_ID_hit, ID_EX_hit;
 // wire declarations
 // IF stage
 (* keep = "true" *)wire [31:0] PC, PC_Branch;
 assign debug_PC = PC[7:0];
-wire first_and_Pcsrc, Wrong;
+(* keep = "true" *)wire first_and_Pcsrc, Wrong;
 (* keep = "true" *)wire PC_Stall, PCSrc;
 (* keep = "true" *)wire [31:0] instOut;
 (* keep = "true" *)wire IF_ID_Stall, IF_ID_Flush;
@@ -96,7 +96,9 @@ global_prediction_top u_global_prediction_top(
     .ID_EX_Jump(ID_EX_Jump),
     .PC(PC),
     .Wrong(Wrong),
-    .first_and_Pcsrc(first_and_Pcsrc)
+    .first_and_Pcsrc(first_and_Pcsrc),
+    .hit(hit),
+    .ID_EX_hit(ID_EX_hit)
 );
 
 
@@ -114,6 +116,7 @@ Inst_mem u_InstructionMemory (
 (* keep_hierarchy = "yes" *)
 ifid_pipeline_register u_ifid_pipeline_register(
     .clk (clk),
+    .reset(reset),
     .IF_ID_Stall (IF_ID_Stall),
     .IF_ID_Flush (IF_ID_Flush),
     .instOut (instOut),
@@ -121,7 +124,9 @@ ifid_pipeline_register u_ifid_pipeline_register(
     .IF_ID_instOut (IF_ID_instOut),
     .IF_ID_PC (IF_ID_PC),
     .Wrong(Wrong),
-    .first_and_Pcsrc(first_and_Pcsrc)
+    .first_and_Pcsrc(first_and_Pcsrc),
+    .hit(hit),
+    .IF_ID_hit(IF_ID_hit)
 );
 // ID stage
 (* keep_hierarchy = "yes" *)
@@ -165,6 +170,7 @@ Hazard_Detection_unit u_Hazard_Detection_unit(
 (* keep_hierarchy = "yes" *)
 idex_pipeline_register u_idex_pipeline_register(
     .clk(clk),
+    .reset(reset),
     .RegWrite(RegWrite),
     .MemToReg(MemToReg),
     .MemRead(MemRead),
@@ -196,7 +202,9 @@ idex_pipeline_register u_idex_pipeline_register(
     .ID_EX_PC(ID_EX_PC),
     .ID_EX_Flush(ID_EX_Flush),
     .Wrong(Wrong),
-    .first_and_Pcsrc(first_and_Pcsrc)
+    .first_and_Pcsrc(first_and_Pcsrc),
+    .IF_ID_hit(IF_ID_hit),
+    .ID_EX_hit(ID_EX_hit)
 );
 // EX stage
 (* keep_hierarchy = "yes" *)
@@ -224,7 +232,8 @@ branch_unit u_branch_unit (
     .PC_Branch(PC_Branch),   
     .Rd_data(Rd_data),       
     .IF_ID_Flush(IF_ID_Flush),   
-    .ID_EX_Flush(ID_EX_Flush)    
+    .ID_EX_Flush(ID_EX_Flush),
+    .ID_EX_hit(ID_EX_hit)    
 );
 (* keep_hierarchy = "yes" *)
 data_forwarding_unit u_data_forwarding_unit(
@@ -237,6 +246,7 @@ data_forwarding_unit u_data_forwarding_unit(
 (* keep_hierarchy = "yes" *)
 exmem_pipeline_register u_exmem_pipeline_register(
     .clk(clk),
+    .reset(reset),
     .ID_EX_MemRead(ID_EX_MemRead),
     .ID_EX_RegWrite(ID_EX_RegWrite),
     .ID_EX_MemWrite(ID_EX_MemWrite),
@@ -273,6 +283,7 @@ DataMemory u_DataMemory(
 (* keep_hierarchy = "yes" *)
 memwb_pipeline_register u_memwb_pipeline_register(
     .clk(clk),
+    .reset(reset),
     .EX_MEM_RegWrite(EX_MEM_RegWrite),
     .EX_MEM_MemToReg(EX_MEM_MemToReg),
     .EX_MEM_RWsel(EX_MEM_RWsel),
