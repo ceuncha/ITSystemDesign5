@@ -8,7 +8,7 @@ module pattern_history_table (
 );
 
 // 2-bit branch history table with 16 entries + 1-bit valid bit
-reg [2:0] bht [0:15]; // [2] is the valid bit, [1:0] is the history
+(* keep = "true" *)reg [2:0] bht [0:15]; // [2] is the valid bit, [1:0] is the history
 
 // Write operation
 always @(posedge clk or negedge reset) begin
@@ -29,6 +29,7 @@ always @(posedge clk or negedge reset) begin
         bht[13] <= 3'b001;
         bht[14] <= 3'b001;
         bht[15] <= 3'b001;
+        taken <=0;
     end else if (ID_EX_Branch) begin
         bht[gbh][2] <= 1'b1; // ID_EX_Branch�� 1�̸� valid bit�� 1�� ����
         if (Pcsrc) begin
