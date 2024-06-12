@@ -106,11 +106,11 @@ module RAT (
        
            
             case (opcode)       
-                7'b1100111, 7'b0000011, 7'b0010011: begin  // jalr, load, i-type 의 경우 r1을 이용하지 않기때문에 프리리스트에 존재하지 않는 물리주소인 254번지 값을 적어줌,
+                7'b1100111, 7'b0000011, 7'b0010011, 7'b0100011: begin  // jalr, load, i-type 의 경우 r1을 이용하지 않기때문에 프리리스트에 존재하지 않는 물리주소인 254번지 값을 적어줌,
                     phy_addr_out1 <= phy_addr_table[logical_addr1];
                     phy_addr_out2 <= 8'b11111110;
                 end
-                7'b0110111, 7'b0010111, 7'b1101111, 7'b0100011: begin // lui, auipc, jal 의 경우 r1, r2을 이용하지 않기때문에 프리리스트에 존재하지 않는 물리주소인 255번지 값을 적어줌,
+                7'b0110111, 7'b0010111, 7'b1101111 : begin // lui, auipc, jal 의 경우 r1, r2을 이용하지 않기때문에 프리리스트에 존재하지 않는 물리주소인 255번지 값을 적어줌,
                     phy_addr_out1 <= 8'b11111110;
                     phy_addr_out2 <= 8'b11111110;
                 end
