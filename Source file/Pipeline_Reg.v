@@ -58,6 +58,7 @@ module idex_pipeline_register (
     input IF_ID_BPred,
     input IF_ID_BPredValid,
     input ID_EX_Flush,
+    input PCSrc,
 
     output reg ID_EX_RWsel,
     output reg [1:0] ID_EX_ALUSrc,
@@ -100,6 +101,8 @@ module idex_pipeline_register (
             ID_EX_PC <= 32'b0;
         end
         else if (ID_EX_Flush) begin
+            // if branch prediction failed
+            // or branch prediction not valid
             // On a flush, reset the pipeline stage to NOP
             ID_EX_RWsel <= 1'b0;
             ID_EX_ALUSrc <= 2'b00;
@@ -115,8 +118,8 @@ module idex_pipeline_register (
             ID_EX_RData1 <= 32'b0;
             ID_EX_RData2 <= 32'b0;
             ID_EX_imm32 <= 32'b0;
-            ID_EX_Jump <= 1'b0;
-            ID_EX_Branch <= 1'b0;
+            ID_EX_Jump <= Jump;
+            ID_EX_Branch <= Branch;
             ID_EX_PC <= 32'b0;
             ID_EX_BPred <= 0;
             ID_EX_BPredValid <= 0;
