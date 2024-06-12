@@ -59,6 +59,7 @@ always @(posedge clk or negedge reset) begin
         pc_reverse[7] <= 32'd0;
         next_index <= 3'd0; // Initialize next_index
         Wrong <= 1'b0; // Initialize Wrong signal
+        
     end else begin
         // Write operation
         if (hit) begin
@@ -109,6 +110,7 @@ end
 
 // Read operation
 always @(*) begin
+    
     find_index = 3'd7; // Default to an invalid index
     if (valid[0] && (pc[0] == ID_EX_PC)) find_index = 3'd0;
     else if (valid[1] && (pc[1] == ID_EX_PC)) find_index = 3'd1;
@@ -130,6 +132,7 @@ always @(*) begin
     end else begin
         Wrong = 1'b0; // Default state of Wrong is 0
     end
-end
+    end
+
 
 endmodule
