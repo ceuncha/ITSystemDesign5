@@ -1,8 +1,6 @@
 module Branch_History_Table(
     input clk,
     input reset,
-    input ID_EX_BPred,
-    input ID_EX_BPredValid,
     input ID_EX_Branch,
     input PCSrc,
     input [31:0] ID_EX_PC,
