@@ -209,7 +209,7 @@ idex_pipeline_register u_idex_pipeline_register(
     .ID_EX_imm32(ID_EX_imm32),
     .ID_EX_PC(ID_EX_PC),
     .ID_EX_BPred(ID_EX_BPred), .ID_EX_BPredValid(ID_EX_BPredValid),
-    .ID_EX_Flush(ID_EX_Flush), .PCSrc(PCSrc)
+    .ID_EX_Flush(ID_EX_Flush)
 );
 // EX stage
 (* keep_hierarchy = "yes" *)
