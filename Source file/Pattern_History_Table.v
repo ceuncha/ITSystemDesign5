@@ -29,7 +29,7 @@ module Pattern_History_Table(
     reg PHT_valid [0:PHT_depth-1];
 
     wire readPHT;
-    assign readPHT = PHTrd && PC_Target_valid && !reset;
+    assign readPHT = PHTrd && PC_Target_valid && reset;
     assign BPred = !readPHT ? 0 :
                     !(PHT_valid[PHT_index]) ? 0 :
                     ((PHT[PHT_index] == STRONGLY_NOT_TAKEN) || (PHT[PHT_index] == WEAKLY_NOT_TAKEN)) ? 0 :
@@ -40,7 +40,7 @@ module Pattern_History_Table(
 /*
 // read PHT (search for IF_ID_PC)
     always @(*) begin
-        if (PHTrd && PC_Target_valid && !reset) begin // if index found in BHT && index found in BTB
+        if (PHTrd && PC_Target_valid && reset) begin // if index found in BHT && index found in BTB
                 if (PHT_valid[PHT_index]) begin // if hist found in PHT
                     if ((PHT[PHT_index] == STRONGLY_NOT_TAKEN) || (PHT[PHT_index] == WEAKLY_NOT_TAKEN)) begin
                         BPred <= 0;
@@ -71,9 +71,8 @@ module Pattern_History_Table(
     end
 */
     // update PHT
-    always @(posedge clk or posedge reset) begin
-        // this code is written for ACTIVE HIGH reset. must be corrected.
-        if (reset) begin // reset registers
+    always @(posedge clk or negedge reset) begin
+        if (!reset) begin // reset registers
             //BPred <= 0;
             //BPredValid <= 0;
             for (i = 0; i < PHT_depth; i = i + 1) begin
@@ -81,7 +80,7 @@ module Pattern_History_Table(
                 PHT_valid[i] <= 0;
             end
         end
-        else if(ID_EX_Branch && !reset) begin // if ID_EX_PC is branch inst.
+        else if(ID_EX_Branch && reset) begin // if ID_EX_PC is branch inst.
             PHT_valid[PHT_Windex] <= 1;
             if(PHT_valid[PHT_Windex]) begin
                 if((PHT[PHT_Windex] == WEAKLY_TAKEN) && PCSrc) begin // if branch taken, increment state
