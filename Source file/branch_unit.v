@@ -5,7 +5,8 @@ module branch_unit(
     input ID_EX_Branch,         // �б� Ȱ��ȭ ��ȣ
     input [2:0] ID_EX_funct3,   // �б� ������ �����ϴ� �Լ� �ڵ�
     input [31:0] ALUResult,     // ALU ��� (�б� �ּ� ��꿡 ���)
-    input ID_EX_Jump,                 // ���� Ȱ��ȭ ��ȣ
+    input ID_EX_Jump,
+    input ID_EX_hit,                 // ���� Ȱ��ȭ ��ȣ
     output reg PCSrc,           // PC �ҽ� ���� ��ȣ (�б� �Ǵ� ���� ���� �� 1)
     output reg [31:0] PC_Branch,// ���ο� �б� �Ǵ� ���� �ּ�
     output reg [31:0] Rd_data,  // Rd �������Ϳ� ������ ������
@@ -39,6 +40,11 @@ always @(*) begin
             3'b111: PCSrc = ($unsigned(ResultA) >= $unsigned(ResultB)); // BGEU
             default: PCSrc = 0;
         endcase
+
+        if ((ID_EX_hit==0) && PCSrc) begin
+           IF_ID_Flush = 1;
+            ID_EX_Flush = 1;
+        end
 
         if (PCSrc) begin
             // �бⰡ Ȱ��ȭ�Ǿ��� �� PC �ּ� ����, �÷��� ��ȣ �߻�
