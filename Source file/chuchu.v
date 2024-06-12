@@ -44,7 +44,9 @@ module chuchu (
             chuchu_array[0] <=  8'b10100000;
     end
     
-    always @(posedge clk) begin
+    always @(posedge clk) begin   //output으로 비어있는 물리주소를 rat로 전송해주고,
+                                    /* rat로부터 재 할당됨으로써 더이상 이용하지 않는 물리주소를
+                                    입력받아 프리리스트의 가장 후순위에 배치해준다. */
         if(!reset) begin
 
             chuchu_out <= chuchu_array[current_index];
@@ -54,7 +56,8 @@ module chuchu (
         end
    
 
-    always @(posedge save_state) begin
+    always @(posedge save_state) begin  //branch 신호가 instruction memory에서 나오면 
+                                        // 해당 프리리스트 정보를 백업해준다.
 
             for (i = 0; i < 128; i = i + 1) begin
                 shadow_data_in[save_page][i] <= chuchu_array[i];
@@ -68,7 +71,8 @@ module chuchu (
         shadow_write_enable[save_page] <= 0;
     end
 
-    always @(posedge restore_state) begin
+    always @(posedge restore_state) begin   //BB로부터 복구명령이 오면 프리리스트의 정보를 branch 명령어가 
+                                               // 들어왔을 당시의 정보로 복원해준다.
 
             for (i = 0; i < 128; i = i + 1) begin
                 chuchu_array[i] <= shadow_data_out[restore_page][i];
