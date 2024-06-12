@@ -2,11 +2,13 @@ module Branch_Target_Buffer(
     input clk,
     input reset,
     input wire [31:0] PC_Plus4,
+    input wire [31:0] IF_ID_PC,
     input wire [31:0] ID_EX_PC,
     input wire [31:0] PC_Branch,
-    input wire ID_EX_BPredValid,
+    input wire ID_EX_Branch,
     input wire PCSrc,
-    output wire [31:0] PC_Target
+    output wire [31:0] PC_Target,
+    output wire PC_Target_valid
 );
     parameter PC_width = 32;
     parameter index_width = 8; // for small programs
@@ -22,26 +24,23 @@ module Branch_Target_Buffer(
     reg BTB_valid [0:BTB_depth-1];
 
     wire [index_width-1:0] BTB_index;
-    assign BTB_index = PC_Plus4[9:2];
+    assign BTB_index = IF_ID_PC[9:2];
     wire [index_width-1:0] BTB_Windex; // tag to write
     assign BTB_Windex = ID_EX_PC[9:2];
 
-    // reset BTB
-        always @(posedge clk or posedge reset) begin
-        if (reset) begin
+    // read BTB (search for PC_Plus4) combinationally using assign
+    assign PC_Target = (BTB_valid[BTB_index]) ? BTB[BTB_index] : PC_Plus4;
+    assign PC_Target_valid = (BTB_valid[BTB_index]) ? 1 : 0;
+
+    // update BTB
+    always @(posedge clk or posedge reset) begin 
+        if (reset) begin // reset BTB
             for (i = 0; i < BTB_depth; i = i + 1) begin
                 BTB[i] <= 0;
                 BTB_valid[i] <= 0;
             end
         end
-        end
-
-    // read BTB (search for PC_Plus4) combinationally using assign
-    assign PC_Target = (BTB_valid[BTB_index]) ? BTB[BTB_index] : PC_Plus4;
-
-    // update BTB
-    always @(posedge clk) begin 
-        if ((ID_EX_BPredValid || PCSrc) && !reset) begin // if PCSrc == 1
+        else if (ID_EX_Branch && PCSrc && !reset) begin // if PC_Branch is branch address
                 if (BTB_valid[BTB_Windex]) begin
                     BTB[BTB_Windex] <= PC_Branch;  // if ID_EX_PC found in BTB
                 end
