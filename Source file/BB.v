@@ -22,7 +22,7 @@ reg [2:0] tail;
 reg Paste_RAT_set;                    // 플래그 추가
 
 // Reset BB entries
-task reset_bb_entries;
+task reset_bb_entries;  //한번 분기가 진행되면, 이후의 분기 정보는 무의미하게 되므로 bb를 비워준다.
     begin
         head <= 0;
         tail <= 0;
@@ -35,11 +35,14 @@ endtask
 
 // BB control logic
 always @(posedge clk or posedge rst) begin
-    if (rst) begin
+    if (rst) begin          
         reset_bb_entries();
     end else begin
         // Check for jump or branch opcode
-        if (opcode == 7'b1100011 || opcode == 7'b1101111 || opcode == 7'b1100111) begin // Assuming these are jump or branch opcodes
+        if (opcode == 7'b1100011 || opcode == 7'b1101111 || opcode == 7'b1100111) begin // branch 명령어가 inst memory에서 나오게 되면 
+                                                                                           //counter 숫자와 
+                                                                                           //페이지 넘버를 BB에 저장해준다. 코드에는 pc라고 
+                                                                                           // 적혀있지만 counter 숫자를 입력받는다.
             BB_entry[tail] <= PC;    // Store the current PC value in ROB at tail position
             ready[tail] <= 1'b0;     // Set ready flag to 0
             tail_num <= tail;        //
@@ -50,8 +53,10 @@ always @(posedge clk or posedge rst) begin
         end
 
         // Compare branch_PC with head's PC and check PCSrc
-    if (RS_EX_Branch || RS_EX_Jump) begin
-        if (BB_entry[head] == branch_PC) begin
+    if (RS_EX_Branch || RS_EX_Jump) begin                   /*branch에서 분기 명령이 수행되면, BB로 분기명령이 시행되었다는 신호와  counter number이 전송된다.
+                                                            BB는 적혀있던 Branch 신호들의 counter 숫자와 branch로부터 온 counter 숫자를 이용해서 해당 엔트리의 ready를 1로 변경해준다,
+                                                            만약 head에 위치한 명령어의 분기신호가 들어왔다면, 별도의 ready bit 설정 없이 바로 복구 신호를 rat와 freelist로 전송해준다. */
+        if (BB_entry[head] == branch_PC) begin              // head에 위치한 분기 신호가 들어왔을때
             if (PCSrc == 1'b1) begin
                 Paste_RAT <= 1;      // Set Paste_RAT to 1
                 Paste_RAT_set <= 1;  // 플래그 설정
@@ -66,7 +71,7 @@ always @(posedge clk or posedge rst) begin
     end
 
         for (i = 0; i < 8; i = i + 1) begin
-            if (BB_entry[i] == branch_PC) begin
+            if (BB_entry[i] == branch_PC) begin //head에 위치하지 않은 분기신호가 들어왔을때
                 if (PCSrc == 1'b1) begin
                     ready[i] <= 1'b1;   // Set the ready flag to 1
                 end
@@ -74,7 +79,7 @@ always @(posedge clk or posedge rst) begin
         end
 
         // Check if the head is ready
-        if (ready[head] == 1'b1) begin
+        if (ready[head] == 1'b1) begin    //head가 변하였을때 ready bit가 1이면, 복구 신호를 전송해준다.
             head_num <= head;
             Paste_RAT <= 1;
             Paste_RAT_set <= 1;  // 플래그 설정
