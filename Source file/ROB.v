@@ -50,8 +50,8 @@ always @(posedge clk or posedge rst) begin
                 if (rob_entry[i][31:0] == branch_index) begin
                     rob_entry[i][98:0] <= {rob_entry[i][98], 1'b1, rob_entry[i][96], PC_Return, rob_entry[i][63:32], rob_entry[i][31:0]};
                     tail <= (i + 1) % 64; // Move tail to the entry right after the branch entry
-                    rob_entry[i+1][98:0] <= 0;
-                    rob_entry[i+2][98:0] <= 0;
+                    rob_entry[i+1][98:0] <= 0; // Flush under tail entry
+                    rob_entry[i+2][98:0] <= 0; // Fulsh under tail entry
                 end
             end
       
