@@ -21,7 +21,7 @@ reg [2:0] next_index; // Next index to insert new entry
 reg [2:0] find_index;
 
 // Reset all entries
-always @(posedge clk or negedge reset) begin
+always @(posedge clk) begin
     if (!reset) begin
         valid[0] <= 1'b0;
         valid[1] <= 1'b0;
@@ -50,12 +50,8 @@ always @(posedge clk or negedge reset) begin
         first <= 1'b0;
         next_index <= 3'd0; // Initialize next_index
         hit <= 1'b0; // Initialize hit signal
-    end
-end
-
-// Write operation triggered by ID_EX_Branch signal
-always @(ID_EX_Branch or Pcsrc or PC_Branch) begin
-    if (ID_EX_Branch && Pcsrc) begin
+        PC_Target <= 0;
+    end else if (ID_EX_Branch && Pcsrc) begin
         find_index = 3'd7; // Default to an invalid index
         if (valid[0] && (pc[0] == ID_EX_PC)) find_index = 3'd0;
         else if (valid[1] && (pc[1] == ID_EX_PC)) find_index = 3'd1;
@@ -88,8 +84,8 @@ always @(ID_EX_Branch or Pcsrc or PC_Branch) begin
     end
 end
 
+// Read operation
 always @(*) begin
-    // Read operation
     find_index = 3'd7; // Default to an invalid index
     if (valid[0] && (pc[0] == PC)) find_index = 3'd0;
     else if (valid[1] && (pc[1] == PC)) find_index = 3'd1;
