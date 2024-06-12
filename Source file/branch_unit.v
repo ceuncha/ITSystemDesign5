@@ -71,6 +71,11 @@ always @(*) begin
             end
             //$display("Time: %0t | in branch unit, for PC: %h Branch to %h", $time, ID_EX_PC, PC_Branch)
         end
+        else begin
+            if (IF_ID_BPredValid && IF_ID_BPred) begin
+                ID_EX_Flush = 1;
+            end
+        end
     end
 end
 
