@@ -13,8 +13,8 @@ module ifid_pipeline_register (
     output reg IF_ID_BPredValid
 );
     
-    always @(posedge clk or posedge reset) begin
-        if (reset) begin
+    always @(posedge clk or negedge reset) begin
+        if (!reset) begin
             IF_ID_instOut <= 32'b0;
             IF_ID_PC <= 32'b0;
             IF_ID_BPred <= 0;
@@ -78,8 +78,8 @@ module idex_pipeline_register (
     output reg [31:0] ID_EX_PC
 );
     
-    always @(posedge clk or posedge reset) begin
-        if (reset) begin
+    always @(posedge clk or negedge reset) begin
+        if (!reset) begin
             ID_EX_RWsel <= 1'b0;
             ID_EX_ALUSrc <= 2'b00;
             ID_EX_ALUOp <= 4'b0000;
@@ -176,8 +176,8 @@ module exmem_pipeline_register (
     output reg [31:0] EX_MEM_Rd_data
 );
         
-    always @(posedge clk or posedge reset) begin
-        if (reset) begin
+    always @(posedge clk or negedge reset) begin
+        if (!reset) begin
             EX_MEM_RegWrite <= 1'b0;
             EX_MEM_MemToReg <= 1'b0;
             EX_MEM_MemRead <= 1'b0;
@@ -224,8 +224,8 @@ module memwb_pipeline_register (
     output reg [31:0] MEM_WB_RData
 );
         
-    always @(posedge clk or posedge reset) begin
-        if (reset) begin
+    always @(posedge clk or negedge reset) begin
+        if (!reset) begin
             MEM_WB_RegWrite <= 1'b0;
             MEM_WB_MemToReg <= 1'b0;
             MEM_WB_RWsel <= 1'b0;
