@@ -58,7 +58,6 @@ module idex_pipeline_register (
     input IF_ID_BPred,
     input IF_ID_BPredValid,
     input ID_EX_Flush,
-    input PCSrc,
 
     output reg ID_EX_RWsel,
     output reg [1:0] ID_EX_ALUSrc,
