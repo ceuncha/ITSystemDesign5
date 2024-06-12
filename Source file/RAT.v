@@ -33,7 +33,8 @@ module RAT (
     reg [4:0] shadow_addr;
 
     genvar i, j;
-    generate                                                                //branch 경우 해당 매핑정보 저장을 위한 shadow rat 모듈.
+    generate                                                                //branch 경우 해당 매핑정보 저장을 위한 shadow rat 모듈. 
+                                                                            // 8개의 페이지가 존재한다.
         for (i = 0; i < 8; i = i + 1) begin : shadow_RAT_reg_array
             for (j = 0; j < 32; j = j + 1) begin : shadow_RAT_regs
                 shadow_RAT_register u_shadow_RAT_register (
@@ -64,7 +65,8 @@ module RAT (
     end
 
     
-    always @(posedge save_state) begin          //branch 가 들어오면 당시의 매핑정보 shadow rat로 전송.
+    always @(posedge save_state) begin          //branch 가 들어오면 BB가 Save_State 신호를 RAT로 전송해주고, 이 신호를 받으면
+                                                    // 당시의 매핑정보 shadow rat로 전송. page number은 BB와 RAT가 동기화 되어 있다.
 
             for (k = 0; k < 32; k = k + 1) begin
                 shadow_data_in[save_page][k] <= phy_addr_table[k];
@@ -81,7 +83,8 @@ module RAT (
 
     end
     
-        always @(posedge restore_state) begin       //분기가 실행되면 당시의 매핑정보 복구
+        always @(posedge restore_state) begin       // 분기가 실행되면 당시의 매핑정보 복구. BB로부터 해당 브랜치 매핑정보가 들어있는  페이지 넘버와 restore state 신호를 받으면
+                                                    // 매핑 정보를 다시 복구해준다.
 
             for (k = 0; k < 32; k = k + 1) begin
                 phy_addr_table[k] <= shadow_data_out[restore_page][k];
@@ -91,7 +94,7 @@ module RAT (
 
 
     
-    always @(posedge clk) begin     //평소의 상황 rat의 작동
+    always @(posedge clk) begin     // 평소의 상황 rat의 작동
         if(!reset) begin
         if(if_id_flush) begin
                 free_phy_addr_out <= free_phy_addr; 
@@ -133,7 +136,8 @@ end
 
 endmodule
 
-module shadow_RAT_register(         //branch 시에 이용하는 shadow register code. 평소의 상황에서는 이용하지 않는다.
+module shadow_RAT_register(         //branch 시에 이용하는 shadow register code. rat로부터 write enable 신호가 들어오면 페이지에 매핑 정보를 백업시켜주고, 
+                                    // 페이지 넘버를 받아서 복구가 필요할때는 rat로 정보를 전송해 복구해준다.
 
     input wire reset,
     input wire [4:0] addr,    
