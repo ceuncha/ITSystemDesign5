@@ -1,128 +1,125 @@
 `timescale 1ns / 1ps
-//////////////////////////////////////////////////////////////////////////////////
-// Company: 
-// Engineer: 
-// 
-// Create Date: 2024/05/30 23:07:18
-// Design Name: 
-// Module Name: tb_Local_Predictor
-// Project Name: 
-// Target Devices: 
-// Tool Versions: 
-// Description: 
-// 
-// Dependencies: 
-// 
-// Revision:
-// Revision 0.01 - File Created
-// Additional Comments:
-// 
-//////////////////////////////////////////////////////////////////////////////////
 
 module Local_Predictor_tb;
-
-    // ?��?�� ?��?��
     reg clk;
     reg reset;
-    reg ID_EX_BPred;
-    reg ID_EX_BPredValid;
+    reg IF_ID_BPred;
+    reg IF_ID_BPredValid;
     reg PCSrc;
-    reg PC;
+    reg PC_Stall;
+    reg ID_EX_Branch;
     reg [31:0] ID_EX_PC;
     reg [31:0] PC_Branch;
+    reg [31:0] IF_ID_PC;
     wire BPred;
     wire BPredValid;
     wire [31:0] PC_Next;
 
-    // ?��?��?��?�� 모듈 ?��?��?��?��?��
     Local_Predictor uut (
         .clk(clk),
         .reset(reset),
-        .ID_EX_BPred(ID_EX_BPred),
-        .ID_EX_BPredValid(ID_EX_BPredValid),
-        .PCSrc(PCSrc),
+        .IF_ID_BPred(IF_ID_BPred),
+        .IF_ID_BPredValid(IF_ID_BPredValid),
+        .PCSrc(PCSrc), .PC_Stall(PC_Stall),
+        .ID_EX_Branch(ID_EX_Branch),
         .ID_EX_PC(ID_EX_PC),
         .PC_Branch(PC_Branch),
-        .PC(PC),
+        .IF_ID_PC(IF_ID_PC),
         .BPred(BPred),
         .BPredValid(BPredValid),
-        .PC_Next(PC_Next)
+        .o_PC(PC_Next)
     );
 
-    // ?��?�� ?��?��
     initial begin
         clk = 1;
-        forever #10 clk = ~clk; // 15ns ?��?�� 주기
+        forever #10 clk = ~clk;
     end
 
-    // ?��?��?�� ?��?��리오
+    initial begin
+        PC_Stall = 0;
+    end
+
     initial begin
         // for reset
-        reset = 1;
-        ID_EX_BPred = 0;
-        ID_EX_BPredValid = 0;
+        reset = 0;
+        IF_ID_BPred = 0;
+        IF_ID_BPredValid = 0;
         PCSrc = 0;
         ID_EX_PC = 0;
         PC_Branch = 0;
-        PC = 0;
 
         #20;
-        reset = 0;
+        reset = 1;
 
         // 시나리오 1. 분기를 예측하는 경우
-        ID_EX_BPred = 0;
-        ID_EX_BPredValid = 0;
-        PCSrc = 1;
-        ID_EX_PC = 32'h00000010;
+        IF_ID_BPred = 0;
+        IF_ID_BPredValid = 0;
+        PCSrc = 0;
+        ID_EX_Branch = 0;
+        IF_ID_PC = 32'h00000004;  // 0x04에 대해 분기 예측
+        // initial 값은 not taken이므로 o_PC는 0x08
+        ID_EX_PC = 32'h00000008;
         PC_Branch = 32'h00000014;
-        PC = 32'h00000000;
         
         #20;
-        ID_EX_BPred = 0;
-        ID_EX_BPredValid = 0;
+        IF_ID_BPred = 0;
+        IF_ID_BPredValid = 0;
         PCSrc = 0;
+        ID_EX_Branch = 0;
+        IF_ID_PC = 32'h0000001c; // 0x1c에 대해 분기 예측
+        // initial 값은 not taken이므로 o_PC는 0x20
         ID_EX_PC = 32'h00000020;
         PC_Branch = 32'h00000024;
-        PC = 32'h00000000;
 
         // 시나리오 2. 분기 결과를 기록하는 경우
         #20;
-        ID_EX_BPred = 1;
-        ID_EX_BPredValid = 1;
+        IF_ID_BPred = 0;
+        IF_ID_BPredValid = 0;
+        // 예측되지 않은 branch이므로 o_PC는 0x08
         PCSrc = 1;
+        ID_EX_Branch = 1;
+        IF_ID_PC = 32'h0000000;
         ID_EX_PC = 32'h00000004;
         PC_Branch = 32'h00000008;
-        PC = 32'h00000012;
+        // 0x04에 대해 BHT에 0001, PHT에 0001 valid, BTB에 0x08
 
         // 시나리오 3. 분기 예측과 분기 결과 기록을 동시에 하는 경우
         #20;
-        ID_EX_BPred = 1;
-        ID_EX_BPredValid = 1;
+        IF_ID_BPred = 1;
+        IF_ID_BPredValid = 1;
         PCSrc = 1;
+        ID_EX_Branch = 1;
+        IF_ID_PC = 32'h00000004;
+        // 0x04에 대해 table이 update되었으므로 o_PC는 0x08
         ID_EX_PC = 32'h00000008;
         PC_Branch = 32'h00000016;
-        PC = 32'h00000004;
+        // 0x08에 대해 BHT에 0001, PHT의 0001은 STRONGLY_TAKEN, BTB에 0x16
 
         // 시나리오 4. 분기 예측을 정정하는 경우
-        #20; // must not branch, but did branch
-        ID_EX_BPred = 1;
-        ID_EX_BPredValid = 1;
+        #20; 
+        IF_ID_BPred = 1;
+        IF_ID_BPredValid = 1;
         PCSrc = 0;
+        ID_EX_Branch = 1;
+        // must not branch, but did branch
+        IF_ID_PC = 32'h000000004;
         ID_EX_PC = 32'h000000008;
         PC_Branch = 32'h00000000;
-        PC = 32'h00000032;
+        // o_PC는 ID_EX_PC + 4인 0x0c
 
-        #20; // must branch, but didn't branch
-        ID_EX_BPred = 0;
-        ID_EX_BPredValid = 1;
+        #20; 
+        IF_ID_BPred = 0;
+        IF_ID_BPredValid = 1;
         PCSrc = 1;
+        ID_EX_Branch = 1;
+        // must branch, but didn't branch
+        IF_ID_PC = 32'h000000000;
         ID_EX_PC = 32'h000000004;
         PC_Branch = 32'h000000008;
-        PC = 32'h00000036;
+        // o_PC는 0x08
 
         #20;
         $finish;
     end
-
 endmodule
 
