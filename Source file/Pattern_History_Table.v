@@ -1,14 +1,17 @@
 module Pattern_History_Table(
     input clk,
     input reset,
+    input PHTrd,
+    input PC_Target_valid,
     input ID_EX_Branch,
     input PCSrc,
     input [3:0] PHT_index,
     input [3:0] PHT_Windex,
-    input [31:0] ID_EX_PC,
-    input [31:0] PC_Plus4,
-    output reg BPred,
-    output reg BPredValid
+    input [31:0] IF_ID_PC,
+    //output reg BPred,
+    //output reg BPredValid
+    output wire BPred,
+    output wire BPredValid
 );
     parameter PC_width = 32;
     parameter index_width = 8; // for small programs
@@ -25,22 +28,19 @@ module Pattern_History_Table(
     reg [PHT_width-1:0] PHT [0:PHT_depth-1];
     reg PHT_valid [0:PHT_depth-1];
 
-    // reset registers
-    // this code is written for ACTIVE HIGH reset. must be corrected.
-    always @(posedge clk or posedge reset) begin
-        if (reset) begin
-            BPred <= 0;
-            BPredValid <= 0;
-            for (i = 0; i < PHT_depth; i = i + 1) begin
-                PHT[i] <= 2'b10; // initially WEAKLY_TAKEN
-                PHT_valid[i] <= 0;
-            end
-        end
-    end 
+    wire readPHT;
+    assign readPHT = PHTrd && PC_Target_valid && !reset;
+    assign BPred = !readPHT ? 0 :
+                    !(PHT_valid[PHT_index]) ? 0 :
+                    ((PHT[PHT_index] == STRONGLY_NOT_TAKEN) || (PHT[PHT_index] == WEAKLY_NOT_TAKEN)) ? 0 :
+                    ((PHT[PHT_index] == STRONGLY_TAKEN) || (PHT[PHT_index] == WEAKLY_TAKEN)) ? 1 :
+                    0;
+    assign BPredValid = readPHT && PHT_valid[PHT_index] ? 1 : 0;
 
-// read PHT (search for PC_Plus4)
+/*
+// read PHT (search for IF_ID_PC)
     always @(*) begin
-        if (!reset) begin
+        if (PHTrd && PC_Target_valid && !reset) begin // if index found in BHT && index found in BTB
                 if (PHT_valid[PHT_index]) begin // if hist found in PHT
                     if ((PHT[PHT_index] == STRONGLY_NOT_TAKEN) || (PHT[PHT_index] == WEAKLY_NOT_TAKEN)) begin
                         BPred <= 0;
@@ -50,9 +50,9 @@ module Pattern_History_Table(
                         BPred <= 1;
                         BPredValid <= 1;
                     end
-                    else begin
+                    else begin // if something goes wrong with PHT
                         BPred <= 0;
-                        BPredValid <= 0;
+                        BPredValid <= 0; // prediction invalid
                     end
                 end
                 else begin // if hist not found in PHT
@@ -61,27 +61,36 @@ module Pattern_History_Table(
 
                 end
             end
-            else begin // if PC_Plus4 not found in BHT
+            else begin
                 BPred <= 0; // default: branch not taken
                 BPredValid <= 0;
             end
         if(BPredValid) begin
-            $display("Time: %0t | for PC %h, Predicted branch %d", $time, PC_Plus4, BPred);
+            $display("Time: %0t | for PC %h, Predicted branch %d", $time, IF_ID_PC, BPred);
         end
     end
-        
-
-    // mode 2. update tables & buffers
+*/
     // update PHT
-    always @(posedge clk) begin
-        if(ID_EX_Branch && !reset) begin // if ID_EX_PC is branch inst.
+    always @(posedge clk or posedge reset) begin
+        // this code is written for ACTIVE HIGH reset. must be corrected.
+        if (reset) begin // reset registers
+            //BPred <= 0;
+            //BPredValid <= 0;
+            for (i = 0; i < PHT_depth; i = i + 1) begin
+                PHT[i] <= 2'b10; // initially WEAKLY_TAKEN
+                PHT_valid[i] <= 0;
+            end
+        end
+        else if(ID_EX_Branch && !reset) begin // if ID_EX_PC is branch inst.
             PHT_valid[PHT_Windex] <= 1;
             if(PHT_valid[PHT_Windex]) begin
-                if(PHT[PHT_Windex] == WEAKLY_TAKEN && PCSrc) begin // if branch taken, increment state
+                if((PHT[PHT_Windex] == WEAKLY_TAKEN) && PCSrc) begin // if branch taken, increment state
                     PHT[PHT_Windex] <= PHT[PHT_Windex] + 1;
-                end else if (PHT[PHT_Windex] == WEAKLY_NOT_TAKEN && !PCSrc) begin // if branch not taken, decrement state
+                    $display("Time: %0t | Updated PHT[%0d] to: %b", $time, PHT_Windex, PHT[PHT_Windex]);
+                end else if ((PHT[PHT_Windex] == WEAKLY_NOT_TAKEN) && !PCSrc) begin // if branch not taken, decrement state
                     PHT[PHT_Windex] <= PHT[PHT_Windex] - 1;
-                end
+                    $display("Time: %0t | Updated PHT[%0d] to: %b", $time, PHT_Windex, PHT[PHT_Windex]);
+                end  
             end
         end
     end
