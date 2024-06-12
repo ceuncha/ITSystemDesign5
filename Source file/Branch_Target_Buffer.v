@@ -33,14 +33,14 @@ module Branch_Target_Buffer(
     assign PC_Target_valid = (BTB_valid[BTB_index]) ? 1 : 0;
 
     // update BTB
-    always @(posedge clk or posedge reset) begin 
-        if (reset) begin // reset BTB
+    always @(posedge clk or negedge reset) begin 
+        if (!reset) begin // reset BTB
             for (i = 0; i < BTB_depth; i = i + 1) begin
                 BTB[i] <= 0;
                 BTB_valid[i] <= 0;
             end
         end
-        else if (ID_EX_Branch && PCSrc && !reset) begin // if PC_Branch is branch address
+        else if (ID_EX_Branch && PCSrc && reset) begin // if PC_Branch is branch address
                 if (BTB_valid[BTB_Windex]) begin
                     BTB[BTB_Windex] <= PC_Branch;  // if ID_EX_PC found in BTB
                 end
