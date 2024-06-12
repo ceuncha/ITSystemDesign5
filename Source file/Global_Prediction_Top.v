@@ -7,23 +7,25 @@ module global_prediction_top (
     input wire [31:0] ID_EX_PC,
     input wire [31:0] PC_Branch, // Corrected the bit width
     input wire ID_EX_Jump,
+    input wire ID_EX_hit,
     output wire [31:0] PC, // Corrected the bit width
     output wire Wrong,
-    output wire first_and_Pcsrc // New output port
+    output wire first_and_Pcsrc, // New output port
+    output wire hit
 );
 
 // Internal signals
-wire [5:0] branch_history; // Corrected the bit width
-wire taken;
-wire hit;
-wire first; // Internal signal
-wire [31:0] PC_Target; // Corrected the bit width
-wire [31:0] PC_reverse; // Corrected the bit width
-wire Mux_1_sel;
-wire [31:0] Mux_1_out; // Corrected the bit width
-wire [31:0] Mux_2_out; // Corrected the bit width
-wire [31:0] PC_final_next; // Corrected the bit width
-wire or_gate_out;
+(* keep = "true" *)wire [3:0] branch_history; // Corrected the bit width
+(* keep = "true" *)wire taken;
+(* keep = "true" *)wire hit;
+(* keep = "true" *)wire first; // Internal signal
+(* keep = "true" *)wire [31:0] PC_Target; // Corrected the bit width
+(* keep = "true" *)wire [31:0] PC_reverse; // Corrected the bit width
+(* keep = "true" *)wire Mux_1_sel;
+(* keep = "true" *)wire [31:0] Mux_1_out; // Corrected the bit width
+(* keep = "true" *)wire [31:0] Mux_2_out; // Corrected the bit width
+(* keep = "true" *)wire [31:0] PC_final_next; // Corrected the bit width
+(* keep = "true" *)wire or_gate_out;
 
 // Instantiate the global_branch_history module
 (* keep_hierarchy = "yes" *)
@@ -91,18 +93,23 @@ Program_Counter pc_inst (
 );
 
 // Mux_1 to select between PC+4 and PC_Target
-assign Mux_1_out = Mux_1_sel ? PC_Target : (PC + 32'd4);
+
+(* keep = "true" *)assign Mux_1_out = Mux_1_sel ? PC_Target : (PC + 32'd4);
 
 // Output the AND of first and Pcsrc
-assign first_and_Pcsrc = first && Pcsrc;
+
+(* keep = "true" *)assign first_and_Pcsrc = (!ID_EX_hit) && Pcsrc;
 
 // Mux_2 to select between Mux_1_out and PC_reverse
-assign Mux_2_out = Wrong ? PC_reverse : Mux_1_out;
+
+(* keep = "true" *)assign Mux_2_out = Wrong ? PC_reverse : Mux_1_out;
 
 // OR gate for ID_EX_Jump and first_and_Pcsrc
-assign or_gate_out = ID_EX_Jump || first_and_Pcsrc;
+
+(* keep = "true" *)assign or_gate_out = ID_EX_Jump || first_and_Pcsrc;
 
 // Mux_3 to select between Mux_2_out and PC_Branch
-assign PC_final_next = or_gate_out ? PC_Branch : Mux_2_out;
+
+(* keep = "true" *)assign PC_final_next = or_gate_out ? PC_Branch : Mux_2_out;
 
 endmodule
