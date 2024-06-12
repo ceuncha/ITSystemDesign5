@@ -6,7 +6,8 @@ module Branch_History_Table(
     input ID_EX_Branch,
     input PCSrc,
     input [31:0] ID_EX_PC,
-    input [31:0] PC_Plus4,
+    input [31:0] IF_ID_PC,
+    output wire PHTrd,
     output wire [3:0] Rhistory,
     output wire [3:0] Whistory
 );
@@ -22,29 +23,26 @@ module Branch_History_Table(
     reg BHT_valid [0:BHT_depth-1];
 
     wire [index_width-1:0] BHT_index;
-    assign BHT_index = PC_Plus4[9:2];
+    assign BHT_index = IF_ID_PC[9:2];
     wire [index_width-1:0] BHT_Windex;
     assign BHT_Windex = ID_EX_PC[9:2];
 
-    // reset registers
-    // this code is written for ACTIVE HIGH reset. must be corrected.
+    // read BHT (search for IF_ID_PC)
+    assign Rhistory = BHT_valid[BHT_index] ? BHT[BHT_index] : 0;
+    assign PHTrd = BHT_valid[BHT_index] ? 1 : 0 ;
+
+    // update BHT
+    assign Whistory = (ID_EX_Branch && BHT_valid[BHT_Windex]) ? {BHT[BHT_Windex][2:0], PCSrc} : {3'b000, PCSrc};
+
     always @(posedge clk or posedge reset) begin
-        if (reset) begin
+        // this code is written for ACTIVE HIGH reset. must be corrected.
+        if (reset) begin // reset registers
             for (i = 0; i < BHT_depth; i = i + 1) begin
                 BHT[i] <= 0;
                 BHT_valid[i] <= 0;
             end
         end
-    end 
-
-    // read BHT (search for PC_Plus4)
-    assign Rhistory = BHT_valid[BHT_index] ? BHT[BHT_index] : 0;
-
-    // update BHT
-    assign Whistory = (ID_EX_Branch && BHT_valid[BHT_Windex]) ? {BHT[BHT_Windex][2:0], PCSrc} : {3'b000, PCSrc};
-
-    always @(posedge clk) begin
-        if(ID_EX_Branch && !reset) begin // if ID_EX_PC is branch inst.
+        else if(ID_EX_Branch && !reset) begin // if ID_EX_PC is branch inst.
             if(BHT_valid[BHT_Windex]) begin
                 BHT[BHT_Windex] <= {BHT[BHT_Windex][2:0], PCSrc};
             end else begin
