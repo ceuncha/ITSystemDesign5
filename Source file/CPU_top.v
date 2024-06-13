@@ -84,7 +84,7 @@ wire [31:0] branch_index;
 
     wire [31:0] RS_div_operand1_data, RS_div_operand2_data, RS_div_inst_num;
     wire [2:0] RS_div_funct3;
-    wire RS_div_MemToReg, RS_div_MemRead, RS_div_MemWrite, RS_div_ALUSrc1, RS_div_ALUSrc2, RS_div_Jump, RS_div_Branch;
+    wire RS_div_MemToReg, RS_div_MenRead, RS_div_MemWrite, RS_div_ALUSrc1, RS_div_ALUSrc2, RS_div_Jump, RS_div_Branch;
     wire [3:0] RS_div_ALUOP;
     wire [7:0] RS_div_Rd, RS_div_operand1, RS_div_operand2;
     wire [1:0] RS_div_valid;
