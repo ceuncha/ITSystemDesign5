@@ -6,10 +6,12 @@ module Instruction_memory(pc, instOut);
 
 
     reg [7:0] memory [0:1023]; // 1KB memory
-
+integer i;
 
     initial begin
-
+        for (i = 36; i < 1024; i = i + 1) begin
+            memory[i] <= 8'b0;
+        end
         // R-type instructions
 
         //32'b000000000000_00101_010_00100_0000011; //load x4,0(x5)
