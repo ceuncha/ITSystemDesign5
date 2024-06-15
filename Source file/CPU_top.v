@@ -603,6 +603,7 @@ control_unit_top u_control_unit_top(
     // DataMemory instantiation
     DataMemory datamem (
         .Load_Done(Load_Done),
+        .reset(rst),
         .EX_MEM_MemWrite(EX_MEM_MemWrite),
         .EX_MEM_funct3(EX_MEM_funct3),
         .EX_MEM_ALUResult(EX_MEM_ALUResult),
