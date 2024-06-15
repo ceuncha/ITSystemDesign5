@@ -8,7 +8,7 @@ module CPU_top(
 // wire declarations
 // IF stage
 (* keep = "true" *)wire [31:0] PC;
-(* keep = "true" *)wire [31:0] PC_Branch, PC_Next;
+(* keep = "true" *)wire [31:0] PC_Branch;
 (* keep = "true" *)wire PC_Stall, PCSrc;
 (* keep = "true" *)wire BPred, BPredValid;
 (* keep = "true" *)wire [31:0] instOut;
@@ -277,7 +277,7 @@ exmem_pipeline_register u_exmem_pipeline_register(
 // MEM stage
 (* keep_hierarchy = "yes" *)
 DataMemory u_DataMemory(
-    .clk(clk),
+    .clk(clk), .reset(reset),
     .MemRead(EX_MEM_MemRead),
     .MemWrite(EX_MEM_MemWrite),
     .funct3(EX_MEM_funct3),
