@@ -467,6 +467,7 @@ always @(posedge clk or posedge reset) begin  // priority encoder로부터 받�
     end else begin
       if (RS_ALU_on[head]) begin
       head <= (head+1)%64;
+      RS_ALU_on[head] <=0;
       end
         case (Y)
            64'b0000000000000000000000000000000000000000000000000000000000000001: begin
