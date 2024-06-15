@@ -461,6 +461,8 @@ control_unit_top u_control_unit_top(
         .clk(clk),
         .reset(rst),
         .start(RS_alu_start),
+        .PcSrc(PCSrc),
+        .branch_index(RS_EX_inst_num),
         .PC(RS_alu_PC),
         .Rd(RS_alu_Rd),
         .RS_alu_inst_num(RS_alu_inst_num),
