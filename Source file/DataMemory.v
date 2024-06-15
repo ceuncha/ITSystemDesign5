@@ -8,7 +8,7 @@ module DataMemory(
     output reg [31:0] Load_Data
 );
 
-reg [31:0] memory [0:1024];
+    reg [31:0] memory [0:1023];
 always @(posedge reset) begin                       //리셋시에 각 번지수의 데이터는 번지수+3으로 한다,
    if (reset) begin
        for (i = 0; i < 1024; i = i + 1) begin
