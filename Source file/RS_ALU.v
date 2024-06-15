@@ -1,4 +1,5 @@
-module priority_encoder (
+module priority_encoder (                           //priority encoder : Reservation Station은 준비된 명령어가 여러개일때, 먼저 들어온 명령어부터
+                                               // 내보내줘야 한다. priority encodcr은 이 역할을 수행한다.
     input wire [63:0] ready, // 64비트 ready 신호
     input wire [6:0] head,
     output reg [63:0] Y // 64비트 Y 출력
@@ -73,7 +74,7 @@ always @(*) begin
 end
 endmodule
 
-module RS_ALU (
+module RS_ALU (                                             //명령어 forwarding, 준비된 명령어부터 내보내주는 역할들을 수행.
     input wire clk,
     input wire reset,
     input wire start,
@@ -107,9 +108,10 @@ module RS_ALU (
     input wire [31:0] DIV_result,
     input wire [7:0] DIV_result_dest,
     input wire DIV_result_valid,
-    input wire [31:0] branch_index,
-    input wire PcSrc,
-    output reg [182:0] result_out
+    output reg [182:0] result_out,
+    
+    input wire PCSrc,
+    input wire ROB_Counter
 );
     
     // Internal storage for reservation station entries
@@ -139,9 +141,8 @@ module RS_ALU (
     wire [63:0] Y;
     integer i;
     reg RS_ALU_on[0:63];
-    
-      
-    always @(posedge clk) begin
+
+    always @(posedge clk or posedge reset) begin    //리셋신호로 초기화 시켜줌
         if (reset) begin
             tail <= 0;
             head <=0;
@@ -165,217 +166,16 @@ module RS_ALU (
                 operand2s[i] <= 0;
                 operand1_datas[i] <= 0;
                 operand2_datas[i] <= 0;
-                valid_entries1[i] <= 1'b0; // 由ъ뀑 ?떆 珥덇린媛믪쑝濡? 蹂듭썝
-                valid_entries2[i] <= 1'b0; // 由ъ뀑 ?떆 珥덇린媛믪쑝濡? 蹂듭썝
+                valid_entries1[i] <= 1'b0; 
+                valid_entries2[i] <= 1'b0; 
                 RS_ALU_on[i] <=0;
             end
-         end if(start && PcSrc) begin
-            for (i = 0; i < 64; i = i + 1) begin
-                if (inst_nums[i] == branch_index) begin
-          if (operand1 == ALU_result_dest) begin  // ALU?뿉?꽌 operand1?쓽 ?뿰?궛?씠 ?걹?궗?쓣?븣
-                inst_nums[i] <= RS_alu_inst_num;
-                PCs[i] <= PC;
-                Rds[i] <= Rd;
-                MemToRegs[i] <= MemToReg;
-                MemReads[i] <= MemRead;
-                MemWrites[i] <= MemWrite;
-                ALUOPs[i] <= ALUOP;
-                ALUSrc1s[i] <= ALUSrc1;
-                ALUSrc2s[i] <= ALUSrc2;
-                Jumps[i] <= Jump;
-                Branchs[i] <= Branch;
-                funct3s[i] <= funct3;
-                immediates[i] <= immediate;
-                operand1s[i] <= operand1;
-                operand2s[i] <= operand2;
-                operand1_datas[i] <= ALU_result;
-                operand2_datas[i] <= operand2_data;
-                valid_entries1[i] <= 1;
-                valid_entries2[i] <= valid[1];
-                tail <= (i + 1) % 64;
-                RS_ALU_on[i] <=0;
-            end else if (operand2 == ALU_result_dest) begin  // ALU?뿉?꽌 operand2?쓽 ?뿰?궛?씠 ?걹?궗?쓣?븣
-                inst_nums[i] <= RS_alu_inst_num;
-                PCs[i] <= PC;
-                Rds[i] <= Rd;
-                MemToRegs[i] <= MemToReg;
-                MemReads[i] <= MemRead;
-                MemWrites[i] <= MemWrite;
-                ALUOPs[i] <= ALUOP;
-                ALUSrc1s[i] <= ALUSrc1;
-                ALUSrc2s[i] <= ALUSrc2;
-                Jumps[i] <= Jump;
-                Branchs[i] <= Branch;
-                funct3s[i] <= funct3;
-                immediates[i] <= immediate;
-                operand1s[i] <= operand1;
-                operand2s[i] <= operand2;
-                operand1_datas[i] <= operand1_data;
-                operand2_datas[i] <= ALU_result;
-                valid_entries1[i] <= valid[0];
-                valid_entries2[i] <= 1; 
-                tail <= (i + 1) % 64;  
-                 RS_ALU_on[i] <=0; 
-             end else if (operand1 == MUL_result_dest) begin  // MUL?뿉?꽌 operand1?쓽 ?뿰?궛?씠 ?걹?궗?쓣?븣
-                inst_nums[i] <= RS_alu_inst_num;
-                PCs[i] <= PC;
-                Rds[i] <= Rd;
-                MemToRegs[i] <= MemToReg;
-                MemReads[i] <= MemRead;
-                MemWrites[i] <= MemWrite;
-                ALUOPs[i] <= ALUOP;
-                ALUSrc1s[i] <= ALUSrc1;
-                ALUSrc2s[i] <= ALUSrc2;
-                Jumps[i] <= Jump;
-                Branchs[i] <= Branch;
-                funct3s[i] <= funct3;
-                immediates[i] <= immediate;
-                operand1s[i] <= operand1;
-                operand2s[i] <= operand2;
-                operand1_datas[i] <= MUL_result;
-                operand2_datas[i]<= operand2_data;
-                valid_entries1[i] <= 1;
-                valid_entries2[i] <= valid[1];
-                tail <= (i + 1) % 64;
-                 RS_ALU_on[i] <=0;
-             end else if (operand2 == MUL_result_dest) begin  // MUL?뿉?꽌 operand2?쓽 ?뿰?궛?씠 ?걹?궗?쓣?븣
-                inst_nums[i] <= RS_alu_inst_num;
-                PCs[i] <= PC;
-                Rds[i] <= Rd;
-                MemToRegs[i] <= MemToReg;
-                MemReads[i] <= MemRead;
-                MemWrites[i] <= MemWrite;
-                ALUOPs[i] <= ALUOP;
-                ALUSrc1s[i] <= ALUSrc1;
-                ALUSrc2s[i] <= ALUSrc2;
-                Jumps[i] <= Jump;
-                Branchs[i] <= Branch;
-                funct3s[i] <= funct3;
-                immediates[i] <= immediate;
-                operand1s[i] <= operand1;
-                operand2s[i] <= operand2;
-                operand1_datas[i] <= operand1_data;
-                operand2_datas[i] <= MUL_result;
-                valid_entries1[i] <= valid[0];
-                valid_entries2[i] <= 1; 
-                tail <= (i + 1) % 64;
-                 RS_ALU_on[i] <=0;
-              end else if (operand1 == DIV_result_dest) begin  // DIV?뿉?꽌 operand1?쓽 ?뿰?궛?씠 ?걹?궗?쓣?븣
-                 inst_nums[i] <= RS_alu_inst_num;
-                PCs[i] <= PC;
-                Rds[i] <= Rd;
-                MemToRegs[i] <= MemToReg;
-                MemReads[i] <= MemRead;
-                MemWrites[i] <= MemWrite;
-                ALUOPs[i] <= ALUOP;
-                ALUSrc1s[i] <= ALUSrc1;
-                ALUSrc2s[i] <= ALUSrc2;
-                Jumps[i] <= Jump;
-                Branchs[i] <= Branch;
-                funct3s[i] <= funct3;
-                immediates[i] <= immediate;
-                operand1s[i] <= operand1;
-                operand2s[i] <= operand2;
-                operand1_datas[i] <= DIV_result;
-                operand2_datas[i] <= operand2_data;
-                valid_entries1[i] <= 1;
-                valid_entries2[i] <= valid[1];
-                tail <= (i + 1) % 64;
-                 RS_ALU_on[i] <=0;
-              end else if (operand2 == DIV_result_dest) begin  // DIV?뿉?꽌 operand2?쓽 ?뿰?궛?씠 ?걹?궗?쓣?븣
-                inst_nums[i] <= RS_alu_inst_num;
-                PCs[i] <= PC;
-                Rds[i] <= Rd;
-                MemToRegs[i] <= MemToReg;
-                MemReads[i] <= MemRead;
-                MemWrites[i] <= MemWrite;
-                ALUOPs[i] <= ALUOP;
-                ALUSrc1s[i] <= ALUSrc1;
-                ALUSrc2s[i] <= ALUSrc2;
-                Jumps[i] <= Jump;
-                Branchs[i] <= Branch;
-                funct3s[i] <= funct3;
-                immediates[i] <= immediate;
-                operand1s[i] <= operand1;
-                operand2s[i] <= operand2;
-                operand1_datas[i] <= operand1_data;
-                operand2_datas[i] <= DIV_result;
-                valid_entries1[i] <= valid[0];
-                valid_entries2[i] <= 1; 
-                tail <= (i + 1) % 64;
-                 RS_ALU_on[i] <=0;
-             end else if ( operand1 == EX_MEM_Physical_Address && EX_MEM_MemRead ==1) begin
-                inst_nums[i] <= RS_alu_inst_num;
-                PCs[i] <= PC;
-                Rds[i] <= Rd;
-                MemToRegs[i] <= MemToReg;
-                MemReads[i] <= MemRead;
-                MemWrites[i] <= MemWrite;
-                ALUOPs[i] <= ALUOP;
-                ALUSrc1s[i] <= ALUSrc1;
-                ALUSrc2s[i] <= ALUSrc2;
-                Jumps[i] <= Jump;
-                Branchs[i] <= Branch;
-                funct3s[i] <= funct3;
-                immediates[i] <= immediate;
-                operand1s[i] <= operand1;
-                operand2s[i] <= operand2;
-                operand1_datas[i] <= RData;
-                operand2_datas[i] <= operand2_data;
-                valid_entries1[i] <= 1;
-                valid_entries2[i] <= valid[1] ; 
-                tail <= (i + 1) % 64;
-                 RS_ALU_on[i] <=0;
-              end else if ( operand2 == EX_MEM_Physical_Address && EX_MEM_MemRead ==1) begin
-                inst_nums[i] <= RS_alu_inst_num;
-                PCs[i] <= PC;
-                Rds[i] <= Rd;
-                MemToRegs[i] <= MemToReg;
-                MemReads[i] <= MemRead;
-                MemWrites[i] <= MemWrite;
-                ALUOPs[i] <= ALUOP;
-                ALUSrc1s[i] <= ALUSrc1;
-                ALUSrc2s[i] <= ALUSrc2;
-                Jumps[i] <= Jump;
-                Branchs[i] <= Branch;
-                funct3s[i] <= funct3;
-                immediates[i] <= immediate;
-                operand1s[i] <= operand1;
-                operand2s[i] <= operand2;
-                operand1_datas[i] <= operand1_data;
-                operand2_datas[i] <= RData;
-                valid_entries1[i] <= valid[0];
-                valid_entries2[i] <= 1 ; 
-                tail <= (i + 1) % 64;
-                 RS_ALU_on[i] <=0;
-            end else begin
-                inst_nums[i] <= RS_alu_inst_num;
-                PCs[i] <= PC;
-                Rds[i] <= Rd;
-                MemToRegs[i] <= MemToReg;
-                MemReads[i] <= MemRead;
-                MemWrites[i] <= MemWrite;
-                ALUOPs[i] <= ALUOP;
-                ALUSrc1s[i] <= ALUSrc1;
-                ALUSrc2s[i] <= ALUSrc2;
-                Jumps[i] <= Jump;
-                Branchs[i] <= Branch;
-                funct3s[i] <= funct3;
-                immediates[i] <= immediate;
-                operand1s[i] <= operand1;
-                operand2s[i] <= operand2;
-                operand1_datas[i] <= operand1_data;
-                operand2_datas[i] <= operand2_data;
-                valid_entries1[i] <= valid[0];
-                valid_entries2[i] <= valid[1]; 
-                tail <= (i + 1) % 64;
-                 RS_ALU_on[i] <=0;
-             end 
-             end
-             end
-             end
-         else if (start&&!PcSrc) begin
-            if (operand1 == ALU_result_dest) begin  // ALU?뿉?꽌 operand1?쓽 ?뿰?궛?씠 ?걹?궗?쓣?븣
+        end else if (start) begin
+
+            
+   
+            if (operand1 == ALU_result_dest) begin  // 명령어가 처음 들어왔을때, alu의 결과와 명령어의 operand 물리주소를 비교하여 
+                                                    // 업데이트가 필요시 수행해준다.
                 inst_nums[tail] <= RS_alu_inst_num;
                 PCs[tail] <= PC;
                 Rds[tail] <= Rd;
@@ -397,7 +197,7 @@ module RS_ALU (
                 valid_entries2[tail] <= valid[1];
                 tail <= (tail + 1) % 64;
                 RS_ALU_on[tail] <=0;
-            end else if (operand2 == ALU_result_dest) begin  // ALU?뿉?꽌 operand2?쓽 ?뿰?궛?씠 ?걹?궗?쓣?븣
+            end else if (operand2 == ALU_result_dest) begin 
                 inst_nums[tail] <= RS_alu_inst_num;
                 PCs[tail] <= PC;
                 Rds[tail] <= Rd;
@@ -419,7 +219,8 @@ module RS_ALU (
                 valid_entries2[tail] <= 1; 
                 tail <= (tail + 1) % 64;  
                  RS_ALU_on[tail] <=0; 
-             end else if (operand1 == MUL_result_dest) begin  // MUL?뿉?꽌 operand1?쓽 ?뿰?궛?씠 ?걹?궗?쓣?븣
+             end else if (operand1 == MUL_result_dest) begin  // 명령어가 처음 들어왔을때, mul의 결과와 명령어의 operand 물리주소를 비교하여 
+                                                              // 업데이트가 필요시 수행해준다.
                 inst_nums[tail] <= RS_alu_inst_num;
                 PCs[tail] <= PC;
                 Rds[tail] <= Rd;
@@ -441,7 +242,7 @@ module RS_ALU (
                 valid_entries2[tail] <= valid[1];
                 tail <= (tail + 1) % 64;
                  RS_ALU_on[tail] <=0;
-             end else if (operand2 == MUL_result_dest) begin  // MUL?뿉?꽌 operand2?쓽 ?뿰?궛?씠 ?걹?궗?쓣?븣
+             end else if (operand2 == MUL_result_dest) begin  
                 inst_nums[tail] <= RS_alu_inst_num;
                 PCs[tail] <= PC;
                 Rds[tail] <= Rd;
@@ -463,7 +264,8 @@ module RS_ALU (
                 valid_entries2[tail] <= 1; 
                 tail <= (tail + 1) % 64;
                  RS_ALU_on[tail] <=0;
-              end else if (operand1 == DIV_result_dest) begin  // DIV?뿉?꽌 operand1?쓽 ?뿰?궛?씠 ?걹?궗?쓣?븣
+              end else if (operand1 == DIV_result_dest) begin  // 명령어가 처음 들어왔을때, div의 결과와 명령어의 operand 물리주소를 비교하여 
+                                                              // 업데이트가 필요시 수행해준다.
                  inst_nums[tail] <= RS_alu_inst_num;
                 PCs[tail] <= PC;
                 Rds[tail] <= Rd;
@@ -485,7 +287,7 @@ module RS_ALU (
                 valid_entries2[tail] <= valid[1];
                 tail <= (tail + 1) % 64;
                  RS_ALU_on[tail] <=0;
-              end else if (operand2 == DIV_result_dest) begin  // DIV?뿉?꽌 operand2?쓽 ?뿰?궛?씠 ?걹?궗?쓣?븣
+              end else if (operand2 == DIV_result_dest) begin  
                 inst_nums[tail] <= RS_alu_inst_num;
                 PCs[tail] <= PC;
                 Rds[tail] <= Rd;
@@ -507,7 +309,9 @@ module RS_ALU (
                 valid_entries2[tail] <= 1; 
                 tail <= (tail + 1) % 64;
                  RS_ALU_on[tail] <=0;
-             end else if ( operand1 == EX_MEM_Physical_Address && EX_MEM_MemRead ==1) begin
+             end else if ( operand1 == EX_MEM_Physical_Address && EX_MEM_MemRead ==1) begin     
+                                                                // 명령어가 처음 들어왔을때, load의 결과와 명령어의 operand 물리주소를 비교하여 
+                                                              // 업데이트가 필요시 수행해준다.
                 inst_nums[tail] <= RS_alu_inst_num;
                 PCs[tail] <= PC;
                 Rds[tail] <= Rd;
@@ -575,15 +379,10 @@ module RS_ALU (
                  RS_ALU_on[tail] <=0;
              end 
              end
-            else if (PcSrc&&!start) begin
-             for (i = 0; i < 64; i = i + 1) begin
-                if (inst_nums[i] == branch_index) begin              
-                    tail <= (i + 1) % 64; // Move tail to the entry right after the branch entry          
-                end
-            end
-            end
+            
            
-            if (ALU_result_valid) begin
+            if (ALU_result_valid) begin                 //alu의 결과가 들어왔을때, 기존에 RS에 들어있던 명령어들과 물리주소를 비교하여
+                                                        //필요한 값들을 업데이트 시켜준다.
                 for (i = 0; i < 64; i = i + 1) begin
                     if (!valid_entries1[i] && operand1s[i] == ALU_result_dest) begin
                         operand1_datas[i] <= ALU_result;
@@ -595,7 +394,8 @@ module RS_ALU (
                     end
                 end
             end
-            if (MUL_result_valid) begin
+            if (MUL_result_valid) begin                     //mul의 결과가 들어왔을때, 기존에 RS에 들어있던 명령어들과 물리주소를 비교하여
+                                                        //필요한 값들을 업데이트 시켜준다.
                 for (i = 0; i < 64; i = i + 1) begin
                     if (!valid_entries1[i] && operand1s[i] == MUL_result_dest) begin
                         operand1_datas[i] <= MUL_result;
@@ -607,7 +407,8 @@ module RS_ALU (
                     end
                 end
             end
-            if (DIV_result_valid) begin
+            if (DIV_result_valid) begin         //div의 결과가 들어왔을때, 기존에 RS에 들어있던 명령어들과 물리주소를 비교하여
+                                                        //필요한 값들을 업데이트 시켜준다.
                 for (i = 0; i < 64; i = i + 1) begin
                     if (!valid_entries1[i] && operand1s[i] == DIV_result_dest) begin
                         operand1_datas[i] <= DIV_result;
@@ -619,7 +420,8 @@ module RS_ALU (
                     end
                 end
             end
-           if (EX_MEM_MemRead) begin
+           if (EX_MEM_MemRead) begin                //load의 결과가 들어왔을때, 기존에 RS에 들어있던 명령어들과 물리주소를 비교하여
+                                                        //필요한 값들을 업데이트 시켜준다.
            for (i = 0; i < 64; i = i + 1) begin
                     if (!valid_entries1[i] && operand1s[i] == EX_MEM_Physical_Address) begin
                         operand1_datas[i] <= RData;
@@ -636,7 +438,8 @@ module RS_ALU (
     
 
 
-    always @(*) begin
+    always @(*) begin           //수시로 operand valid 값을 확인하여 나갈 준비가 되면 대기를 시켜준다. (readys -> 1이 되면 priority encoder로 해당 정보를 보내주게 되고,
+                                //priority encoder은 들어온 인풋들을 바탕으로 우선순위를 정해준다.
         for (i = 0; i < 64; i = i + 1) begin
             if (valid_entries1[i] && valid_entries2[i] && !MemReads[i]) begin
                 readys[i] = 1;
@@ -657,13 +460,14 @@ module RS_ALU (
     );
 
 
-always @(posedge clk or posedge reset) begin
+always @(posedge clk or posedge reset) begin  // priority encoder로부터 받은 값을 이용하여 우선순위를 선택해주고, 해당 명령어를 계산과정으로 보내준다.
     if (reset) begin
         result_out <= 0;
         head <= 0;
     end else begin
       if (RS_ALU_on[head]) begin
       head <= (head+1)%64;
+      RS_ALU_on[head] <=0;
       end
         case (Y)
            64'b0000000000000000000000000000000000000000000000000000000000000001: begin
