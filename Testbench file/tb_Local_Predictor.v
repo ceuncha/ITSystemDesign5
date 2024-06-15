@@ -48,78 +48,82 @@ module Local_Predictor_tb;
         ID_EX_PC = 0;
         PC_Branch = 0;
 
+        // 시나리오 1. 분기를 예측하는 경우
+        // at 20ns
         #20;
         reset = 1;
-
-        // 시나리오 1. 분기를 예측하는 경우
         IF_ID_BPred = 0;
         IF_ID_BPredValid = 0;
         PCSrc = 0;
         ID_EX_Branch = 0;
         IF_ID_PC = 32'h00000004;  // 0x04에 대해 분기 예측
         // initial 값은 not taken이므로 o_PC는 0x08
-        ID_EX_PC = 32'h00000008;
-        PC_Branch = 32'h00000014;
+        ID_EX_PC = 32'h00000000;
+        PC_Branch = 32'h00000000;
         
+        // at 40ns
         #20;
         IF_ID_BPred = 0;
         IF_ID_BPredValid = 0;
         PCSrc = 0;
         ID_EX_Branch = 0;
-        IF_ID_PC = 32'h0000001c; // 0x1c에 대해 분기 예측
-        // initial 값은 not taken이므로 o_PC는 0x20
-        ID_EX_PC = 32'h00000020;
-        PC_Branch = 32'h00000024;
+        IF_ID_PC = 32'h00000008; // 0x08에 대해 분기 예측
+        // initial 값은 not taken이므로 o_PC는 0x0c
+        ID_EX_PC = 32'h00000004;
+        PC_Branch = 32'h00000000;
 
         // 시나리오 2. 분기 결과를 기록하는 경우
+        // at 60ns
         #20;
         IF_ID_BPred = 0;
         IF_ID_BPredValid = 0;
         // 예측되지 않은 branch이므로 o_PC는 0x08
         PCSrc = 1;
         ID_EX_Branch = 1;
-        IF_ID_PC = 32'h0000000;
-        ID_EX_PC = 32'h00000004;
+        IF_ID_PC = 32'h000000c;
+        ID_EX_PC = 32'h00000008;
         PC_Branch = 32'h00000008;
-        // 0x04에 대해 BHT에 0001, PHT에 0001 valid, BTB에 0x08
+        // 0x08에 대해 BHT에 0001, PHT에 0001 valid, BTB에 0x08
 
         // 시나리오 3. 분기 예측과 분기 결과 기록을 동시에 하는 경우
+        // at 80ns
         #20;
         IF_ID_BPred = 1;
         IF_ID_BPredValid = 1;
         PCSrc = 1;
         ID_EX_Branch = 1;
-        IF_ID_PC = 32'h00000004;
-        // 0x04에 대해 table이 update되었으므로 o_PC는 0x08
-        ID_EX_PC = 32'h00000008;
-        PC_Branch = 32'h00000016;
-        // 0x08에 대해 BHT에 0001, PHT의 0001은 STRONGLY_TAKEN, BTB에 0x16
+        IF_ID_PC = 32'h00000008;
+        // 0x08에 대해 table이 update되었으므로 o_PC는 0x08
+        ID_EX_PC = 32'h0000000c;
+        PC_Branch = 32'h0000002c;
+        // 0x0c에 대해 BHT에 0001, PHT의 0001은 STRONGLY_TAKEN, BTB에 0x2c
 
         // 시나리오 4. 분기 예측을 정정하는 경우
+        // at 100ns
         #20; 
         IF_ID_BPred = 1;
         IF_ID_BPredValid = 1;
         PCSrc = 0;
         ID_EX_Branch = 1;
         // must not branch, but did branch
-        IF_ID_PC = 32'h000000004;
-        ID_EX_PC = 32'h000000008;
+        IF_ID_PC = 32'h00000008;
+        ID_EX_PC = 32'h00000008;
         PC_Branch = 32'h00000000;
         // o_PC는 ID_EX_PC + 4인 0x0c
 
+        // at 120ns
         #20; 
         IF_ID_BPred = 0;
         IF_ID_BPredValid = 1;
         PCSrc = 1;
         ID_EX_Branch = 1;
         // must branch, but didn't branch
-        IF_ID_PC = 32'h000000000;
-        ID_EX_PC = 32'h000000004;
-        PC_Branch = 32'h000000008;
-        // o_PC는 0x08
+        IF_ID_PC = 32'h0000000c;
+        ID_EX_PC = 32'h00000008;
+        PC_Branch = 32'h0000002c;
+        // o_PC는 0x2c
 
         #20;
         $finish;
     end
 endmodule
-
