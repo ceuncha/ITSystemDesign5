@@ -1,11 +1,11 @@
 module priority_encoder (
-    input wire [63:0] ready, // 64비트 ready 신호
+    input wire [63:0] ready, // 64鍮꾪듃 ready ?떊?샇
     input wire [6:0] head,
-    output reg [63:0] Y // 64비트 Y 출력
+    output reg [63:0] Y // 64鍮꾪듃 Y 異쒕젰
 );
 
 always @(*) begin
-    // 우선순위 인코더 논리
+    // ?슦?꽑?닚?쐞 ?씤肄붾뜑 ?끉由?
     if (ready[(head+0)%64]) Y = 64'b0000000000000000000000000000000000000000000000000000000000000001;
     else if (ready[(head+1)%64]) Y = 64'b0000000000000000000000000000000000000000000000000000000000000010;
     else if (ready[(head+2)%64]) Y = 64'b0000000000000000000000000000000000000000000000000000000000000100;
@@ -69,7 +69,7 @@ always @(*) begin
     else if (ready[(head+61)%64]) Y = 64'b0010000000000000000000000000000000000000000000000000000000000000;
     else if (ready[(head+62)%64]) Y = 64'b0100000000000000000000000000000000000000000000000000000000000000;
     else if (ready[(head+63)%64]) Y = 64'b1000000000000000000000000000000000000000000000000000000000000000;
-    else Y = 64'b0; // 모든 조건에 해당하지 않으면 0으로 설정
+    else Y = 64'b0; // 紐⑤뱺 議곌굔?뿉 ?빐?떦?븯吏? ?븡?쑝硫? 0?쑝濡? ?꽕?젙
 end
 endmodule
 
@@ -108,8 +108,8 @@ module RS_Div (
     reg [7:0] operand2s [0:63];
     reg [31:0] operand1_datas [0:63];  // operand1 data
     reg [31:0] operand2_datas [0:63]; // operand2 data
-    reg [63:0] valid_entries1;  // operand1이 valid한지
-    reg [63:0] valid_entries2; // operand2가 valid한지
+    reg [63:0] valid_entries1;  // operand1?씠 valid?븳吏?
+    reg [63:0] valid_entries2; // operand2媛? valid?븳吏?
     reg [108:0] result [0:63];
     reg [5:0] tail;
     reg [63:0] readys;
@@ -129,12 +129,12 @@ module RS_Div (
                 operand2s[i] <= 0;
                 operand1_datas[i] <= 0;
                 operand2_datas[i] <= 0;
-                valid_entries1[i] <= 1'b0; // 리셋 시 초기값으로 복원
-                valid_entries2[i] <= 1'b0; // 리셋 시 초기값으로 복원
+                valid_entries1[i] <= 1'b0; // 由ъ뀑 ?떆 珥덇린媛믪쑝濡? 蹂듭썝
+                valid_entries2[i] <= 1'b0; // 由ъ뀑 ?떆 珥덇린媛믪쑝濡? 蹂듭썝
                 RS_DIV_on[i] <= 0;
             end
         end else if (RS_div_start) begin
-            if (RS_div_operand1 == ALU_result_dest) begin  // ALU에서 operand1의 연산이 끝났을때
+            if (RS_div_operand1 == ALU_result_dest) begin  // ALU?뿉?꽌 operand1?쓽 ?뿰?궛?씠 ?걹?궗?쓣?븣
                 PCs[tail] <= RS_div_PC;
                 Rds[tail] <= RS_div_Rd;
                 ALUOPs[tail] <= RS_div_ALUOP;
@@ -146,7 +146,7 @@ module RS_Div (
                 valid_entries2[tail] <= RS_div_valid[1];
                 tail <= (tail + 1) % 64;
                 RS_DIV_on[tail] <= 0;
-            end else if (RS_div_operand2 == ALU_result_dest) begin  // ALU에서 operand2의 연산이 끝났을때
+            end else if (RS_div_operand2 == ALU_result_dest) begin  // ALU?뿉?꽌 operand2?쓽 ?뿰?궛?씠 ?걹?궗?쓣?븣
                 PCs[tail] <= RS_div_PC;
                 Rds[tail] <= RS_div_Rd;
                 ALUOPs[tail] <= RS_div_ALUOP;
@@ -158,7 +158,7 @@ module RS_Div (
                 valid_entries2[tail] <= 1; 
                 tail <= (tail + 1) % 64;   
                 RS_DIV_on[tail] <= 0;
-             end else if (RS_div_operand1 == MUL_result_dest) begin  // MUL에서 operand1의 연산이 끝났을때
+             end else if (RS_div_operand1 == MUL_result_dest) begin  // MUL?뿉?꽌 operand1?쓽 ?뿰?궛?씠 ?걹?궗?쓣?븣
                 PCs[tail] <= RS_div_PC;
                 Rds[tail] <= RS_div_Rd;
                 ALUOPs[tail] <= RS_div_ALUOP;
@@ -170,7 +170,7 @@ module RS_Div (
                 valid_entries2[tail] <= RS_div_valid[1];
                 tail <= (tail + 1) % 64;
                  RS_DIV_on[tail] <= 0;
-             end else if (RS_div_operand2 == MUL_result_dest) begin  // MUL에서 operand2의 연산이 끝났을때
+             end else if (RS_div_operand2 == MUL_result_dest) begin  // MUL?뿉?꽌 operand2?쓽 ?뿰?궛?씠 ?걹?궗?쓣?븣
                 PCs[tail] <= RS_div_PC;
                 Rds[tail] <= RS_div_Rd;
                 ALUOPs[tail] <= RS_div_ALUOP;
@@ -182,7 +182,7 @@ module RS_Div (
                 valid_entries2[tail] <= 1; 
                 tail <= (tail + 1) % 64;
                  RS_DIV_on[tail] <= 0;
-              end else if (RS_div_operand1 == DIV_result_dest) begin  // DIV에서 operand1의 연산이 끝났을때
+              end else if (RS_div_operand1 == DIV_result_dest) begin  // DIV?뿉?꽌 operand1?쓽 ?뿰?궛?씠 ?걹?궗?쓣?븣
                 PCs[tail] <= RS_div_PC;
                 Rds[tail] <= RS_div_Rd;
                 ALUOPs[tail] <= RS_div_ALUOP;
@@ -194,7 +194,7 @@ module RS_Div (
                 valid_entries2[tail] <= RS_div_valid[1];
                 tail <= (tail + 1) % 64;
                 RS_DIV_on[tail] <= 0;
-              end else if (RS_div_operand2 == DIV_result_dest) begin  // MUL에서 operand2의 연산이 끝났을때
+              end else if (RS_div_operand2 == DIV_result_dest) begin  // MUL?뿉?꽌 operand2?쓽 ?뿰?궛?씠 ?걹?궗?쓣?븣
                 PCs[tail] <= RS_div_PC;
                 Rds[tail] <= RS_div_Rd;
                 ALUOPs[tail] <= RS_div_ALUOP;
@@ -243,6 +243,7 @@ module RS_Div (
                 tail <= (tail + 1) % 64;
                 RS_DIV_on[tail] <= 0;
              end 
+             end
             if (ALU_result_valid) begin
                 for (i = 0; i < 64; i = i + 1) begin
                     if (!valid_entries1[i] && operand1s[i] == ALU_result_dest) begin
@@ -292,7 +293,7 @@ module RS_Div (
                 end     
             end
          end
-      end
+      
     
 
 
@@ -319,6 +320,7 @@ always @(posedge clk or posedge reset) begin
     end else begin
         if (RS_DIV_on[head]) begin
       head <= (head+1)%64;
+            RS_DIV_on[head] <=0;     
       end
         case (Y)
            64'b0000000000000000000000000000000000000000000000000000000000000001: begin
