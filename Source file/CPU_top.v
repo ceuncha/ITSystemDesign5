@@ -461,8 +461,6 @@ control_unit_top u_control_unit_top(
         .clk(clk),
         .reset(rst),
         .start(RS_alu_start),
-        .PcSrc(PCSrc),
-        .branch_index(RS_EX_inst_num),
         .PC(RS_alu_PC),
         .Rd(RS_alu_Rd),
         .RS_alu_inst_num(RS_alu_inst_num),
@@ -603,8 +601,8 @@ control_unit_top u_control_unit_top(
     // DataMemory instantiation
     DataMemory datamem (
         .Load_Done(Load_Done),
-        .reset(rst),
         .EX_MEM_MemWrite(EX_MEM_MemWrite),
+        .reset(rst),
         .EX_MEM_funct3(EX_MEM_funct3),
         .EX_MEM_ALUResult(EX_MEM_ALUResult),
         .EX_MEM_Rdata2(EX_MEM_Rdata2),
