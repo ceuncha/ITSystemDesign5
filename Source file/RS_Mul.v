@@ -310,6 +310,7 @@ always @(posedge clk or posedge reset) begin
     end else begin
       if (RS_MUL_on[head]) begin
       head <= (head+1)%64;
+      RS_MUL_on[head] <=0;
       end
         case (Y)
            64'b0000000000000000000000000000000000000000000000000000000000000001: begin
