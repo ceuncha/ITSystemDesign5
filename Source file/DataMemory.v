@@ -1,46 +1,20 @@
 module DataMemory(
     input wire Load_Done,
     input wire EX_MEM_MemWrite,
+    input wire reset,
     input wire [2:0] EX_MEM_funct3,
     input wire [31:0] EX_MEM_ALUResult,
     input wire [31:0] EX_MEM_Rdata2,
     output reg [31:0] Load_Data
 );
 
-reg [31:0] memory [0:255];
-initial begin
-memory[0] = 3;
-    memory[1] = 4;
-    memory[2] = 5;
-    memory[3] = 6;
-    memory[4] = 7;
-    memory[5] = 8;
-    memory[6] = 9;
-    memory[7] = 10;
-    memory[8] = 11;
-    memory[9] = 12;
-    memory[10] = 13;
-    memory[11] = 14;
-    memory[12] = 15;
-    memory[13] = 16;
-    memory[14] = 17;
-    memory[15] = 18;
-    memory[16] = 19;
-    memory[17] = 20;
-    memory[18] = 21;
-    memory[19] = 22;
-    memory[20] = 23;
-    memory[21] = 24;
-    memory[22] = 25;
-    memory[23] = 26;
-    memory[24] = 27;
-    memory[25] = 28;
-    memory[26] = 29;
-    memory[27] = 30;
-    memory[28] = 31;
-    memory[29] = 32;
-    memory[30] = 33;
-    memory[31] = 34;
+reg [31:0] memory [0:1024];
+always @(posedge reset) begin                       //리셋시에 각 번지수의 데이터는 번지수+3으로 한다,
+   if (reset) begin
+       for (i = 0; i < 1024; i = i + 1) begin
+            registers[i] <= i+3;
+        end
+    end
 end
 
 always @ (*) begin
