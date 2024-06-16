@@ -73,7 +73,7 @@ always @(Rd_phy) begin          // rd_phy 값이 들어오면 해당 물리주�
 end
 
 
-always @(Operand1_phy or Operand2_phy) begin    //Operand 값이 들어오면 해당 물리주소의 data 값과 valid 값을 출력시켜 준다.
+    always @(*) begin    //Operand 값이 들어오면 해당 물리주소의 data 값과 valid 값을 출력시켜 준다.
     Operand1_data <= registers[Operand1_phy];   
     Operand2_data <= registers[Operand2_phy];
     valid1 <= valid[Operand1_phy];
