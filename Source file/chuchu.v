@@ -51,10 +51,10 @@ module chuchu (
 
             chuchu_out <= chuchu_array[current_index];
             if(!current_index) begin
-            chuchu_array[current_index-1] <= rat_data;
+                chuchu_array[127] <= rat_data;
             end
             else begin
-                chuchu_array[127] <= rat_data;
+                chuchu_array[current_index-1] <= rat_data;
             end
             current_index <= (current_index + 1) % 128;
         end
