@@ -50,9 +50,9 @@ module chuchu (
         if(!reset) begin
 
             chuchu_out <= chuchu_array[current_index];
-            if(!restore_state) begin
+
                 chuchu_array[current_index] <= rat_data;
-            end
+
             current_index <= (current_index + 1) % 128;
         end
         end
