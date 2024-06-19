@@ -2,6 +2,7 @@
 module chuchu (
     input clk,
     input reset,
+
     input save_state,          // 상태 저장 신호
     input restore_state,       // 상태 복원 신호
     input [2:0] save_page,     // 상태 저장 페이지 선택 신호
@@ -50,7 +51,7 @@ module chuchu (
         if(!reset) begin
 
             chuchu_out <= chuchu_array[current_index];
-            chuchu_array[current_index] <= rat_data;
+            chuchu_array[(current_index-2)%128] <= rat_data;
             current_index <= (current_index + 1) % 128;
         end
         end
