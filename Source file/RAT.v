@@ -121,7 +121,7 @@ module RAT (
             endcase
 
             // 2. Rd 
-            if ((opcode != 7'b1100011) && (opcode != 7'b0100011)&&(rd_phy_out!=0)) begin  //  조건분기 명령어, store 명령어가 모두 아닌경우에는 rd에 해당되는 번지수의 매핑정보를 변환. 프리리스트로부터 온 물리주소 값으로 변환해준다.
+            if ((opcode != 7'b1100011) && (opcode != 7'b0100011)&&(rd_logical_addr != 0)) begin  //  조건분기 명령어, store 명령어가 모두 아닌경우에는 rd에 해당되는 번지수의 매핑정보를 변환. 프리리스트로부터 온 물리주소 값으로 변환해준다.
                 
                 free_phy_addr_out <= phy_addr_table[rd_logical_addr]; 
                 phy_addr_table[rd_logical_addr] <= free_phy_addr; 
