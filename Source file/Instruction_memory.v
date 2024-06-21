@@ -44,18 +44,16 @@ initial begin
 
 // addi x1, x0, 1
 {memory[48], memory[49], memory[50], memory[51]} <= 32'b000000000001_00000_000_00001_0010011;
-
-
-// mul x5, x6, x7
-{memory[52], memory[53], memory[54], memory[55]} <= 32'b00000010011100110000001010110011;
-// add x4, x7, x9
-{memory[56], memory[57], memory[58], memory[59]} <= 32'b00000000100100111000001000110011;
-// lw x10, 1(x5)
-{memory[60], memory[61], memory[62], memory[63]} <= 32'b00000000000100101010010100000011;
-// ori x6, x13, 0
-{memory[64], memory[65], memory[66], memory[67]} <= 32'b00000000000001101110001100010011;
-// sub x16, x14, x10
-{memory[68], memory[69], memory[70], memory[71]} <= 32'b01000000101001110000100000110011;
+// ADDI x2, x0, 12
+{memory[52], memory[53], memory[54], memory[55]} <= 32'b000000001100_00000_000_00010_0010011;
+// ADDI x3, x0, 1
+{memory[56], memory[57], memory[58], memory[59]} <= 32'b000000000001_00000_000_00011_0010011;
+// MUL x1, x1, x2
+{memory[60], memory[61], memory[62], memory[63]} <= 32'b0000001_00010_00001_000_00001_0110011;
+// DIV x1, x1, x3
+{memory[64], memory[65], memory[66], memory[67]} <= 32'b0000001_00011_00001_100_00001_0110011;
+// ADDI x2, x2, -1
+{memory[68], memory[69], memory[70], memory[71]} <= 32'b111111111111_00010_000_00010_0010011;
 // ADDI x3, x3, 1
 {memory[72], memory[73], memory[74], memory[75]} <= 32'b000000000001_00011_000_00011_0010011;
 // BNE x3, x11, -20
