@@ -17,6 +17,7 @@ module BB(
 reg [31:0] BB_entry [0:7];          
 reg ready [0:7];                       // Ready flag array for ROB entries
 integer i;
+integer j;
 reg [2:0] head;
 reg [2:0] tail;
 reg Paste_RAT_set;                    // 플래그 추가
@@ -27,7 +28,7 @@ task reset_bb_entries;  //한번 분기가 진행되면, 이후의 분기 정보
         head <= 0;
         tail <= 0;
         for (i = 0; i < 8; i = i + 1) begin
-            BB_entry[i] <= 32'b1;     // Reset ROB entry with all fields set to 0
+            BB_entry[i] <= 32'b0;     // Reset ROB entry with all fields set to 0
             ready[i] <= 1'b0;         // Reset ready flag
         end
     end
@@ -68,21 +69,30 @@ always @(posedge clk or posedge rst) begin
                 Paste_RAT_set <= 0;  // 플래그 리셋
             end
         end
-    end
-
-        for (i = 0; i < 8; i = i + 1) begin
+                for (i = 0; i < 8; i = i + 1) begin
             if (BB_entry[i] == branch_PC) begin //head에 위치하지 않은 분기신호가 들어왔을때
                 if (PCSrc == 1'b1) begin
-                    ready[i] <= 1'b1;   // Set the ready flag to 1
+                ready[i] <= 1'b1;   // Set the ready flag to 1
+                Paste_RAT <= 1;      // Set Paste_RAT to 1
+                Paste_RAT_set <= 1;  // 플래그 설정
+                head_num <= i;
+                tail <= i;
+        for (j = i; j < 8; j = j + 1) begin
+            BB_entry[j] <= 32'b0;     // Reset ROB entry with all fields set to 0
+            ready[j] <= 1'b0;         // Reset ready flag
+        end
+
                 end
             end
         end
 
+    end
+
+
+
         // Check if the head is ready
         if (ready[head] == 1'b1) begin    //head가 변하였을때 ready bit가 1이면, 복구 신호를 전송해준다.
-            head_num <= head;
-            Paste_RAT <= 1;
-            Paste_RAT_set <= 1;  // 플래그 설정
+
             reset_bb_entries();  // Reset BB entries
         end
 
