@@ -44,7 +44,7 @@ task reset_rob_entries;
     begin
         for (i = 0; i < 64; i = i + 1) begin
             rob_entry_mem[i] <= 99'b0;  // Reset ROB entry with all fields set to 0
-            power_gate[i] <= 1'b1;      // Disable power gating for all entries (1 means active)
+            power_gate[i] <= 1'b0;      // Disable power gating for all entries (1 means active)
         end
     end
 endtask
