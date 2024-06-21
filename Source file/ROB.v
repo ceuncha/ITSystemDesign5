@@ -19,7 +19,7 @@ module ROB(
     input wire [31:0] PC,                // Current PC value (expanded to 32 bits)
     output reg [31:0] out_value,         // Output value
     output reg [4:0] out_dest,           // Output register destination extracted from instr[11:7]
-    output reg out_reg_write,             // Output RegWrite signal to indicate a register write operation
+    output reg out_reg_write             // Output RegWrite signal to indicate a register write operation
 
 
 );
