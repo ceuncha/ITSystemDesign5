@@ -20,70 +20,7 @@ module ROB(
     output reg [31:0] out_value,         // Output value
     output reg [4:0] out_dest,           // Output register destination extracted from instr[11:7]
     output reg out_reg_write,             // Output RegWrite signal to indicate a register write operation
-   output reg [98:0] rob_entry_out_0,  // Separate ports for each ROB entry
-    output reg [98:0] rob_entry_out_1,
-    output reg [98:0] rob_entry_out_2,
-    output reg [98:0] rob_entry_out_3,
-    output reg [98:0] rob_entry_out_4,
-    output reg [98:0] rob_entry_out_5,
-    output reg [98:0] rob_entry_out_6,
-    output reg [98:0] rob_entry_out_7,
-    output reg [98:0] rob_entry_out_8,
-    output reg [98:0] rob_entry_out_9,
-    output reg [98:0] rob_entry_out_10,
-    output reg [98:0] rob_entry_out_11,
-    output reg [98:0] rob_entry_out_12,
-    output reg [98:0] rob_entry_out_13,
-    output reg [98:0] rob_entry_out_14,
-    output reg [98:0] rob_entry_out_15,
-    output reg [98:0] rob_entry_out_16,
-    output reg [98:0] rob_entry_out_17,
-    output reg [98:0] rob_entry_out_18,
-    output reg [98:0] rob_entry_out_19,
-    output reg [98:0] rob_entry_out_20,
-    output reg [98:0] rob_entry_out_21,
-    output reg [98:0] rob_entry_out_22,
-    output reg [98:0] rob_entry_out_23,
-    output reg [98:0] rob_entry_out_24,
-    output reg [98:0] rob_entry_out_25,
-    output reg [98:0] rob_entry_out_26,
-    output reg [98:0] rob_entry_out_27,
-    output reg [98:0] rob_entry_out_28,
-    output reg [98:0] rob_entry_out_29,
-    output reg [98:0] rob_entry_out_30,
-    output reg [98:0] rob_entry_out_31,
-    output reg [98:0] rob_entry_out_32,
-    output reg [98:0] rob_entry_out_33,
-    output reg [98:0] rob_entry_out_34,
-    output reg [98:0] rob_entry_out_35,
-    output reg [98:0] rob_entry_out_36,
-    output reg [98:0] rob_entry_out_37,
-    output reg [98:0] rob_entry_out_38,
-    output reg [98:0] rob_entry_out_39,
-    output reg [98:0] rob_entry_out_40,
-    output reg [98:0] rob_entry_out_41,
-    output reg [98:0] rob_entry_out_42,
-    output reg [98:0] rob_entry_out_43,
-    output reg [98:0] rob_entry_out_44,
-    output reg [98:0] rob_entry_out_45,
-    output reg [98:0] rob_entry_out_46,
-    output reg [98:0] rob_entry_out_47,
-    output reg [98:0] rob_entry_out_48,
-    output reg [98:0] rob_entry_out_49,
-    output reg [98:0] rob_entry_out_50,
-    output reg [98:0] rob_entry_out_51,
-    output reg [98:0] rob_entry_out_52,
-    output reg [98:0] rob_entry_out_53,
-    output reg [98:0] rob_entry_out_54,
-    output reg [98:0] rob_entry_out_55,
-    output reg [98:0] rob_entry_out_56,
-    output reg [98:0] rob_entry_out_57,
-    output reg [98:0] rob_entry_out_58,
-    output reg [98:0] rob_entry_out_59,
-    output reg [98:0] rob_entry_out_60,
-    output reg [98:0] rob_entry_out_61,
-    output reg [98:0] rob_entry_out_62,
-    output reg [98:0] rob_entry_out_63
+
 
 );
 
@@ -143,70 +80,6 @@ always @(posedge clk or posedge rst) begin
             end
         end
         
-   rob_entry_out_0 <= rob_entry[0];
-    rob_entry_out_1 <= rob_entry[1];
-    rob_entry_out_2 <= rob_entry[2];
-    rob_entry_out_3 <= rob_entry[3];
-    rob_entry_out_4 <= rob_entry[4];
-    rob_entry_out_5 <= rob_entry[5];
-    rob_entry_out_6 <= rob_entry[6];
-    rob_entry_out_7 <= rob_entry[7];
-    rob_entry_out_8 <= rob_entry[8];
-    rob_entry_out_9 <= rob_entry[9];
-    rob_entry_out_10 <= rob_entry[10];
-    rob_entry_out_11 <= rob_entry[11];
-    rob_entry_out_12 <= rob_entry[12];
-    rob_entry_out_13 <= rob_entry[13];
-    rob_entry_out_14 <= rob_entry[14];
-    rob_entry_out_15 <= rob_entry[15];
-    rob_entry_out_16 <= rob_entry[16];
-    rob_entry_out_17 <= rob_entry[17];
-    rob_entry_out_18 <= rob_entry[18];
-    rob_entry_out_19 <= rob_entry[19];
-    rob_entry_out_20 <= rob_entry[20];
-    rob_entry_out_21 <= rob_entry[21];
-    rob_entry_out_22 <= rob_entry[22];
-    rob_entry_out_23 <= rob_entry[23];
-    rob_entry_out_24 <= rob_entry[24];
-    rob_entry_out_25 <= rob_entry[25];
-    rob_entry_out_26 <= rob_entry[26];
-    rob_entry_out_27 <= rob_entry[27];
-    rob_entry_out_28 <= rob_entry[28];
-    rob_entry_out_29 <= rob_entry[29];
-    rob_entry_out_30 <= rob_entry[30];
-    rob_entry_out_31 <= rob_entry[31];
-    rob_entry_out_32 <= rob_entry[32];
-    rob_entry_out_33 <= rob_entry[33];
-    rob_entry_out_34 <= rob_entry[34];
-    rob_entry_out_35 <= rob_entry[35];
-    rob_entry_out_36 <= rob_entry[36];
-    rob_entry_out_37 <= rob_entry[37];
-    rob_entry_out_38 <= rob_entry[38];
-    rob_entry_out_39 <= rob_entry[39];
-    rob_entry_out_40 <= rob_entry[40];
-    rob_entry_out_41 <= rob_entry[41];
-    rob_entry_out_42 <= rob_entry[42];
-    rob_entry_out_43 <= rob_entry[43];
-    rob_entry_out_44 <= rob_entry[44];
-    rob_entry_out_45 <= rob_entry[45];
-    rob_entry_out_46 <= rob_entry[46];
-    rob_entry_out_47 <= rob_entry[47];
-    rob_entry_out_48 <= rob_entry[48];
-    rob_entry_out_49 <= rob_entry[49];
-    rob_entry_out_50 <= rob_entry[50];
-    rob_entry_out_51 <= rob_entry[51];
-    rob_entry_out_52 <= rob_entry[52];
-    rob_entry_out_53 <= rob_entry[53];
-    rob_entry_out_54 <= rob_entry[54];
-    rob_entry_out_55 <= rob_entry[55];
-    rob_entry_out_56 <= rob_entry[56];
-    rob_entry_out_57 <= rob_entry[57];
-    rob_entry_out_58 <= rob_entry[58];
-    rob_entry_out_59 <= rob_entry[59];
-    rob_entry_out_60 <= rob_entry[60];
-    rob_entry_out_61 <= rob_entry[61];
-    rob_entry_out_62 <= rob_entry[62];
-    rob_entry_out_63 <= rob_entry[63];
     end
 end
 
