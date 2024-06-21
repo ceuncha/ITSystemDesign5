@@ -100,9 +100,5 @@ always @(posedge clk) begin
     end
 end
 
-// Output logic
-always @(posedge clk) begin
-
-end
 
 endmodule
