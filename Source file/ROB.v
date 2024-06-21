@@ -19,22 +19,32 @@ module ROB(
     input wire [31:0] PC,                // Current PC value (expanded to 32 bits)
     output reg [31:0] out_value,         // Output value
     output reg [4:0] out_dest,           // Output register destination extracted from instr[11:7]
-    output reg out_reg_write             // Output RegWrite signal to indicate a register write operation
-
-
+    output reg out_reg_write          // Output RegWrite signal to indicate a register write operation
 );
 
 // ROB memory
-reg [98:0] rob_entry [0:63];            // ROB entry: new_bit(1), ready(1), reg_write(1), value(32), instr(32), PC(32)
-reg [5:0] head;                        // Head pointer (5 bits for 32 entries)
-reg [5:0] tail;                        // Tail pointer (5 bits for 32 entries)
+reg [98:0] rob_entry_mem [0:63];        // ROB entry: new_bit(1), ready(1), reg_write(1), value(32), instr(32), PC(32)
+reg [5:0] head;                         // Head pointer (5 bits for 32 entries)
+reg [5:0] tail;                         // Tail pointer (5 bits for 32 entries)
+reg power_gate [0:63];                  // Power gating signals for each ROB entry
 integer i;
+
+wire [98:0] rob_entry [0:63];           // ROB entry with tri-state buffer
+
+// Tri-state buffer logic
+genvar idx;
+generate
+    for (idx = 0; idx < 64; idx = idx + 1) begin
+        assign rob_entry[idx] = power_gate[idx] ? rob_entry_mem[idx] : 99'bz;
+    end
+endgenerate
 
 // Reset ROB entries
 task reset_rob_entries;
     begin
         for (i = 0; i < 64; i = i + 1) begin
-            rob_entry[i] <= 99'b0;     // Reset ROB entry with all fields set to 0
+            rob_entry_mem[i] <= 99'b0;  // Reset ROB entry with all fields set to 0
+            power_gate[i] <= 1'b1;      // Disable power gating for all entries (1 means active)
         end
     end
 endtask
@@ -50,36 +60,36 @@ always @(posedge clk or posedge rst) begin
             // Update the branch entry with PC_Return value
             for (i = 0; i < 64; i = i + 1) begin
                 if (rob_entry[i][31:0] == branch_index) begin
-                    rob_entry[i][98:0] <= {rob_entry[i][98], 1'b1, rob_entry[i][96], PC_Return, rob_entry[i][63:32], rob_entry[i][31:0]};
+                    rob_entry_mem[i] <= {rob_entry[i][98], 1'b1, rob_entry[i][96], PC_Return, rob_entry[i][63:32], rob_entry[i][31:0]};
                     tail <= (i + 1) % 64; // Move tail to the entry right after the branch entry
-                    rob_entry[(i+1)%64][98:0] <= 0; // Flush under tail entry
-                    rob_entry[(i+2)%64][98:0] <= 0; // Fulsh under tail entry
-  
+                    power_gate[(i+1)%64] <= 1'b0; // Power gate the entry after the tail (0 means Hi-Z)
+                    power_gate[(i+2)%64] <= 1'b0; // Power gate the entry after the tail (0 means Hi-Z)
                 end
             end
       
         end else if (IF_ID_instOut != 32'b0) begin  // Only increment tail if the instruction is not invalid (i.e., not a bubble)
-            rob_entry[tail] <= {1'b1, 1'b0, reg_write, 32'b0, IF_ID_instOut, PC}; // Store input data in the ROB entry with value set to 32'b0 and new_bit set to 1
-            tail <= (tail + 1) % 64;                // Circular buffer handling
+            rob_entry_mem[tail] <= {1'b1, 1'b0, reg_write, 32'b0, IF_ID_instOut, PC}; // Store input data in the ROB entry with value set to 32'b0 and new_bit set to 1
+            power_gate[tail] <= 1'b1; // Disable power gating for the tail entry (1 means active)
+            tail <= (tail + 1) % 64;  // Circular buffer handling
         end
 
         // Update the value and set ready flag upon execution completion
         if (alu_exec_done || mul_exec_done || div_exec_done) begin
             for (i = 0; i < 64; i = i + 1) begin
-                if (rob_entry[i][98]) begin // Check if the new bit is set to 1
-                    if (alu_exec_done && rob_entry[i][31:0] == alu_exec_PC) begin
-                        rob_entry[i][98:0] <= {rob_entry[i][98], 1'b1, rob_entry[i][96], alu_exec_value, rob_entry[i][63:32], rob_entry[i][31:0]}; // Update value and maintain new_bit, reg_write, instr, PC
+                if (power_gate[i] && rob_entry_mem[i][98]) begin // Check if power_gate is active and the new bit is set to 1
+                    if (alu_exec_done && rob_entry_mem[i][31:0] == alu_exec_PC) begin
+                        rob_entry_mem[i] <= {rob_entry_mem[i][98], 1'b1, rob_entry_mem[i][96], alu_exec_value, rob_entry_mem[i][63:32], rob_entry_mem[i][31:0]}; // Update value and maintain new_bit, reg_write, instr, PC
                     end
-                    if (mul_exec_done && rob_entry[i][31:0] == mul_exec_PC) begin
-                        rob_entry[i][98:0] <= {rob_entry[i][98], 1'b1, rob_entry[i][96], mul_exec_value, rob_entry[i][63:32], rob_entry[i][31:0]}; // Update value and maintain new_bit, reg_write, instr, PC       
+                    if (mul_exec_done && rob_entry_mem[i][31:0] == mul_exec_PC) begin
+                        rob_entry_mem[i] <= {rob_entry_mem[i][98], 1'b1, rob_entry_mem[i][96], mul_exec_value, rob_entry_mem[i][63:32], rob_entry_mem[i][31:0]}; // Update value and maintain new_bit, reg_write, instr, PC       
                     end
-                    if (div_exec_done && rob_entry[i][31:0] == div_exec_PC) begin
-                        rob_entry[i][98:0] <= {rob_entry[i][98], 1'b1, rob_entry[i][96], div_exec_value, rob_entry[i][63:32], rob_entry[i][31:0]}; // Update value and maintain new_bit, reg_write, instr, PC     
+                    if (div_exec_done && rob_entry_mem[i][31:0] == div_exec_PC) begin
+                        rob_entry_mem[i] <= {rob_entry_mem[i][98], 1'b1, rob_entry_mem[i][96], div_exec_value, rob_entry_mem[i][63:32], rob_entry_mem[i][31:0]}; // Update value and maintain new_bit, reg_write, instr, PC     
                     end
                 end
             end
         end
-        
+
     end
 end
 
@@ -89,10 +99,10 @@ always @(posedge clk) begin
         out_value <= rob_entry[head][95:64];     // Output value
         out_dest <= rob_entry[head][43:39];      // Extract out_dest from instr[11:7]
         out_reg_write <= rob_entry[head][96];   // Output RegWrite status
-        rob_entry[head] <= 0;            // Clear the ready flag after consuming the entry
-        head <= (head + 1) % 64;                 // Circular buffer handling
+        rob_entry_mem[head] <= 0;        // Clear the ready flag after consuming the entry
+        power_gate[head] <= 1'b0;        // Power gate the head entry (0 means Hi-Z)
+        head <= (head + 1) % 64;         // Circular buffer handling
     end
-    
 end
 
 endmodule
