@@ -142,7 +142,7 @@ module RS_ALU (                                             //명령어 forwardi
     integer i;
     reg RS_ALU_on[0:63];
 
-    always @(posedge clk or posedge reset) begin    //리셋신호로 초기화 시켜줌
+    always @(posedge clk ) begin    //리셋신호로 초기화 시켜줌
         if (reset) begin
             tail <= 0;
             head <=0;
@@ -460,7 +460,7 @@ module RS_ALU (                                             //명령어 forwardi
     );
 
 
-always @(posedge clk or posedge reset) begin  // priority encoder로부터 받은 값을 이용하여 우선순위를 선택해주고, 해당 명령어를 계산과정으로 보내준다.
+always @(posedge clk ) begin  // priority encoder로부터 받은 값을 이용하여 우선순위를 선택해주고, 해당 명령어를 계산과정으로 보내준다.
     if (reset) begin
         result_out <= 0;
         head <= 0;
