@@ -118,7 +118,7 @@ module RS_Div (
     integer i;
     reg RS_DIV_on[0:63];
 
-    always @(posedge clk or posedge reset) begin
+    always @(posedge clk ) begin
         if (reset) begin
             tail <= 0;
             for (i = 0; i < 64; i = i + 1) begin
@@ -313,7 +313,7 @@ module RS_Div (
     );
 
 
-always @(posedge clk or posedge reset) begin
+always @(posedge clk ) begin
     if (reset) begin
         result_out <= 0;
         head <= 0;
