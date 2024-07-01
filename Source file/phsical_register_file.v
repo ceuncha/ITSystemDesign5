@@ -63,21 +63,19 @@ always @(posedge clk) begin         // 매 클락 계산기들 혹은 load로부
             registers[ALU_div_phy] <= ALU_div_Data;
             valid[ALU_div_phy] <= 1'b1; // divider 신호가 들어왔을때 해당 물리주소와 데이터값을 받아서 pfile을 업데이트 시켜준다.
         end
-
-end
-
-always @(Rd_phy) begin          // rd_phy 값이 들어오면 해당 물리주소의  valid 값을 0으로 변환
-    if (Rd_phy != 7'b0) begin
+        if (Rd_phy != 7'b0) begin
         valid[Rd_phy] <= 1'b0;
-    end
+        end
 end
+
+
 
 
     always @(*) begin    //Operand 값이 들어오면 해당 물리주소의 data 값과 valid 값을 출력시켜 준다.
-    Operand1_data <= registers[Operand1_phy];   
-    Operand2_data <= registers[Operand2_phy];
-    valid1 <= valid[Operand1_phy];
-    valid2 <= valid[Operand2_phy];
-end
+        Operand1_data <= registers[Operand1_phy];   
+        Operand2_data <= registers[Operand2_phy];
+        valid1 <= valid[Operand1_phy];
+        valid2 <= valid[Operand2_phy];
+    end
 
 endmodule
