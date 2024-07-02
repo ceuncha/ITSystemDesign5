@@ -5,8 +5,15 @@ module CPU_top(
     output [31:0] x16, x17, x18, x19, x20, x21, x22, x23, x24, x25, x26, x27, x28, x29, x30, x31
 );
 
-//////////IF_ID_Wire    
+//program counter
+wire first_and_Pcsrc;
+wire Wrong;
+wire hit;
+wire ID_EX_hit;
 wire taken;
+
+//////////IF_ID_Wire    
+
 wire [31:0] PC, PC_Branch;   
 wire  PCSrc;
 wire [31:0] instOut;
@@ -240,13 +247,25 @@ wire Div_start_in = result_out_div[108];
     wire [31:0] EX_MEM_div_inst_num;
     wire [31:0] EX_MEM_mul_inst_num;
     
+
+
+
 ///////////////////////////IF_ID////////////////////////////////////////////////
-Program_Counter u_Program_Counter(
+(* keep_hierarchy = "yes" *)
+global_prediction_top u_global_prediction_top(
     .clk(clk),
-    .rst(rst),
+    .reset(reset),
+    .ID_EX_Branch(RS_EX_Branch),
+    .Pcsrc(Pcsrc),
+    .ID_EX_PC(RS_EX_PC_ALU),
     .PC_Branch(PC_Branch),
-    .PCSrc(PCSrc),
-    .PC(PC)
+    .ID_EX_Jump(RS_EX_Jump),
+    .PC(PC),
+    .Wrong(Wrong),
+    .first_and_Pcsrc(first_and_Pcsrc),
+    .hit(hit),
+    .ID_EX_hit(ID_EX_hit),
+    .taken(taken)
 );
 
 ROB_Counter u_ROB_Counter(
