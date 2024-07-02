@@ -1,12 +1,11 @@
-
 module chuchu (
     input clk,
     input reset,
 
     input save_state,        
     input restore_state,      
-    input [2:0] save_page,     
-    input [2:3] restore_page, 
+    input [4:0] save_page,     // 5-bit for 32 pages
+    input [4:0] restore_page,  // 5-bit for 32 pages
     input [7:0] rat_data,
     output reg [7:0] chuchu_out
 );
@@ -15,18 +14,16 @@ module chuchu (
     reg [6:0] current_index;
     integer i;
 
-
-    wire [7:0] shadow_data_out [0:7][0:127];
-    reg [7:0] shadow_data_in [0:7][0:127];
-    reg shadow_write_enable [0:7];
+    wire [7:0] shadow_data_out [0:31][0:127];
+    reg [7:0] shadow_data_in [0:31][0:127];
+    reg shadow_write_enable [0:31];
     reg [6:0] shadow_addr;
 
     genvar j, k;
     generate
-        for (j = 0; j < 8; j = j + 1) begin : shadow_chuchu_array
+        for (j = 0; j < 32; j = j + 1) begin : shadow_chuchu_array
             for (k = 0; k < 128; k = k + 1) begin : shadow_chuchu_regs
                 shadow_chuchu u_shadow_chuchu (
-
                     .reset(reset),
                     .addr(k[6:0]),  
                     .data_in(shadow_data_in[j][k]),
@@ -37,45 +34,39 @@ module chuchu (
         end
     endgenerate
 
-    
     always @(posedge clk) begin   
-        if(reset) begin
+        if (reset) begin
             for (i = 0; i < 128; i = i + 1) begin
                 chuchu_array[i] <= 32 + i;
             end
             current_index <= 1;
             chuchu_out <= 32;
             chuchu_array[0] <=  8'b10100000;
-        end                           
-                                    
-        if(!reset) begin
-            if(restore_state) begin
+        end else begin
+            if (restore_state) begin
                 for (i = 0; i < 128; i = i + 1) begin
                     chuchu_array[i] <= shadow_data_out[restore_page][i];
                 end
-            chuchu_out <= shadow_data_out[restore_page][current_index];
-            chuchu_array[(current_index-2)%128] <= rat_data;
-            current_index <= (current_index + 1) % 128;
+                chuchu_out <= shadow_data_out[restore_page][current_index];
+                chuchu_array[(current_index-2) % 128] <= rat_data;
+                current_index <= (current_index + 1) % 128;
             end else begin
-            shadow_write_enable[save_page] <= 0;
-            if(save_state) begin
-                for (i = 0; i < 128; i = i + 1) begin
-                    shadow_data_in[save_page][i] <= chuchu_array[i];
+                shadow_write_enable[save_page] <= 0;
+                if (save_state) begin
+                    for (i = 0; i < 128; i = i + 1) begin
+                        shadow_data_in[save_page][i] <= chuchu_array[i];
+                    end
+                    shadow_write_enable[save_page] <= 1;
                 end
-                shadow_write_enable[save_page] <= 1;
-            end
-            chuchu_out <= chuchu_array[current_index];
-            chuchu_array[(current_index-2)%128] <= rat_data;
-            current_index <= (current_index + 1) % 128;
+                chuchu_out <= chuchu_array[current_index];
+                chuchu_array[(current_index-2) % 128] <= rat_data;
+                current_index <= (current_index + 1) % 128;
             end
         end
     end
-
-
 endmodule
 
-module shadow_chuchu(
-
+module shadow_chuchu (
     input wire reset,
     input wire [6:0] addr,    
     input wire [7:0] data_in,
@@ -84,15 +75,12 @@ module shadow_chuchu(
 );
     reg [7:0] registers [0:127];  
     integer i;
-    
 
-
-always @(posedge write_enable) begin
-                registers[addr] <= data_in;
-end
+    always @(posedge write_enable) begin
+        registers[addr] <= data_in;
+    end
 
     always @(*) begin
         data_out <= registers[addr];
-
     end
 endmodule
