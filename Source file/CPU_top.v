@@ -105,14 +105,14 @@ wire [31:0] branch_index;
     wire RS_alu_Branch;
     wire [2:0] RS_alu_funct3;
     wire [31:0] RS_alu_immediate;
-
+   
     wire [7:0] RS_alu_operand1;
     wire [7:0] RS_alu_operand2;
     wire [31:0] RS_mul_operand1_data;
     wire [31:0] RS_mul_operand2_data;
     wire [1:0] RS_alu_valid;
     wire [182:0]result_out_alu;
-
+ wire RS_alu_IF_ID_taken;
 
  wire [31:0] Operand2_ALU = result_out_alu[31:0];
 wire [31:0] Operand1_ALU = result_out_alu[63:32];
@@ -130,7 +130,7 @@ wire [7:0] ALU_Phy = result_out_alu[117:110];
 wire [31:0] RS_EX_PC_ALU = result_out_alu[149:118];
 wire ALU_Done = result_out_alu[150];
 wire [31:0] RS_EX_inst_num = result_out_alu[182:151];
-wire RS_EX_taken;
+wire RS_EX_taken=result_out_alu[183];
 wire RS_alu_IF_ID_taken;
 
     // Internal signals for RS_mul wire
