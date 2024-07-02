@@ -7,19 +7,19 @@ module BB(
     input wire [31:0] PC,                // Current PC value (expanded to 32 bits)
     input wire RS_EX_Branch,            //
     input wire RS_EX_Jump,
-    output reg [2:0] tail_num,           // Output value
+    output reg [4:0] tail_num,           // Output value
     output reg Copy_RAT,                 // Output register destination extracted from instr[11:7]
-    output reg [2:0] head_num,           // Output RegWrite signal to indicate a register write operation
+    output reg [4:0] head_num,           // Output RegWrite signal to indicate a register write operation
     output reg Paste_RAT
 );
 
 // ROB memory
-reg [31:0] BB_entry [0:7];          
-reg ready [0:7];                       // Ready flag array for ROB entries
+reg [31:0] BB_entry [0:31];          
+reg ready [0:31];                       // Ready flag array for ROB entries
 integer i;
 integer j;
-reg [2:0] head;
-reg [2:0] tail;
+reg [4:0] head;
+reg [4:0] tail;
 reg Paste_RAT_set;                    // 플래그 추가
 
 // Reset BB entries
@@ -27,7 +27,7 @@ task reset_bb_entries;  //한번 분기가 진행되면, 이후의 분기 정보
     begin
         head <= 0;
         tail <= 0;
-        for (i = 0; i < 8; i = i + 1) begin
+        for (i = 0; i < 32; i = i + 1) begin
             BB_entry[i] <= 32'b0;     // Reset ROB entry with all fields set to 0
             ready[i] <= 1'b0;         // Reset ready flag
         end
@@ -35,7 +35,7 @@ task reset_bb_entries;  //한번 분기가 진행되면, 이후의 분기 정보
 endtask
 
 // BB control logic
-always @(posedge clk or posedge rst) begin
+always @(posedge clk) begin
     if (rst) begin          
         reset_bb_entries();
     end else begin
@@ -48,7 +48,7 @@ always @(posedge clk or posedge rst) begin
             ready[tail] <= 1'b0;     // Set ready flag to 0
             tail_num <= tail;        //
             Copy_RAT <= 1;
-            tail <= (tail + 1) % 8;        // Increment the tail pointer
+            tail <= (tail + 1) % 32;        // Increment the tail pointer
         end else begin
             Copy_RAT <= 0;
         end
@@ -64,12 +64,12 @@ always @(posedge clk or posedge rst) begin
                 head_num <= head;
                 reset_bb_entries();  // Reset BB entries
             end else begin
-                head <= (head + 1)% 8;    // Increment head
+                head <= (head + 1)% 32;    // Increment head
                 Paste_RAT <= 0;      // Reset Paste_RAT to 0
                 Paste_RAT_set <= 0;  // 플래그 리셋
             end
         end
-                for (i = 0; i < 8; i = i + 1) begin
+        for (i = 0; i < 32; i = i + 1) begin
             if (BB_entry[i] == branch_PC) begin //head에 위치하지 않은 분기신호가 들어왔을때
                 if (PCSrc == 1'b1) begin
                 ready[i] <= 1'b1;   // Set the ready flag to 1
@@ -77,10 +77,10 @@ always @(posedge clk or posedge rst) begin
                 Paste_RAT_set <= 1;  // 플래그 설정
                 head_num <= i;
                 tail <= i;
-        for (j = i; j < 8; j = j + 1) begin
-            BB_entry[j] <= 32'b0;     // Reset ROB entry with all fields set to 0
-            ready[j] <= 1'b0;         // Reset ready flag
-        end
+                    for (j = i; j < 32; j = j + 1) begin
+                        BB_entry[j] <= 32'b0;     // Reset ROB entry with all fields set to 0
+                        ready[j] <= 1'b0;         // Reset ready flag
+                    end
 
                 end
             end
