@@ -29,7 +29,7 @@ module global_prediction_top (
 
 // Instantiate the global_branch_history module
 (* keep_hierarchy = "yes" *)
-global_branch_history gbh_inst (
+Global_History_Register gbh_inst (
     .clk(clk),
     .reset(reset),
     .ID_EX_Branch(ID_EX_Branch),
@@ -39,7 +39,7 @@ global_branch_history gbh_inst (
 
 // Instantiate the pattern_history_table module
 (* keep_hierarchy = "yes" *)
-pattern_history_table pht_inst (
+Pattern_History_Table pht_inst (
     .clk(clk),
     .reset(reset),
     .ID_EX_Branch(ID_EX_Branch),
@@ -50,7 +50,7 @@ pattern_history_table pht_inst (
 
 // Instantiate the branch_target_buffer module
 (* keep_hierarchy = "yes" *)
-branch_target_buffer btb_inst (
+Branch_Target_Buffer btb_inst (
     .clk(clk),
     .reset(reset),
     .ID_EX_Branch(ID_EX_Branch),
