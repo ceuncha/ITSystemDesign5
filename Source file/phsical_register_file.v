@@ -29,7 +29,12 @@ reg [31:0] registers [0:255];
     reg valid [0:255];
 integer i;
 
-always @(posedge reset) begin                       //리셋시에 각 번지수의 데이터는 번지수로 한다,
+
+
+
+always @(posedge clk) begin         // 매 클락 계산기들 혹은 load로부터 데이터값을 받는다. 전송온 데이터가 있다면, 해당 데이터를 업데이트 시켜준다.
+                                       // F0의 경우 항상 0을 유지해야 하므로 해당 물리주소는 업데이트 해주지 않는다,
+
    if (reset) begin
        for (i = 0; i < 32; i = i + 1) begin
             registers[i] <= i;
@@ -40,13 +45,7 @@ always @(posedge reset) begin                       //리셋시에 각 번지수
            valid[i] <= 1'b1; 
         end
     end
-end
-
-
-
-always @(posedge clk) begin         // 매 클락 계산기들 혹은 load로부터 데이터값을 받는다. 전송온 데이터가 있다면, 해당 데이터를 업데이트 시켜준다.
-                                       // F0의 경우 항상 0을 유지해야 하므로 해당 물리주소는 업데이트 해주지 않는다,
-
+    if (!reset) begin
         if (ALU_add_Write == 1'b1 && ALU_add_phy != 7'b0) begin
             registers[ALU_add_phy] <= ALU_add_Data;
             valid[ALU_add_phy] <= 1'b1; // alu 신호가 들어왔을때 해당 물리주소와 데이터값을 받아서 pfile을 업데이트 시켜준다.
@@ -66,8 +65,8 @@ always @(posedge clk) begin         // 매 클락 계산기들 혹은 load로부
         if (Rd_phy != 7'b0) begin
         valid[Rd_phy] <= 1'b0;
         end
+    end
 end
-
 
 
 
