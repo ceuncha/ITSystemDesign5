@@ -1,4 +1,4 @@
-module global_branch_history (
+module Global_History_Register (
     input wire clk,
     input wire reset,
     input wire ID_EX_Branch,
@@ -7,8 +7,8 @@ module global_branch_history (
 );
 
 // 비동기 리셋 및 분기 히스토리 업데이트
-always @(posedge clk or negedge reset) begin
-    if (!reset) begin
+always @(posedge clk ) begin
+    if (reset) begin
         branch_history <= 4'b0000; // 비동기 리셋
     end else if (ID_EX_Branch) begin
         // 새로운 분기 결과를 LSB에 추가하고 나머지를 오른쪽으로 이동
