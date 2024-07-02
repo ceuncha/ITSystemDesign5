@@ -52,7 +52,12 @@ module RAT (
     integer k;
 
    
-    always @(posedge reset) begin                   //초기값 설정.
+
+     
+
+
+    
+    always @(posedge clk) begin     // 평소의 상황 rat의 작동
         if (reset) begin
             for (k = 0; k < 32; k = k + 1) begin
                 phy_addr_table[k] <= k;
@@ -62,49 +67,53 @@ module RAT (
             phy_addr_out1 <= 8'b11111110;
             phy_addr_out2 <= 8'b11111110;
         end
-    end
 
-    
-    always @(posedge save_state) begin          //branch 가 들어오면 BB가 Save_State 신호를 RAT로 전송해주고, 이 신호를 받으면
-                                                    // 당시의 매핑정보 shadow rat로 전송. page number은 BB와 RAT가 동기화 되어 있다.
-
-            for (k = 0; k < 32; k = k + 1) begin
-                shadow_data_in[save_page][k] <= phy_addr_table[k];
-            end
-            shadow_write_enable[save_page] <= 1;
-
-
-    end
-    
-        always @(negedge save_state) begin      //branch 신호가 들어오지 않는 평소의 상황일때는 shadow register에 저장하지 않음.
-
-            shadow_write_enable[save_page] <= 0;
-      
-
-    end
-    
-        always @(posedge restore_state) begin       // 분기가 실행되면 당시의 매핑정보 복구. BB로부터 해당 브랜치 매핑정보가 들어있는  페이지 넘버와 restore state 신호를 받으면
-                                                    // 매핑 정보를 다시 복구해준다.
-
-            for (k = 0; k < 32; k = k + 1) begin
-                phy_addr_table[k] <= shadow_data_out[restore_page][k];
-            end
-
-    end
-
-
-    
-    always @(posedge clk) begin     // 평소의 상황 rat의 작동
         if(!reset) begin
-        if(if_id_flush) begin
+            if(restore_state) begin
+                for (k = 0; k < 32; k = k + 1) begin
+                    phy_addr_table[k] <= shadow_data_out[restore_page][k];
+                end
+                case (opcode)       
+                    7'b1100111, 7'b0000011, 7'b0010011: begin  // jalr, load, i-type 의 경우 r1을 이용하지 않기때문에 프리리스트에 존재하지 않는 물리주소인 254번지 값을 적어줌,
+                        phy_addr_out1 <= shadow_data_out[restore_page][logical_addr1];
+                        phy_addr_out2 <= 8'b11111110;
+                    end
+                    7'b0110111, 7'b0010111, 7'b1101111: begin // lui, auipc, jal 의 경우 r1, r2을 이용하지 않기때문에 프리리스트에 존재하지 않는 물리주소인 255번지 값을 적어줌,
+                        phy_addr_out1 <= 8'b11111110;
+                        phy_addr_out2 <= 8'b11111110;
+                    end
+                    default: begin
+                        phy_addr_out1 <= shadow_data_out[restore_page][logical_addr1];     // 평소의 명령어의 경우 rat에 매핑되어 있는 물리주소 값을 전송
+                        phy_addr_out2 <= shadow_data_out[restore_page][logical_addr2];
+                    end
+                endcase
+
+            // 2. Rd 
+         if ((opcode != 7'b1100011) && (opcode != 7'b0100011) && (opcode != 7'b0000000)&&(rd_logical_addr !=0)) begin  //  조건분기 명령어, store 명령어가 모두 아닌경우에는 rd에 해당되는 번지수의 매핑정보를 변환. 프리리스트로부터 온 물리주소 값으로 변환해준다.
+                
+                free_phy_addr_out <= phy_addr_table[rd_logical_addr]; 
+                phy_addr_table[rd_logical_addr] <= free_phy_addr; 
+                rd_phy_out <= free_phy_addr;
+   
+         end else begin              // beq, store need no Rd. 그러므로 매핑정보 변환하지 않고 그대로 유지. 프리리스트로부터 온 물리주소는 그대로 프리리스트로 다시 반환.
                 free_phy_addr_out <= free_phy_addr; 
+                rd_phy_out <= 8'b11111111;   
+         end
+         end
+            else begin
+                if(if_id_flush) begin
+                    free_phy_addr_out <= free_phy_addr; 
  
-        end
+                end
         
         if(!if_id_flush) begin
-        
-       
-           
+           shadow_write_enable[save_page] <= 0;
+            if(save_state) begin
+               for (k = 0; k < 32; k = k + 1) begin
+                shadow_data_in[save_page][k] <= phy_addr_table[k];
+               end
+            shadow_write_enable[save_page] <= 1;
+           end
             case (opcode)       
                 7'b1100111, 7'b0000011, 7'b0010011: begin  // jalr, load, i-type 의 경우 r1을 이용하지 않기때문에 프리리스트에 존재하지 않는 물리주소인 254번지 값을 적어줌,
                     phy_addr_out1 <= phy_addr_table[logical_addr1];
@@ -133,8 +142,8 @@ module RAT (
             end
         end
         end
-end
-
+            end
+        end
 endmodule
 
 module shadow_RAT_register(         //branch 시에 이용하는 shadow register code. rat로부터 write enable 신호가 들어오면 페이지에 매핑 정보를 백업시켜주고, 
