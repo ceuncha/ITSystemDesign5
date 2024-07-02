@@ -254,7 +254,7 @@ wire Div_start_in = result_out_div[108];
 (* keep_hierarchy = "yes" *)
 global_prediction_top u_global_prediction_top(
     .clk(clk),
-    .reset(reset),
+    .reset(rst),
     .ID_EX_Branch(RS_EX_Branch),
     .Pcsrc(Pcsrc),
     .ID_EX_PC(RS_EX_PC_ALU),
