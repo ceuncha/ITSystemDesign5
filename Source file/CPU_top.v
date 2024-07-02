@@ -6,7 +6,7 @@ module CPU_top(
 );
 
 //////////IF_ID_Wire    
-    
+wire taken;
 wire [31:0] PC, PC_Branch;   
 wire  PCSrc;
 wire [31:0] instOut;
@@ -16,6 +16,7 @@ wire [4:0] Rs2 = instOut[24:20];
 wire [4:0] Rd =instOut[11:7];
 wire [6:0] instOut_opcode = instOut[6:0];
 // ID stage
+wire IF_ID_taken;
 wire [31:0] IF_ID_instOut;
 wire [31:0] IF_ID_PC;
 wire [31:0] IF_ID_inst_num;
@@ -129,7 +130,7 @@ wire [7:0] ALU_Phy = result_out_alu[117:110];
 wire [31:0] RS_EX_PC_ALU = result_out_alu[149:118];
 wire ALU_Done = result_out_alu[150];
 wire [31:0] RS_EX_inst_num = result_out_alu[182:151];
-
+wire RS_EX_taken;
 
 
     // Internal signals for RS_mul wire
@@ -190,7 +191,7 @@ wire Div_start_in = result_out_div[108];
     ////////////////ex_mem wire
     //////////
    wire RS_EX_Branch;
-   
+   wire Predict_Result;
    wire RS_EX_MemRead;
    wire RS_Ex_MemToReg;
    wire RS_EX_ALU_Src1;
@@ -263,6 +264,8 @@ ifid_pipeline_register u_ifid_pipeline_register(
     .reset(rst),
     .instOut(instOut),
     .PC(PC),
+    .taken(taken),
+    .IF_ID_taken(IF_ID_taken),
     .IF_ID_Flush(IF_ID_Flush),
     .IF_ID_instOut(IF_ID_instOut),  
     .inst_num(inst_num),
@@ -329,7 +332,7 @@ BB u_BB(
     .clk(clk),                      // Clock signal
     .rst(rst),                      // Reset signal
     .opcode(instOut_opcode),             // Input opcode
-    .PCSrc(PCSrc),                    // Branch decision signal
+    .PCSrc(Predict_Result),                    // Branch decision signal
     .branch_PC(RS_EX_inst_num),         // Branch index in ROB
     .PC(inst_num),                // Current PC value (expanded to 32 bits)
     .tail_num(save_page),           // Output value
@@ -544,7 +547,7 @@ control_unit_top u_control_unit_top(
   ////////////ALU
     ALU ALU(.A(ALU_A),.B(ALU_B),.ALUop(ALUop),.Result(ALUResult),.negative(negative),.overflow(overflow),
             .zero(zero),.carry(carry));
-    BranchUnit branchUnit(.ID_EX_Jump(RS_EX_Jump),.ID_EX_Branch(RS_EX_Branch),.ID_EX_funct3(RS_EX_funct3),
+    BranchUnit branchUnit(.ID_EX_Jump(RS_EX_Jump),.ID_EX_Branch(RS_EX_Branch),.ID_EX_funct3(RS_EX_funct3),.RS_EX_taken(RS_EX_taken),.Predict_Result(Predict_Result),
                          .ALUResult(ALUResult),.imm(immediate),.PC(RS_EX_PC_ALU),.ALUNegative(negative),
                          .ALUZero(zero),.ALUOverflow(overflow),.ALUCarry(carry),.PC_Branch(PC_Branch),
                          .branch_index(branch_index),.PCSrc(PCSrc),.IF_ID_Flush(IF_ID_Flush));
@@ -638,7 +641,7 @@ control_unit_top u_control_unit_top(
         .div_exec_done(div_exec_done),
         .div_exec_value(div_exec_value),
         .div_exec_PC(EX_MEM_div_inst_num),
-        .PcSrc(PCSrc),
+        .PcSrc(Predict_Result),
         .PC_Return(PC_Return),
         .branch_index(RS_EX_inst_num),
         .PC(IF_ID_inst_num),
