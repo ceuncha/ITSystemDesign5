@@ -108,7 +108,10 @@ module RS_ALU (                                             //명령어 forwardi
     input wire [31:0] DIV_result,
     input wire [7:0] DIV_result_dest,
     input wire DIV_result_valid,
-    output reg [182:0] result_out,
+
+    input wire RS_alu_IF_ID_taken,
+  
+  output reg [183:0] result_out,
     
     input wire PCSrc,
     input wire ROB_Counter
@@ -134,7 +137,8 @@ module RS_ALU (                                             //명령어 forwardi
     reg [31:0] operand2_datas [0:63]; // operand2 data
     reg [63:0] valid_entries1;  // operand1?씠 valid?븳吏?
     reg [63:0] valid_entries2; // operand2媛? valid?븳吏?
-    reg [182:0] result [0:63];
+    reg [183:0] result [0:63];
+    reg [63:0] takens;
     reg [6:0] tail;
     reg [6:0] head;
     reg [63:0] readys;
@@ -168,7 +172,8 @@ module RS_ALU (                                             //명령어 forwardi
                 operand2_datas[i] <= 0;
                 valid_entries1[i] <= 1'b0; 
                 valid_entries2[i] <= 1'b0; 
-                RS_ALU_on[i] <=0;
+              takens[i] <= 1'b0;
+              RS_ALU_on[i] <=0;
             end
         end else if (start) begin
 
@@ -193,6 +198,7 @@ module RS_ALU (                                             //명령어 forwardi
                 operand2s[tail] <= operand2;
                 operand1_datas[tail] <= ALU_result;
                 operand2_datas[tail] <= operand2_data;
+                takens[tail] <= RS_alu_IF_ID_taken;
                 valid_entries1[tail] <= 1;
                 valid_entries2[tail] <= valid[1];
                 tail <= (tail + 1) % 64;
@@ -215,8 +221,10 @@ module RS_ALU (                                             //명령어 forwardi
                 operand2s[tail] <= operand2;
                 operand1_datas[tail] <= operand1_data;
                 operand2_datas[tail] <= ALU_result;
+                takens[tail] <= RS_alu_IF_ID_taken;
                 valid_entries1[tail] <= valid[0];
                 valid_entries2[tail] <= 1; 
+                takens[i] <= RS_alu_IF_ID_taken;
                 tail <= (tail + 1) % 64;  
                  RS_ALU_on[tail] <=0; 
              end else if (operand1 == MUL_result_dest) begin  // 명령어가 처음 들어왔을때, mul의 결과와 명령어의 operand 물리주소를 비교하여 
@@ -238,6 +246,7 @@ module RS_ALU (                                             //명령어 forwardi
                 operand2s[tail] <= operand2;
                 operand1_datas[tail] <= MUL_result;
                 operand2_datas[tail] <= operand2_data;
+                takens[tail] <= RS_alu_IF_ID_taken;
                 valid_entries1[tail] <= 1;
                 valid_entries2[tail] <= valid[1];
                 tail <= (tail + 1) % 64;
@@ -260,6 +269,7 @@ module RS_ALU (                                             //명령어 forwardi
                 operand2s[tail] <= operand2;
                 operand1_datas[tail] <= operand1_data;
                 operand2_datas[tail] <= MUL_result;
+                takens[tail] <= RS_alu_IF_ID_taken;
                 valid_entries1[tail] <= valid[0];
                 valid_entries2[tail] <= 1; 
                 tail <= (tail + 1) % 64;
@@ -283,6 +293,7 @@ module RS_ALU (                                             //명령어 forwardi
                 operand2s[tail] <= operand2;
                 operand1_datas[tail] <= DIV_result;
                 operand2_datas[tail] <= operand2_data;
+                takens[tail] <= RS_alu_IF_ID_taken;
                 valid_entries1[tail] <= 1;
                 valid_entries2[tail] <= valid[1];
                 tail <= (tail + 1) % 64;
@@ -304,7 +315,8 @@ module RS_ALU (                                             //명령어 forwardi
                 operand1s[tail] <= operand1;
                 operand2s[tail] <= operand2;
                 operand1_datas[tail] <= operand1_data;
-                operand2_datas[tail] <= DIV_result;
+                operand2_datas[tail] <= DIV_result; 
+                takens[tail] <= RS_alu_IF_ID_taken;
                 valid_entries1[tail] <= valid[0];
                 valid_entries2[tail] <= 1; 
                 tail <= (tail + 1) % 64;
@@ -328,7 +340,8 @@ module RS_ALU (                                             //명령어 forwardi
                 operand1s[tail] <= operand1;
                 operand2s[tail] <= operand2;
                 operand1_datas[tail] <= RData;
-                operand2_datas[tail] <= operand2_data;
+                operand2_datas[tail] <= operand2_data; 
+                takens[tail] <= RS_alu_IF_ID_taken;
                 valid_entries1[tail] <= 1;
                 valid_entries2[tail] <= valid[1] ; 
                 tail <= (tail + 1) % 64;
@@ -351,6 +364,7 @@ module RS_ALU (                                             //명령어 forwardi
                 operand2s[tail] <= operand2;
                 operand1_datas[tail] <= operand1_data;
                 operand2_datas[tail] <= RData;
+                takens[tail] <= RS_alu_IF_ID_taken;
                 valid_entries1[tail] <= valid[0];
                 valid_entries2[tail] <= 1 ; 
                 tail <= (tail + 1) % 64;
@@ -373,6 +387,7 @@ module RS_ALU (                                             //명령어 forwardi
                 operand2s[tail] <= operand2;
                 operand1_datas[tail] <= operand1_data;
                 operand2_datas[tail] <= operand2_data;
+                takens[tail] <= RS_alu_IF_ID_taken;
                 valid_entries1[tail] <= valid[0];
                 valid_entries2[tail] <= valid[1]; 
                 tail <= (tail + 1) % 64;
@@ -444,11 +459,11 @@ module RS_ALU (                                             //명령어 forwardi
             if (valid_entries1[i] && valid_entries2[i] && !MemReads[i]) begin
                 readys[i] = 1;
                 RS_ALU_on[i] =1;
-                result[i] = {inst_nums[i],1'b1, PCs[i], Rds[i], MemToRegs[i], MemReads[i], MemWrites[i], ALUOPs[i], ALUSrc1s[i], ALUSrc2s[i], Jumps[i], Branchs[i], funct3s[i],immediates[i], operand1_datas[i], operand2_datas[i]};
+              result[i] = {takens[i], inst_nums[i],1'b1, PCs[i], Rds[i], MemToRegs[i], MemReads[i], MemWrites[i], ALUOPs[i], ALUSrc1s[i], ALUSrc2s[i], Jumps[i], Branchs[i], funct3s[i],immediates[i], operand1_datas[i], operand2_datas[i]};
             end else if (valid_entries1[i] && valid_entries2[i] && MemReads[i]) begin
                 readys[i] = 1;
                 RS_ALU_on[i] =1;
-                result[i] = {inst_nums[i],1'b0, PCs[i], Rds[i], MemToRegs[i], MemReads[i], MemWrites[i], ALUOPs[i], ALUSrc1s[i], ALUSrc2s[i], Jumps[i], Branchs[i], funct3s[i],immediates[i], operand1_datas[i], operand2_datas[i]};
+                result[i] = {takens[i], inst_nums[i],1'b0, PCs[i], Rds[i], MemToRegs[i], MemReads[i], MemWrites[i], ALUOPs[i], ALUSrc1s[i], ALUSrc2s[i], Jumps[i], Branchs[i], funct3s[i],immediates[i], operand1_datas[i], operand2_datas[i]};
             end
         end
     end
