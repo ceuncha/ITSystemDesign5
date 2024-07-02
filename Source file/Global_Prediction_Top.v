@@ -10,7 +10,8 @@ module global_prediction_top (
     output wire [31:0] PC, // Corrected the bit width
     output wire Wrong,
     output wire first_and_Pcsrc, // New output port
-    output wire hit
+    output wire hit,
+    output wire taken
 );
 
 // Internal signals
