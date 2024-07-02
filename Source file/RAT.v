@@ -158,14 +158,7 @@ module shadow_RAT_register(         //branch 시에 이용하는 shadow register
     reg [7:0] registers [0:31];  
     integer l;
     
-    always @(posedge reset) begin
-        if (reset) begin
-            for (l = 0; l < 32; l = l + 1) begin
-                registers[l] <= 8'b0;
-            end
 
-    end
-end
 
     always @(posedge write_enable) begin
         registers[addr] <= data_in;
