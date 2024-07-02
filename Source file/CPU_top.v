@@ -131,7 +131,7 @@ wire [31:0] RS_EX_PC_ALU = result_out_alu[149:118];
 wire ALU_Done = result_out_alu[150];
 wire [31:0] RS_EX_inst_num = result_out_alu[182:151];
 wire RS_EX_taken;
-
+wire RS_alu_IF_ID_taken;
 
     // Internal signals for RS_mul wire
     wire RS_mul_start;
@@ -451,7 +451,9 @@ control_unit_top u_control_unit_top(
         .out_div_Operand1_phy(RS_div_operand1),
         .out_div_Operand2_phy(RS_div_operand2),
         .out_div_valid(RS_div_valid),
-        .out_div_immediate(RS_div_immediate)
+        .out_div_immediate(RS_div_immediate),
+        .IF_ID_taken(IF_ID_taken),
+        .RS_alu_IF_ID_taken(RS_alu_IF_ID_taken)
     );
 
 
