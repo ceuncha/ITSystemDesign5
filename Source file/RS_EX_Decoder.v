@@ -17,6 +17,7 @@ module RS_EX_decoder(
     input wire ALUSrc2,		
     input wire Jump,		
     input wire Branch,
+    input wire IF_ID_taken,
     
     input [7:0] rd_phy_reg, // 8-bit, 물리적 레지스터 주소
     input [7:0] Operand1_phy,  
@@ -89,7 +90,8 @@ module RS_EX_decoder(
     output reg [7:0] out_div_Operand2_phy,
     output reg [1:0] out_div_valid,
     output reg [31:0] out_div_immediate,
-    output reg [31:0] out_div_inst_num
+    output reg [31:0] out_div_inst_num,
+    output reg RS_alu_IF_ID_taken
 );
 
 always @(posedge clk or posedge reset) begin
@@ -158,6 +160,8 @@ always @(posedge clk or posedge reset) begin
         out_div_Jump <= 0;		
         out_div_Branch <= 0; 
         out_div_inst_num <= 0; 
+
+        RS_alu_IF_ID_taken <= 0;
     end
 end
 
@@ -269,6 +273,7 @@ always @(*) begin
                             out_add_Jump = Jump;		
                             out_add_Branch = Branch;
                             out_add_inst_num = inst_num;
+                            RS_alu_IF_ID_taken = IF_ID_taken;
                         end
                     endcase
                 end
@@ -296,6 +301,7 @@ always @(*) begin
                     out_add_Jump = Jump;		
                     out_add_Branch = Branch;
                     out_add_inst_num = inst_num;
+                    RS_alu_IF_ID_taken = IF_ID_taken;
                 end
             endcase
         end
@@ -323,6 +329,7 @@ always @(*) begin
             out_add_Jump = Jump;		
             out_add_Branch = Branch;
             out_add_inst_num = inst_num;
+            RS_alu_IF_ID_taken = IF_ID_taken;
         end
     endcase
 end
