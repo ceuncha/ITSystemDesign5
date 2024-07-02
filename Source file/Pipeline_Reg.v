@@ -6,6 +6,8 @@ module ifid_pipeline_register (
     input [31:0] inst_num,
     input [31:0] PC,
     input IF_ID_Flush,
+    input taken,
+    output reg IF_ID_taken
     output reg [31:0] IF_ID_instOut,  
     output reg [31:0] IF_ID_inst_num,
     output reg [31:0] IF_ID_PC,
