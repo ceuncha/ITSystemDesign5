@@ -3,7 +3,6 @@ module global_prediction_top (
     input wire reset,
     input wire ID_EX_Branch,
     input wire Pcsrc,
-    input wire PC_Stall,
     input wire [31:0] ID_EX_PC,
     input wire [31:0] PC_Branch, // Corrected the bit width
     input wire ID_EX_Jump,
@@ -87,7 +86,6 @@ assign Mux_1_sel = taken && hit;
 Program_Counter pc_inst (
     .clk(clk),
     .reset(reset),
-    .PC_Stall(PC_Stall),
     .PC_final_next(PC_final_next),
     .PC(PC)
 );
