@@ -3,10 +3,10 @@ module chuchu (
     input clk,
     input reset,
 
-    input save_state,          // 상태 저장 신호
-    input restore_state,       // 상태 복원 신호
-    input [2:0] save_page,     // 상태 저장 페이지 선택 신호
-    input [2:3] restore_page,  // 상태 복원 페이지 선택 신호
+    input save_state,        
+    input restore_state,      
+    input [2:0] save_page,     
+    input [2:3] restore_page, 
     input [7:0] rat_data,
     output reg [7:0] chuchu_out
 );
@@ -15,7 +15,7 @@ module chuchu (
     reg [6:0] current_index;
     integer i;
 
-    // 사본 레지스터 배열 인스턴스
+
     wire [7:0] shadow_data_out [0:7][0:127];
     reg [7:0] shadow_data_in [0:7][0:127];
     reg shadow_write_enable [0:7];
@@ -28,7 +28,7 @@ module chuchu (
                 shadow_chuchu u_shadow_chuchu (
 
                     .reset(reset),
-                    .addr(k[6:0]),  // 정수형을 7비트로 강제 변환
+                    .addr(k[6:0]),  
                     .data_in(shadow_data_in[j][k]),
                     .data_out(shadow_data_out[j][k]),
                     .write_enable(shadow_write_enable[j])
@@ -36,70 +36,56 @@ module chuchu (
             end
         end
     endgenerate
-    always @(posedge reset) begin
+
+    
+    always @(posedge clk) begin   
+        if(reset) begin
             for (i = 0; i < 128; i = i + 1) begin
                 chuchu_array[i] <= 32 + i;
             end
             current_index <= 1;
             chuchu_out <= 32;
             chuchu_array[0] <=  8'b10100000;
-    end
-    
-    always @(posedge clk) begin   //output으로 비어있는 물리주소를 rat로 전송해주고,
-                                    /* rat로부터 재 할당됨으로써 더이상 이용하지 않는 물리주소를
-                                    입력받아 프리리스트의 가장 후순위에 배치해준다. */
+        end                           
+                                    
         if(!reset) begin
-
+            if(restore_state) begin
+                for (i = 0; i < 128; i = i + 1) begin
+                    chuchu_array[i] <= shadow_data_out[restore_page][i];
+                end
+            chuchu_out <= shadow_data_out[restore_page][current_index];
+            chuchu_array[(current_index-2)%128] <= rat_data;
+            current_index <= (current_index + 1) % 128;
+            end else begin
+            shadow_write_enable[save_page] <= 0;
+            if(save_state) begin
+                for (i = 0; i < 128; i = i + 1) begin
+                    shadow_data_in[save_page][i] <= chuchu_array[i];
+                end
+                shadow_write_enable[save_page] <= 1;
+            end
             chuchu_out <= chuchu_array[current_index];
             chuchu_array[(current_index-2)%128] <= rat_data;
             current_index <= (current_index + 1) % 128;
-        end
-        end
-   
-
-    always @(posedge save_state) begin  //branch 신호가 instruction memory에서 나오면 
-                                        // 해당 프리리스트 정보를 백업해준다.
-
-            for (i = 0; i < 128; i = i + 1) begin
-                shadow_data_in[save_page][i] <= chuchu_array[i];
-            end
-            shadow_write_enable[save_page] <= 1;
-
-
-    end
-    
-    always @(negedge save_state) begin
-        shadow_write_enable[save_page] <= 0;
-    end
-
-    always @(posedge restore_state) begin   //BB로부터 복구명령이 오면 프리리스트의 정보를 branch 명령어가 
-                                               // 들어왔을 당시의 정보로 복원해준다.
-
-            for (i = 0; i < 128; i = i + 1) begin
-                chuchu_array[i] <= shadow_data_out[restore_page][i];
             end
         end
+    end
+
 
 endmodule
 
 module shadow_chuchu(
 
     input wire reset,
-    input wire [6:0] addr,    // 레지스터 주소 (0-127)
+    input wire [6:0] addr,    
     input wire [7:0] data_in,
     output reg [7:0] data_out,
     input wire write_enable
 );
-    reg [7:0] registers [0:127];  // 128개의 8비트 레지스터
+    reg [7:0] registers [0:127];  
     integer i;
     
-    always @(posedge reset) begin
-        if (reset) begin
-            for (i = 0; i < 128; i = i + 1) begin
-                registers[i] <= 8'b0;
-            end
-        end
-    end
+
 
 always @(posedge write_enable) begin
                 registers[addr] <= data_in;
