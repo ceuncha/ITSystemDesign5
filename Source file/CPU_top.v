@@ -266,7 +266,7 @@ ifid_pipeline_register u_ifid_pipeline_register(
     .PC(PC),
     .taken(taken),
     .IF_ID_taken(IF_ID_taken),
-    .IF_ID_Flush(IF_ID_Flush),
+    .IF_ID_Flush(Predict_Result),
     .IF_ID_instOut(IF_ID_instOut),  
     .inst_num(inst_num),
     .IF_ID_inst_num(IF_ID_inst_num),
@@ -284,7 +284,7 @@ RAT u_RAT(
     .clk(clk),
     .reset(rst),
 
-    .if_id_flush(PCSrc),
+    .if_id_flush(Predict_Result),
     .save_state(save_on),    // 사본 레지스터에 상태 저장 신호
     .restore_state(restore_on), // 사본 레지스터에서 상태 복원 신호
     .save_page(save_page),     // 상태 저장용 사본 레지스터 페이지 선택 신호
