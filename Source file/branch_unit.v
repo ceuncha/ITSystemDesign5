@@ -6,7 +6,7 @@ module BranchUnit(
     input wire [31:0] ALUResult,
     input wire [31:0] imm,
     input wire [31:0] PC,
-    
+    input wire RS_EX_taken,
     input wire ALUNegative, // Negative flag from ALU
     input wire ALUZero,     // Zero flag from ALU
     input wire ALUOverflow, // Overflow flag from ALU
@@ -16,7 +16,7 @@ module BranchUnit(
     output reg [31:0] branch_index,
     output reg PCSrc,
     output reg IF_ID_Flush
-
+    output reg Predict_Result
 );
 
 
