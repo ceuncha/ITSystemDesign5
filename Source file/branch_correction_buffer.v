@@ -23,8 +23,8 @@ reg [2:0] next_index; // Next index to insert new entry
 reg [2:0] find_index;
 
 // Reset all entries
-always @(posedge clk or negedge reset) begin
-    if (!reset) begin
+always @(posedge clk) begin
+    if (reset) begin
         valid[0] <= 1'b0;
         valid[1] <= 1'b0;
         valid[2] <= 1'b0;
