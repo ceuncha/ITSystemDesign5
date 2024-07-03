@@ -6,11 +6,13 @@ module ifid_pipeline_register (
     input [31:0] PC,
     input Predict_Result,
     input taken,
+    input hit,
     output reg IF_ID_taken,
     output reg [31:0] IF_ID_instOut,  
     output reg [31:0] IF_ID_inst_num,
     output reg [31:0] IF_ID_PC,
-    output reg ROB_Flush
+    output reg ROB_Flush,
+    output reg IF_ID_hit
 );
     
     always @(posedge clk or posedge reset) begin
@@ -21,6 +23,7 @@ module ifid_pipeline_register (
             IF_ID_PC <= 32'b0;
             ROB_Flush <= 1'b0;
             IF_ID_taken<= 1'b0;
+            IF_ID_hit <= 1'b0;
 
         end else if (Predict_Result) begin
             IF_ID_instOut <= 32'b0;
@@ -28,6 +31,7 @@ module ifid_pipeline_register (
             IF_ID_PC <= 32'b0;
             ROB_Flush <= 1'b1;
             IF_ID_taken<= 1'b0;
+            IF_ID_hit <= 1'b0;
         end else begin
             // ?逾???쑎??뻻揶?? ?釉???빍??? ??뮞??꽘?猷? ?釉???빜 ?釉? ??젟?湲? ?猷???삂
             IF_ID_instOut <= instOut;
@@ -35,6 +39,7 @@ module ifid_pipeline_register (
             IF_ID_PC <= PC;
             ROB_Flush <= 1'b0;
             IF_ID_taken<= taken;
+            IF_ID_hit <= hit;
 
         end
     end
