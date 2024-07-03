@@ -284,6 +284,8 @@ ifid_pipeline_register u_ifid_pipeline_register(
     .instOut(instOut),
     .PC(PC),
     .taken(taken),
+    .hit(hit),
+    .IF_ID_hit(IF_ID_hit),
     .IF_ID_taken(IF_ID_taken),
     .Predict_Result(Predict_Result),
     .IF_ID_instOut(IF_ID_instOut),  
