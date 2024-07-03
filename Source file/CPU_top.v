@@ -24,6 +24,7 @@ wire [4:0] Rd =instOut[11:7];
 wire [6:0] instOut_opcode = instOut[6:0];
 // ID stage
 wire IF_ID_taken;
+wire IF_ID_hit;
 wire [31:0] IF_ID_instOut;
 wire [31:0] IF_ID_PC;
 wire [31:0] IF_ID_inst_num;
@@ -118,8 +119,9 @@ wire [31:0] branch_index;
     wire [31:0] RS_mul_operand1_data;
     wire [31:0] RS_mul_operand2_data;
     wire [1:0] RS_alu_valid;
-    wire [183:0]result_out_alu;
- wire RS_alu_IF_ID_taken;
+    wire [184:0]result_out_alu;
+    wire RS_alu_IF_ID_taken;
+    wire RS_alu_IF_ID_hit;
 
  wire [31:0] Operand2_ALU = result_out_alu[31:0];
 wire [31:0] Operand1_ALU = result_out_alu[63:32];
@@ -137,7 +139,8 @@ wire [7:0] ALU_Phy = result_out_alu[117:110];
 wire [31:0] RS_EX_PC_ALU = result_out_alu[149:118];
 wire ALU_Done = result_out_alu[150];
 wire [31:0] RS_EX_inst_num = result_out_alu[182:151];
-wire RS_EX_taken =result_out_alu[183];
+wire RS_EX_taken=result_out_alu[183];
+wire RS_EX_hit=result_out_alu[184];
 wire RS_alu_IF_ID_taken;
 
     // Internal signals for RS_mul wire
@@ -262,10 +265,10 @@ global_prediction_top u_global_prediction_top(
     .ID_EX_Jump(RS_EX_Jump),
     .PC(PC),
     .Wrong(Wrong),
-    .first_and_Pcsrc(first_and_Pcsrc),
     .hit(hit),
     .ID_EX_hit(ID_EX_hit),
-    .taken(taken)
+    .taken(taken),
+    .RS_EX_hit(RS_EX_hit)
 );
 
 ROB_Counter u_ROB_Counter(
@@ -285,8 +288,8 @@ ifid_pipeline_register u_ifid_pipeline_register(
     .PC(PC),
     .taken(taken),
     .hit(hit),
-    .IF_ID_hit(IF_ID_hit),
     .IF_ID_taken(IF_ID_taken),
+    .IF_ID_hit(IF_ID_hit),
     .Predict_Result(Predict_Result),
     .IF_ID_instOut(IF_ID_instOut),  
     .inst_num(inst_num),
@@ -474,7 +477,9 @@ control_unit_top u_control_unit_top(
         .out_div_valid(RS_div_valid),
         .out_div_immediate(RS_div_immediate),
         .IF_ID_taken(IF_ID_taken),
-        .RS_alu_IF_ID_taken(RS_alu_IF_ID_taken)
+        .RS_alu_IF_ID_taken(RS_alu_IF_ID_taken),
+        .IF_ID_hit(IF_ID_hit),
+        .RS_alu_IF_ID_hit(RS_alu_IF_ID_hit)
     );
 
 
@@ -518,7 +523,8 @@ control_unit_top u_control_unit_top(
         .DIV_result_dest(DIV_Phy),
         .DIV_result_valid(DIV_Done),
         .RS_alu_IF_ID_taken(RS_alu_IF_ID_taken),
-            .result_out(result_out_alu)
+        .RS_alu_IF_ID_hit(RS_alu_IF_ID_hit),
+         .result_out(result_out_alu)
     );
 
 
