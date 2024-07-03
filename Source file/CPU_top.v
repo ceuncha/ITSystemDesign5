@@ -256,7 +256,7 @@ global_prediction_top u_global_prediction_top(
     .clk(clk),
     .reset(rst),
     .ID_EX_Branch(RS_EX_Branch),
-    .Pcsrc(Pcsrc),
+    .Pcsrc(PCSrc),
     .ID_EX_PC(RS_EX_PC_ALU),
     .PC_Branch(PC_Branch),
     .ID_EX_Jump(RS_EX_Jump),
