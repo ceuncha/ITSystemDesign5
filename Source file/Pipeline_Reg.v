@@ -1,13 +1,12 @@
-//IFID PIPELINE REGISTER
 module ifid_pipeline_register (
     input clk,
     input reset,
     input [31:0] instOut,
     input [31:0] inst_num,
     input [31:0] PC,
-    input IF_ID_Flush,
+    input Predict_Result,
     input taken,
-    output reg IF_ID_taken
+    output reg IF_ID_taken,
     output reg [31:0] IF_ID_instOut,  
     output reg [31:0] IF_ID_inst_num,
     output reg [31:0] IF_ID_PC,
@@ -16,23 +15,26 @@ module ifid_pipeline_register (
     
     always @(posedge clk or posedge reset) begin
         if (reset) begin
-            // �뵳�딅�� ?�뻿?�깈揶�? ?�넞?苑�?�넅?由븝쭖? �룯�뜃由�?�넅
+            // ?뵳?딅?? ??뻿??깈揶?? ??넞?苑???넅?由븝쭖? ?룯?뜃由???넅
             IF_ID_instOut <= 32'b0;
             IF_ID_inst_num <= 32'b0;
             IF_ID_PC <= 32'b0;
             ROB_Flush <= 1'b0;
+            IF_ID_taken<= 1'b0;
 
-        end else if (IF_ID_Flush) begin
+        end else if (Predict_Result) begin
             IF_ID_instOut <= 32'b0;
             IF_ID_inst_num <= 32'b0;
             IF_ID_PC <= 32'b0;
             ROB_Flush <= 1'b1;
+            IF_ID_taken<= 1'b0;
         end else begin
-            // ?逾�?�쑎?�뻻揶�? ?釉�?�빍��? ?�뮞?�꽘?猷� ?釉�?�빜 ?釉� ?�젟?湲� ?猷�?�삂
+            // ?逾???쑎??뻻揶?? ?釉???빍??? ??뮞??꽘?猷? ?釉???빜 ?釉? ??젟?湲? ?猷???삂
             IF_ID_instOut <= instOut;
             IF_ID_inst_num <= inst_num;
             IF_ID_PC <= PC;
             ROB_Flush <= 1'b0;
+            IF_ID_taken<= taken;
 
         end
     end
