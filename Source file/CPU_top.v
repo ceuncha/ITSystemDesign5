@@ -118,7 +118,7 @@ wire [31:0] branch_index;
     wire [31:0] RS_mul_operand1_data;
     wire [31:0] RS_mul_operand2_data;
     wire [1:0] RS_alu_valid;
-    wire [182:0]result_out_alu;
+    wire [183:0]result_out_alu;
  wire RS_alu_IF_ID_taken;
 
  wire [31:0] Operand2_ALU = result_out_alu[31:0];
@@ -137,7 +137,7 @@ wire [7:0] ALU_Phy = result_out_alu[117:110];
 wire [31:0] RS_EX_PC_ALU = result_out_alu[149:118];
 wire ALU_Done = result_out_alu[150];
 wire [31:0] RS_EX_inst_num = result_out_alu[182:151];
-wire RS_EX_taken=result_out_alu[183];
+wire RS_EX_taken =result_out_alu[183];
 wire RS_alu_IF_ID_taken;
 
     // Internal signals for RS_mul wire
@@ -515,6 +515,7 @@ control_unit_top u_control_unit_top(
         .DIV_result(DIV_Data),
         .DIV_result_dest(DIV_Phy),
         .DIV_result_valid(DIV_Done),
+        .RS_alu_IF_ID_taken(RS_alu_IF_ID_taken),
             .result_out(result_out_alu)
     );
 
