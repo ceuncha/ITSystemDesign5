@@ -265,10 +265,9 @@ global_prediction_top u_global_prediction_top(
     .ID_EX_Jump(RS_EX_Jump),
     .PC(PC),
     .Wrong(Wrong),
-    .hit(hit),
-    .ID_EX_hit(ID_EX_hit),
+    .hit(hit),    
     .taken(taken),
-    .RS_EX_hit(RS_EX_hit)
+    .ID_EX_hit(RS_EX_hit)
 );
 
 ROB_Counter u_ROB_Counter(
