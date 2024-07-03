@@ -110,11 +110,10 @@ module RS_ALU (                                             //명령어 forwardi
     input wire DIV_result_valid,
 
     input wire RS_alu_IF_ID_taken,
+    input wire RS_alu_IF_ID_hit,
   
-  output reg [183:0] result_out,
+  output reg [184:0] result_out
     
-    input wire PCSrc,
-    input wire ROB_Counter
 );
     
     // Internal storage for reservation station entries
@@ -137,8 +136,9 @@ module RS_ALU (                                             //명령어 forwardi
     reg [31:0] operand2_datas [0:63]; // operand2 data
     reg [63:0] valid_entries1;  // operand1?씠 valid?븳吏?
     reg [63:0] valid_entries2; // operand2媛? valid?븳吏?
-    reg [183:0] result [0:63];
+    reg [184:0] result [0:63];
     reg [63:0] takens;
+    reg [63:0] hits;
     reg [6:0] tail;
     reg [6:0] head;
     reg [63:0] readys;
@@ -173,6 +173,7 @@ module RS_ALU (                                             //명령어 forwardi
                 valid_entries1[i] <= 1'b0; 
                 valid_entries2[i] <= 1'b0; 
               takens[i] <= 1'b0;
+              hits[i] <= 1'b0;
               RS_ALU_on[i] <=0;
             end
         end else if (start) begin
@@ -199,6 +200,7 @@ module RS_ALU (                                             //명령어 forwardi
                 operand1_datas[tail] <= ALU_result;
                 operand2_datas[tail] <= operand2_data;
                 takens[tail] <= RS_alu_IF_ID_taken;
+                hits[tail] <= RS_alu_IF_ID_hit;
                 valid_entries1[tail] <= 1;
                 valid_entries2[tail] <= valid[1];
                 tail <= (tail + 1) % 64;
@@ -222,6 +224,7 @@ module RS_ALU (                                             //명령어 forwardi
                 operand1_datas[tail] <= operand1_data;
                 operand2_datas[tail] <= ALU_result;
                 takens[tail] <= RS_alu_IF_ID_taken;
+                hits[tail] <= RS_alu_IF_ID_hit;
                 valid_entries1[tail] <= valid[0];
                 valid_entries2[tail] <= 1; 
                 takens[i] <= RS_alu_IF_ID_taken;
@@ -247,6 +250,7 @@ module RS_ALU (                                             //명령어 forwardi
                 operand1_datas[tail] <= MUL_result;
                 operand2_datas[tail] <= operand2_data;
                 takens[tail] <= RS_alu_IF_ID_taken;
+                hits[tail] <= RS_alu_IF_ID_hit;
                 valid_entries1[tail] <= 1;
                 valid_entries2[tail] <= valid[1];
                 tail <= (tail + 1) % 64;
@@ -270,6 +274,7 @@ module RS_ALU (                                             //명령어 forwardi
                 operand1_datas[tail] <= operand1_data;
                 operand2_datas[tail] <= MUL_result;
                 takens[tail] <= RS_alu_IF_ID_taken;
+                hits[tail] <= RS_alu_IF_ID_hit;
                 valid_entries1[tail] <= valid[0];
                 valid_entries2[tail] <= 1; 
                 tail <= (tail + 1) % 64;
@@ -294,6 +299,7 @@ module RS_ALU (                                             //명령어 forwardi
                 operand1_datas[tail] <= DIV_result;
                 operand2_datas[tail] <= operand2_data;
                 takens[tail] <= RS_alu_IF_ID_taken;
+                hits[tail] <= RS_alu_IF_ID_hit;
                 valid_entries1[tail] <= 1;
                 valid_entries2[tail] <= valid[1];
                 tail <= (tail + 1) % 64;
@@ -317,6 +323,7 @@ module RS_ALU (                                             //명령어 forwardi
                 operand1_datas[tail] <= operand1_data;
                 operand2_datas[tail] <= DIV_result; 
                 takens[tail] <= RS_alu_IF_ID_taken;
+                hits[tail] <= RS_alu_IF_ID_hit;
                 valid_entries1[tail] <= valid[0];
                 valid_entries2[tail] <= 1; 
                 tail <= (tail + 1) % 64;
@@ -342,6 +349,7 @@ module RS_ALU (                                             //명령어 forwardi
                 operand1_datas[tail] <= RData;
                 operand2_datas[tail] <= operand2_data; 
                 takens[tail] <= RS_alu_IF_ID_taken;
+                hits[tail] <= RS_alu_IF_ID_hit;
                 valid_entries1[tail] <= 1;
                 valid_entries2[tail] <= valid[1] ; 
                 tail <= (tail + 1) % 64;
@@ -365,6 +373,7 @@ module RS_ALU (                                             //명령어 forwardi
                 operand1_datas[tail] <= operand1_data;
                 operand2_datas[tail] <= RData;
                 takens[tail] <= RS_alu_IF_ID_taken;
+                hits[tail] <= RS_alu_IF_ID_hit;
                 valid_entries1[tail] <= valid[0];
                 valid_entries2[tail] <= 1 ; 
                 tail <= (tail + 1) % 64;
@@ -388,6 +397,7 @@ module RS_ALU (                                             //명령어 forwardi
                 operand1_datas[tail] <= operand1_data;
                 operand2_datas[tail] <= operand2_data;
                 takens[tail] <= RS_alu_IF_ID_taken;
+                hits[tail] <= RS_alu_IF_ID_hit;
                 valid_entries1[tail] <= valid[0];
                 valid_entries2[tail] <= valid[1]; 
                 tail <= (tail + 1) % 64;
@@ -459,11 +469,11 @@ module RS_ALU (                                             //명령어 forwardi
             if (valid_entries1[i] && valid_entries2[i] && !MemReads[i]) begin
                 readys[i] = 1;
                 RS_ALU_on[i] =1;
-              result[i] = {takens[i], inst_nums[i],1'b1, PCs[i], Rds[i], MemToRegs[i], MemReads[i], MemWrites[i], ALUOPs[i], ALUSrc1s[i], ALUSrc2s[i], Jumps[i], Branchs[i], funct3s[i],immediates[i], operand1_datas[i], operand2_datas[i]};
+              result[i] = {hits[i],takens[i], inst_nums[i],1'b1, PCs[i], Rds[i], MemToRegs[i], MemReads[i], MemWrites[i], ALUOPs[i], ALUSrc1s[i], ALUSrc2s[i], Jumps[i], Branchs[i], funct3s[i],immediates[i], operand1_datas[i], operand2_datas[i]};
             end else if (valid_entries1[i] && valid_entries2[i] && MemReads[i]) begin
                 readys[i] = 1;
                 RS_ALU_on[i] =1;
-                result[i] = {takens[i], inst_nums[i],1'b0, PCs[i], Rds[i], MemToRegs[i], MemReads[i], MemWrites[i], ALUOPs[i], ALUSrc1s[i], ALUSrc2s[i], Jumps[i], Branchs[i], funct3s[i],immediates[i], operand1_datas[i], operand2_datas[i]};
+                result[i] = {hits[i], takens[i], inst_nums[i],1'b0, PCs[i], Rds[i], MemToRegs[i], MemReads[i], MemWrites[i], ALUOPs[i], ALUSrc1s[i], ALUSrc2s[i], Jumps[i], Branchs[i], funct3s[i],immediates[i], operand1_datas[i], operand2_datas[i]};
             end
         end
     end
