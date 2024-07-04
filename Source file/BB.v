@@ -20,10 +20,10 @@ integer i;
 integer j;
 reg [4:0] head;
 reg [4:0] tail;
-reg Paste_RAT_set;                    // 플래그 추가
+reg Paste_RAT_set;                    // ?뵆?옒洹? 異붽?
 
 // Reset BB entries
-task reset_bb_entries;  //한번 분기가 진행되면, 이후의 분기 정보는 무의미하게 되므로 bb를 비워준다.
+task reset_bb_entries;  //?븳踰? 遺꾧린媛? 吏꾪뻾?릺硫?, ?씠?썑?쓽 遺꾧린 ?젙蹂대뒗 臾댁쓽誘명븯寃? ?릺誘?濡? bb瑜? 鍮꾩썙以??떎.
     begin
         head <= 0;
         tail <= 0;
@@ -40,10 +40,10 @@ always @(posedge clk) begin
         reset_bb_entries();
     end else begin
         // Check for jump or branch opcode
-        if (opcode == 7'b1100011 || opcode == 7'b1101111 || opcode == 7'b1100111) begin // branch 명령어가 inst memory에서 나오게 되면 
-                                                                                           //counter 숫자와 
-                                                                                           //페이지 넘버를 BB에 저장해준다. 코드에는 pc라고 
-                                                                                           // 적혀있지만 counter 숫자를 입력받는다.
+        if (opcode == 7'b1100011 || opcode == 7'b1101111 || opcode == 7'b1100111) begin // branch 紐낅졊?뼱媛? inst memory?뿉?꽌 ?굹?삤寃? ?릺硫? 
+                                                                                           //counter ?닽?옄?? 
+                                                                                           //?럹?씠吏? ?꽆踰꾨?? BB?뿉 ???옣?빐以??떎. 肄붾뱶?뿉?뒗 pc?씪怨? 
+                                                                                           // ?쟻???엳吏?留? counter ?닽?옄瑜? ?엯?젰諛쏅뒗?떎.
             BB_entry[tail] <= PC;    // Store the current PC value in ROB at tail position
             ready[tail] <= 1'b0;     // Set ready flag to 0
             tail_num <= tail;        //
@@ -54,27 +54,27 @@ always @(posedge clk) begin
         end
 
         // Compare branch_PC with head's PC and check PCSrc
-    if (RS_EX_Branch || RS_EX_Jump) begin                   /*branch에서 분기 명령이 수행되면, BB로 분기명령이 시행되었다는 신호와  counter number이 전송된다.
-                                                            BB는 적혀있던 Branch 신호들의 counter 숫자와 branch로부터 온 counter 숫자를 이용해서 해당 엔트리의 ready를 1로 변경해준다,
-                                                            만약 head에 위치한 명령어의 분기신호가 들어왔다면, 별도의 ready bit 설정 없이 바로 복구 신호를 rat와 freelist로 전송해준다. */
-        if (BB_entry[head] == branch_PC) begin              // head에 위치한 분기 신호가 들어왔을때
+    if (RS_EX_Branch || RS_EX_Jump) begin                   /*branch?뿉?꽌 遺꾧린 紐낅졊?씠 ?닔?뻾?릺硫?, BB濡? 遺꾧린紐낅졊?씠 ?떆?뻾?릺?뿀?떎?뒗 ?떊?샇??  counter number?씠 ?쟾?넚?맂?떎.
+                                                            BB?뒗 ?쟻???엳?뜕 Branch ?떊?샇?뱾?쓽 counter ?닽?옄?? branch濡쒕??꽣 ?삩 counter ?닽?옄瑜? ?씠?슜?빐?꽌 ?빐?떦 ?뿏?듃由ъ쓽 ready瑜? 1濡? 蹂?寃쏀빐以??떎,
+                                                            留뚯빟 head?뿉 ?쐞移섑븳 紐낅졊?뼱?쓽 遺꾧린?떊?샇媛? ?뱾?뼱?솕?떎硫?, 蹂꾨룄?쓽 ready bit ?꽕?젙 ?뾾?씠 諛붾줈 蹂듦뎄 ?떊?샇瑜? rat?? freelist濡? ?쟾?넚?빐以??떎. */
+        if (BB_entry[head] == branch_PC) begin              // head?뿉 ?쐞移섑븳 遺꾧린 ?떊?샇媛? ?뱾?뼱?솕?쓣?븣
             if (PCSrc == 1'b1) begin
                 Paste_RAT <= 1;      // Set Paste_RAT to 1
-                Paste_RAT_set <= 1;  // 플래그 설정
+                Paste_RAT_set <= 1;  // ?뵆?옒洹? ?꽕?젙
                 head_num <= head;
                 reset_bb_entries();  // Reset BB entries
             end else begin
                 head <= (head + 1)% 32;    // Increment head
                 Paste_RAT <= 0;      // Reset Paste_RAT to 0
-                Paste_RAT_set <= 0;  // 플래그 리셋
+                Paste_RAT_set <= 0;  // ?뵆?옒洹? 由ъ뀑
             end
         end
         for (i = 0; i < 32; i = i + 1) begin
-            if (BB_entry[i] == branch_PC) begin //head에 위치하지 않은 분기신호가 들어왔을때
+            if (BB_entry[i] == branch_PC) begin //head?뿉 ?쐞移섑븯吏? ?븡?? 遺꾧린?떊?샇媛? ?뱾?뼱?솕?쓣?븣
                 if (PCSrc == 1'b1) begin
                 ready[i] <= 1'b1;   // Set the ready flag to 1
                 Paste_RAT <= 1;      // Set Paste_RAT to 1
-                Paste_RAT_set <= 1;  // 플래그 설정
+                Paste_RAT_set <= 1;  // ?뵆?옒洹? ?꽕?젙
                 head_num <= i;
                 tail <= i;
                     for (j = i; j < 32; j = j + 1) begin
@@ -91,12 +91,12 @@ always @(posedge clk) begin
 
 
         // Check if the head is ready
-        if (ready[head] == 1'b1) begin    //head가 변하였을때 ready bit가 1이면, 복구 신호를 전송해준다.
+        if (ready[head] == 1'b1) begin    //head媛? 蹂??븯???쓣?븣 ready bit媛? 1?씠硫?, 蹂듦뎄 ?떊?샇瑜? ?쟾?넚?빐以??떎.
 
             reset_bb_entries();  // Reset BB entries
         end
 
-        // 플래그를 확인하여 Paste_RAT 리셋
+        // ?뵆?옒洹몃?? ?솗?씤?븯?뿬 Paste_RAT 由ъ뀑
         if (Paste_RAT_set == 1) begin
             Paste_RAT <= 0;
             Paste_RAT_set <= 0;
