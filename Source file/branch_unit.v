@@ -27,6 +27,7 @@ always @(*) begin
             PCSrc = 1; // 점프 시 PC 소스 신호 활성화
             IF_ID_Flush = 1'b1;
             branch_index = PC;
+             Predict_Result = RS_EX_taken ^ PCSrc;
         end
         else if(ID_EX_Branch) begin
             case(ID_EX_funct3)
