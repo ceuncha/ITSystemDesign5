@@ -20,14 +20,13 @@ module BranchUnit(
 
 always @(*) begin
         PCSrc = 0;
-        PC_Branch = 0;  // 기본 분기 주소
+        PC_Branch = 0;  // 湲곕낯 遺꾧린 二쇱냼
         IF_ID_Flush = 0;
         if(ID_EX_Jump) begin
-            PC_Branch = ALUResult; // 점프 처리
-            PCSrc = 1; // 점프 시 PC 소스 신호 활성화
+            PC_Branch = ALUResult; // �젏�봽 泥섎━
+            PCSrc = 1; // �젏�봽 �떆 PC �냼�뒪 �떊�샇 �솢�꽦�솕
             IF_ID_Flush = 1'b1;
             branch_index = PC;
-             Predict_Result = RS_EX_taken ^ PCSrc;
         end
         else if(ID_EX_Branch) begin
             case(ID_EX_funct3)
@@ -41,15 +40,14 @@ always @(*) begin
             default: PCSrc = 0; 
             endcase
             if(PCSrc) begin
-                PC_Branch = imm + PC + 4; // 분기 주소 업데이트
+                PC_Branch = imm + PC + 4; // 遺꾧린 二쇱냼 �뾽�뜲�씠�듃
                 IF_ID_Flush = 1'b1;
                 branch_index = PC;
             end
-                    // Prediction_Result 값 설정
-        Predict_Result = RS_EX_taken ^ PCSrc;
         end
         
-
+        // Prediction_Result 媛� �꽕�젙
+        Predict_Result = RS_EX_taken ^ PCSrc;
     end
 
 endmodule
