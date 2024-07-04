@@ -10,7 +10,7 @@ initial begin
 end
 
 always @(posedge clk) begin
-    if (!reset) begin
+    if (reset) begin
         // reset 신호가 활성화된 경우 PC 초기화
         PC <= 32'd0;
     end else begin
