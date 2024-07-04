@@ -59,7 +59,7 @@ Branch_Target_Buffer btb_inst (
     .PC_Branch(PC_Branch),
     .PC(PC), // Connect PC from Program_Counter
     .PC_Target(PC_Target),
-    .first(first), // Internal connection
+
     .hit(hit)
 );
 
