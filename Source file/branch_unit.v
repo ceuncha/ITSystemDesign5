@@ -44,10 +44,11 @@ always @(*) begin
                 IF_ID_Flush = 1'b1;
                 branch_index = PC;
             end
+                    // Prediction_Result 값 설정
+        Predict_Result = RS_EX_taken ^ PCSrc;
         end
         
-        // Prediction_Result 값 설정
-        Predict_Result = RS_EX_taken ^ PCSrc;
+
     end
 
 endmodule
