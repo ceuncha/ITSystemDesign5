@@ -11,12 +11,13 @@ module global_prediction_top (
     output wire Wrong,
     output wire first_and_Pcsrc, // New output port
     output wire hit,
-    output wire taken
+    output wire PC_taken
 );
 
 // Internal signals
 (* keep = "true" *)wire [3:0] branch_history; // Corrected the bit width
 (* keep = "true" *)wire taken;
+(* keep = "true" *)wire PC_taken;
 (* keep = "true" *)wire hit;
 (* keep = "true" *)wire first; // Internal signal
 (* keep = "true" *)wire [31:0] PC_Target; // Corrected the bit width
@@ -87,6 +88,8 @@ assign Mux_1_sel = taken && hit;
 Program_Counter pc_inst (
     .clk(clk),
     .reset(reset),
+    .taken(taken),
+    .PC_taken(PC_taken),
     .PC_final_next(PC_final_next),
     .PC(PC)
 );
