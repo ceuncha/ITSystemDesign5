@@ -64,9 +64,9 @@ wire [31:0] RData2;
 wire [7:0] Rd_phy;
 //BB to RAT and Pfile
 wire save_on;
-wire [2:0] save_page;
+    wire [4:0] save_page;
 wire restore_on;
-wire [2:0] restore_page;
+    wire [4:0] restore_page;
 //Branch unit to BB
 wire [31:0] branch_index;
 //forwarding wb
