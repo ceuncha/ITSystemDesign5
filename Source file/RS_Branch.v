@@ -29,8 +29,10 @@ module RS_Branch (                                             //명령어 forwa
     input wire [31:0] PC_Return,
     input wire RS_BR_IF_ID_taken,
     input wire RS_BR_IF_ID_hit,
-  
     
+    input wire [7:0] BR_Phy,
+    input wire BR_Done,
+ 
     output reg RS_BR_Branch,
     output reg RS_BR_Jump,
     output reg RS_BR_Hit,
@@ -230,6 +232,42 @@ module RS_Branch (                                             //명령어 forwa
                 valid_entries1[tail] <= valid[0];
                 valid_entries2[tail] <= 1 ; 
                 tail <= (tail + 1) % 64;
+                end else if ( operand1 == BR_Phy) begin     
+                                                                // 명령어가 처음 들어왔을때, load의 결과와 명령어의 operand 물리주소를 비교하여 
+                                                              // 업데이트가 필요시 수행해준다.
+                 inst_nums[tail] <= RS_BR_inst_num;
+                PCs[tail] <= PC;
+                Rds[tail] <= Rd;
+                Jumps[tail] <= Jump;
+                Branchs[tail] <= Branch;
+                funct3s[tail] <= funct3;
+                immediates[tail] <= immediate;
+                operand1s[tail] <= operand1;
+                operand2s[tail] <= operand2;
+                operand1_datas[tail] <= PC_Return;
+                operand2_datas[tail] <= operand2_data; 
+                 takens[tail] <= RS_BR_IF_ID_taken;
+                 hits[tail] <= RS_BR_IF_ID_hit;
+                valid_entries1[tail] <= 1;
+                valid_entries2[tail] <= valid[1] ; 
+                tail <= (tail + 1) % 64;
+              end else if ( operand2 == BR_Phy) begin
+                  inst_nums[tail] <= RS_BR_inst_num;
+                PCs[tail] <= PC;
+                Rds[tail] <= Rd;
+                Jumps[tail] <= Jump;
+                Branchs[tail] <= Branch;
+                funct3s[tail] <= funct3;
+                immediates[tail] <= immediate;
+                operand1s[tail] <= operand1;
+                operand2s[tail] <= operand2;
+                operand1_datas[tail] <= operand1_data;
+                operand2_datas[tail] <= PC_Return;
+                  takens[tail] <= RS_BR_IF_ID_taken;
+                  hits[tail] <= RS_BR_IF_ID_hit;
+                valid_entries1[tail] <= valid[0];
+                valid_entries2[tail] <= 1 ; 
+                tail <= (tail + 1) % 64;
             end else begin
                 inst_nums[tail] <= RS_BR_inst_num;
                 PCs[tail] <= PC;
@@ -303,7 +341,19 @@ module RS_Branch (                                             //명령어 forwa
                     end
                 end     
             end
-
+           if (BR_Done) begin                //load의 결과가 들어왔을때, 기존에 RS에 들어있던 명령어들과 물리주소를 비교하여
+                                                        //필요한 값들을 업데이트 시켜준다.
+           for (i = 0; i < 64; i = i + 1) begin
+                    if (!valid_entries1[i] && operand1s[i] == BR_Phy) begin
+                        operand1_datas[i] <= PC_Return;
+                        valid_entries1[i] <= 1;
+                    end
+                    if (!valid_entries2[i] && operand2s[i] ==  BR_Phy) begin
+                        operand2_datas[i] <= PC_Return;
+                        valid_entries2[i] <= 1;
+                    end
+                end     
+            end
         if (valid_entries1[head] && valid_entries2[head]) begin       // Check if the entry is ready
             RS_BR_Branch <= Branchs [head];
             RS_BR_Jump <= Jumps[head];
