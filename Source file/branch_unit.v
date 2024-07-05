@@ -23,14 +23,14 @@ always @(*) begin
         PCSrc = 0;
         PC_Branch = 0;  
 
-        if(ID_EX_Jump) begin
-            PC_Branch = imm + PC_Retrun; 
+        if(RS_BR_Jump) begin
+            PC_Branch = immediate_BR + PC_Return; 
             PCSrc = 1; 
   
             branch_index = RS_BR_inst_num;
         end
-        else if(ID_EX_Branch) begin
-            case(ID_EX_funct3)
+        else if(RS_BR_Branch) begin
+            case(RS_BR_funct3)
             3'b000: PCSrc = ALUZero; // BEQ: Branch if Zero flag is 1
             3'b001: PCSrc = ~ALUZero; // BNE: Branch if Zero flag is 0
             3'b100: PCSrc = ALUNegative; // BLT: Branch if Negative flag is 1
@@ -41,14 +41,14 @@ always @(*) begin
             default: PCSrc = 0; 
             endcase
             if(PCSrc) begin
-                PC_Branch = imm + PC_Return; 
+                PC_Branch = immediate_BR + PC_Return; 
 
                 branch_index = RS_BR_inst_num;
             end
         end
         
         
-        Predict_Result = RS_EX_taken ^ PCSrc;
+        Predict_Result = RS_BR_taken ^ PCSrc;
     end
 
 endmodule
