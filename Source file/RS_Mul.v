@@ -1,11 +1,11 @@
 module priority_encoder (
-    input wire [63:0] ready, // 64鍮꾪듃 ready ?떊?샇
+    input wire [63:0] ready, // 64�뜮袁る뱜 ready ?�뻿?�깈
     input wire [6:0] head,
-    output reg [63:0] Y // 64鍮꾪듃 Y 異쒕젰
+    output reg [63:0] Y // 64�뜮袁る뱜 Y �빊�뮆�젾
 );
 
 always @(*) begin
-    // ?슦?꽑?닚?쐞 ?씤肄붾뜑 ?끉由?
+    // ?�뒭?苑�?�떄?�맄 ?�뵥�굜遺얜쐭 ?�걠�뵳?
     if (ready[(head+0)%64]) Y = 64'b0000000000000000000000000000000000000000000000000000000000000001;
     else if (ready[(head+1)%64]) Y = 64'b0000000000000000000000000000000000000000000000000000000000000010;
     else if (ready[(head+2)%64]) Y = 64'b0000000000000000000000000000000000000000000000000000000000000100;
@@ -69,7 +69,7 @@ always @(*) begin
     else if (ready[(head+61)%64]) Y = 64'b0010000000000000000000000000000000000000000000000000000000000000;
     else if (ready[(head+62)%64]) Y = 64'b0100000000000000000000000000000000000000000000000000000000000000;
     else if (ready[(head+63)%64]) Y = 64'b1000000000000000000000000000000000000000000000000000000000000000;
-    else Y = 64'b0; // 紐⑤뱺 議곌굔?뿉 ?빐?떦?븯吏? ?븡?쑝硫? 0?쑝濡? ?꽕?젙
+    else Y = 64'b0; // 筌뤴뫀諭� 鈺곌퀗援�?肉� ?鍮�?�뼣?釉�筌�? ?釉�?�몵筌�? 0?�몵嚥�? ?苑�?�젟
 end
 endmodule
 
@@ -96,6 +96,9 @@ module RS_Mul (
     input wire [31:0] DIV_result,
     input wire [7:0] DIV_result_dest,
     input wire DIV_result_valid,
+    input wire Branch_result_valid,
+    input wire [31:0]PC_Return,
+    input wire [7:0] BR_Phy,
     output reg [104:0] result_out
 );
 
@@ -107,8 +110,8 @@ module RS_Mul (
     reg [7:0] operand2s [0:63];
     reg [31:0] operand1_datas [0:63];  // operand1 data
     reg [31:0] operand2_datas [0:63]; // operand2 data
-    reg [63:0] valid_entries1;  // operand1?씠 valid?븳吏?
-    reg [63:0] valid_entries2; // operand2媛? valid?븳吏?
+    reg [63:0] valid_entries1;  // operand1?�뵠 valid?釉놂쭪?
+    reg [63:0] valid_entries2; // operand2揶�? valid?釉놂쭪?
     reg [104:0] result [0:63];
     reg [5:0] tail;
     reg [63:0] readys;
@@ -127,12 +130,12 @@ module RS_Mul (
                 operand2s[i] <= 0;
                 operand1_datas[i] <= 0;
                 operand2_datas[i] <= 0;
-                valid_entries1[i] <= 1'b0; // 由ъ뀑 ?떆 珥덇린媛믪쑝濡? 蹂듭썝
-                valid_entries2[i] <= 1'b0; // 由ъ뀑 ?떆 珥덇린媛믪쑝濡? 蹂듭썝
+                valid_entries1[i] <= 1'b0; // �뵳�딅�� ?�뻻 �룯�뜃由겼첎誘れ몵嚥�? 癰귣벊�뜚
+                valid_entries2[i] <= 1'b0; // �뵳�딅�� ?�뻻 �룯�뜃由겼첎誘れ몵嚥�? 癰귣벊�뜚
                 RS_MUL_on[i] <=0;
             end
         end else if (RS_mul_start) begin
-            if (RS_mul_operand1 == ALU_result_dest) begin  // ALU?뿉?꽌 operand1?쓽 ?뿰?궛?씠 ?걹?궗?쓣?븣
+            if (RS_mul_operand1 == ALU_result_dest) begin  // ALU?肉�?苑� operand1?�벥 ?肉�?沅�?�뵠 ?嫄�?沅�?�뱽?釉�
                 PCs[tail] <= RS_mul_PC;
                 Rds[tail] <= RS_mul_Rd;
                 operand1s[tail] <= RS_mul_operand1;
@@ -143,7 +146,7 @@ module RS_Mul (
                 valid_entries2[tail] <= RS_mul_valid[1];
                 tail <= (tail + 1) % 64;
                  RS_MUL_on[tail] <=0;
-            end else if (RS_mul_operand2 == ALU_result_dest) begin  // ALU?뿉?꽌 operand2?쓽 ?뿰?궛?씠 ?걹?궗?쓣?븣
+            end else if (RS_mul_operand2 == ALU_result_dest) begin  // ALU?肉�?苑� operand2?�벥 ?肉�?沅�?�뵠 ?嫄�?沅�?�뱽?釉�
                 PCs[tail] <= RS_mul_PC;
                 Rds[tail] <= RS_mul_Rd;
                 operand1s[tail] <= RS_mul_operand1;
@@ -154,7 +157,7 @@ module RS_Mul (
                 valid_entries2[tail] <= 1; 
                 tail <= (tail + 1) % 64;  
                 RS_MUL_on[tail] <=0; 
-             end else if (RS_mul_operand1 == MUL_result_dest) begin  // MUL?뿉?꽌 operand1?쓽 ?뿰?궛?씠 ?걹?궗?쓣?븣
+             end else if (RS_mul_operand1 == MUL_result_dest) begin  // MUL?肉�?苑� operand1?�벥 ?肉�?沅�?�뵠 ?嫄�?沅�?�뱽?釉�
                 PCs[tail] <= RS_mul_PC;
                 Rds[tail] <= RS_mul_Rd;
                 operand1s[tail] <= RS_mul_operand1;
@@ -165,7 +168,7 @@ module RS_Mul (
                 valid_entries2[tail] <= RS_mul_valid[1];
                 tail <= (tail + 1) % 64;
                 RS_MUL_on[tail] <=0;
-             end else if (RS_mul_operand2 == MUL_result_dest) begin  // MUL?뿉?꽌 operand2?쓽 ?뿰?궛?씠 ?걹?궗?쓣?븣
+             end else if (RS_mul_operand2 == MUL_result_dest) begin  // MUL?肉�?苑� operand2?�벥 ?肉�?沅�?�뵠 ?嫄�?沅�?�뱽?釉�
                 PCs[tail] <= RS_mul_PC;
                 Rds[tail] <= RS_mul_Rd;
                 operand1s[tail] <= RS_mul_operand1;
@@ -176,7 +179,7 @@ module RS_Mul (
                 valid_entries2[tail] <= 1; 
                 tail <= (tail + 1) % 64;
                 RS_MUL_on[tail] <=0;
-              end else if (RS_mul_operand1 == DIV_result_dest) begin  // DIV?뿉?꽌 operand1?쓽 ?뿰?궛?씠 ?걹?궗?쓣?븣
+              end else if (RS_mul_operand1 == DIV_result_dest) begin  // DIV?肉�?苑� operand1?�벥 ?肉�?沅�?�뵠 ?嫄�?沅�?�뱽?釉�
                 PCs[tail] <= RS_mul_PC;
                 Rds[tail] <= RS_mul_Rd;
                 operand1s[tail] <= RS_mul_operand1;
@@ -187,7 +190,7 @@ module RS_Mul (
                 valid_entries2[tail] <= RS_mul_valid[1];
                 tail <= (tail + 1) % 64;
                 RS_MUL_on[tail] <=0;
-              end else if (RS_mul_operand2 == DIV_result_dest) begin  // MUL?뿉?꽌 operand2?쓽 ?뿰?궛?씠 ?걹?궗?쓣?븣
+              end else if (RS_mul_operand2 == DIV_result_dest) begin  // MUL?肉�?苑� operand2?�벥 ?肉�?沅�?�뵠 ?嫄�?沅�?�뱽?釉�
                 PCs[tail] <= RS_mul_PC;
                 Rds[tail] <= RS_mul_Rd;
                 operand1s[tail] <= RS_mul_operand1;
@@ -277,6 +280,19 @@ module RS_Mul (
                     end
                     if (!valid_entries2[i] && operand2s[i] == EX_MEM_Physical_Address) begin
                         operand2_datas[i] <= RData;
+                        valid_entries2[i] <= 1;
+                    end
+                end     
+            end
+          if (Branch_result_valid) begin                //Branch의 결과가 들어왔을때, 기존에 RS에 들어있던 명령어들과 물리주소를 비교하여
+                                                        //필요한 값들을 업데이트 시켜준다.
+           for (i = 0; i < 64; i = i + 1) begin
+                    if (!valid_entries1[i] && operand1s[i] == BR_Phy) begin
+                        operand1_datas[i] <= PC_Return;
+                        valid_entries1[i] <= 1;
+                    end
+                    if (!valid_entries2[i] && operand2s[i] == BR_Phy) begin
+                        operand2_datas[i] <= PC_Return;
                         valid_entries2[i] <= 1;
                     end
                 end     
