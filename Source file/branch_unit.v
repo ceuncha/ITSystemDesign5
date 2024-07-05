@@ -2,7 +2,7 @@ module BranchUnit(
     input wire RS_BR_Jump,
     input wire RS_BR_Branch,
     input wire [2:0] RS_BR_funct3,
-
+    input wire [31:0] PC_BR,
     input wire [31:0] immediate_BR,
     input wire [31:0] PC_Return,
     input wire [31:0] RS_BR_inst_num,
