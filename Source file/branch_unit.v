@@ -1,11 +1,12 @@
 module BranchUnit(
-    input wire ID_EX_Jump,
-    input wire ID_EX_Branch,
-    input wire [2:0] ID_EX_funct3,
-    input wire [31:0] ALUResult,
-    input wire [31:0] imm,
-    input wire [31:0] PC,
-    input wire RS_EX_taken,
+    input wire RS_BR_Jump,
+    input wire RS_BR_Branch,
+    input wire [2:0] RS_BR_funct3,
+
+    input wire [31:0] immediate_BR,
+    input wire [31:0] PC_Return,
+    input wire [31:0] RS_BR_inst_num,
+    input wire RS_BR_taken,
     input wire ALUNegative, // Negative flag from ALU
     input wire ALUZero,     // Zero flag from ALU
     input wire ALUOverflow, // Overflow flag from ALU
@@ -20,13 +21,13 @@ module BranchUnit(
 
 always @(*) begin
         PCSrc = 0;
-        PC_Branch = 0;  // 湲곕낯 遺꾧린 二쇱냼
-        IF_ID_Flush = 0;
+        PC_Branch = 0;  
+
         if(ID_EX_Jump) begin
-            PC_Branch = ALUResult; // �젏�봽 泥섎━
-            PCSrc = 1; // �젏�봽 �떆 PC �냼�뒪 �떊�샇 �솢�꽦�솕
-            IF_ID_Flush = 1'b1;
-            branch_index = PC;
+            PC_Branch = imm + PC_Retrun; 
+            PCSrc = 1; 
+  
+            branch_index = RS_BR_inst_num;
         end
         else if(ID_EX_Branch) begin
             case(ID_EX_funct3)
@@ -40,13 +41,13 @@ always @(*) begin
             default: PCSrc = 0; 
             endcase
             if(PCSrc) begin
-                PC_Branch = imm + PC + 4; // 遺꾧린 二쇱냼 �뾽�뜲�씠�듃
-                IF_ID_Flush = 1'b1;
-                branch_index = PC;
+                PC_Branch = imm + PC_Return; 
+
+                branch_index = RS_BR_inst_num;
             end
         end
         
-        // Prediction_Result 媛� �꽕�젙
+        
         Predict_Result = RS_EX_taken ^ PCSrc;
     end
 
