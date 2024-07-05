@@ -251,7 +251,7 @@ wire Div_start_in = result_out_div[108];
     wire [31:0] EX_MEM_mul_inst_num;
     
 
-
+    wire [31:0] Branch_index;
 wire real_taken;
 ///////////////////////////IF_ID////////////////////////////////////////////////
 (* keep_hierarchy = "yes" *)
@@ -362,7 +362,7 @@ BB u_BB(
     .rst(rst),                      // Reset signal
     .opcode(instOut_opcode),             // Input opcode
     .PCSrc(Predict_Result),                    // Branch decision signal
-    .branch_PC(RS_EX_inst_num),         // Branch index in ROB
+    .branch_PC(Branch_index),         // Branch index in ROB
     .PC(inst_num),                // Current PC value (expanded to 32 bits)
     .tail_num(save_page),           // Output value
     .Copy_RAT(save_on),                 // Output register destination extracted from instr[11:7]
@@ -678,7 +678,7 @@ control_unit_top u_control_unit_top(
         .div_exec_PC(EX_MEM_div_inst_num),
         .PcSrc(Predict_Result),
         .PC_Return(PC_Return),
-        .branch_index(RS_EX_inst_num),
+        .branch_index(Branch_index),
         .PC(IF_ID_inst_num),
         .out_value(out_value),
         .out_dest(out_dest),
