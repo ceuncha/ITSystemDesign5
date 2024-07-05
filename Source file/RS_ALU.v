@@ -108,11 +108,12 @@ module RS_ALU (                                             //명령어 forwardi
     input wire [31:0] DIV_result,
     input wire [7:0] DIV_result_dest,
     input wire DIV_result_valid,
+    input wire Branch_result_valid,
+    input wire [31:0]PC_Return,
+    input wire [7:0] BR_Phy,
 
-    input wire RS_alu_IF_ID_taken,
-    input wire RS_alu_IF_ID_hit,
   
-  output reg [184:0] result_out
+  output reg [182:0] result_out
     
 );
     
@@ -136,9 +137,7 @@ module RS_ALU (                                             //명령어 forwardi
     reg [31:0] operand2_datas [0:63]; // operand2 data
     reg [63:0] valid_entries1;  // operand1?씠 valid?븳吏?
     reg [63:0] valid_entries2; // operand2媛? valid?븳吏?
-    reg [184:0] result [0:63];
-    reg [63:0] takens;
-    reg [63:0] hits;
+    reg [182:0] result [0:63];
     reg [6:0] tail;
     reg [6:0] head;
     reg [63:0] readys;
@@ -172,8 +171,6 @@ module RS_ALU (                                             //명령어 forwardi
                 operand2_datas[i] <= 0;
                 valid_entries1[i] <= 1'b0; 
                 valid_entries2[i] <= 1'b0; 
-              takens[i] <= 1'b0;
-              hits[i] <= 1'b0;
               RS_ALU_on[i] <=0;
             end
         end else if (start) begin
@@ -199,8 +196,6 @@ module RS_ALU (                                             //명령어 forwardi
                 operand2s[tail] <= operand2;
                 operand1_datas[tail] <= ALU_result;
                 operand2_datas[tail] <= operand2_data;
-                takens[tail] <= RS_alu_IF_ID_taken;
-                hits[tail] <= RS_alu_IF_ID_hit;
                 valid_entries1[tail] <= 1;
                 valid_entries2[tail] <= valid[1];
                 tail <= (tail + 1) % 64;
@@ -223,11 +218,8 @@ module RS_ALU (                                             //명령어 forwardi
                 operand2s[tail] <= operand2;
                 operand1_datas[tail] <= operand1_data;
                 operand2_datas[tail] <= ALU_result;
-                takens[tail] <= RS_alu_IF_ID_taken;
-                hits[tail] <= RS_alu_IF_ID_hit;
                 valid_entries1[tail] <= valid[0];
                 valid_entries2[tail] <= 1; 
-                takens[i] <= RS_alu_IF_ID_taken;
                 tail <= (tail + 1) % 64;  
                  RS_ALU_on[tail] <=0; 
              end else if (operand1 == MUL_result_dest) begin  // 명령어가 처음 들어왔을때, mul의 결과와 명령어의 operand 물리주소를 비교하여 
@@ -249,8 +241,6 @@ module RS_ALU (                                             //명령어 forwardi
                 operand2s[tail] <= operand2;
                 operand1_datas[tail] <= MUL_result;
                 operand2_datas[tail] <= operand2_data;
-                takens[tail] <= RS_alu_IF_ID_taken;
-                hits[tail] <= RS_alu_IF_ID_hit;
                 valid_entries1[tail] <= 1;
                 valid_entries2[tail] <= valid[1];
                 tail <= (tail + 1) % 64;
@@ -273,8 +263,6 @@ module RS_ALU (                                             //명령어 forwardi
                 operand2s[tail] <= operand2;
                 operand1_datas[tail] <= operand1_data;
                 operand2_datas[tail] <= MUL_result;
-                takens[tail] <= RS_alu_IF_ID_taken;
-                hits[tail] <= RS_alu_IF_ID_hit;
                 valid_entries1[tail] <= valid[0];
                 valid_entries2[tail] <= 1; 
                 tail <= (tail + 1) % 64;
@@ -298,8 +286,6 @@ module RS_ALU (                                             //명령어 forwardi
                 operand2s[tail] <= operand2;
                 operand1_datas[tail] <= DIV_result;
                 operand2_datas[tail] <= operand2_data;
-                takens[tail] <= RS_alu_IF_ID_taken;
-                hits[tail] <= RS_alu_IF_ID_hit;
                 valid_entries1[tail] <= 1;
                 valid_entries2[tail] <= valid[1];
                 tail <= (tail + 1) % 64;
@@ -322,8 +308,6 @@ module RS_ALU (                                             //명령어 forwardi
                 operand2s[tail] <= operand2;
                 operand1_datas[tail] <= operand1_data;
                 operand2_datas[tail] <= DIV_result; 
-                takens[tail] <= RS_alu_IF_ID_taken;
-                hits[tail] <= RS_alu_IF_ID_hit;
                 valid_entries1[tail] <= valid[0];
                 valid_entries2[tail] <= 1; 
                 tail <= (tail + 1) % 64;
@@ -348,8 +332,6 @@ module RS_ALU (                                             //명령어 forwardi
                 operand2s[tail] <= operand2;
                 operand1_datas[tail] <= RData;
                 operand2_datas[tail] <= operand2_data; 
-                takens[tail] <= RS_alu_IF_ID_taken;
-                hits[tail] <= RS_alu_IF_ID_hit;
                 valid_entries1[tail] <= 1;
                 valid_entries2[tail] <= valid[1] ; 
                 tail <= (tail + 1) % 64;
@@ -372,8 +354,6 @@ module RS_ALU (                                             //명령어 forwardi
                 operand2s[tail] <= operand2;
                 operand1_datas[tail] <= operand1_data;
                 operand2_datas[tail] <= RData;
-                takens[tail] <= RS_alu_IF_ID_taken;
-                hits[tail] <= RS_alu_IF_ID_hit;
                 valid_entries1[tail] <= valid[0];
                 valid_entries2[tail] <= 1 ; 
                 tail <= (tail + 1) % 64;
@@ -396,8 +376,6 @@ module RS_ALU (                                             //명령어 forwardi
                 operand2s[tail] <= operand2;
                 operand1_datas[tail] <= operand1_data;
                 operand2_datas[tail] <= operand2_data;
-                takens[tail] <= RS_alu_IF_ID_taken;
-                hits[tail] <= RS_alu_IF_ID_hit;
                 valid_entries1[tail] <= valid[0];
                 valid_entries2[tail] <= valid[1]; 
                 tail <= (tail + 1) % 64;
@@ -458,7 +436,22 @@ module RS_ALU (                                             //명령어 forwardi
                     end
                 end     
             end
+                     if (Branch_result_valid) begin                //Branch의 결과가 들어왔을때, 기존에 RS에 들어있던 명령어들과 물리주소를 비교하여
+                                                        //필요한 값들을 업데이트 시켜준다.
+           for (i = 0; i < 64; i = i + 1) begin
+                    if (!valid_entries1[i] && operand1s[i] == BR_Phy) begin
+                        operand1_datas[i] <= PC_Return;
+                        valid_entries1[i] <= 1;
+                    end
+                    if (!valid_entries2[i] && operand2s[i] == BR_Phy) begin
+                        operand2_datas[i] <= PC_Return;
+                        valid_entries2[i] <= 1;
+                    end
+                end     
+            end
          end
+    
+         
 
     
 
@@ -469,11 +462,11 @@ module RS_ALU (                                             //명령어 forwardi
             if (valid_entries1[i] && valid_entries2[i] && !MemReads[i]) begin
                 readys[i] = 1;
                 RS_ALU_on[i] =1;
-              result[i] = {hits[i],takens[i], inst_nums[i],1'b1, PCs[i], Rds[i], MemToRegs[i], MemReads[i], MemWrites[i], ALUOPs[i], ALUSrc1s[i], ALUSrc2s[i], Jumps[i], Branchs[i], funct3s[i],immediates[i], operand1_datas[i], operand2_datas[i]};
+              result[i] = {inst_nums[i],1'b1, PCs[i], Rds[i], MemToRegs[i], MemReads[i], MemWrites[i], ALUOPs[i], ALUSrc1s[i], ALUSrc2s[i], Jumps[i], Branchs[i], funct3s[i],immediates[i], operand1_datas[i], operand2_datas[i]};
             end else if (valid_entries1[i] && valid_entries2[i] && MemReads[i]) begin
                 readys[i] = 1;
                 RS_ALU_on[i] =1;
-                result[i] = {hits[i], takens[i], inst_nums[i],1'b0, PCs[i], Rds[i], MemToRegs[i], MemReads[i], MemWrites[i], ALUOPs[i], ALUSrc1s[i], ALUSrc2s[i], Jumps[i], Branchs[i], funct3s[i],immediates[i], operand1_datas[i], operand2_datas[i]};
+                result[i] = {inst_nums[i],1'b0, PCs[i], Rds[i], MemToRegs[i], MemReads[i], MemWrites[i], ALUOPs[i], ALUSrc1s[i], ALUSrc2s[i], Jumps[i], Branchs[i], funct3s[i],immediates[i], operand1_datas[i], operand2_datas[i]};
             end
         end
     end
