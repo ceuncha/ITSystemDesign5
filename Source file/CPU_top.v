@@ -99,6 +99,42 @@ wire [31:0] branch_index;
     wire [1:0] RS_div_valid;
     wire [31:0] RS_div_immediate;
     wire RS_div_start;
+  
+  /// RS_BR
+  wire RS_br_Jump;
+  wire RS_br_Branch;
+  wire RS_br_IF_ID_hit;
+  wire RS_br_IF_ID_taken;
+  wire [2:0] RS_br_funct3;
+  wire [7:0]br_rd_phy_reg;
+  wire RS_br_start;
+  wire [31:0] RS_br_operand1;
+  wire [31:0] RS_br_operand2;
+  wire [7:0] RS_br_operand1_phy;
+  wire [7:0] RS_br_operand2_phy;
+  wire [7:0] RS_br_phy_reg;
+  wire [1:0] RS_br_valid;
+  wire [31:0] RS_br_immediate;
+  wire [31:0] RS_br_inst_num;
+  wire [31:0] RS_br_PC;
+  
+  wire RS_BR_Branch,RS_BR_Jump;
+  wire RS_BR_hit;
+  wire [7:0] BR_Phy;
+  wire RS_BR_taken;
+  wire [31:0] RS_BR_inst_num_output;
+  wire [2:0] RS_BR_funct3_output;
+  wire [31:0] immediate_BR;
+  wire [31:0] Operand1_BR;
+  wire [31:0] Operand2_BR;
+  wire [31:0] PC_BR;
+  wire BR_Done;
+  assign BR_Done=RS_BR_Branch|RS_BR_Jump;
+  wire [31:0]PC_Return;
+
+    
+
+
 
             // rs_alu_wire
     wire RS_alu_start;
@@ -119,7 +155,7 @@ wire [31:0] branch_index;
     wire [31:0] RS_mul_operand1_data;
     wire [31:0] RS_mul_operand2_data;
     wire [1:0] RS_alu_valid;
-    wire [184:0]result_out_alu;
+    wire [182:0]result_out_alu;
     wire RS_alu_IF_ID_taken;
     wire RS_alu_IF_ID_hit;
 
@@ -342,15 +378,17 @@ physical_register_file u_physical_register_file(
     .ALU_load_Write(Load_Done),
     .ALU_mul_Write(MUL_Done),
     .ALU_div_Write(DIV_Done),
+    .ALU_done_Write(BR_Done),
     .ALU_add_Data(ALU_Data),
     .ALU_load_Data(Load_Data),
     .ALU_mul_Data(MUL_Data[31:0]),
     .ALU_div_Data(DIV_Data),
+    .ALU_done_Data(PC_Return),
     .ALU_add_phy(ALU_Phy),
     .ALU_load_phy(Load_Phy),
     .ALU_mul_phy(MUL_Phy),
     .ALU_div_phy(DIV_Phy),
-
+    .ALU_done_phy(BR_phy),
     .Operand1_data(RData1),
     .Operand2_data(RData2),
     .valid1(Valid1),
@@ -466,9 +504,9 @@ control_unit_top u_control_unit_top(
         .div_alu_operand1(RS_div_operand1_data),
         .div_alu_operand2(RS_div_operand2_data),
         .div_alu_func3(RS_div_funct3),
-       .out_div_inst_num(RS_div_inst_num),
+        .out_div_inst_num(RS_div_inst_num),
         .out_div_MemToReg(RS_div_MemToReg),
-       .out_div_MemRead(RS_div_MemRead),
+        .out_div_MemRead(RS_div_MemRead),
         .out_div_MemWrite(RS_div_MemWrite),
         .out_div_ALUOP(RS_div_ALUOP),
         .out_div_ALUSrc1(RS_div_ALUSrc1),
@@ -482,14 +520,73 @@ control_unit_top u_control_unit_top(
         .out_div_valid(RS_div_valid),
         .out_div_immediate(RS_div_immediate),
         .IF_ID_taken(IF_ID_taken),
-        .RS_alu_IF_ID_taken(RS_alu_IF_ID_taken),
         .IF_ID_hit(IF_ID_hit),
-        .RS_alu_IF_ID_hit(RS_alu_IF_ID_hit)
+        .RS_br_Jump(RS_br_Jump),
+        .RS_br_Branch(RS_br_Branch),
+        .RS_br_IF_ID_hit(RS_br_IF_ID_hit),
+        .RS_br_IF_ID_taken(RS_br_IF_ID_taken),
+        .RS_br_func3(RS_br_func3),
+        .br_rd_phy_reg(br_rd_phy_reg),
+        .RS_br_start(RS_br_start),
+        .RS_br_Operand1(RS_br_Operand1),
+        .RS_br_Operand2(RS_br_Operand2),
+        .RS_br_Operand1_phy(RS_br_Operand1_phy),
+        .RS_br_Operand2_phy(RS_br_Operand1_phy),
+        .RS_br_phy_reg(RS_br_phy_reg),
+        .RS_br_valid(RS_br_valid),
+        .RS_br_immediate(RS_br_immediate),
+        .RS_br_inst_num(RS_br_inst_num),
+        .RS_br_PC(RS_br_PC)
     );
 
+ RS_Branch RS_Branch(
+.clk(clk),
+.reset(rst),
+.start(RS_br_start),
+.RS_BR_inst_num(RS_br_inst_num),
+.PC(RS_br_PC),
+.Rd(RS_rd_phy_reg),
+.Jump(RS_br_Jump),
+.Branch(RS_br_Branch),
+.funct3(RS_br_func3),
+.immediate(RS_br_immediate),
+.EX_MEM_MemRead(Load_Done),
+.RData(Load_Data),
+.EX_MEM_Physical_Address(Load_Phy),
+.operand1(RS_br_operand1_phy),
+.operand2(RS_br_operand2_phy),
+.operand1_data(RS_br_operand1),
+.operand2_data(RS_br_operand2),
+.valid(RS_br_valid),
+.ALU_result(ALU_Data),
+.ALU_result_dest(ALU_Phy),
+.ALU_result_valid(ALU_Done),
+.MUL_result(MUL_Data),
+.MUL_result_dest(MUL_Phy),
+.MUL_result_valid(MUL_Done),
+.DIV_result(DIV_Data),
+.DIV_result_dest(DIV_Phy),
+.DIV_result_valid(DIV_Done),
+.PC_Return(PC_Return),
+.RS_BR_IF_ID_taken(RS_br_IF_ID_taken),
+.RS_BR_IF_ID_hit(RS_br_IF_ID_hit),
+.BR_Phy(BR_Phy),
 
+.RS_BR_Branch(RS_BR_Branch),
+.RS_BR_Jump(RS_BR_Jump),
+.RS_BR_Hit(RS_BR_hit),
+.RS_BR_taken(RS_BR_taken),
+.RS_BR_Phy(BR_Phy),
+.RS_BR_inst_num_output(RS_BR_inst_num_output),
+.RS_BR_funct3(RS_BR_funct3),
+.immediate_BR(immediate_BR),
+.Operand1_BR(Operand1_BR),
+.Operand2_BR(Operand2_BR),
+.PC_BR(PC_BR)
+)
+      
  
-
+    
   
 
     
@@ -529,7 +626,10 @@ control_unit_top u_control_unit_top(
         .DIV_result_valid(DIV_Done),
         .RS_alu_IF_ID_taken(RS_alu_IF_ID_taken),
         .RS_alu_IF_ID_hit(RS_alu_IF_ID_hit),
-         .result_out(result_out_alu)
+        .Branch_result_valid(BR_Done),
+        .Pc_Return(PC_Return),
+        .BR_Phy(BR_Phy),
+        .result_out(result_out_alu)
     );
 
 
@@ -562,6 +662,9 @@ control_unit_top u_control_unit_top(
         .DIV_result(DIV_Data),
         .DIV_result_dest(DIV_Phy),
         .DIV_result_valid(DIV_Done),
+        .Branch_result_valid(BR_Done),
+        .Pc_Return(PC_Return),
+        .BR_Phy(BR_Phy),
         .result_out(result_out_mul)
     );
  
@@ -575,19 +678,19 @@ control_unit_top u_control_unit_top(
                    .RS_div_operand2_data(RS_div_operand2_data),.RS_div_valid(RS_div_valid),.ALU_result(ALU_Data),
                    .ALU_result_dest(ALU_Phy),.ALU_result_valid(ALU_Done),.MUL_result(MUL_Data[31:0]),.MUL_result_dest(MUL_Phy),
                    .MUL_result_valid(MUL_Done),.DIV_result(DIV_Data),.DIV_result_dest(DIV_Phy),.DIV_result_valid(DIV_Done),
+                   .Branch_result_valid(BR_Done),.Pc_Return(PC_Return),.BR_Phy(BR_Phy),
                    .result_out(result_out_div));
 
-
+  subtractor_32bit subtractor( .A(Operand1_BR),.B(Operand2_BR),.negative(negative),.overflow(overflow),.zero(zero),.carry(carry));
 
   ////////////ALU
-    ALU ALU(.A(ALU_A),.B(ALU_B),.ALUop(ALUop),.Result(ALUResult),.negative(negative),.overflow(overflow),
-            .zero(zero),.carry(carry));
-    BranchUnit branchUnit(.ID_EX_Jump(RS_EX_Jump),.ID_EX_Branch(RS_EX_Branch),.ID_EX_funct3(RS_EX_funct3),.RS_EX_taken(RS_EX_taken),.Predict_Result(Predict_Result),
-                         .ALUResult(ALUResult),.imm(immediate),.PC(RS_EX_PC_ALU),.ALUNegative(negative),
+    ALU ALU(.A(ALU_A),.B(ALU_B),.ALUop(ALUop),.Result(ALUResult),.negative(0),.overflow(0),
+            .zero(0),.carry(0));
+     BranchUnit branchUnit(.RS_BR_Jump(RS_BR_Jump),.RS_BR_Branch(RS_BR_Branch),.RS_BR_funct3(RS_BR_funct3),.RS_BR_taken(RS_BR_taken),.Predict_Result(Predict_Result),
+                         .immediate_BR(immediate_BR),.PC_BR(PC_BR),.ALUNegative(negative),
                          .ALUZero(zero),.ALUOverflow(overflow),.ALUCarry(carry),.PC_Branch(PC_Branch),
-                         .branch_index(branch_index),.PCSrc(PCSrc),.IF_ID_Flush(IF_ID_Flush));
-   add4 add4 (.in(RS_EX_PC_ALU),.out(PC_Return));
-    MUX_2input pretty_mux (.a(ALUResult),.b(PC_Return),.sel(RS_EX_Jump),.y(ALU_Data));
+                         .branch_index(branch_index),.PCSrc(PCSrc), .RS_BR_inst_num(RS_BR_inst_num_output));
+   add4 add4 (.in(PC_BR),.out(PC_Return));
     MUX_2input MUX_A (.a(RS_EX_PC_ALU),.b(Operand1_ALU),.sel(RS_EX_ALU_Src1),.y(ALU_A)); 
     MUX_2input MUX_B (.a(Operand2_ALU),.b(immediate),.sel(RS_EX_ALU_Src2),.y(ALU_B)); 
    multiplier multiplier (.clk(clk),.rst(rst),.start(Mul_start_in),.A(Operand1_Mul),.B(Operand2_Mul),
