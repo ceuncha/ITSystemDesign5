@@ -79,13 +79,7 @@ always @(posedge clk or posedge rst) begin
                 end
             end
         end
-        
-    end
-end
-
-// Output logic
-always @(posedge clk) begin
-    if (rob_entry[head][97]) begin       // Check if the entry is ready
+     if (rob_entry[head][97]) begin       // Check if the entry is ready
         out_value <= rob_entry[head][95:64];     // Output value
         out_dest <= rob_entry[head][43:39];      // Extract out_dest from instr[11:7]
         out_reg_write <= rob_entry[head][96];   // Output RegWrite status
@@ -93,6 +87,8 @@ always @(posedge clk) begin
         head <= (head + 1) % 64;                 // Circular buffer handling
     end
     
+    end
 end
+
 
 endmodule
