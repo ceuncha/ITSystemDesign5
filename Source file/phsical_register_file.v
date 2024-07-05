@@ -9,14 +9,17 @@ module physical_register_file (
     input ALU_load_Write,
     input ALU_mul_Write,
     input ALU_div_Write,
+    input ALU_done_Write,
     input [31:0] ALU_add_Data,
     input [31:0] ALU_load_Data,
     input [31:0] ALU_mul_Data,
     input [31:0] ALU_div_Data,
+    input [31:0] ALU_done_Data,
     input [7:0] ALU_add_phy,
     input [7:0] ALU_load_phy,
     input [7:0] ALU_mul_phy,
     input [7:0] ALU_div_phy,
+    input [7:0] ALU_done_phy,
 
     output reg [31:0] Operand1_data,
     output reg [31:0] Operand2_data,
@@ -61,6 +64,10 @@ always @(posedge clk) begin         // 매 클락 계산기들 혹은 load로부
         if (ALU_div_Write == 1'b1 && ALU_div_phy != 7'b0) begin
             registers[ALU_div_phy] <= ALU_div_Data;
             valid[ALU_div_phy] <= 1'b1; // divider 신호가 들어왔을때 해당 물리주소와 데이터값을 받아서 pfile을 업데이트 시켜준다.
+        end
+        if (ALU_done_Write == 1'b1 && ALU_done_phy != 7'b0) begin
+            registers[ALU_done_phy] <= ALU_done_Data;
+            valid[ALU_done_phy] <= 1'b1; // multiplier 신호가 들어왔을때 해당 물리주소와 데이터값을 받아서 pfile을 업데이트 시켜준다.
         end
         if (Rd_phy != 7'b0) begin
         valid[Rd_phy] <= 1'b0;
