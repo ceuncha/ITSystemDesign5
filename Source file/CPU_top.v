@@ -583,12 +583,8 @@ control_unit_top u_control_unit_top(
 .Operand1_BR(Operand1_BR),
 .Operand2_BR(Operand2_BR),
 .PC_BR(PC_BR)
-)
+);
       
- 
-    
-  
-
     
         RS_ALU rs_alu (
         .clk(clk),
@@ -684,7 +680,7 @@ control_unit_top u_control_unit_top(
   subtractor_32bit subtractor( .A(Operand1_BR),.B(Operand2_BR),.negative(negative),.overflow(overflow),.zero(zero),.carry(carry));
 
   ////////////ALU
-    ALU ALU(.A(ALU_A),.B(ALU_B),.ALUop(ALUop),.Result(ALUResult),.negative(0),.overflow(0),
+    ALU ALU(.A(ALU_A),.B(ALU_B),.ALUop(ALUop),.Result(ALU_Data),.negative(0),.overflow(0),
             .zero(0),.carry(0));
      BranchUnit branchUnit(.RS_BR_Jump(RS_BR_Jump),.RS_BR_Branch(RS_BR_Branch),.RS_BR_funct3(RS_BR_funct3),.RS_BR_taken(RS_BR_taken),.Predict_Result(Predict_Result),
                          .immediate_BR(immediate_BR),.PC_BR(PC_BR),.ALUNegative(negative),
