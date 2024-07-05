@@ -64,7 +64,6 @@ module RS_Branch (                                             //명령어 forwa
     reg [6:0] head;
     reg [63:0] readys;
     integer i;
-    reg RS_BR_on[0:63];
 
     always @(posedge clk) begin    //리셋신호로 초기화 시켜줌
         if (reset) begin
@@ -88,7 +87,6 @@ module RS_Branch (                                             //명령어 forwa
                 valid_entries2[i] <= 1'b0; 
                 takens[i] <= 1'b0;
                 hits[i] <= 1'b0;
-                RS_BR_on[i] <=0;
             end
         end else if (start) begin
             if (operand1 == ALU_result_dest) begin  // 명령어가 처음 들어왔을때, alu의 결과와 명령어의 operand 물리주소를 비교하여 
@@ -147,7 +145,6 @@ module RS_Branch (                                             //명령어 forwa
                 valid_entries1[tail] <= 1;
                 valid_entries2[tail] <= valid[1];
                 tail <= (tail + 1) % 64;
-                 RS_BR_on[tail] <=0;
              end else if (operand2 == MUL_result_dest) begin  
                  inst_nums[tail] <= RS_BR_inst_num;
                 PCs[tail] <= PC;
@@ -165,7 +162,6 @@ module RS_Branch (                                             //명령어 forwa
                 valid_entries1[tail] <= valid[0];
                 valid_entries2[tail] <= 1; 
                 tail <= (tail + 1) % 64;
-                 RS_BR_on[tail] <=0;
               end else if (operand1 == DIV_result_dest) begin  // 명령어가 처음 들어왔을때, div의 결과와 명령어의 operand 물리주소를 비교하여 
                                                               // 업데이트가 필요시 수행해준다.
                   inst_nums[tail] <= RS_BR_inst_num;
@@ -184,7 +180,6 @@ module RS_Branch (                                             //명령어 forwa
                 valid_entries1[tail] <= 1;
                 valid_entries2[tail] <= valid[1];
                 tail <= (tail + 1) % 64;
-                 RS_BR_on[tail] <=0;
               end else if (operand2 == DIV_result_dest) begin  
                   inst_nums[tail] <= RS_BR_inst_num;
                 PCs[tail] <= PC;
@@ -202,7 +197,6 @@ module RS_Branch (                                             //명령어 forwa
                 valid_entries1[tail] <= valid[0];
                 valid_entries2[tail] <= 1; 
                 tail <= (tail + 1) % 64;
-                 RS_BR_on[tail] <=0;
              end else if ( operand1 == EX_MEM_Physical_Address && EX_MEM_MemRead ==1) begin     
                                                                 // 명령어가 처음 들어왔을때, load의 결과와 명령어의 operand 물리주소를 비교하여 
                                                               // 업데이트가 필요시 수행해준다.
@@ -222,7 +216,6 @@ module RS_Branch (                                             //명령어 forwa
                 valid_entries1[tail] <= 1;
                 valid_entries2[tail] <= valid[1] ; 
                 tail <= (tail + 1) % 64;
-                 RS_BR_on[tail] <=0;
               end else if ( operand2 == EX_MEM_Physical_Address && EX_MEM_MemRead ==1) begin
                   inst_nums[tail] <= RS_BR_inst_num;
                 PCs[tail] <= PC;
@@ -240,7 +233,6 @@ module RS_Branch (                                             //명령어 forwa
                 valid_entries1[tail] <= valid[0];
                 valid_entries2[tail] <= 1 ; 
                 tail <= (tail + 1) % 64;
-                 RS_BR_on[tail] <=0;
             end else begin
                 inst_nums[tail] <= RS_BR_inst_num;
                 PCs[tail] <= PC;
@@ -258,7 +250,6 @@ module RS_Branch (                                             //명령어 forwa
                 valid_entries1[tail] <= valid[0];
                 valid_entries2[tail] <= valid[1]; 
                 tail <= (tail + 1) % 64;
-                 RS_BR_on[tail] <=0;
              end 
              end
             
