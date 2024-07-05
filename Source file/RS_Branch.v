@@ -36,12 +36,12 @@ module RS_Branch (                                             //명령어 forwa
     output reg RS_BR_Hit,
     output reg RS_BR_taken,
     output reg [7:0] RS_BR_Phy,
-    output reg [31:0] RS_BR_inst_num,
+    output reg [31:0] RS_BR_inst_num_output,
     output reg [2:0] RS_BR_funct3,
     output reg [31:0] immediate_BR,
     output reg [31:0] Operand1_BR,
     output reg [31:0] Operand2_BR,
-    output reg [31:0] PC_BR,
+    output reg [31:0] PC_BR
 );
     
     // Internal storage for reservation station entries
@@ -73,7 +73,6 @@ module RS_Branch (                                             //명령어 forwa
                 inst_nums[i] <=0;
                 PCs[i] <= 0;
                 Rds[i] <= 0;
-                result[i] <= 0;
                 readys[i] <= 0;
                 Jumps[i] <= 0;
                 Branchs[i] <= 0;
@@ -107,7 +106,6 @@ module RS_Branch (                                             //명령어 forwa
                 valid_entries1[tail] <= 1;
                 valid_entries2[tail] <= valid[1];
                 tail <= (tail + 1) % 64;
-                RS_BR_on[tail] <=0;
             end else if (operand2 == ALU_result_dest) begin 
                 inst_nums[tail] <= RS_BR_inst_num;
                 PCs[tail] <= PC;
@@ -126,7 +124,6 @@ module RS_Branch (                                             //명령어 forwa
                 valid_entries2[tail] <= 1; 
                 takens[i] <= RS_BR_IF_ID_taken;
                 tail <= (tail + 1) % 64;  
-                RS_BR_on[tail] <=0; 
              end else if (operand1 == MUL_result_dest) begin  // 명령어가 처음 들어왔을때, mul의 결과와 명령어의 operand 물리주소를 비교하여 
                                                               // 업데이트가 필요시 수행해준다.
                 inst_nums[tail] <= RS_BR_inst_num;
@@ -313,12 +310,12 @@ module RS_Branch (                                             //명령어 forwa
             RS_BR_Hit <= hits[head];
             RS_BR_taken <= takens[head];
             RS_BR_Phy <= Rds[head];
-            RS_BR_inst_num <= inst_nums[head];
+            RS_BR_inst_num_output <= inst_nums[head];
             RS_BR_funct3 <= funct3s[head];
             immediate_BR <= immediates[head];
             Operand1_BR <= operand1_datas[head];
             Operand2_BR <= operand2_datas[head];
-            PC_BR < = PCs[head];
+            PC_BR <= PCs[head];
             valid_entries1[head] <= 0;            // Clear the ready flag after consuming the entry
             valid_entries2[head] <= 0;
             operand1s[head] <= 0;
