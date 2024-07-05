@@ -15,7 +15,7 @@ module BranchUnit(
     output reg [31:0] PC_Branch,
     output reg [31:0] branch_index,
     output reg PCSrc,
-    output reg IF_ID_Flush,
+
     output reg Predict_Result
 );
 
