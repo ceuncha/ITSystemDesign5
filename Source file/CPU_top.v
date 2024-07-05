@@ -531,7 +531,7 @@ control_unit_top u_control_unit_top(
         .RS_br_Operand1(RS_br_Operand1),
         .RS_br_Operand2(RS_br_Operand2),
         .RS_br_Operand1_phy(RS_br_Operand1_phy),
-        .RS_br_Operand2_phy(RS_br_Operand1_phy),
+       .RS_br_Operand2_phy(RS_br_Operand2_phy),
         .RS_br_phy_reg(RS_br_phy_reg),
         .RS_br_valid(RS_br_valid),
         .RS_br_immediate(RS_br_immediate),
