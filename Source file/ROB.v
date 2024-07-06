@@ -66,8 +66,8 @@ always @(posedge clk or posedge rst) begin
                 end
             end
             end
-        end
-        if (IF_ID_instOut != 32'b0) begin  // Only increment tail if the instruction is not invalid (i.e., not a bubble)
+        
+        end else if (IF_ID_instOut != 32'b0) begin  // Only increment tail if the instruction is not invalid (i.e., not a bubble)
             rob_entry[tail] <= {1'b1, 1'b0, reg_write, 32'b0, IF_ID_instOut, PC}; // Store input data in the ROB entry with value set to 32'b0 and new_bit set to 1
             tail <= (tail + 1) % 64;                // Circular buffer handling
         end
