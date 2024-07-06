@@ -1,78 +1,3 @@
-module priority_encoder (
-    input wire [63:0] ready, // 64�뜮袁る뱜 ready ?�뻿?�깈
-    input wire [6:0] head,
-    output reg [63:0] Y // 64�뜮袁る뱜 Y �빊�뮆�젾
-);
-
-always @(*) begin
-    // ?�뒭?苑�?�떄?�맄 ?�뵥�굜遺얜쐭 ?�걠�뵳?
-    if (ready[(head+0)%64]) Y = 64'b0000000000000000000000000000000000000000000000000000000000000001;
-    else if (ready[(head+1)%64]) Y = 64'b0000000000000000000000000000000000000000000000000000000000000010;
-    else if (ready[(head+2)%64]) Y = 64'b0000000000000000000000000000000000000000000000000000000000000100;
-    else if (ready[(head+3)%64]) Y = 64'b0000000000000000000000000000000000000000000000000000000000001000;
-    else if (ready[(head+4)%64]) Y = 64'b0000000000000000000000000000000000000000000000000000000000010000;
-    else if (ready[(head+5)%64]) Y = 64'b0000000000000000000000000000000000000000000000000000000000100000;
-    else if (ready[(head+6)%64]) Y = 64'b0000000000000000000000000000000000000000000000000000000001000000;
-    else if (ready[(head+7)%64]) Y = 64'b0000000000000000000000000000000000000000000000000000000010000000;
-    else if (ready[(head+8)%64]) Y = 64'b0000000000000000000000000000000000000000000000000000000100000000;
-    else if (ready[(head+9)%64]) Y = 64'b0000000000000000000000000000000000000000000000000000001000000000;
-    else if (ready[(head+10)%64]) Y = 64'b0000000000000000000000000000000000000000000000000000010000000000;
-    else if (ready[(head+11)%64]) Y = 64'b0000000000000000000000000000000000000000000000000000100000000000;
-    else if (ready[(head+12)%64]) Y = 64'b0000000000000000000000000000000000000000000000000001000000000000;
-    else if (ready[(head+13)%64]) Y = 64'b0000000000000000000000000000000000000000000000000010000000000000;
-    else if (ready[(head+14)%64]) Y = 64'b0000000000000000000000000000000000000000000000000100000000000000;
-    else if (ready[(head+15)%64]) Y = 64'b0000000000000000000000000000000000000000000000001000000000000000;
-    else if (ready[(head+16)%64]) Y = 64'b0000000000000000000000000000000000000000000000010000000000000000;
-    else if (ready[(head+17)%64]) Y = 64'b0000000000000000000000000000000000000000000000100000000000000000;
-    else if (ready[(head+18)%64]) Y = 64'b0000000000000000000000000000000000000000000001000000000000000000;
-    else if (ready[(head+19)%64]) Y = 64'b0000000000000000000000000000000000000000000010000000000000000000;
-    else if (ready[(head+20)%64]) Y = 64'b0000000000000000000000000000000000000000000100000000000000000000;
-    else if (ready[(head+21)%64]) Y = 64'b0000000000000000000000000000000000000000001000000000000000000000;
-    else if (ready[(head+22)%64]) Y = 64'b0000000000000000000000000000000000000000010000000000000000000000;
-    else if (ready[(head+23)%64]) Y = 64'b0000000000000000000000000000000000000000100000000000000000000000;
-    else if (ready[(head+24)%64]) Y = 64'b0000000000000000000000000000000000000001000000000000000000000000;
-    else if (ready[(head+25)%64]) Y = 64'b0000000000000000000000000000000000000010000000000000000000000000;
-    else if (ready[(head+26)%64]) Y = 64'b0000000000000000000000000000000000000100000000000000000000000000;
-    else if (ready[(head+27)%64]) Y = 64'b0000000000000000000000000000000000001000000000000000000000000000;
-    else if (ready[(head+28)%64]) Y = 64'b0000000000000000000000000000000000010000000000000000000000000000;
-    else if (ready[(head+29)%64]) Y = 64'b0000000000000000000000000000000000100000000000000000000000000000;
-    else if (ready[(head+30)%64]) Y = 64'b0000000000000000000000000000000001000000000000000000000000000000;
-    else if (ready[(head+31)%64]) Y = 64'b0000000000000000000000000000000010000000000000000000000000000000;
-    else if (ready[(head+33)%64]) Y = 64'b0000000000000000000000000000001000000000000000000000000000000000;
-    else if (ready[(head+34)%64]) Y = 64'b0000000000000000000000000000010000000000000000000000000000000000;
-    else if (ready[(head+35)%64]) Y = 64'b0000000000000000000000000000100000000000000000000000000000000000;
-    else if (ready[(head+36)%64]) Y = 64'b0000000000000000000000000001000000000000000000000000000000000000;
-    else if (ready[(head+37)%64]) Y = 64'b0000000000000000000000000010000000000000000000000000000000000000;
-    else if (ready[(head+38)%64]) Y = 64'b0000000000000000000000000100000000000000000000000000000000000000;
-    else if (ready[(head+39)%64]) Y = 64'b0000000000000000000000001000000000000000000000000000000000000000;
-    else if (ready[(head+40)%64]) Y = 64'b0000000000000000000000010000000000000000000000000000000000000000;
-    else if (ready[(head+41)%64]) Y = 64'b0000000000000000000000100000000000000000000000000000000000000000;
-    else if (ready[(head+42)%64]) Y = 64'b0000000000000000000001000000000000000000000000000000000000000000;
-    else if (ready[(head+43)%64]) Y = 64'b0000000000000000000010000000000000000000000000000000000000000000;
-    else if (ready[(head+44)%64]) Y = 64'b0000000000000000000100000000000000000000000000000000000000000000;
-    else if (ready[(head+45)%64]) Y = 64'b0000000000000000001000000000000000000000000000000000000000000000;
-    else if (ready[(head+46)%64]) Y = 64'b0000000000000000010000000000000000000000000000000000000000000000;
-    else if (ready[(head+47)%64]) Y = 64'b0000000000000000100000000000000000000000000000000000000000000000;
-    else if (ready[(head+48)%64]) Y = 64'b0000000000000001000000000000000000000000000000000000000000000000;
-    else if (ready[(head+49)%64]) Y = 64'b0000000000000010000000000000000000000000000000000000000000000000;
-    else if (ready[(head+50)%64]) Y = 64'b0000000000000100000000000000000000000000000000000000000000000000;
-    else if (ready[(head+51)%64]) Y = 64'b0000000000001000000000000000000000000000000000000000000000000000;
-    else if (ready[(head+52)%64]) Y = 64'b0000000000010000000000000000000000000000000000000000000000000000;
-    else if (ready[(head+53)%64]) Y = 64'b0000000000100000000000000000000000000000000000000000000000000000;
-    else if (ready[(head+54)%64]) Y = 64'b0000000001000000000000000000000000000000000000000000000000000000;
-    else if (ready[(head+55)%64]) Y = 64'b0000000010000000000000000000000000000000000000000000000000000000;
-    else if (ready[(head+56)%64]) Y = 64'b0000000100000000000000000000000000000000000000000000000000000000;
-    else if (ready[(head+57)%64]) Y = 64'b0000001000000000000000000000000000000000000000000000000000000000;
-    else if (ready[(head+58)%64]) Y = 64'b0000010000000000000000000000000000000000000000000000000000000000;
-    else if (ready[(head+59)%64]) Y = 64'b0000100000000000000000000000000000000000000000000000000000000000;
-    else if (ready[(head+60)%64]) Y = 64'b0001000000000000000000000000000000000000000000000000000000000000;
-    else if (ready[(head+61)%64]) Y = 64'b0010000000000000000000000000000000000000000000000000000000000000;
-    else if (ready[(head+62)%64]) Y = 64'b0100000000000000000000000000000000000000000000000000000000000000;
-    else if (ready[(head+63)%64]) Y = 64'b1000000000000000000000000000000000000000000000000000000000000000;
-    else Y = 64'b0; // 筌뤴뫀諭� 鈺곌퀗援�?肉� ?鍮�?�뼣?釉�筌�? ?釉�?�몵筌�? 0?�몵嚥�? ?苑�?�젟
-end
-endmodule
-
 module RS_Mul (
     input wire clk,
     input wire reset,
@@ -110,8 +35,8 @@ module RS_Mul (
     reg [7:0] operand2s [0:63];
     reg [31:0] operand1_datas [0:63];  // operand1 data
     reg [31:0] operand2_datas [0:63]; // operand2 data
-    reg [63:0] valid_entries1;  // operand1?�뵠 valid?釉놂쭪?
-    reg [63:0] valid_entries2; // operand2揶�? valid?釉놂쭪?
+    reg [63:0] valid_entries1;  // operand1??뵠 valid?釉놂쭪?
+    reg [63:0] valid_entries2; // operand2揶?? valid?釉놂쭪?
     reg [104:0] result [0:63];
     reg [5:0] tail;
     reg [63:0] readys;
@@ -120,7 +45,7 @@ module RS_Mul (
     reg [6:0] head;
     reg RS_MUL_on[0:63];
 
-    always @(posedge clk or posedge reset) begin
+    always @(posedge clk ) begin
         if (reset) begin
             tail <= 0;
             for (i = 0; i < 64; i = i + 1) begin
@@ -130,12 +55,12 @@ module RS_Mul (
                 operand2s[i] <= 0;
                 operand1_datas[i] <= 0;
                 operand2_datas[i] <= 0;
-                valid_entries1[i] <= 1'b0; // �뵳�딅�� ?�뻻 �룯�뜃由겼첎誘れ몵嚥�? 癰귣벊�뜚
-                valid_entries2[i] <= 1'b0; // �뵳�딅�� ?�뻻 �룯�뜃由겼첎誘れ몵嚥�? 癰귣벊�뜚
+                valid_entries1[i] <= 1'b0; // ?뵳?딅?? ??뻻 ?룯?뜃由겼첎誘れ몵嚥?? 癰귣벊?뜚
+                valid_entries2[i] <= 1'b0; // ?뵳?딅?? ??뻻 ?룯?뜃由겼첎誘れ몵嚥?? 癰귣벊?뜚
                 RS_MUL_on[i] <=0;
             end
         end else if (RS_mul_start) begin
-            if (RS_mul_operand1 == ALU_result_dest) begin  // ALU?肉�?苑� operand1?�벥 ?肉�?沅�?�뵠 ?嫄�?沅�?�뱽?釉�
+            if (RS_mul_operand1 == ALU_result_dest) begin  // ALU?肉??苑? operand1??벥 ?肉??沅???뵠 ?嫄??沅???뱽?釉?
                 PCs[tail] <= RS_mul_PC;
                 Rds[tail] <= RS_mul_Rd;
                 operand1s[tail] <= RS_mul_operand1;
@@ -146,7 +71,7 @@ module RS_Mul (
                 valid_entries2[tail] <= RS_mul_valid[1];
                 tail <= (tail + 1) % 64;
                  RS_MUL_on[tail] <=0;
-            end else if (RS_mul_operand2 == ALU_result_dest) begin  // ALU?肉�?苑� operand2?�벥 ?肉�?沅�?�뵠 ?嫄�?沅�?�뱽?釉�
+            end else if (RS_mul_operand2 == ALU_result_dest) begin  // ALU?肉??苑? operand2??벥 ?肉??沅???뵠 ?嫄??沅???뱽?釉?
                 PCs[tail] <= RS_mul_PC;
                 Rds[tail] <= RS_mul_Rd;
                 operand1s[tail] <= RS_mul_operand1;
@@ -157,7 +82,7 @@ module RS_Mul (
                 valid_entries2[tail] <= 1; 
                 tail <= (tail + 1) % 64;  
                 RS_MUL_on[tail] <=0; 
-             end else if (RS_mul_operand1 == MUL_result_dest) begin  // MUL?肉�?苑� operand1?�벥 ?肉�?沅�?�뵠 ?嫄�?沅�?�뱽?釉�
+             end else if (RS_mul_operand1 == MUL_result_dest) begin  // MUL?肉??苑? operand1??벥 ?肉??沅???뵠 ?嫄??沅???뱽?釉?
                 PCs[tail] <= RS_mul_PC;
                 Rds[tail] <= RS_mul_Rd;
                 operand1s[tail] <= RS_mul_operand1;
@@ -168,7 +93,7 @@ module RS_Mul (
                 valid_entries2[tail] <= RS_mul_valid[1];
                 tail <= (tail + 1) % 64;
                 RS_MUL_on[tail] <=0;
-             end else if (RS_mul_operand2 == MUL_result_dest) begin  // MUL?肉�?苑� operand2?�벥 ?肉�?沅�?�뵠 ?嫄�?沅�?�뱽?釉�
+             end else if (RS_mul_operand2 == MUL_result_dest) begin  // MUL?肉??苑? operand2??벥 ?肉??沅???뵠 ?嫄??沅???뱽?釉?
                 PCs[tail] <= RS_mul_PC;
                 Rds[tail] <= RS_mul_Rd;
                 operand1s[tail] <= RS_mul_operand1;
@@ -179,7 +104,7 @@ module RS_Mul (
                 valid_entries2[tail] <= 1; 
                 tail <= (tail + 1) % 64;
                 RS_MUL_on[tail] <=0;
-              end else if (RS_mul_operand1 == DIV_result_dest) begin  // DIV?肉�?苑� operand1?�벥 ?肉�?沅�?�뵠 ?嫄�?沅�?�뱽?釉�
+              end else if (RS_mul_operand1 == DIV_result_dest) begin  // DIV?肉??苑? operand1??벥 ?肉??沅???뵠 ?嫄??沅???뱽?釉?
                 PCs[tail] <= RS_mul_PC;
                 Rds[tail] <= RS_mul_Rd;
                 operand1s[tail] <= RS_mul_operand1;
@@ -190,7 +115,7 @@ module RS_Mul (
                 valid_entries2[tail] <= RS_mul_valid[1];
                 tail <= (tail + 1) % 64;
                 RS_MUL_on[tail] <=0;
-              end else if (RS_mul_operand2 == DIV_result_dest) begin  // MUL?肉�?苑� operand2?�벥 ?肉�?沅�?�뵠 ?嫄�?沅�?�뱽?釉�
+              end else if (RS_mul_operand2 == DIV_result_dest) begin  // MUL?肉??苑? operand2??벥 ?肉??沅???뵠 ?嫄??沅???뱽?釉?
                 PCs[tail] <= RS_mul_PC;
                 Rds[tail] <= RS_mul_Rd;
                 operand1s[tail] <= RS_mul_operand1;
@@ -302,7 +227,7 @@ module RS_Mul (
 
 
 
-    always @(*) begin
+    always @(posedge clk) begin
         for (i = 0; i < 64; i = i + 1) begin
             if (valid_entries1[i] && valid_entries2[i]) begin
                 readys[i] = 1;
@@ -312,14 +237,14 @@ module RS_Mul (
         end
     end
 
-    priority_encoder encoder (
+    priority_encoder encoder1 (
         .ready(readys),
         .head(head),
         .Y(Y)
     );
 
 
-always @(posedge clk or posedge reset) begin
+always @(posedge clk ) begin
     if (reset) begin
         result_out <= 0;
         head <= 0;
