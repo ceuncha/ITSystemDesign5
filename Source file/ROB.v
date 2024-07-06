@@ -41,7 +41,7 @@ task reset_rob_entries;
 endtask
 
 // ROB control logic
-always @(posedge clk or posedge rst) begin
+always @(posedge clk) begin
     if (rst) begin
         head <= 0;
         tail <= 0;
