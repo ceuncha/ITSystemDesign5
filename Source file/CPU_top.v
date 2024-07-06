@@ -128,8 +128,9 @@ wire [31:0] branch_index;
   wire [31:0] Operand1_BR;
   wire [31:0] Operand2_BR;
   wire [31:0] PC_BR;
-  wire BR_Done;
   assign BR_Done=RS_BR_Branch|RS_BR_Jump;
+wire BR_Done;
+
   wire [31:0]PC_Return;
 
     
@@ -519,10 +520,10 @@ control_unit_top u_control_unit_top(
         .RS_br_func3(RS_br_func3),
         .br_rd_phy_reg(br_rd_phy_reg),
         .RS_br_start(RS_br_start),
-        .RS_br_operand1(RS_br_Operand1),
-        .RS_br_operand2(RS_br_Operand2),
-        .RS_br_operand1_phy(RS_br_Operand1_phy),
-       .RS_br_operand2_phy(RS_br_Operand2_phy),
+       .RS_br_operand1(RS_br_operand1),
+       .RS_br_operand2(RS_br_operand2),
+       .RS_br_operand1_phy(RS_br_operand1_phy),
+       .RS_br_operand2_phy(RS_br_operand2_phy),
         .RS_br_phy_reg(RS_br_phy_reg),
         .RS_br_valid(RS_br_valid),
         .RS_br_immediate(RS_br_immediate),
