@@ -29,6 +29,7 @@ module RS_Branch (                                             //명령어 forwa
     input wire [31:0] PC_Return,
     input wire RS_BR_IF_ID_taken,
     input wire RS_BR_IF_ID_hit,
+    input wire Predict_Result,
     
     input wire [7:0] BR_Phy,
     input wire BR_Done,
@@ -69,6 +70,38 @@ module RS_Branch (                                             //명령어 forwa
 
     always @(posedge clk) begin    //리셋신호로 초기화 시켜줌
         if (reset) begin
+            tail <= 0;
+            head <=0;
+            for (i = 0; i < 64; i = i + 1) begin
+                inst_nums[i] <=0;
+                PCs[i] <= 0;
+                Rds[i] <= 0;
+                readys[i] <= 0;
+                Jumps[i] <= 0;
+                Branchs[i] <= 0;
+                funct3s[i] <= 0;
+                immediates[i] <=0;
+                operand1s[i] <= 0;
+                operand2s[i] <= 0;
+                operand1_datas[i] <= 0;
+                operand2_datas[i] <= 0;
+                valid_entries1[i] <= 1'b0; 
+                valid_entries2[i] <= 1'b0; 
+                takens[i] <= 1'b0;
+                hits[i] <= 1'b0;
+                RS_BR_Branch <= 0;
+            RS_BR_Jump <= 0;
+            RS_BR_Hit <= 0;
+            RS_BR_taken <= 0;
+            RS_BR_Phy <= 0;
+            RS_BR_inst_num_output <=0;
+            RS_BR_funct3 <= 0;
+            immediate_BR <= 0;
+            Operand1_BR <= 0;
+            Operand2_BR <= 0;
+            PC_BR <= 0;
+            end
+            end else if (Predict_Result) begin
             tail <= 0;
             head <=0;
             for (i = 0; i < 64; i = i + 1) begin
