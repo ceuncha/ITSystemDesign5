@@ -322,7 +322,8 @@ always @(*) begin
             RS_br_inst_num = inst_num;
             RS_br_IF_ID_taken = IF_ID_taken;
             RS_br_IF_ID_hit = IF_ID_hit; 
-
+            RS_br_immediate = immediate;
+            
             end else begin
     
 
