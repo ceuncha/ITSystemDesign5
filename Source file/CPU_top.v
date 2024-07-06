@@ -474,8 +474,7 @@ control_unit_top u_control_unit_top(
         .out_add_ALUOP(RS_alu_ALUOP),
         .out_add_ALUSrc1(RS_alu_ALUSrc1),
         .out_add_ALUSrc2(RS_alu_ALUSrc2),
-        .out_add_Jump(RS_alu_Jump),
-        .out_add_Branch(RS_alu_Branch),
+
         .add_rd_phy_reg(RS_alu_Rd),
         .add_rs_on(RS_alu_start),
         .out_add_Operand1_phy(RS_alu_operand1),
@@ -487,14 +486,10 @@ control_unit_top u_control_unit_top(
         .mul_alu_operand2(RS_mul_operand2_data),
         .mul_alu_func3(RS_mul_funct3),
         .out_mul_inst_num(RS_mul_inst_num),
-        .out_mul_MemToReg(RS_mul_MemToReg),
-       .out_mul_MemRead(RS_mul_MemRead),
-        .out_mul_MemWrite(RS_mul_MemWrite),
+
         .out_mul_ALUOP(RS_mul_ALUOP),
-        .out_mul_ALUSrc1(RS_mul_ALUSrc1),
-        .out_mul_ALUSrc2(RS_mul_ALUSrc2),
-        .out_mul_Jump(RS_mul_Jump),
-        .out_mul_Branch(RS_mul_Branch),
+
+
         .mul_rd_phy_reg(RS_mul_Rd),
         .mul_rs_on(RS_mul_start),
         .out_mul_Operand1_phy(RS_mul_operand1),
@@ -505,14 +500,10 @@ control_unit_top u_control_unit_top(
         .div_alu_operand2(RS_div_operand2_data),
         .div_alu_func3(RS_div_funct3),
         .out_div_inst_num(RS_div_inst_num),
-        .out_div_MemToReg(RS_div_MemToReg),
-        .out_div_MemRead(RS_div_MemRead),
-        .out_div_MemWrite(RS_div_MemWrite),
+
         .out_div_ALUOP(RS_div_ALUOP),
-        .out_div_ALUSrc1(RS_div_ALUSrc1),
-        .out_div_ALUSrc2(RS_div_ALUSrc2),
-        .out_div_Jump(RS_div_Jump),
-        .out_div_Branch(RS_div_Branch),
+
+
         .div_rd_phy_reg(RS_div_Rd),
         .div_rs_on(RS_div_start),
         .out_div_Operand1_phy(RS_div_operand1),
@@ -528,10 +519,10 @@ control_unit_top u_control_unit_top(
         .RS_br_func3(RS_br_func3),
         .br_rd_phy_reg(br_rd_phy_reg),
         .RS_br_start(RS_br_start),
-        .RS_br_Operand1(RS_br_Operand1),
-        .RS_br_Operand2(RS_br_Operand2),
-        .RS_br_Operand1_phy(RS_br_Operand1_phy),
-       .RS_br_Operand2_phy(RS_br_Operand2_phy),
+        .RS_br_operand1(RS_br_Operand1),
+        .RS_br_operand2(RS_br_Operand2),
+        .RS_br_operand1_phy(RS_br_Operand1_phy),
+       .RS_br_operand2_phy(RS_br_Operand2_phy),
         .RS_br_phy_reg(RS_br_phy_reg),
         .RS_br_valid(RS_br_valid),
         .RS_br_immediate(RS_br_immediate),
@@ -620,10 +611,8 @@ control_unit_top u_control_unit_top(
         .DIV_result(DIV_Data),
         .DIV_result_dest(DIV_Phy),
         .DIV_result_valid(DIV_Done),
-        .RS_alu_IF_ID_taken(RS_alu_IF_ID_taken),
-        .RS_alu_IF_ID_hit(RS_alu_IF_ID_hit),
         .Branch_result_valid(BR_Done),
-        .Pc_Return(PC_Return),
+        .PC_Return(PC_Return),
         .BR_Phy(BR_Phy),
         .result_out(result_out_alu)
     );
@@ -659,7 +648,7 @@ control_unit_top u_control_unit_top(
         .DIV_result_dest(DIV_Phy),
         .DIV_result_valid(DIV_Done),
         .Branch_result_valid(BR_Done),
-        .Pc_Return(PC_Return),
+        .PC_Return(PC_Return),
         .BR_Phy(BR_Phy),
         .result_out(result_out_mul)
     );
@@ -674,14 +663,13 @@ control_unit_top u_control_unit_top(
                    .RS_div_operand2_data(RS_div_operand2_data),.RS_div_valid(RS_div_valid),.ALU_result(ALU_Data),
                    .ALU_result_dest(ALU_Phy),.ALU_result_valid(ALU_Done),.MUL_result(MUL_Data[31:0]),.MUL_result_dest(MUL_Phy),
                    .MUL_result_valid(MUL_Done),.DIV_result(DIV_Data),.DIV_result_dest(DIV_Phy),.DIV_result_valid(DIV_Done),
-                   .Branch_result_valid(BR_Done),.Pc_Return(PC_Return),.BR_Phy(BR_Phy),
+                   .Branch_result_valid(BR_Done),.PC_Return(PC_Return),.BR_Phy(BR_Phy),
                    .result_out(result_out_div));
 
   subtractor_32bit subtractor( .A(Operand1_BR),.B(Operand2_BR),.negative(negative),.overflow(overflow),.zero(zero),.carry(carry));
 
   ////////////ALU
-    ALU ALU(.A(ALU_A),.B(ALU_B),.ALUop(ALUop),.Result(ALU_Data),.negative(0),.overflow(0),
-            .zero(0),.carry(0));
+    ALU ALU(.A(ALU_A),.B(ALU_B),.ALUop(ALUop),.Result(ALU_Data));
      BranchUnit branchUnit(.RS_BR_Jump(RS_BR_Jump),.RS_BR_Branch(RS_BR_Branch),.RS_BR_funct3(RS_BR_funct3),.RS_BR_taken(RS_BR_taken),.Predict_Result(Predict_Result),
                          .immediate_BR(immediate_BR),.PC_BR(PC_BR),.ALUNegative(negative),
                          .ALUZero(zero),.ALUOverflow(overflow),.ALUCarry(carry),.PC_Branch(PC_Branch),
