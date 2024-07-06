@@ -105,7 +105,7 @@ wire [31:0] branch_index;
   wire RS_br_Branch;
   wire RS_br_IF_ID_hit;
   wire RS_br_IF_ID_taken;
-  wire [2:0] RS_br_funct3;
+  wire [2:0] RS_br_func3;
   wire [7:0]br_rd_phy_reg;
   wire RS_br_start;
   wire [31:0] RS_br_operand1;
