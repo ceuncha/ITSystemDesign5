@@ -307,7 +307,7 @@ global_prediction_top u_global_prediction_top(
     .ID_EX_hit(RS_BR_hit)
 );
 
-
+(* keep_hierarchy = "yes" *)
 BUFF BUFF(
 .clk(clk),
     .rst(rst),
@@ -315,16 +315,21 @@ BUFF BUFF(
     .real_taken(real_taken)
 );
 
+(* keep_hierarchy = "yes" *)
 ROB_Counter u_ROB_Counter(
     .clk(clk),
     .rst(rst),
     .inst_num(inst_num)
 );
+
+(* keep_hierarchy = "yes" *)
 Instruction_memory u_Instruction_memory(
     .pc(PC),
     .instOut(instOut)
 );
 
+
+(* keep_hierarchy = "yes" *)
 ifid_pipeline_register u_ifid_pipeline_register(
     .clk(clk),
     .reset(rst),
@@ -342,12 +347,16 @@ ifid_pipeline_register u_ifid_pipeline_register(
     .ROB_Flush(ROB_Flush)
 );
 
+
+(* keep_hierarchy = "yes" *)
 sign_extend u_sign_extend(
     .inst(instOut),  // 전체 명령어 입력
     .clk(clk),          // 클락 신호 입력
     .Imm(imm32)  // 신호 확장된 즉시값 출력
 );
 
+
+(* keep_hierarchy = "yes" *)
 RAT u_RAT(
     .clk(clk),
     .reset(rst),
@@ -370,6 +379,8 @@ RAT u_RAT(
     .free_phy_addr_out(original_phy_addr) // 프리리스트로 비어있는 주소 전송
 );
 
+
+(* keep_hierarchy = "yes" *)
 physical_register_file u_physical_register_file(
     .clk(clk),
     .reset(rst),
@@ -398,6 +409,8 @@ physical_register_file u_physical_register_file(
     .valid2(Valid2)
 );
 
+
+(* keep_hierarchy = "yes" *)
 BB u_BB(
     .clk(clk),                      // Clock signal
     .rst(rst),                      // Reset signal
@@ -413,6 +426,8 @@ BB u_BB(
     .RS_EX_Jump(RS_BR_Jump)
 );
 
+
+(* keep_hierarchy = "yes" *)
 chuchu u_chuchu(
     .clk(clk),
     .reset(rst),
@@ -424,6 +439,8 @@ chuchu u_chuchu(
     .chuchu_out(chuchu_addr)
 );
 
+
+(* keep_hierarchy = "yes" *)
 control_unit_top u_control_unit_top(
     .rst(rst),
     .opcode(opcode),
@@ -444,6 +461,8 @@ control_unit_top u_control_unit_top(
     
 
 
+
+(* keep_hierarchy = "yes" *)
    RS_EX_decoder rs_ex_decoder_inst (
         .clk(clk),
         .reset(rst),
@@ -533,6 +552,8 @@ control_unit_top u_control_unit_top(
         .RS_br_PC(RS_br_PC)
     );
 
+
+(* keep_hierarchy = "yes" *)
  RS_Branch RS_Branch(
 .clk(clk),
 .reset(rst),
@@ -582,6 +603,8 @@ control_unit_top u_control_unit_top(
 );
       
     
+
+    (* keep_hierarchy = "yes" *)
         RS_ALU rs_alu (
         .clk(clk),
         .reset(rst),
@@ -629,6 +652,8 @@ control_unit_top u_control_unit_top(
 
 
     
+
+    (* keep_hierarchy = "yes" *)
     RS_Mul rs_mul (
         .clk(clk),
         .reset(rst),
@@ -661,6 +686,8 @@ control_unit_top u_control_unit_top(
 
 
 
+
+(* keep_hierarchy = "yes" *)
     RS_Div RS_Div (.clk(clk),.reset(rst),.RS_div_start(RS_div_start),.RS_div_PC(RS_div_inst_num),
                    .RS_div_Rd(RS_div_Rd),.RS_div_ALUOP(RS_div_ALUOP),.EX_MEM_MemRead(Load_Done),
                    .RData(Load_Data),.EX_MEM_Physical_Address(Load_Phy),.RS_div_operand1(RS_div_operand1),
@@ -671,21 +698,32 @@ control_unit_top u_control_unit_top(
                    .Branch_result_valid(RS_BR_Jump),.PC_Return(PC_Return),.BR_Phy(BR_Phy),
                    .result_out(result_out_div));
 
+
+(* keep_hierarchy = "yes" *)
   subtractor_32bit subtractor( .A(Operand1_BR),.B(Operand2_BR),.negative(negative),.overflow(overflow),.zero(zero),.carry(carry));
 
   ////////////ALU
+  (* keep_hierarchy = "yes" *)
     ALU ALU(.A(ALU_A),.B(ALU_B),.ALUop(ALUop),.Result(ALU_Data));
+    (* keep_hierarchy = "yes" *)
      BranchUnit branchUnit(.RS_BR_Jump(RS_BR_Jump),.RS_BR_Branch(RS_BR_Branch),.RS_BR_funct3(RS_BR_funct3),.RS_BR_taken(RS_BR_taken),.Predict_Result(Predict_Result),
                          .immediate_BR(immediate_BR),.PC_BR(PC_BR),.ALUNegative(negative),
                          .ALUZero(zero),.ALUOverflow(overflow),.ALUCarry(carry),.PC_Branch(PC_Branch),
                          .branch_index(Branch_index),.PCSrc(PCSrc), .RS_BR_inst_num(RS_BR_inst_num_output),.PC_Return(PC_Return));
+
+    (* keep_hierarchy = "yes" *)
    add4 add4 (.in(PC_BR),.out(PC_Return));
+   (* keep_hierarchy = "yes" *)
     MUX_2input MUX_A (.a(RS_EX_PC_ALU),.b(Operand1_ALU),.sel(RS_EX_ALU_Src1),.y(ALU_A)); 
+    (* keep_hierarchy = "yes" *)
     MUX_2input MUX_B (.a(Operand2_ALU),.b(immediate),.sel(RS_EX_ALU_Src2),.y(ALU_B)); 
+    (* keep_hierarchy = "yes" *)
    multiplier multiplier (.clk(clk),.rst(rst),.start(Mul_start_in),.A(Operand1_Mul),.B(Operand2_Mul),
                           .Physical_address_in(RS_EX_Mul_Physical_address_in),
                           .PC_in(RS_EX_inst_num_Mul_in),.Product(MUL_Data),.done(MUL_Done),.Physical_address_out(MUL_Phy),
                           .PC_out(RS_EX_inst_num_Mul_out));
+
+    (* keep_hierarchy = "yes" *)
     divider divider (.clk(clk),.reset(rst),.start(Div_start_in),.A(Operand1_Div),.B(Operand2_Div),
                      .Physical_address_in(RS_EX_Div_Physical_address_in),
                      .PC_in(RS_EX_Div_inst_num),.Result(DIV_Data),.divider_op_in(divider_op),.done(DIV_Done),
@@ -693,6 +731,8 @@ control_unit_top u_control_unit_top(
 
 
 ////////////////////EX_MEM
+
+(* keep_hierarchy = "yes" *)
     exmem_pipeline_register exmem (
         .clk(clk),
         .reset(rst),
@@ -729,6 +769,8 @@ control_unit_top u_control_unit_top(
     );
 
     // DataMemory instantiation
+
+    (* keep_hierarchy = "yes" *)
     DataMemory datamem (
         .Load_Done(Load_Done),
         .EX_MEM_MemWrite(EX_MEM_MemWrite),
@@ -742,6 +784,8 @@ control_unit_top u_control_unit_top(
   
 
     // WbMux instantiation
+
+    (* keep_hierarchy = "yes" *)
     WbMux wb_mux (
         .MEM_WB_ALUResult(EX_MEM_ALUResult),
         .MEM_WB_RData(Load_Data),
@@ -749,10 +793,14 @@ control_unit_top u_control_unit_top(
         .alu_exec_value(alu_exec_value)
     );
     
+
+    (* keep_hierarchy = "yes" *)
     MUX_2input Savage_Mux (.a(EX_MEM_alu_exec_done),.b(Load_Done),
     .sel(Load_Done),.y(alu_exec_done)); 
 
     // ROB instantiation
+
+    (* keep_hierarchy = "yes" *)
     ROB rob (
         .clk(clk),
         .rst(rst),
@@ -780,6 +828,8 @@ control_unit_top u_control_unit_top(
     );
 
     // logical_address_register instantiation
+
+    (* keep_hierarchy = "yes" *)
     logical_address_register logical_reg (
         .clk(clk),
         .reset(rst),
