@@ -145,7 +145,7 @@ module RS_ALU (                                             //명령어 forwardi
     integer i;
     reg RS_ALU_on[0:63];
 
-    always @(posedge clk or posedge reset) begin    //리셋신호로 초기화 시켜줌
+    always @(posedge clk) begin    //리셋신호로 초기화 시켜줌
         if (reset) begin
             tail <= 0;
             head <=0;
@@ -153,8 +153,6 @@ module RS_ALU (                                             //명령어 forwardi
                 inst_nums[i] <=0;
                 PCs[i] <= 0;
                 Rds[i] <= 0;
-                result[i] <= 0;
-                readys[i] <= 0;
                 MemToRegs[i] <= 0;
                 MemReads[i] <= 0;
                 MemWrites[i] <= 0;
@@ -171,7 +169,7 @@ module RS_ALU (                                             //명령어 forwardi
                 operand2_datas[i] <= 0;
                 valid_entries1[i] <= 1'b0; 
                 valid_entries2[i] <= 1'b0; 
-              RS_ALU_on[i] <=0;
+             
             end
         end else if (start) begin
 
@@ -456,7 +454,7 @@ module RS_ALU (                                             //명령어 forwardi
     
 
 
-    always @(*) begin           //수시로 operand valid 값을 확인하여 나갈 준비가 되면 대기를 시켜준다. (readys -> 1이 되면 priority encoder로 해당 정보를 보내주게 되고,
+    always @(posedge clk) begin           //수시로 operand valid 값을 확인하여 나갈 준비가 되면 대기를 시켜준다. (readys -> 1이 되면 priority encoder로 해당 정보를 보내주게 되고,
                                 //priority encoder은 들어온 인풋들을 바탕으로 우선순위를 정해준다.
         for (i = 0; i < 64; i = i + 1) begin
             if (valid_entries1[i] && valid_entries2[i] && !MemReads[i]) begin
@@ -478,7 +476,7 @@ module RS_ALU (                                             //명령어 forwardi
     );
 
 
-always @(posedge clk or posedge reset) begin  // priority encoder로부터 받은 값을 이용하여 우선순위를 선택해주고, 해당 명령어를 계산과정으로 보내준다.
+always @(posedge clk ) begin  // priority encoder로부터 받은 값을 이용하여 우선순위를 선택해주고, 해당 명령어를 계산과정으로 보내준다.
     if (reset) begin
         result_out <= 0;
         head <= 0;
