@@ -88,6 +88,17 @@ module RS_Branch (                                             //명령어 forwa
                 valid_entries2[i] <= 1'b0; 
                 takens[i] <= 1'b0;
                 hits[i] <= 1'b0;
+                RS_BR_Branch <= 0;
+            RS_BR_Jump <= 0;
+            RS_BR_Hit <= 0;
+            RS_BR_taken <= 0;
+            RS_BR_Phy <= 0;
+            RS_BR_inst_num_output <=0;
+            RS_BR_funct3 <= 0;
+            immediate_BR <= 0;
+            Operand1_BR <= 0;
+            Operand2_BR <= 0;
+            PC_BR <= 0;
             end
         end else if (start) begin
             if (operand1 == ALU_result_dest) begin  // 명령어가 처음 들어왔을때, alu의 결과와 명령어의 operand 물리주소를 비교하여 
