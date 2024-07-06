@@ -17,7 +17,6 @@ module ROB(
     input wire [31:0] PC_Return,         // Jump address
     input wire [31:0] branch_index,      // Branch index in ROB
     input wire [31:0] PC,                // Current PC value (expanded to 32 bits)
-    input wire BR_Done,
     output reg [31:0] out_value,         // Output value
     output reg [4:0] out_dest,           // Output register destination extracted from instr[11:7]
     output reg out_reg_write             // Output RegWrite signal to indicate a register write operation
@@ -47,9 +46,8 @@ always @(posedge clk or posedge rst) begin
         tail <= 0;
         reset_rob_entries();
     end else begin
-        if (BR_Done) begin
+        if (PcSrc) begin
             // Update the branch entry with PC_Return value
-            if(PcSrc) begin
             for (i = 0; i < 64; i = i + 1) begin
                 if (rob_entry[i][31:0] == branch_index) begin
                     rob_entry[i][98:0] <= {rob_entry[i][98], 1'b1, rob_entry[i][96], PC_Return, rob_entry[i][63:32], rob_entry[i][31:0]};
@@ -59,35 +57,31 @@ always @(posedge clk or posedge rst) begin
   
                 end
             end
-            end else begin
-            for (i = 0; i < 64; i = i + 1) begin
-                if (rob_entry[i][31:0] == branch_index) begin
-                    rob_entry[i][98:0] <= {rob_entry[i][98], 1'b1, rob_entry[i][96], PC_Return, rob_entry[i][63:32], rob_entry[i][31:0]};
-                end
-            end
-            end
-        
+      
         end else if (IF_ID_instOut != 32'b0) begin  // Only increment tail if the instruction is not invalid (i.e., not a bubble)
             rob_entry[tail] <= {1'b1, 1'b0, reg_write, 32'b0, IF_ID_instOut, PC}; // Store input data in the ROB entry with value set to 32'b0 and new_bit set to 1
             tail <= (tail + 1) % 64;                // Circular buffer handling
         end
 
         // Update the value and set ready flag upon execution completion
-        if (alu_exec_done || mul_exec_done || div_exec_done) begin
+        
             for (i = 0; i < 64; i = i + 1) begin
                 if (rob_entry[i][98]) begin // Check if the new bit is set to 1
-                    if (alu_exec_done && rob_entry[i][31:0] == alu_exec_PC) begin
+                    if ( rob_entry[i][31:0] == alu_exec_PC) begin
                         rob_entry[i][98:0] <= {rob_entry[i][98], 1'b1, rob_entry[i][96], alu_exec_value, rob_entry[i][63:32], rob_entry[i][31:0]}; // Update value and maintain new_bit, reg_write, instr, PC
                     end
-                    if (mul_exec_done && rob_entry[i][31:0] == mul_exec_PC) begin
+                    if ( rob_entry[i][31:0] == mul_exec_PC) begin
                         rob_entry[i][98:0] <= {rob_entry[i][98], 1'b1, rob_entry[i][96], mul_exec_value, rob_entry[i][63:32], rob_entry[i][31:0]}; // Update value and maintain new_bit, reg_write, instr, PC       
                     end
-                    if (div_exec_done && rob_entry[i][31:0] == div_exec_PC) begin
+                    if ( rob_entry[i][31:0] == div_exec_PC) begin
                         rob_entry[i][98:0] <= {rob_entry[i][98], 1'b1, rob_entry[i][96], div_exec_value, rob_entry[i][63:32], rob_entry[i][31:0]}; // Update value and maintain new_bit, reg_write, instr, PC     
+                    end
+                    if ( rob_entry[i][31:0] == branch_index) begin
+                        rob_entry[i][98:0] <= {rob_entry[i][98], 1'b1, rob_entry[i][96], alu_exec_value, rob_entry[i][63:32], rob_entry[i][31:0]}; // Update value and maintain new_bit, reg_write, instr, PC
                     end
                 end
             end
-        end
+        
         
     end
 end
