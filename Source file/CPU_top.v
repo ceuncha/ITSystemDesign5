@@ -306,11 +306,7 @@ global_prediction_top u_global_prediction_top(
     .ID_EX_hit(RS_EX_hit)
 );
 
-OR OR (
-.RS_BR_Jump(RS_BR_Jump),
-.RS_BR_Branch(RS_BR_Branch),
-.BR_Done(RS_BR_Jump)
-);
+
 BUFF BUFF(
 .clk(clk),
     .rst(rst),
