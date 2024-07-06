@@ -128,7 +128,6 @@ wire [31:0] branch_index;
   wire [31:0] Operand1_BR;
   wire [31:0] Operand2_BR;
   wire [31:0] PC_BR;
-  assign BR_Done=RS_BR_Branch|RS_BR_Jump;
 wire BR_Done;
 
   wire [31:0]PC_Return;
@@ -306,6 +305,12 @@ global_prediction_top u_global_prediction_top(
     .PC_taken(PC_taken),
     .ID_EX_hit(RS_EX_hit)
 );
+
+OR OR (
+.RS_BR_Jump(RS_BR_Jump),
+.RS_BR_Branch(RS_BR_Branch),
+.BR_Done(RS_BR_Jump)
+);
 BUFF BUFF(
 .clk(clk),
     .rst(rst),
@@ -379,7 +384,7 @@ physical_register_file u_physical_register_file(
     .ALU_load_Write(Load_Done),
     .ALU_mul_Write(MUL_Done),
     .ALU_div_Write(DIV_Done),
-    .ALU_done_Write(BR_Done),
+    .ALU_done_Write(RS_BR_Jump),
     .ALU_add_Data(ALU_Data),
     .ALU_load_Data(Load_Data),
     .ALU_mul_Data(MUL_Data[31:0]),
@@ -612,7 +617,7 @@ control_unit_top u_control_unit_top(
         .DIV_result(DIV_Data),
         .DIV_result_dest(DIV_Phy),
         .DIV_result_valid(DIV_Done),
-        .Branch_result_valid(BR_Done),
+        .Branch_result_valid(RS_BR_Jump),
         .PC_Return(PC_Return),
         .BR_Phy(BR_Phy),
         .result_out(result_out_alu)
@@ -648,7 +653,7 @@ control_unit_top u_control_unit_top(
         .DIV_result(DIV_Data),
         .DIV_result_dest(DIV_Phy),
         .DIV_result_valid(DIV_Done),
-        .Branch_result_valid(BR_Done),
+        .Branch_result_valid(RS_BR_Jump),
         .PC_Return(PC_Return),
         .BR_Phy(BR_Phy),
         .result_out(result_out_mul)
@@ -664,7 +669,7 @@ control_unit_top u_control_unit_top(
                    .RS_div_operand2_data(RS_div_operand2_data),.RS_div_valid(RS_div_valid),.ALU_result(ALU_Data),
                    .ALU_result_dest(ALU_Phy),.ALU_result_valid(ALU_Done),.MUL_result(MUL_Data[31:0]),.MUL_result_dest(MUL_Phy),
                    .MUL_result_valid(MUL_Done),.DIV_result(DIV_Data),.DIV_result_dest(DIV_Phy),.DIV_result_valid(DIV_Done),
-                   .Branch_result_valid(BR_Done),.PC_Return(PC_Return),.BR_Phy(BR_Phy),
+                   .Branch_result_valid(RS_BR_Jump),.PC_Return(PC_Return),.BR_Phy(BR_Phy),
                    .result_out(result_out_div));
 
   subtractor_32bit subtractor( .A(Operand1_BR),.B(Operand2_BR),.negative(negative),.overflow(overflow),.zero(zero),.carry(carry));
@@ -674,7 +679,7 @@ control_unit_top u_control_unit_top(
      BranchUnit branchUnit(.RS_BR_Jump(RS_BR_Jump),.RS_BR_Branch(RS_BR_Branch),.RS_BR_funct3(RS_BR_funct3),.RS_BR_taken(RS_BR_taken),.Predict_Result(Predict_Result),
                          .immediate_BR(immediate_BR),.PC_BR(PC_BR),.ALUNegative(negative),
                          .ALUZero(zero),.ALUOverflow(overflow),.ALUCarry(carry),.PC_Branch(PC_Branch),
-                           .branch_index(Branch_index),.PCSrc(PCSrc), .RS_BR_inst_num(RS_BR_inst_num_output));
+                         .branch_index(Branch_index),.PCSrc(PCSrc), .RS_BR_inst_num(RS_BR_inst_num_output));
    add4 add4 (.in(PC_BR),.out(PC_Return));
     MUX_2input MUX_A (.a(RS_EX_PC_ALU),.b(Operand1_ALU),.sel(RS_EX_ALU_Src1),.y(ALU_A)); 
     MUX_2input MUX_B (.a(Operand2_ALU),.b(immediate),.sel(RS_EX_ALU_Src2),.y(ALU_B)); 
