@@ -417,10 +417,20 @@ module RS_Branch (                                             //명령어 forwa
             operand1_datas[head] <= 0;
             operand2_datas[head] <= 0;
             head <= (head + 1) % 64;                 // Circular buffer handling
-        end
-    
+        end else  begin
+        RS_BR_Branch <= 0;
+            RS_BR_Jump <= 0;
+            RS_BR_Hit <= 0;
+            RS_BR_taken <= 0;
+            RS_BR_Phy <= 0;
+            RS_BR_inst_num_output <=0;
+            RS_BR_funct3 <= 0;
+            immediate_BR <= 0;
+            Operand1_BR <= 0;
+            Operand2_BR <= 0;
+            PC_BR <= 0;
          end
-
+end
     
 
 
