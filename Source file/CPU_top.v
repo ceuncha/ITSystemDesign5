@@ -774,8 +774,8 @@ control_unit_top u_control_unit_top(
         .PC(IF_ID_inst_num),
         .out_value(out_value),
         .out_dest(out_dest),
-        .out_reg_write(out_reg_write),
-        .BR_Done(BR_Done)
+        .out_reg_write(out_reg_write)
+
     );
 
     // logical_address_register instantiation
