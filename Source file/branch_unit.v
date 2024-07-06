@@ -27,7 +27,7 @@ always @(*) begin
             PC_Branch = immediate_BR + PC_Return; 
             PCSrc = 1; 
   
-            branch_index = RS_BR_inst_num;
+           
         end
         else if(RS_BR_Branch) begin
             case(RS_BR_funct3)
@@ -43,11 +43,11 @@ always @(*) begin
             if(PCSrc) begin
                 PC_Branch = immediate_BR + PC_Return; 
 
-                branch_index = RS_BR_inst_num;
+                
             end
         end
         
-        
+        branch_index = RS_BR_inst_num;
         Predict_Result = RS_BR_taken ^ PCSrc;
     end
 
