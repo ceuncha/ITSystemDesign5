@@ -128,7 +128,7 @@ wire [31:0] branch_index;
   wire [31:0] Operand1_BR;
   wire [31:0] Operand2_BR;
   wire [31:0] PC_BR;
-wire BR_Done;
+  wire BR_Done;
 
   wire [31:0]PC_Return;
 
@@ -294,16 +294,16 @@ wire real_taken;
 global_prediction_top u_global_prediction_top(
     .clk(clk),
     .reset(rst),
-    .ID_EX_Branch(RS_EX_Branch),
+    .ID_EX_Branch(RS_BR_Branch),
     .Pcsrc(PCSrc),
-    .ID_EX_PC(RS_EX_PC_ALU),
+    .ID_EX_PC(PC_BR),
     .PC_Branch(PC_Branch),
-    .ID_EX_Jump(RS_EX_Jump),
+    .ID_EX_Jump(RS_BR_Jump),
     .PC(PC),
     .Wrong(Wrong),
     .hit(hit),    
     .PC_taken(PC_taken),
-    .ID_EX_hit(RS_EX_hit)
+    .ID_EX_hit(RS_BR_hit)
 );
 
 
@@ -564,6 +564,7 @@ control_unit_top u_control_unit_top(
 .RS_BR_IF_ID_taken(RS_br_IF_ID_taken),
 .RS_BR_IF_ID_hit(RS_br_IF_ID_hit),
 .BR_Phy(BR_Phy),
+.BR_Done(RS_BR_Jump),
 
 .RS_BR_Branch(RS_BR_Branch),
 .RS_BR_Jump(RS_BR_Jump),
@@ -675,7 +676,7 @@ control_unit_top u_control_unit_top(
      BranchUnit branchUnit(.RS_BR_Jump(RS_BR_Jump),.RS_BR_Branch(RS_BR_Branch),.RS_BR_funct3(RS_BR_funct3),.RS_BR_taken(RS_BR_taken),.Predict_Result(Predict_Result),
                          .immediate_BR(immediate_BR),.PC_BR(PC_BR),.ALUNegative(negative),
                          .ALUZero(zero),.ALUOverflow(overflow),.ALUCarry(carry),.PC_Branch(PC_Branch),
-                         .branch_index(Branch_index),.PCSrc(PCSrc), .RS_BR_inst_num(RS_BR_inst_num_output),.PC_Retrun(PC_Retrun));
+                         .branch_index(Branch_index),.PCSrc(PCSrc), .RS_BR_inst_num(RS_BR_inst_num_output),.PC_Return(PC_Return));
    add4 add4 (.in(PC_BR),.out(PC_Return));
     MUX_2input MUX_A (.a(RS_EX_PC_ALU),.b(Operand1_ALU),.sel(RS_EX_ALU_Src1),.y(ALU_A)); 
     MUX_2input MUX_B (.a(Operand2_ALU),.b(immediate),.sel(RS_EX_ALU_Src2),.y(ALU_B)); 
