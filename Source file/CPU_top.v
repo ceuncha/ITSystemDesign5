@@ -408,8 +408,8 @@ BB u_BB(
     .Copy_RAT(save_on),                 // Output register destination extracted from instr[11:7]
     .head_num(restore_page),           // Output RegWrite signal to indicate a register write operation
     .Paste_RAT(restore_on),
-    .RS_EX_Branch(RS_EX_Branch), 
-    .RS_EX_Jump(RS_EX_Jump)
+    .RS_EX_Branch(RS_BR_Branch), 
+    .RS_EX_Jump(RS_BR_Jump)
 );
 
 chuchu u_chuchu(
@@ -565,6 +565,7 @@ control_unit_top u_control_unit_top(
 .RS_BR_IF_ID_hit(RS_br_IF_ID_hit),
 .BR_Phy(BR_Phy),
 .BR_Done(RS_BR_Jump),
+.Predict_Result(Predict_Result),
 
 .RS_BR_Branch(RS_BR_Branch),
 .RS_BR_Jump(RS_BR_Jump),
