@@ -536,7 +536,7 @@ control_unit_top u_control_unit_top(
 .start(RS_br_start),
 .RS_BR_inst_num(RS_br_inst_num),
 .PC(RS_br_PC),
-.Rd(RS_rd_phy_reg),
+.Rd(br_rd_phy_reg),
 .Jump(RS_br_Jump),
 .Branch(RS_br_Branch),
 .funct3(RS_br_func3),
