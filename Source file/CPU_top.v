@@ -123,7 +123,7 @@ wire [31:0] branch_index;
   wire [7:0] BR_Phy;
   wire RS_BR_taken;
   wire [31:0] RS_BR_inst_num_output;
-  wire [2:0] RS_BR_funct3_output;
+  wire [2:0] RS_BR_funct3;
   wire [31:0] immediate_BR;
   wire [31:0] Operand1_BR;
   wire [31:0] Operand2_BR;
@@ -679,7 +679,7 @@ control_unit_top u_control_unit_top(
      BranchUnit branchUnit(.RS_BR_Jump(RS_BR_Jump),.RS_BR_Branch(RS_BR_Branch),.RS_BR_funct3(RS_BR_funct3),.RS_BR_taken(RS_BR_taken),.Predict_Result(Predict_Result),
                          .immediate_BR(immediate_BR),.PC_BR(PC_BR),.ALUNegative(negative),
                          .ALUZero(zero),.ALUOverflow(overflow),.ALUCarry(carry),.PC_Branch(PC_Branch),
-                         .branch_index(Branch_index),.PCSrc(PCSrc), .RS_BR_inst_num(RS_BR_inst_num_output));
+                         .branch_index(Branch_index),.PCSrc(PCSrc), .RS_BR_inst_num(RS_BR_inst_num_output),.PC_Retrun(PC_Retrun));
    add4 add4 (.in(PC_BR),.out(PC_Return));
     MUX_2input MUX_A (.a(RS_EX_PC_ALU),.b(Operand1_ALU),.sel(RS_EX_ALU_Src1),.y(ALU_A)); 
     MUX_2input MUX_B (.a(Operand2_ALU),.b(immediate),.sel(RS_EX_ALU_Src2),.y(ALU_B)); 
