@@ -78,25 +78,22 @@ always @(posedge clk or posedge rst) begin
                         rob_entry[i][98:0] <= {rob_entry[i][98], 1'b1, rob_entry[i][96], div_exec_value, rob_entry[i][63:32], rob_entry[i][31:0]}; // Update value and maintain new_bit, reg_write, instr, PC     
                     end
                     if ( BR_Done&& rob_entry[i][31:0] == branch_index) begin
-                        rob_entry[i][98:0] <= {rob_entry[i][98], 1'b1, rob_entry[i][96], alu_exec_value, rob_entry[i][63:32], rob_entry[i][31:0]}; // Update value and maintain new_bit, reg_write, instr, PC
+                        rob_entry[i][98:0] <= {rob_entry[i][98], 1'b1, rob_entry[i][96], PC_Return, rob_entry[i][63:32], rob_entry[i][31:0]}; // Update value and maintain new_bit, reg_write, instr, PC
                     end
                 end
             end
         
-        
+            if (rob_entry[head][97]) begin       // Check if the entry is ready
+                 out_value <= rob_entry[head][95:64];     // Output value
+                 out_dest <= rob_entry[head][43:39];      // Extract out_dest from instr[11:7]
+                 out_reg_write <= rob_entry[head][96];   // Output RegWrite status
+                 rob_entry[head] <= 0;            // Clear the ready flag after consuming the entry
+                 head <= (head + 1) % 64;                 // Circular buffer handling
+            end
     end
 end
 
-// Output logic
-always @(posedge clk) begin
-    if (rob_entry[head][97]) begin       // Check if the entry is ready
-        out_value <= rob_entry[head][95:64];     // Output value
-        out_dest <= rob_entry[head][43:39];      // Extract out_dest from instr[11:7]
-        out_reg_write <= rob_entry[head][96];   // Output RegWrite status
-        rob_entry[head] <= 0;            // Clear the ready flag after consuming the entry
-        head <= (head + 1) % 64;                 // Circular buffer handling
-    end
-    
-end
+
+
 
 endmodule
