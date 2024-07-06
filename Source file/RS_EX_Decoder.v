@@ -108,7 +108,10 @@ module RS_EX_decoder(
 
 );
 
-always @(posedge clk or posedge reset) begin
+
+
+always @(*) begin
+
     if (reset) begin
         // 榮먥뫀諭� �빊�뮆�젾?�뱽 �뵳�딅��
         add_alu_operand1 = 0;
@@ -169,10 +172,8 @@ always @(posedge clk or posedge reset) begin
 
         RS_br_IF_ID_taken = 0;
         RS_br_IF_ID_hit = 0; 
-    end
-end
-
-always @(*) begin
+    end else begin
+    
     case (in_opcode)
          7'b0000000: begin
                             add_rs_on = 0;
@@ -356,5 +357,5 @@ always @(*) begin
         end
     endcase
 end
-
+end
 endmodule
