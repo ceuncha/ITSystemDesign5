@@ -17,6 +17,7 @@ module ROB(
     input wire [31:0] PC_Return,         // Jump address
     input wire [31:0] branch_index,      // Branch index in ROB
     input wire [31:0] PC,                // Current PC value (expanded to 32 bits)
+    input wire BR_Done,
     output reg [31:0] out_value,         // Output value
     output reg [4:0] out_dest,           // Output register destination extracted from instr[11:7]
     output reg out_reg_write             // Output RegWrite signal to indicate a register write operation
@@ -46,8 +47,9 @@ always @(posedge clk or posedge rst) begin
         tail <= 0;
         reset_rob_entries();
     end else begin
-        if (PcSrc) begin
+        if (BR_Done) begin
             // Update the branch entry with PC_Return value
+            if(PcSrc) begin
             for (i = 0; i < 64; i = i + 1) begin
                 if (rob_entry[i][31:0] == branch_index) begin
                     rob_entry[i][98:0] <= {rob_entry[i][98], 1'b1, rob_entry[i][96], PC_Return, rob_entry[i][63:32], rob_entry[i][31:0]};
@@ -56,6 +58,13 @@ always @(posedge clk or posedge rst) begin
                     rob_entry[(i+2)%64][98:0] <= 0; // Fulsh under tail entry
   
                 end
+            end
+            end else begin
+            for (i = 0; i < 64; i = i + 1) begin
+                if (rob_entry[i][31:0] == branch_index) begin
+                    rob_entry[i][98:0] <= {rob_entry[i][98], 1'b1, rob_entry[i][96], PC_Return, rob_entry[i][63:32], rob_entry[i][31:0]};
+                end
+            end
             end
       
         end else if (IF_ID_instOut != 32'b0) begin  // Only increment tail if the instruction is not invalid (i.e., not a bubble)
@@ -79,7 +88,13 @@ always @(posedge clk or posedge rst) begin
                 end
             end
         end
-     if (rob_entry[head][97]) begin       // Check if the entry is ready
+        
+    end
+end
+
+// Output logic
+always @(posedge clk) begin
+    if (rob_entry[head][97]) begin       // Check if the entry is ready
         out_value <= rob_entry[head][95:64];     // Output value
         out_dest <= rob_entry[head][43:39];      // Extract out_dest from instr[11:7]
         out_reg_write <= rob_entry[head][96];   // Output RegWrite status
@@ -87,8 +102,6 @@ always @(posedge clk or posedge rst) begin
         head <= (head + 1) % 64;                 // Circular buffer handling
     end
     
-    end
 end
-
 
 endmodule
