@@ -1,11 +1,8 @@
-module ALU(A,B,ALUop,Result,negative,overflow,zero,carry);
+module ALU(A,B,ALUop,Result);
     input [31:0] A,B;
     input [3:0] ALUop;
     output reg [31:0] Result;
-    output reg negative;
-    output reg overflow;
-    output  reg zero;
-    output reg carry;
+
     wire [31:0] Result_Adder;
     wire C_out,overflow_out;
     reg [31:0] compare;
@@ -59,10 +56,7 @@ always @(*) begin
             end
         default: Result = 32'b0; // Default: Output 0
     endcase
-            zero = (Result == 0);
-            negative = Result[31];
-            carry = C_out;
-            overflow =overflow_out;
+
 end
 endmodule
 
@@ -104,7 +98,7 @@ module CLA_32bit(
     wire [7:0] carry;
     wire [31:0] Sum;
 
-    // B를 XOR 연산하여 덧셈과 뺄셈에 사용
+    // B瑜� XOR �뿰�궛�븯�뿬 �뜤�뀍怨� 類꾩뀍�뿉 �궗�슜
     assign B_xor = B ^ {32{subtract}};
 
     // 4-bit CLA modules instantiation
@@ -117,13 +111,13 @@ module CLA_32bit(
     CLA_4bit CLA6 (.A(A[27:24]), .B(B_xor[27:24]), .Cin(carry[5]), .Sum(Sum[27:24]), .Cout(carry[6]));
     CLA_4bit CLA7 (.A(A[31:28]), .B(B_xor[31:28]), .Cin(carry[6]), .Sum(Sum[31:28]), .Cout(carry[7]));
 
-    // 최종 결과
+    // 理쒖쥌 寃곌낵
     assign Result_Adder = Sum;
 
-    // Overflow 계산 (Sign 비트의 Carry)
+    // Overflow 怨꾩궛 (Sign 鍮꾪듃�쓽 Carry)
     assign Overflow = carry[6] ^ carry[7];
     
-    // Carry flag 계산 (subtract가 0이면 Cout, subtract가 1이면 반전된 Cout)
+    // Carry flag 怨꾩궛 (subtract媛� 0�씠硫� Cout, subtract媛� 1�씠硫� 諛섏쟾�맂 Cout)
     assign C_out = (subtract == 0) ? carry[7] : ~carry[7];
 
 endmodule
