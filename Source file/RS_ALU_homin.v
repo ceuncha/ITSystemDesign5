@@ -373,6 +373,10 @@
             end
          end
  
+      if (RS_ALU_on[head]) begin
+        head <= (head+1)%64;
+        RS_ALU_on[head] <=0;     
+      end
  
  if (valid_entries1[head] == 1 && valid_entries2[head] == 1) begin
         if (!MemReads[head]) begin
@@ -388,6 +392,7 @@
         valid_entries1[head] <= 0;
         valid_entries2[head] <= 0;
         head <= (head+1)%64;
+    
     end
     else if (valid_entries1[(head + 1) % 64] == 1 && valid_entries2[(head + 1) % 64] == 1) begin
         if (!MemReads[(head + 1) % 64]) begin
@@ -402,6 +407,7 @@
         operand2_datas[(head + 1) % 64] <= 0;
         valid_entries1[(head + 1) % 64] <= 0;
         valid_entries2[(head + 1) % 64] <= 0;
+        RS_ALU_on[(head+1)%64] <=1;
     end
     else if (valid_entries1[(head + 2) % 64] == 1 && valid_entries2[(head + 2) % 64] == 1) begin
         if (!MemReads[(head + 2) % 64]) begin
@@ -416,6 +422,7 @@
         operand2_datas[(head + 2) % 64] <= 0;
         valid_entries1[(head + 2) % 64] <= 0;
         valid_entries2[(head + 2) % 64] <= 0;
+        RS_ALU_on[(head+2)%64] <=1;
     end
     else if (valid_entries1[(head + 3) % 64] == 1 && valid_entries2[(head + 3) % 64] == 1) begin
         if (!MemReads[(head + 3) % 64]) begin
@@ -430,6 +437,7 @@
         operand2_datas[(head + 3) % 64] <= 0;
         valid_entries1[(head + 3) % 64] <= 0;
         valid_entries2[(head + 3) % 64] <= 0;
+        RS_ALU_on[(head+3)%64] <=1;
     end
   
     else if (valid_entries1[(head + 4) % 64] == 1 && valid_entries2[(head + 4) % 64] == 1) begin
@@ -445,6 +453,7 @@
         operand2_datas[(head + 4) % 64] <= 0;
         valid_entries1[(head + 4) % 64] <= 0;
         valid_entries2[(head + 4) % 64] <= 0;
+        RS_ALU_on[(head+4)%64] <=1;
     end
 
     else if (valid_entries1[(head + 5) % 64] == 1 && valid_entries2[(head + 5) % 64] == 1) begin
@@ -460,6 +469,7 @@
         operand2_datas[(head + 5) % 64] <= 0;
         valid_entries1[(head + 5) % 64] <= 0;
         valid_entries2[(head + 5) % 64] <= 0;
+        RS_ALU_on[(head+5)%64] <=1;
     end
     else if (valid_entries1[(head + 6) % 64] == 1 && valid_entries2[(head + 6) % 64] == 1) begin
         if (!MemReads[(head + 6) % 64]) begin
@@ -474,6 +484,7 @@
         operand2_datas[(head + 6) % 64] <= 0;
         valid_entries1[(head + 6) % 64] <= 0;
         valid_entries2[(head + 6) % 64] <= 0;
+        RS_ALU_on[(head+6)%64] <=1;
     end
     else if (valid_entries1[(head + 7) % 64] == 1 && valid_entries2[(head + 7) % 64] == 1) begin
         if (!MemReads[(head + 7) % 64]) begin
@@ -488,6 +499,7 @@
         operand2_datas[(head + 7) % 64] <= 0;
         valid_entries1[(head + 7) % 64] <= 0;
         valid_entries2[(head + 7) % 64] <= 0;
+        RS_ALU_on[(head+7)%64] <=1;
     end
     else if (valid_entries1[(head + 8) % 64] == 1 && valid_entries2[(head + 8) % 64] == 1) begin
     if (!MemReads[(head + 8) % 64]) begin
@@ -502,6 +514,7 @@
     operand2_datas[(head + 8) % 64] <= 0;
     valid_entries1[(head + 8) % 64] <= 0;
     valid_entries2[(head + 8) % 64] <= 0;
+    RS_ALU_on[(head+8)%64] <=1;
 end
 else if (valid_entries1[(head + 9) % 64] == 1 && valid_entries2[(head + 9) % 64] == 1) begin
     if (!MemReads[(head + 9) % 64]) begin
@@ -516,6 +529,7 @@ else if (valid_entries1[(head + 9) % 64] == 1 && valid_entries2[(head + 9) % 64]
     operand2_datas[(head + 9) % 64] <= 0;
     valid_entries1[(head + 9) % 64] <= 0;
     valid_entries2[(head + 9) % 64] <= 0;
+    RS_ALU_on[(head+9)%64] <=1;
 end
 else if (valid_entries1[(head + 10) % 64] == 1 && valid_entries2[(head + 10) % 64] == 1) begin
     if (!MemReads[(head + 10) % 64]) begin
@@ -530,6 +544,7 @@ else if (valid_entries1[(head + 10) % 64] == 1 && valid_entries2[(head + 10) % 6
     operand2_datas[(head + 10) % 64] <= 0;
     valid_entries1[(head + 10) % 64] <= 0;
     valid_entries2[(head + 10) % 64] <= 0;
+    RS_ALU_on[(head+10)%64] <=1;
 end
 else if (valid_entries1[(head + 11) % 64] == 1 && valid_entries2[(head + 11) % 64] == 1) begin
     if (!MemReads[(head + 11) % 64]) begin
@@ -544,6 +559,7 @@ else if (valid_entries1[(head + 11) % 64] == 1 && valid_entries2[(head + 11) % 6
     operand2_datas[(head + 11) % 64] <= 0;
     valid_entries1[(head + 11) % 64] <= 0;
     valid_entries2[(head + 11) % 64] <= 0;
+    RS_ALU_on[(head+11)%64] <=1;
 end
 else if (valid_entries1[(head + 12) % 64] == 1 && valid_entries2[(head + 12) % 64] == 1) begin
     if (!MemReads[(head + 12) % 64]) begin
@@ -558,6 +574,7 @@ else if (valid_entries1[(head + 12) % 64] == 1 && valid_entries2[(head + 12) % 6
     operand2_datas[(head + 12) % 64] <= 0;
     valid_entries1[(head + 12) % 64] <= 0;
     valid_entries2[(head + 12) % 64] <= 0;
+    RS_ALU_on[(head + 12) % 64] <= 1;
 end
 else if (valid_entries1[(head + 13) % 64] == 1 && valid_entries2[(head + 13) % 64] == 1) begin
     if (!MemReads[(head + 13) % 64]) begin
@@ -572,6 +589,7 @@ else if (valid_entries1[(head + 13) % 64] == 1 && valid_entries2[(head + 13) % 6
     operand2_datas[(head + 13) % 64] <= 0;
     valid_entries1[(head + 13) % 64] <= 0;
     valid_entries2[(head + 13) % 64] <= 0;
+    RS_ALU_on[(head + 13) % 64] <= 1;
 end
 else if (valid_entries1[(head + 14) % 64] == 1 && valid_entries2[(head + 14) % 64] == 1) begin
     if (!MemReads[(head + 14) % 64]) begin
@@ -586,6 +604,7 @@ else if (valid_entries1[(head + 14) % 64] == 1 && valid_entries2[(head + 14) % 6
     operand2_datas[(head + 14) % 64] <= 0;
     valid_entries1[(head + 14) % 64] <= 0;
     valid_entries2[(head + 14) % 64] <= 0;
+    RS_ALU_on[(head + 14) % 64] <= 1;
 end
 else if (valid_entries1[(head + 15) % 64] == 1 && valid_entries2[(head + 15) % 64] == 1) begin
     if (!MemReads[(head + 15) % 64]) begin
@@ -600,6 +619,7 @@ else if (valid_entries1[(head + 15) % 64] == 1 && valid_entries2[(head + 15) % 6
     operand2_datas[(head + 15) % 64] <= 0;
     valid_entries1[(head + 15) % 64] <= 0;
     valid_entries2[(head + 15) % 64] <= 0;
+    RS_ALU_on[(head + 15) % 64] <= 1;
 end
 else if (valid_entries1[(head + 16) % 64] == 1 && valid_entries2[(head + 16) % 64] == 1) begin
     if (!MemReads[(head + 16) % 64]) begin
@@ -614,6 +634,7 @@ else if (valid_entries1[(head + 16) % 64] == 1 && valid_entries2[(head + 16) % 6
     operand2_datas[(head + 16) % 64] <= 0;
     valid_entries1[(head + 16) % 64] <= 0;
     valid_entries2[(head + 16) % 64] <= 0;
+    RS_ALU_on[(head + 16) % 64] <= 1;
 end
 else if (valid_entries1[(head + 17) % 64] == 1 && valid_entries2[(head + 17) % 64] == 1) begin
     if (!MemReads[(head + 17) % 64]) begin
@@ -628,6 +649,7 @@ else if (valid_entries1[(head + 17) % 64] == 1 && valid_entries2[(head + 17) % 6
     operand2_datas[(head + 17) % 64] <= 0;
     valid_entries1[(head + 17) % 64] <= 0;
     valid_entries2[(head + 17) % 64] <= 0;
+    RS_ALU_on[(head + 17) % 64] <= 1;
 end
 else if (valid_entries1[(head + 18) % 64] == 1 && valid_entries2[(head + 18) % 64] == 1) begin
     if (!MemReads[(head + 18) % 64]) begin
@@ -642,6 +664,7 @@ else if (valid_entries1[(head + 18) % 64] == 1 && valid_entries2[(head + 18) % 6
     operand2_datas[(head + 18) % 64] <= 0;
     valid_entries1[(head + 18) % 64] <= 0;
     valid_entries2[(head + 18) % 64] <= 0;
+    RS_ALU_on[(head + 18) % 64] <= 1;
 end
 else if (valid_entries1[(head + 19) % 64] == 1 && valid_entries2[(head + 19) % 64] == 1) begin
     if (!MemReads[(head + 19) % 64]) begin
@@ -656,6 +679,7 @@ else if (valid_entries1[(head + 19) % 64] == 1 && valid_entries2[(head + 19) % 6
     operand2_datas[(head + 19) % 64] <= 0;
     valid_entries1[(head + 19) % 64] <= 0;
     valid_entries2[(head + 19) % 64] <= 0;
+    RS_ALU_on[(head + 19) % 64] <= 1;
 end
 else if (valid_entries1[(head + 20) % 64] == 1 && valid_entries2[(head + 20) % 64] == 1) begin
     if (!MemReads[(head + 20) % 64]) begin
@@ -670,6 +694,7 @@ else if (valid_entries1[(head + 20) % 64] == 1 && valid_entries2[(head + 20) % 6
     operand2_datas[(head + 20) % 64] <= 0;
     valid_entries1[(head + 20) % 64] <= 0;
     valid_entries2[(head + 20) % 64] <= 0;
+    RS_ALU_on[(head + 20) % 64] <= 1;
 end
 else if (valid_entries1[(head + 21) % 64] == 1 && valid_entries2[(head + 21) % 64] == 1) begin
     if (!MemReads[(head + 21) % 64]) begin
@@ -684,6 +709,7 @@ else if (valid_entries1[(head + 21) % 64] == 1 && valid_entries2[(head + 21) % 6
     operand2_datas[(head + 21) % 64] <= 0;
     valid_entries1[(head + 21) % 64] <= 0;
     valid_entries2[(head + 21) % 64] <= 0;
+      RS_ALU_on[(head + 21) % 64] <= 1;
 end
 else if (valid_entries1[(head + 22) % 64] == 1 && valid_entries2[(head + 22) % 64] == 1) begin
     if (!MemReads[(head + 22) % 64]) begin
@@ -698,6 +724,7 @@ else if (valid_entries1[(head + 22) % 64] == 1 && valid_entries2[(head + 22) % 6
     operand2_datas[(head + 22) % 64] <= 0;
     valid_entries1[(head + 22) % 64] <= 0;
     valid_entries2[(head + 22) % 64] <= 0;
+       RS_ALU_on[(head + 22) % 64] <= 1;
 end
 else if (valid_entries1[(head + 23) % 64] == 1 && valid_entries2[(head + 23) % 64] == 1) begin
     if (!MemReads[(head + 23) % 64]) begin
@@ -712,6 +739,7 @@ else if (valid_entries1[(head + 23) % 64] == 1 && valid_entries2[(head + 23) % 6
     operand2_datas[(head + 23) % 64] <= 0;
     valid_entries1[(head + 23) % 64] <= 0;
     valid_entries2[(head + 23) % 64] <= 0;
+       RS_ALU_on[(head + 23) % 64] <= 1;
 end
 else if (valid_entries1[(head + 24) % 64] == 1 && valid_entries2[(head + 24) % 64] == 1) begin
     if (!MemReads[(head + 24) % 64]) begin
@@ -726,6 +754,7 @@ else if (valid_entries1[(head + 24) % 64] == 1 && valid_entries2[(head + 24) % 6
     operand2_datas[(head + 24) % 64] <= 0;
     valid_entries1[(head + 24) % 64] <= 0;
     valid_entries2[(head + 24) % 64] <= 0;
+    RS_ALU_on[(head + 24) % 64] <= 1;
 end
 else if (valid_entries1[(head + 25) % 64] == 1 && valid_entries2[(head + 25) % 64] == 1) begin
     if (!MemReads[(head + 25) % 64]) begin
@@ -740,6 +769,7 @@ else if (valid_entries1[(head + 25) % 64] == 1 && valid_entries2[(head + 25) % 6
     operand2_datas[(head + 25) % 64] <= 0;
     valid_entries1[(head + 25) % 64] <= 0;
     valid_entries2[(head + 25) % 64] <= 0;
+    RS_ALU_on[(head + 25) % 64] <= 1;
 end
 else if (valid_entries1[(head + 26) % 64] == 1 && valid_entries2[(head + 26) % 64] == 1) begin
     if (!MemReads[(head + 26) % 64]) begin
@@ -754,6 +784,7 @@ else if (valid_entries1[(head + 26) % 64] == 1 && valid_entries2[(head + 26) % 6
     operand2_datas[(head + 26) % 64] <= 0;
     valid_entries1[(head + 26) % 64] <= 0;
     valid_entries2[(head + 26) % 64] <= 0;
+    RS_ALU_on[(head + 26) % 64] <= 1;
 end
 else if (valid_entries1[(head + 27) % 64] == 1 && valid_entries2[(head + 27) % 64] == 1) begin
     if (!MemReads[(head + 27) % 64]) begin
@@ -768,6 +799,7 @@ else if (valid_entries1[(head + 27) % 64] == 1 && valid_entries2[(head + 27) % 6
     operand2_datas[(head + 27) % 64] <= 0;
     valid_entries1[(head + 27) % 64] <= 0;
     valid_entries2[(head + 27) % 64] <= 0;
+    RS_ALU_on[(head + 27) % 64] <= 1;
 end
 else if (valid_entries1[(head + 28) % 64] == 1 && valid_entries2[(head + 28) % 64] == 1) begin
     if (!MemReads[(head + 28) % 64]) begin
@@ -782,6 +814,7 @@ else if (valid_entries1[(head + 28) % 64] == 1 && valid_entries2[(head + 28) % 6
     operand2_datas[(head + 28) % 64] <= 0;
     valid_entries1[(head + 28) % 64] <= 0;
     valid_entries2[(head + 28) % 64] <= 0;
+    RS_ALU_on[(head + 28) % 64] <= 1;
 end
 else if (valid_entries1[(head + 29) % 64] == 1 && valid_entries2[(head + 29) % 64] == 1) begin
     if (!MemReads[(head + 29) % 64]) begin
@@ -796,6 +829,7 @@ else if (valid_entries1[(head + 29) % 64] == 1 && valid_entries2[(head + 29) % 6
     operand2_datas[(head + 29) % 64] <= 0;
     valid_entries1[(head + 29) % 64] <= 0;
     valid_entries2[(head + 29) % 64] <= 0;
+    RS_ALU_on[(head + 29) % 64] <= 1;
 end
 else if (valid_entries1[(head + 30) % 64] == 1 && valid_entries2[(head + 30) % 64] == 1) begin
     if (!MemReads[(head + 30) % 64]) begin
@@ -810,6 +844,7 @@ else if (valid_entries1[(head + 30) % 64] == 1 && valid_entries2[(head + 30) % 6
     operand2_datas[(head + 30) % 64] <= 0;
     valid_entries1[(head + 30) % 64] <= 0;
     valid_entries2[(head + 30) % 64] <= 0;
+    RS_ALU_on[(head + 30) % 64] <= 1;
 end
 else if (valid_entries1[(head + 31) % 64] == 1 && valid_entries2[(head + 31) % 64] == 1) begin
     if (!MemReads[(head + 31) % 64]) begin
@@ -824,6 +859,7 @@ else if (valid_entries1[(head + 31) % 64] == 1 && valid_entries2[(head + 31) % 6
     operand2_datas[(head + 31) % 64] <= 0;
     valid_entries1[(head + 31) % 64] <= 0;
     valid_entries2[(head + 31) % 64] <= 0;
+    RS_ALU_on[(head + 31) % 64] <= 1;
 end
 else if (valid_entries1[(head + 32) % 64] == 1 && valid_entries2[(head + 32) % 64] == 1) begin
     if (!MemReads[(head + 32) % 64]) begin
@@ -838,6 +874,7 @@ else if (valid_entries1[(head + 32) % 64] == 1 && valid_entries2[(head + 32) % 6
     operand2_datas[(head + 32) % 64] <= 0;
     valid_entries1[(head + 32) % 64] <= 0;
     valid_entries2[(head + 32) % 64] <= 0;
+    RS_ALU_on[(head + 32) % 64] <= 1;
 end
 else if (valid_entries1[(head + 33) % 64] == 1 && valid_entries2[(head + 33) % 64] == 1) begin
     if (!MemReads[(head + 33) % 64]) begin
@@ -852,6 +889,7 @@ else if (valid_entries1[(head + 33) % 64] == 1 && valid_entries2[(head + 33) % 6
     operand2_datas[(head + 33) % 64] <= 0;
     valid_entries1[(head + 33) % 64] <= 0;
     valid_entries2[(head + 33) % 64] <= 0;
+    RS_ALU_on[(head + 33) % 64] <= 1;
 end
 else if (valid_entries1[(head + 34) % 64] == 1 && valid_entries2[(head + 34) % 64] == 1) begin
     if (!MemReads[(head + 34) % 64]) begin
@@ -866,6 +904,7 @@ else if (valid_entries1[(head + 34) % 64] == 1 && valid_entries2[(head + 34) % 6
     operand2_datas[(head + 34) % 64] <= 0;
     valid_entries1[(head + 34) % 64] <= 0;
     valid_entries2[(head + 34) % 64] <= 0;
+    RS_ALU_on[(head + 34) % 64] <= 1;
 end
 else if (valid_entries1[(head + 35) % 64] == 1 && valid_entries2[(head + 35) % 64] == 1) begin
     if (!MemReads[(head + 35) % 64]) begin
@@ -880,6 +919,7 @@ else if (valid_entries1[(head + 35) % 64] == 1 && valid_entries2[(head + 35) % 6
     operand2_datas[(head + 35) % 64] <= 0;
     valid_entries1[(head + 35) % 64] <= 0;
     valid_entries2[(head + 35) % 64] <= 0;
+    RS_ALU_on[(head + 35) % 64] <= 1;
 end
 else if (valid_entries1[(head + 36) % 64] == 1 && valid_entries2[(head + 36) % 64] == 1) begin
     if (!MemReads[(head + 36) % 64]) begin
@@ -894,6 +934,7 @@ else if (valid_entries1[(head + 36) % 64] == 1 && valid_entries2[(head + 36) % 6
     operand2_datas[(head + 36) % 64] <= 0;
     valid_entries1[(head + 36) % 64] <= 0;
     valid_entries2[(head + 36) % 64] <= 0;
+    RS_ALU_on[(head + 36) % 64] <= 1;
 end
 else if (valid_entries1[(head + 37) % 64] == 1 && valid_entries2[(head + 37) % 64] == 1) begin
     if (!MemReads[(head + 37) % 64]) begin
@@ -908,6 +949,7 @@ else if (valid_entries1[(head + 37) % 64] == 1 && valid_entries2[(head + 37) % 6
     operand2_datas[(head + 37) % 64] <= 0;
     valid_entries1[(head + 37) % 64] <= 0;
     valid_entries2[(head + 37) % 64] <= 0;
+    RS_ALU_on[(head + 37) % 64] <= 1;
 end
 else if (valid_entries1[(head + 38) % 64] == 1 && valid_entries2[(head + 38) % 64] == 1) begin
     if (!MemReads[(head + 38) % 64]) begin
@@ -922,6 +964,7 @@ else if (valid_entries1[(head + 38) % 64] == 1 && valid_entries2[(head + 38) % 6
     operand2_datas[(head + 38) % 64] <= 0;
     valid_entries1[(head + 38) % 64] <= 0;
     valid_entries2[(head + 38) % 64] <= 0;
+    RS_ALU_on[(head + 38) % 64] <= 1;
 end
 else if (valid_entries1[(head + 39) % 64] == 1 && valid_entries2[(head + 39) % 64] == 1) begin
     if (!MemReads[(head + 39) % 64]) begin
@@ -936,6 +979,7 @@ else if (valid_entries1[(head + 39) % 64] == 1 && valid_entries2[(head + 39) % 6
     operand2_datas[(head + 39) % 64] <= 0;
     valid_entries1[(head + 39) % 64] <= 0;
     valid_entries2[(head + 39) % 64] <= 0;
+    RS_ALU_on[(head + 39) % 64] <= 1;
 end
 else if (valid_entries1[(head + 40) % 64] == 1 && valid_entries2[(head + 40) % 64] == 1) begin
     if (!MemReads[(head + 40) % 64]) begin
@@ -950,6 +994,7 @@ else if (valid_entries1[(head + 40) % 64] == 1 && valid_entries2[(head + 40) % 6
     operand2_datas[(head + 40) % 64] <= 0;
     valid_entries1[(head + 40) % 64] <= 0;
     valid_entries2[(head + 40) % 64] <= 0;
+    RS_ALU_on[(head + 40) % 64] <= 1;
 end
 else if (valid_entries1[(head + 41) % 64] == 1 && valid_entries2[(head + 41) % 64] == 1) begin
     if (!MemReads[(head + 41) % 64]) begin
@@ -964,6 +1009,7 @@ else if (valid_entries1[(head + 41) % 64] == 1 && valid_entries2[(head + 41) % 6
     operand2_datas[(head + 41) % 64] <= 0;
     valid_entries1[(head + 41) % 64] <= 0;
     valid_entries2[(head + 41) % 64] <= 0;
+    RS_ALU_on[(head + 41) % 64] <= 1;
 end
 else if (valid_entries1[(head + 42) % 64] == 1 && valid_entries2[(head + 42) % 64] == 1) begin
     if (!MemReads[(head + 42) % 64]) begin
@@ -978,6 +1024,7 @@ else if (valid_entries1[(head + 42) % 64] == 1 && valid_entries2[(head + 42) % 6
     operand2_datas[(head + 42) % 64] <= 0;
     valid_entries1[(head + 42) % 64] <= 0;
     valid_entries2[(head + 42) % 64] <= 0;
+    RS_ALU_on[(head + 42) % 64] <= 1;
 end
 else if (valid_entries1[(head + 43) % 64] == 1 && valid_entries2[(head + 43) % 64] == 1) begin
     if (!MemReads[(head + 43) % 64]) begin
@@ -992,6 +1039,7 @@ else if (valid_entries1[(head + 43) % 64] == 1 && valid_entries2[(head + 43) % 6
     operand2_datas[(head + 43) % 64] <= 0;
     valid_entries1[(head + 43) % 64] <= 0;
     valid_entries2[(head + 43) % 64] <= 0;
+     RS_ALU_on[(head + 43) % 64] <= 1;
 end
 else if (valid_entries1[(head + 44) % 64] == 1 && valid_entries2[(head + 44) % 64] == 1) begin
     if (!MemReads[(head + 44) % 64]) begin
@@ -1006,6 +1054,7 @@ else if (valid_entries1[(head + 44) % 64] == 1 && valid_entries2[(head + 44) % 6
     operand2_datas[(head + 44) % 64] <= 0;
     valid_entries1[(head + 44) % 64] <= 0;
     valid_entries2[(head + 44) % 64] <= 0;
+         RS_ALU_on[(head + 44) % 64] <= 1;
 end
 else if (valid_entries1[(head + 45) % 64] == 1 && valid_entries2[(head + 45) % 64] == 1) begin
     if (!MemReads[(head + 45) % 64]) begin
@@ -1020,6 +1069,7 @@ else if (valid_entries1[(head + 45) % 64] == 1 && valid_entries2[(head + 45) % 6
     operand2_datas[(head + 45) % 64] <= 0;
     valid_entries1[(head + 45) % 64] <= 0;
     valid_entries2[(head + 45) % 64] <= 0;
+         RS_ALU_on[(head + 45) % 64] <= 1;
 end
 else if (valid_entries1[(head + 46) % 64] == 1 && valid_entries2[(head + 46) % 64] == 1) begin
     if (!MemReads[(head + 46) % 64]) begin
@@ -1034,6 +1084,7 @@ else if (valid_entries1[(head + 46) % 64] == 1 && valid_entries2[(head + 46) % 6
     operand2_datas[(head + 46) % 64] <= 0;
     valid_entries1[(head + 46) % 64] <= 0;
     valid_entries2[(head + 46) % 64] <= 0;
+         RS_ALU_on[(head + 46) % 64] <= 1;
 end
 else if (valid_entries1[(head + 47) % 64] == 1 && valid_entries2[(head + 47) % 64] == 1) begin
     if (!MemReads[(head + 47) % 64]) begin
@@ -1048,6 +1099,7 @@ else if (valid_entries1[(head + 47) % 64] == 1 && valid_entries2[(head + 47) % 6
     operand2_datas[(head + 47) % 64] <= 0;
     valid_entries1[(head + 47) % 64] <= 0;
     valid_entries2[(head + 47) % 64] <= 0;
+         RS_ALU_on[(head + 47) % 64] <= 1;
 end
 else if (valid_entries1[(head + 48) % 64] == 1 && valid_entries2[(head + 48) % 64] == 1) begin
     if (!MemReads[(head + 48) % 64]) begin
@@ -1062,6 +1114,7 @@ else if (valid_entries1[(head + 48) % 64] == 1 && valid_entries2[(head + 48) % 6
     operand2_datas[(head + 48) % 64] <= 0;
     valid_entries1[(head + 48) % 64] <= 0;
     valid_entries2[(head + 48) % 64] <= 0;
+         RS_ALU_on[(head + 48) % 64] <= 1;
 end
 else if (valid_entries1[(head + 49) % 64] == 1 && valid_entries2[(head + 49) % 64] == 1) begin
     if (!MemReads[(head + 49) % 64]) begin
@@ -1076,6 +1129,7 @@ else if (valid_entries1[(head + 49) % 64] == 1 && valid_entries2[(head + 49) % 6
     operand2_datas[(head + 49) % 64] <= 0;
     valid_entries1[(head + 49) % 64] <= 0;
     valid_entries2[(head + 49) % 64] <= 0;
+         RS_ALU_on[(head + 49) % 64] <= 1;
 end
 else if (valid_entries1[(head + 50) % 64] == 1 && valid_entries2[(head + 50) % 64] == 1) begin
     if (!MemReads[(head + 50) % 64]) begin
@@ -1090,6 +1144,7 @@ else if (valid_entries1[(head + 50) % 64] == 1 && valid_entries2[(head + 50) % 6
     operand2_datas[(head + 50) % 64] <= 0;
     valid_entries1[(head + 50) % 64] <= 0;
     valid_entries2[(head + 50) % 64] <= 0;
+         RS_ALU_on[(head + 50) % 64] <= 1;
 end
 else if (valid_entries1[(head + 51) % 64] == 1 && valid_entries2[(head + 51) % 64] == 1) begin
     if (!MemReads[(head + 51) % 64]) begin
@@ -1104,6 +1159,7 @@ else if (valid_entries1[(head + 51) % 64] == 1 && valid_entries2[(head + 51) % 6
     operand2_datas[(head + 51) % 64] <= 0;
     valid_entries1[(head + 51) % 64] <= 0;
     valid_entries2[(head + 51) % 64] <= 0;
+         RS_ALU_on[(head + 51) % 64] <= 1;
 end
 else if (valid_entries1[(head + 52) % 64] == 1 && valid_entries2[(head + 52) % 64] == 1) begin
     if (!MemReads[(head + 52) % 64]) begin
@@ -1118,6 +1174,7 @@ else if (valid_entries1[(head + 52) % 64] == 1 && valid_entries2[(head + 52) % 6
     operand2_datas[(head + 52) % 64] <= 0;
     valid_entries1[(head + 52) % 64] <= 0;
     valid_entries2[(head + 52) % 64] <= 0;
+         RS_ALU_on[(head + 52) % 64] <= 1;
 end
 else if (valid_entries1[(head + 53) % 64] == 1 && valid_entries2[(head + 53) % 64] == 1) begin
     if (!MemReads[(head + 53) % 64]) begin
@@ -1132,6 +1189,7 @@ else if (valid_entries1[(head + 53) % 64] == 1 && valid_entries2[(head + 53) % 6
     operand2_datas[(head + 53) % 64] <= 0;
     valid_entries1[(head + 53) % 64] <= 0;
     valid_entries2[(head + 53) % 64] <= 0;
+         RS_ALU_on[(head + 53) % 64] <= 1;
 end
 else if (valid_entries1[(head + 54) % 64] == 1 && valid_entries2[(head + 54) % 64] == 1) begin
     if (!MemReads[(head + 54) % 64]) begin
@@ -1146,6 +1204,7 @@ else if (valid_entries1[(head + 54) % 64] == 1 && valid_entries2[(head + 54) % 6
     operand2_datas[(head + 54) % 64] <= 0;
     valid_entries1[(head + 54) % 64] <= 0;
     valid_entries2[(head + 54) % 64] <= 0;
+         RS_ALU_on[(head + 54) % 64] <= 1;
 end
 else if (valid_entries1[(head + 55) % 64] == 1 && valid_entries2[(head + 55) % 64] == 1) begin
     if (!MemReads[(head + 55) % 64]) begin
@@ -1160,6 +1219,7 @@ else if (valid_entries1[(head + 55) % 64] == 1 && valid_entries2[(head + 55) % 6
     operand2_datas[(head + 55) % 64] <= 0;
     valid_entries1[(head + 55) % 64] <= 0;
     valid_entries2[(head + 55) % 64] <= 0;
+     RS_ALU_on[(head + 55) % 64] <= 1;
 end
 else if (valid_entries1[(head + 56) % 64] == 1 && valid_entries2[(head + 56) % 64] == 1) begin
     if (!MemReads[(head + 56) % 64]) begin
@@ -1174,6 +1234,7 @@ else if (valid_entries1[(head + 56) % 64] == 1 && valid_entries2[(head + 56) % 6
     operand2_datas[(head + 56) % 64] <= 0;
     valid_entries1[(head + 56) % 64] <= 0;
     valid_entries2[(head + 56) % 64] <= 0;
+     RS_ALU_on[(head + 56) % 64] <= 1;
 end
 else if (valid_entries1[(head + 57) % 64] == 1 && valid_entries2[(head + 57) % 64] == 1) begin
     if (!MemReads[(head + 57) % 64]) begin
@@ -1188,6 +1249,7 @@ else if (valid_entries1[(head + 57) % 64] == 1 && valid_entries2[(head + 57) % 6
     operand2_datas[(head + 57) % 64] <= 0;
     valid_entries1[(head + 57) % 64] <= 0;
     valid_entries2[(head + 57) % 64] <= 0;
+     RS_ALU_on[(head + 57) % 64] <= 1;
 end
 else if (valid_entries1[(head + 58) % 64] == 1 && valid_entries2[(head + 58) % 64] == 1) begin
     if (!MemReads[(head + 58) % 64]) begin
@@ -1202,6 +1264,7 @@ else if (valid_entries1[(head + 58) % 64] == 1 && valid_entries2[(head + 58) % 6
     operand2_datas[(head + 58) % 64] <= 0;
     valid_entries1[(head + 58) % 64] <= 0;
     valid_entries2[(head + 58) % 64] <= 0;
+     RS_ALU_on[(head + 58) % 64] <= 1;
 end
 else if (valid_entries1[(head + 59) % 64] == 1 && valid_entries2[(head + 59) % 64] == 1) begin
     if (!MemReads[(head + 59) % 64]) begin
@@ -1216,6 +1279,7 @@ else if (valid_entries1[(head + 59) % 64] == 1 && valid_entries2[(head + 59) % 6
     operand2_datas[(head + 59) % 64] <= 0;
     valid_entries1[(head + 59) % 64] <= 0;
     valid_entries2[(head + 59) % 64] <= 0;
+     RS_ALU_on[(head + 59) % 64] <= 1;
 end
 else if (valid_entries1[(head + 60) % 64] == 1 && valid_entries2[(head + 60) % 64] == 1) begin
     if (!MemReads[(head + 60) % 64]) begin
@@ -1230,6 +1294,7 @@ else if (valid_entries1[(head + 60) % 64] == 1 && valid_entries2[(head + 60) % 6
     operand2_datas[(head + 60) % 64] <= 0;
     valid_entries1[(head + 60) % 64] <= 0;
     valid_entries2[(head + 60) % 64] <= 0;
+     RS_ALU_on[(head + 60) % 64] <= 1;
 end
 else if (valid_entries1[(head + 61) % 64] == 1 && valid_entries2[(head + 61) % 64] == 1) begin
     if (!MemReads[(head + 61) % 64]) begin
@@ -1244,6 +1309,7 @@ else if (valid_entries1[(head + 61) % 64] == 1 && valid_entries2[(head + 61) % 6
     operand2_datas[(head + 61) % 64] <= 0;
     valid_entries1[(head + 61) % 64] <= 0;
     valid_entries2[(head + 61) % 64] <= 0;
+         RS_ALU_on[(head + 61) % 64] <= 1;
 end
 else if (valid_entries1[(head + 62) % 64] == 1 && valid_entries2[(head + 62) % 64] == 1) begin
     if (!MemReads[(head + 62) % 64]) begin
@@ -1258,6 +1324,7 @@ else if (valid_entries1[(head + 62) % 64] == 1 && valid_entries2[(head + 62) % 6
     operand2_datas[(head + 62) % 64] <= 0;
     valid_entries1[(head + 62) % 64] <= 0;
     valid_entries2[(head + 62) % 64] <= 0;
+           RS_ALU_on[(head + 62) % 64] <= 1;
 end
 else if (valid_entries1[(head + 63) % 64] == 1 && valid_entries2[(head + 63) % 64] == 1) begin
     if (!MemReads[(head + 63) % 64]) begin
@@ -1272,6 +1339,7 @@ else if (valid_entries1[(head + 63) % 64] == 1 && valid_entries2[(head + 63) % 6
     operand2_datas[(head + 63) % 64] <= 0;
     valid_entries1[(head + 63) % 64] <= 0;
     valid_entries2[(head + 63) % 64] <= 0;
+           RS_ALU_on[(head + 63) % 64] <= 1;
 end
 else begin
     result_out <= 0;
