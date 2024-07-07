@@ -303,7 +303,7 @@
                 tail <= (tail + 1) % 64;
                  RS_ALU_on[tail] <=0;
              end 
-             end
+            
             
            
             if (ALU_result_valid) begin                 //alu의 결과가 들어왔을때, 기존에 RS에 들어있던 명령어들과 물리주소를 비교하여
@@ -387,6 +387,7 @@
         operand2_datas[head] <= 0;
         valid_entries1[head] <= 0;
         valid_entries2[head] <= 0;
+        head <= (head+1)%64;
     end
     else if (valid_entries1[(head + 1) % 64] == 1 && valid_entries2[(head + 1) % 64] == 1) begin
         if (!MemReads[(head + 1) % 64]) begin
@@ -1275,5 +1276,5 @@ end
 else begin
     result_out <= 0;
 end
-
+end
  endmodule
