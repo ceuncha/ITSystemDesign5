@@ -212,7 +212,85 @@ module CPU_top(
 
 
 
-  ///////////////////////////IF_ID////////////////////////////////////////////////
+  /////////////////////  //RS_div_wire
+
+
+    
+    (* keep = "true" *)wire [31:0] RS_div_PC;
+   
+    
+    
+   
+    
+  
+  
+    (* keep = "true" *)wire [108:0]result_out_div;
+
+(* keep = "true" *)wire [31:0] Operand2_Div = result_out_div[31:0];
+(* keep = "true" *)wire [31:0] Operand1_Div = result_out_div[63:32];
+(* keep = "true" *)wire [4:0] divider_op = result_out_div[67:64];
+(* keep = "true" *)wire [7:0] RS_EX_Div_Physical_address_in = result_out_div[75:68];
+(* keep = "true" *)wire [31:0] RS_EX_Div_inst_num= result_out_div[107:76];
+(* keep = "true" *)wire Div_start_in = result_out_div[108];
+
+
+
+    ////////////////ex_mem wire
+    //////////
+
+   (* keep = "true" *)wire Predict_Result;
+   
+   (* keep = "true" *)wire RS_Ex_MemToReg;
+   
+  
+ 
+  
+   
+   (* keep = "true" *)wire negaive,overflow,zero,carry;
+   (* keep = "true" *)wire [31:0] ALU_A;
+   (* keep = "true" *)wire [31:0] ALU_B;
+   (* keep = "true" *)wire [31:0] ALUResult;
+
+
+   (* keep = "true" *)wire ALU_done;
+  
+
+ 
+  
+  
+ 
+   (* keep = "true" *)wire [31:0] RS_EX_PC_Mul_in;
+   
+   (* keep = "true" *)wire [31:0] RS_EX_PC_Mul_out;
+   
+   
+   
+   (* keep = "true" *)wire [31:0] RS_EX_PC_Div_in;
+   
+   (* keep = "true" *)wire [31:0] RS_EX_PC_Div_out;
+
+   (* keep = "true" *)wire [31:0] RS_EX_Div_inst_num_out;
+
+
+       //MEM_WB////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    (* keep = "true" *)wire EX_MEM_MemToReg, EX_MEM_MemWrite, EX_MEM_alu_exec_done, mul_exec_done, div_exec_done;
+    (* keep = "true" *)wire [2:0] EX_MEM_funct3;
+    (* keep = "true" *)wire [31:0] EX_MEM_Rdata2, EX_MEM_ALUResult, EX_MEM_alu_inst_num, EX_MEM_alu_physical_address;
+    (* keep = "true" *)wire [31:0] mul_exec_value, mul_exec_PC, div_exec_value, div_exec_PC;
+   
+    (* keep = "true" *)wire MEM_WB_MemToReg;
+    (* keep = "true" *)wire [31:0] MEM_WB_ALUResult, MEM_WB_RData, alu_exec_value, alu_exec_PC;
+    (* keep = "true" *)wire alu_exec_done;
+    (* keep = "true" *)wire [31:0] out_value;
+    (* keep = "true" *)wire [4:0] out_dest;
+    (* keep = "true" *) wire out_reg_write;
+    (* keep = "true" *) wire [31:0] EX_MEM_div_inst_num;
+    (* keep = "true" *) wire [31:0] EX_MEM_mul_inst_num;
+    
+
+    (* keep = "true" *) wire [31:0] Branch_index;
+    (* keep = "true" *) wire real_taken;
+///////////////////////////IF_ID////////////////////////////////////////////////
 (* keep_hierarchy = "yes" *)
 global_prediction_top u_global_prediction_top(
     .clk(clk),
@@ -220,6 +298,7 @@ global_prediction_top u_global_prediction_top(
     .ID_EX_Branch(RS_BR_Branch),
     .Pcsrc(PCSrc),
     .ID_EX_PC(PC_BR),
+    .real_taken(real_taken),
     .PC_Branch(PC_Branch),
     .ID_EX_Jump(RS_BR_Jump),
     .PC(PC),
@@ -696,8 +775,8 @@ control_unit_top u_control_unit_top(
     (* keep_hierarchy = "yes" *)
     DataMemory datamem (
         .Load_Done(Load_Done),
-        .EX_MEM_MemWrite(EX_MEM_MemWrite),
         .clk(clk),
+        .EX_MEM_MemWrite(EX_MEM_MemWrite),
         .reset(rst),
         .EX_MEM_funct3(EX_MEM_funct3),
         .EX_MEM_ALUResult(EX_MEM_ALUResult),
