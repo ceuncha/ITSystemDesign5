@@ -138,24 +138,24 @@ module CPU_top(
 
 
             // rs_alu_wire
-   (* keep = "true" *) wire RS_alu_start;
-    (* keep = "true" *)wire [31:0] RS_alu_PC;
-   (* keep = "true" *) wire [7:0] RS_alu_Rd;
-   (* keep = "true" *) wire RS_alu_MemToReg;
-   (* keep = "true" *) wire RS_alu_MemWrite;
-   (* keep = "true" *) wire [3:0] RS_alu_ALUOP;
-   (* keep = "true" *) wire RS_alu_ALUSrc1;
-   (* keep = "true" *) wire RS_alu_ALUSrc2;
-   (* keep = "true" *) wire RS_alu_Jump;
-   (* keep = "true" *) wire RS_alu_Branch;
-   (* keep = "true" *) wire [2:0] RS_alu_funct3;
-   (* keep = "true" *) wire [31:0] RS_alu_immediate;
+
+
+ 
+
+ 
+ 
+
+
+
+
+  
    
-   (* keep = "true" *) wire [7:0] RS_alu_operand1;
-   (* keep = "true" *) wire [7:0] RS_alu_operand2;
-  (* keep = "true" *)  wire [31:0] RS_mul_operand1_data;
-   (* keep = "true" *) wire [31:0] RS_mul_operand2_data;
-   (* keep = "true" *) wire [1:0] RS_alu_valid;
+   
+
+
+
+  
+  
    (* keep = "true" *) wire [182:0]result_out_alu;
     (* keep = "true" *)wire RS_alu_IF_ID_taken;
    (* keep = "true" *) wire RS_alu_IF_ID_hit;
@@ -178,23 +178,23 @@ module CPU_top(
 (* keep = "true" *)wire [31:0] RS_EX_inst_num = result_out_alu[182:151];
 (* keep = "true" *)wire RS_EX_taken=result_out_alu[183];
 (* keep = "true" *)wire RS_EX_hit=result_out_alu[184];
-(* keep = "true" *)wire RS_alu_IF_ID_taken;
+
 
     // Internal signals for RS_mul wire
-   (* keep = "true" *) wire RS_mul_start;
+  
    (* keep = "true" *) wire [31:0] RS_mul_PC;
-   (* keep = "true" *) wire [7:0] RS_mul_Rd;
+   
    (* keep = "true" *) wire Load_Done;
     (* keep = "true" *)wire [31:0] Load_Data;
     (* keep = "true" *)wire [7:0] Load_Phy;
-   (* keep = "true" *) wire [7:0] RS_mul_operand1;
-   (* keep = "true" *) wire [7:0] RS_mul_operand2;
-   (* keep = "true" *) wire [31:0] RS_mul_operand1_data;
-   (* keep = "true" *) wire [31:0] RS_mul_operand2_data;
-   (* keep = "true" *) wire [1:0] RS_mul_valid;
+   
+   
+   
+   
+   
   (* keep = "true" *)  wire [31:0] ALU_Data;
 
-   (* keep = "true" *) wire ALU_Done;
+   
    (* keep = "true" *) wire [63:0] MUL_Data;
    (* keep = "true" *) wire [7:0] MUL_Phy;
     (* keep = "true" *)wire [31:0] DIV_Data;
@@ -212,85 +212,7 @@ module CPU_top(
 
 
 
-  /////////////////////  //RS_div_wire
-
-
-    (* keep = "true" *)wire RS_div_start;
-    (* keep = "true" *)wire [31:0] RS_div_PC;
-    (* keep = "true" *)wire [7:0] RS_div_Rd;
-    (* keep = "true" *)wire [7:0] RS_div_operand1;
-    (* keep = "true" *)wire [7:0] RS_div_operand2;
-   (* keep = "true" *) wire [31:0] RS_div_operand1_data;
-    (* keep = "true" *)wire [31:0] RS_div_operand2_data;
-   (* keep = "true" *) wire [1:0] RS_div_valid;
-    (* keep = "true" *)wire [3:0] RS_div_ALUOP;
-    (* keep = "true" *)wire [108:0]result_out_div;
-
-(* keep = "true" *)wire [31:0] Operand2_Div = result_out_div[31:0];
-(* keep = "true" *)wire [31:0] Operand1_Div = result_out_div[63:32];
-(* keep = "true" *)wire [4:0] divider_op = result_out_div[67:64];
-(* keep = "true" *)wire [7:0] RS_EX_Div_Physical_address_in = result_out_div[75:68];
-(* keep = "true" *)wire [31:0] RS_EX_Div_inst_num= result_out_div[107:76];
-(* keep = "true" *)wire Div_start_in = result_out_div[108];
-
-
-
-    ////////////////ex_mem wire
-    //////////
-   (* keep = "true" *)wire RS_EX_Branch;
-   (* keep = "true" *)wire Predict_Result;
-   (* keep = "true" *)wire RS_EX_MemRead;
-   (* keep = "true" *)wire RS_Ex_MemToReg;
-   (* keep = "true" *)wire RS_EX_ALU_Src1;
-  (* keep = "true" *) wire RS_EX_ALU_Src2;
-   (* keep = "true" *)wire RS_EX_MemWrite;
-   (* keep = "true" *)wire [3:0] ALUop;
-   (* keep = "true" *)wire [2:0] RS_EX_funct3;
-   (* keep = "true" *)wire negaive,overflow,zero,carry;
-   (* keep = "true" *)wire [31:0] ALU_A;
-   (* keep = "true" *)wire [31:0] ALU_B;
-   (* keep = "true" *)wire [31:0] ALUResult;
-   (* keep = "true" *)wire [31:0] PC_Return;
-   (* keep = "true" *)wire [31:0] Operand1_ALU;
-   (* keep = "true" *)wire ALU_done;
-   (* keep = "true" *)wire [31:0] RS_EX_PC_ALU;
-   (* keep = "true" *)wire [31:0] Operand2_ALU;
-   (* keep = "true" *)wire [31:0] immediate;
-   (* keep = "true" *)wire [31:0] Operand1_Mul;
-   (* keep = "true" *)wire [7:0] RS_EX_Mul_Physical_address_in;
-   (* keep = "true" *)wire Mul_start_in;
-   (* keep = "true" *)wire [31:0] RS_EX_PC_Mul_in;
-   (* keep = "true" *)wire [31:0] Operand2_Mul;
-   (* keep = "true" *)wire [31:0] RS_EX_PC_Mul_out;
-   (* keep = "true" *)wire [31:0] Operand1_Div;
-   (* keep = "true" *)wire [7:0] RS_EX_Div_Physical_address_in;
-   (* keep = "true" *)wire Div_start_in;
-   (* keep = "true" *)wire [31:0] RS_EX_PC_Div_in;
-   (* keep = "true" *)wire [31:0] Operand2_Div;
-   (* keep = "true" *)wire [31:0] RS_EX_PC_Div_out;
-   (* keep = "true" *)wire [3:0]divider_op;
-   (* keep = "true" *)wire [31:0] RS_EX_Div_inst_num_out;
-
-
-       //MEM_WB////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    (* keep = "true" *)wire EX_MEM_MemToReg, Load_Done, EX_MEM_MemWrite, EX_MEM_alu_exec_done, mul_exec_done, div_exec_done;
-    (* keep = "true" *)wire [2:0] EX_MEM_funct3;
-    (* keep = "true" *)wire [31:0] EX_MEM_Rdata2, EX_MEM_ALUResult, EX_MEM_alu_inst_num, EX_MEM_alu_physical_address;
-    (* keep = "true" *)wire [31:0] mul_exec_value, mul_exec_PC, div_exec_value, div_exec_PC;
-    (* keep = "true" *)wire [31:0] Load_Data;
-    (* keep = "true" *)wire MEM_WB_MemToReg;
-    (* keep = "true" *)wire [31:0] MEM_WB_ALUResult, MEM_WB_RData, alu_exec_value, alu_exec_PC;
-    (* keep = "true" *)wire alu_exec_done;
-    (* keep = "true" *)wire [31:0] out_value;
-    (* keep = "true" *)wire [4:0] out_dest;
-    (* keep = "true" *) wire out_reg_write;
-    (* keep = "true" *) wire [31:0] EX_MEM_div_inst_num;
-    (* keep = "true" *) wire [31:0] EX_MEM_mul_inst_num;
-    
-
-    (* keep = "true" *) wire [31:0] Branch_index;
-    (* keep = "true" *) wire real_taken;
-///////////////////////////IF_ID////////////////////////////////////////////////
+  ///////////////////////////IF_ID////////////////////////////////////////////////
 (* keep_hierarchy = "yes" *)
 global_prediction_top u_global_prediction_top(
     .clk(clk),
@@ -325,6 +247,7 @@ ROB_Counter u_ROB_Counter(
 (* keep_hierarchy = "yes" *)
 Instruction_memory u_Instruction_memory(
     .pc(PC),
+    .reset(rst),
     .instOut(instOut)
 );
 
