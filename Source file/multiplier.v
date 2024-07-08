@@ -24,8 +24,8 @@ module multiplier (
     integer j;
     genvar i;
 
-    // A와 B 값을 래칭
-    always @(posedge clk or posedge rst) begin
+    // A�� B 媛믪쓣 �옒移�
+    always @(posedge clk) begin
         if (rst) begin
             A_reg <= 0;
             B_reg <= 0;
@@ -41,14 +41,14 @@ module multiplier (
         end
     end
 
-    // 부분 곱 생성
+    // 遺�遺� 怨� �깮�꽦
     generate
         for (i = 0; i < 32; i = i + 1) begin : gen_partial_products
             assign partial_products[i] = (B_reg[i]) ? ({32'd0, A_reg} << i) : 64'd0;
         end
     endgenerate
 
-    // 1단계
+    // 1�떒怨�
     reg [63:0] stage1_sums_reg[15:0], stage1_carries_reg[15:0];
     reg stage1_done_reg;
     reg [7:0] stage1_Physical_address_reg;
@@ -64,7 +64,7 @@ module multiplier (
         end
     endgenerate
 
-    always @(posedge clk or posedge rst) begin
+    always @(posedge clk) begin
         if (rst) begin
             for (j = 0; j < 16; j = j + 1) begin
                 stage1_sums_reg[j] <= 0;
@@ -84,7 +84,7 @@ module multiplier (
         end
     end
 
-    // 2단계
+    // 2�떒怨�
     reg [63:0] stage2_sums_reg[7:0], stage2_carries_reg[7:0];
     reg stage2_done_reg;
     reg [7:0] stage2_Physical_address_reg;
@@ -101,7 +101,7 @@ module multiplier (
         end
     endgenerate
 
-    always @(posedge clk or posedge rst) begin
+    always @(posedge clk) begin
         if (rst) begin
             for (j = 0; j < 8; j = j + 1) begin
                 stage2_sums_reg[j] <= 0;
@@ -121,7 +121,7 @@ module multiplier (
         end
     end
 
-    // 3단계
+    // 3�떒怨�
     reg [63:0] stage3_sums_reg[3:0], stage3_carries_reg[3:0];
     reg stage3_done_reg;
     reg [7:0] stage3_Physical_address_reg;
@@ -138,7 +138,7 @@ module multiplier (
         end
     endgenerate
 
-    always @(posedge clk or posedge rst) begin
+    always @(posedge clk) begin
         if (rst) begin
             for (j = 0; j < 4; j = j + 1) begin
                 stage3_sums_reg[j] <= 0;
@@ -158,7 +158,7 @@ module multiplier (
         end
     end
 
-    // 4단계
+    // 4�떒怨�
     reg [63:0] stage4_sums_reg[1:0], stage4_carries_reg[1:0];
     reg stage4_done_reg;
     reg [7:0] stage4_Physical_address_reg;
@@ -174,7 +174,7 @@ module multiplier (
         end
     endgenerate
 
-    always @(posedge clk or posedge rst) begin
+    always @(posedge clk) begin
         if (rst) begin
             for (j = 0; j < 2; j = j + 1) begin
                 stage4_sums_reg[j] <= 0;
@@ -192,8 +192,8 @@ module multiplier (
         end
     end
 
-    // 최종 결과와 done 신호 업데이트
-    always @(posedge clk or posedge rst) begin
+    // 理쒖쥌 寃곌낵�� done �떊�샇 �뾽�뜲�씠�듃
+    always @(posedge clk) begin
         if (rst) begin
             Product <= 0;
             done <= 0;
@@ -209,7 +209,7 @@ module multiplier (
     end
 endmodule
 
-// 64비트 CSA 모듈 정의
+// 64鍮꾪듃 CSA 紐⑤뱢 �젙�쓽
 module CSA_64bit (
     input [63:0] a,
     input [63:0] b,
