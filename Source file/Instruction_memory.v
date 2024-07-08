@@ -1,14 +1,15 @@
-module Instruction_memory(pc, instOut);
+module Instruction_memory(
 
-    input [31:0] pc;
+    input wire [31:0] pc,
 
-    output reg [31:0] instOut;
+    input wire reset,
+    output reg [31:0] instOut
 
-
-    reg [7:0] memory [0:1023]; // 1KB memory
+);
+  reg [7:0] memory [0:1023]; // 1KB memory
 integer i;
 
-initial begin
+always @(posedge reset) begin
 
     for (i = 48; i < 1024; i = i + 1) begin
 
