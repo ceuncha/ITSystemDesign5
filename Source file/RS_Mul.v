@@ -148,6 +148,30 @@ module RS_Mul (
                 valid_entries2[tail] <= 1 ; 
                 tail <= (tail + 1) % 64;
                 RS_MUL_on[tail] <=0; 
+              end else if(RS_mul_operand1 == BR_Phy) begin
+                PCs[tail] <= RS_mul_PC;
+                Rds[tail] <= RS_mul_Rd;
+                operand1s[tail] <= BR_Phy;
+                operand2s[tail] <= RS_mul_operand2;
+                operand1_datas[tail] <= PC_Return;
+                operand2_datas[tail] <= RS_mul_operand2_data;
+                valid_entries1[tail] <= 1;
+                valid_entries2[tail] <= RS_mul_valid[1]; 
+                tail <= (tail + 1) % 64;
+                RS_MUL_on[tail] <=0; 
+              
+                end else if(RS_mul_operand2 == BR_Phy) begin
+                PCs[tail] <= RS_mul_PC;
+                Rds[tail] <= RS_mul_Rd;
+                operand1s[tail] <= RS_mul_operand1;
+                operand2s[tail] <= BR_Phy;
+                operand1_datas[tail] <= RS_mul_operand1_data;
+                operand2_datas[tail] <= PC_Return;
+                valid_entries1[tail] <= RS_mul_valid[0];
+                valid_entries2[tail] <= 1; 
+                tail <= (tail + 1) % 64;
+                RS_MUL_on[tail] <=0; 
+            
             end else begin
                 PCs[tail] <= RS_mul_PC;
                 Rds[tail] <= RS_mul_Rd;
