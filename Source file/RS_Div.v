@@ -158,6 +158,31 @@ module RS_Div (
                 valid_entries2[tail] <= 1 ; 
                 tail <= (tail + 1) % 64;
                 RS_DIV_on[tail] <= 0;
+              end else if(RS_div_operand1 == BR_Phy) begin
+                PCs[tail] <= RS_div_PC;
+                Rds[tail] <= RS_div_Rd;
+                ALUOPs[tail] <= RS_div_ALUOP;
+                operand1s[tail] <= RS_div_operand1;
+                operand2s[tail] <= RS_div_operand2;
+                operand1_datas[tail] <= PC_Return;
+                operand2_datas[tail] <= RS_div_operand2_data;
+                valid_entries1[tail] <= 1;
+                valid_entries2[tail] <= RS_div_valid[1]; 
+                tail <= (tail + 1) % 64;
+                RS_DIV_on[tail] <=0; 
+              
+                end else if(RS_div_operand2 == BR_Phy) begin
+                PCs[tail] <= RS_div_PC;
+                Rds[tail] <= RS_div_Rd;
+                ALUOPs[tail] <= RS_div_ALUOP;
+                operand1s[tail] <= RS_div_operand1;
+                operand2s[tail] <= RS_div_operand2;
+                operand1_datas[tail] <= RS_div_operand1_data;
+                operand2_datas[tail] <= PC_Return;
+                valid_entries1[tail] <= RS_div_valid[0];
+                valid_entries2[tail] <= 1; 
+                tail <= (tail + 1) % 64;
+                RS_DIV_on[tail] <=0; 
             end else begin
                 PCs[tail] <= RS_div_PC;
                 Rds[tail] <= RS_div_Rd;
