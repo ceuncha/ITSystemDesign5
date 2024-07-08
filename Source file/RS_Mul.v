@@ -151,7 +151,7 @@ module RS_Mul (
               end else if(RS_mul_operand1 == BR_Phy) begin
                 PCs[tail] <= RS_mul_PC;
                 Rds[tail] <= RS_mul_Rd;
-                operand1s[tail] <= BR_Phy;
+                operand1s[tail] <= RS_mul_operand1;
                 operand2s[tail] <= RS_mul_operand2;
                 operand1_datas[tail] <= PC_Return;
                 operand2_datas[tail] <= RS_mul_operand2_data;
@@ -164,7 +164,7 @@ module RS_Mul (
                 PCs[tail] <= RS_mul_PC;
                 Rds[tail] <= RS_mul_Rd;
                 operand1s[tail] <= RS_mul_operand1;
-                operand2s[tail] <= BR_Phy;
+                operand2s[tail] <= RS_mul_operand2;
                 operand1_datas[tail] <= RS_mul_operand1_data;
                 operand2_datas[tail] <= PC_Return;
                 valid_entries1[tail] <= RS_mul_valid[0];
