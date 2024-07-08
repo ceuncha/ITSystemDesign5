@@ -1,6 +1,7 @@
 module DataMemory(
     input wire Load_Done,
     input wire EX_MEM_MemWrite,
+    input wire clk,
     input wire reset,
     input wire [2:0] EX_MEM_funct3,
     input wire [31:0] EX_MEM_ALUResult,
@@ -9,12 +10,21 @@ module DataMemory(
 );
 integer i;
 reg [31:0] memory [0:2047];
-always @(posedge reset) begin                       //由ъ뀑?떆?뿉 媛? 踰덉??닔?쓽 ?뜲?씠?꽣?뒗 踰덉??닔+3?쑝濡? ?븳?떎,
+    always @(posedge clk) begin                       //由ъ뀑?떆?뿉 媛? 踰덉??닔?쓽 ?뜲?씠?꽣?뒗 踰덉??닔+3?쑝濡? ?븳?떎,
    if (reset) begin
        for (i = 0; i < 2047; i = i + 1) begin
             memory[i] <= i+3;
         end
     end
+    if (EX_MEM_MemWrite) begin
+        case (EX_MEM_funct3)
+            3'b000: memory[EX_MEM_ALUResult][7:0] <= EX_MEM_Rdata2[7:0]; // SB
+            3'b001: memory[EX_MEM_ALUResult][15:0] <= EX_MEM_Rdata2[15:0]; // SH
+            3'b010: memory[EX_MEM_ALUResult] <= EX_MEM_Rdata2; // SW
+            default: ; // No operation (NOP) for other funct3 values, explicitly defined
+        endcase
+    end
+    else if (!EX_MEM_MemWrite) ; // If EX_MEM_MemWrite is false, no changes are made to memory - it retains its previous state
 end
 
 always @ (*) begin
@@ -33,15 +43,7 @@ always @ (*) begin
 end
 
 always @ (*) begin
-    if (EX_MEM_MemWrite) begin
-        case (EX_MEM_funct3)
-            3'b000: memory[EX_MEM_ALUResult][7:0] <= EX_MEM_Rdata2[7:0]; // SB
-            3'b001: memory[EX_MEM_ALUResult][15:0] <= EX_MEM_Rdata2[15:0]; // SH
-            3'b010: memory[EX_MEM_ALUResult] <= EX_MEM_Rdata2; // SW
-            default: ; // No operation (NOP) for other funct3 values, explicitly defined
-        endcase
-    end
-    else if (!EX_MEM_MemWrite) ; // If EX_MEM_MemWrite is false, no changes are made to memory - it retains its previous state
+
 end
 
 endmodule
