@@ -233,684 +233,723 @@ module RS_Div (
                     end
                 end     
             end
-         end
+         
       
-    
 
-
-    always @(posedge clk) begin
-        for (i = 0; i < 64; i = i + 1) begin
-            if (valid_entries1[i] && valid_entries2[i]) begin
-                readys[i] = 1;
-                RS_DIV_on[i] <= 1;
-                result[i] = {1'b1, PCs[i], Rds[i], ALUOPs[i],operand1_datas[i], operand2_datas[i]};
-            end
-        end
-    end
-    priority_encoder encoder2 (
-        .ready(readys),
-        .head(head),
-        .Y(Y)
-    );
-
-
-always @(posedge clk ) begin
-    if (reset) begin
-        result_out <= 0;
-        head <= 0;
-    end else begin
-        if (RS_DIV_on[head]) begin
-      head <= (head+1)%64;
-            RS_DIV_on[head] <=0;     
-      end
-        case (Y)
-    64'b0000000000000000000000000000000000000000000000000000000000000001: begin
-        result_out <= result[(head+0)%64];
-        readys[(head+0)%64] <= 0;
-        operand1s[(head+0)%64] <= 0;
-        operand2s[(head+0)%64] <= 0;
-        operand1_datas[(head+0)%64] <= 0;
-        operand2_datas[(head+0)%64] <= 0;
-        valid_entries1[(head+0)%64] <= 0;
-        valid_entries2[(head+0)%64] <= 0;
-    end
-    64'b0000000000000000000000000000000000000000000000000000000000000010: begin
-        result_out <= result[(head+1)%64];
-        readys[(head+1)%64] <= 0;
-        operand1s[(head+1)%64] <= 0;
-        operand2s[(head+1)%64] <= 0;
-        operand1_datas[(head+1)%64] <= 0;
-        operand2_datas[(head+1)%64] <= 0;
-        valid_entries1[(head+1)%64] <= 0;
-        valid_entries2[(head+1)%64] <= 0;
-    end
-    64'b0000000000000000000000000000000000000000000000000000000000000100: begin
-        result_out <= result[(head+2)%64];
-        readys[(head+2)%64] <= 0;
-        operand1s[(head+2)%64] <= 0;
-        operand2s[(head+2)%64] <= 0;
-        operand1_datas[(head+2)%64] <= 0;
-        operand2_datas[(head+2)%64] <= 0;
-        valid_entries1[(head+2)%64] <= 0;
-        valid_entries2[(head+2)%64] <= 0;
-    end
-    64'b0000000000000000000000000000000000000000000000000000000000001000: begin
-        result_out <= result[(head+3)%64];
-        readys[(head+3)%64] <= 0;
-        operand1s[(head+3)%64] <= 0;
-        operand2s[(head+3)%64] <= 0;
-        operand1_datas[(head+3)%64] <= 0;
-        operand2_datas[(head+3)%64] <= 0;
-        valid_entries1[(head+3)%64] <= 0;
-        valid_entries2[(head+3)%64] <= 0;
-    end
-    64'b0000000000000000000000000000000000000000000000000000000000010000: begin
-        result_out <= result[(head+4)%64];
-        readys[(head+4)%64] <= 0;
-        operand1s[(head+4)%64] <= 0;
-        operand2s[(head+4)%64] <= 0;
-        operand1_datas[(head+4)%64] <= 0;
-        operand2_datas[(head+4)%64] <= 0;
-        valid_entries1[(head+4)%64] <= 0;
-        valid_entries2[(head+4)%64] <= 0;
-    end
-    64'b0000000000000000000000000000000000000000000000000000000000100000: begin
-        result_out <= result[(head+5)%64];
-        readys[(head+5)%64] <= 0;
-        operand1s[(head+5)%64] <= 0;
-        operand2s[(head+5)%64] <= 0;
-        operand1_datas[(head+5)%64] <= 0;
-        operand2_datas[(head+5)%64] <= 0;
-        valid_entries1[(head+5)%64] <= 0;
-        valid_entries2[(head+5)%64] <= 0;
-    end
-    64'b0000000000000000000000000000000000000000000000000000000001000000: begin
-        result_out <= result[(head+6)%64];
-        readys[(head+6)%64] <= 0;
-        operand1s[(head+6)%64] <= 0;
-        operand2s[(head+6)%64] <= 0;
-        operand1_datas[(head+6)%64] <= 0;
-        operand2_datas[(head+6)%64] <= 0;
-        valid_entries1[(head+6)%64] <= 0;
-        valid_entries2[(head+6)%64] <= 0;
-    end
-    64'b0000000000000000000000000000000000000000000000000000000010000000: begin
-        result_out <= result[(head+7)%64];
-        readys[(head+7)%64] <= 0;
-        operand1s[(head+7)%64] <= 0;
-        operand2s[(head+7)%64] <= 0;
-        operand1_datas[(head+7)%64] <= 0;
-        operand2_datas[(head+7)%64] <= 0;
-        valid_entries1[(head+7)%64] <= 0;
-        valid_entries2[(head+7)%64] <= 0;
-    end
-    64'b0000000000000000000000000000000000000000000000000000000100000000: begin
-        result_out <= result[(head+8)%64];
-        readys[(head+8)%64] <= 0;
-        operand1s[(head+8)%64] <= 0;
-        operand2s[(head+8)%64] <= 0;
-        operand1_datas[(head+8)%64] <= 0;
-        operand2_datas[(head+8)%64] <= 0;
-        valid_entries1[(head+8)%64] <= 0;
-        valid_entries2[(head+8)%64] <= 0;
-    end
-    64'b0000000000000000000000000000000000000000000000000000001000000000: begin
-        result_out <= result[(head+9)%64];
-        readys[(head+9)%64] <= 0;
-        operand1s[(head+9)%64] <= 0;
-        operand2s[(head+9)%64] <= 0;
-        operand1_datas[(head+9)%64] <= 0;
-        operand2_datas[(head+9)%64] <= 0;
-        valid_entries1[(head+9)%64] <= 0;
-        valid_entries2[(head+9)%64] <= 0;
-    end
-    64'b0000000000000000000000000000000000000000000000000000010000000000: begin
-        result_out <= result[(head+10)%64];
-        readys[(head+10)%64] <= 0;
-        operand1s[(head+10)%64] <= 0;
-        operand2s[(head+10)%64] <= 0;
-        operand1_datas[(head+10)%64] <= 0;
-        operand2_datas[(head+10)%64] <= 0;
-        valid_entries1[(head+10)%64] <= 0;
-        valid_entries2[(head+10)%64] <= 0;
-    end
-    64'b0000000000000000000000000000000000000000000000000000100000000000: begin
-        result_out <= result[(head+11)%64];
-        readys[(head+11)%64] <= 0;
-        operand1s[(head+11)%64] <= 0;
-        operand2s[(head+11)%64] <= 0;
-        operand1_datas[(head+11)%64] <= 0;
-        operand2_datas[(head+11)%64] <= 0;
-        valid_entries1[(head+11)%64] <= 0;
-        valid_entries2[(head+11)%64] <= 0;
-    end
-    64'b0000000000000000000000000000000000000000000000000001000000000000: begin
-        result_out <= result[(head+12)%64];
-        readys[(head+12)%64] <= 0;
-        operand1s[(head+12)%64] <= 0;
-        operand2s[(head+12)%64] <= 0;
-        operand1_datas[(head+12)%64] <= 0;
-        operand2_datas[(head+12)%64] <= 0;
-        valid_entries1[(head+12)%64] <= 0;
-        valid_entries2[(head+12)%64] <= 0;
-    end
-    64'b0000000000000000000000000000000000000000000000000010000000000000: begin
-        result_out <= result[(head+13)%64];
-        readys[(head+13)%64] <= 0;
-        operand1s[(head+13)%64] <= 0;
-        operand2s[(head+13)%64] <= 0;
-        operand1_datas[(head+13)%64] <= 0;
-        operand2_datas[(head+13)%64] <= 0;
-        valid_entries1[(head+13)%64] <= 0;
-        valid_entries2[(head+13)%64] <= 0;
-    end
-    64'b0000000000000000000000000000000000000000000000000100000000000000: begin
-        result_out <= result[(head+14)%64];
-        readys[(head+14)%64] <= 0;
-        operand1s[(head+14)%64] <= 0;
-        operand2s[(head+14)%64] <= 0;
-        operand1_datas[(head+14)%64] <= 0;
-        operand2_datas[(head+14)%64] <= 0;
-        valid_entries1[(head+14)%64] <= 0;
-        valid_entries2[(head+14)%64] <= 0;
-    end
-    64'b0000000000000000000000000000000000000000000000001000000000000000: begin
-        result_out <= result[(head+15)%64];
-        readys[(head+15)%64] <= 0;
-        operand1s[(head+15)%64] <= 0;
-        operand2s[(head+15)%64] <= 0;
-        operand1_datas[(head+15)%64] <= 0;
-        operand2_datas[(head+15)%64] <= 0;
-        valid_entries1[(head+15)%64] <= 0;
-        valid_entries2[(head+15)%64] <= 0;
-    end
-    64'b0000000000000000000000000000000000000000000000010000000000000000: begin
-        result_out <= result[(head+16)%64];
-        readys[(head+16)%64] <= 0;
-        operand1s[(head+16)%64] <= 0;
-        operand2s[(head+16)%64] <= 0;
-        operand1_datas[(head+16)%64] <= 0;
-        operand2_datas[(head+16)%64] <= 0;
-        valid_entries1[(head+16)%64] <= 0;
-        valid_entries2[(head+16)%64] <= 0;
-    end
-    64'b0000000000000000000000000000000000000000000000100000000000000000: begin
-        result_out <= result[(head+17)%64];
-        readys[(head+17)%64] <= 0;
-        operand1s[(head+17)%64] <= 0;
-        operand2s[(head+17)%64] <= 0;
-        operand1_datas[(head+17)%64] <= 0;
-        operand2_datas[(head+17)%64] <= 0;
-        valid_entries1[(head+17)%64] <= 0;
-        valid_entries2[(head+17)%64] <= 0;
-    end
-    64'b0000000000000000000000000000000000000000000001000000000000000000: begin
-        result_out <= result[(head+18)%64];
-        readys[(head+18)%64] <= 0;
-        operand1s[(head+18)%64] <= 0;
-        operand2s[(head+18)%64] <= 0;
-        operand1_datas[(head+18)%64] <= 0;
-        operand2_datas[(head+18)%64] <= 0;
-        valid_entries1[(head+18)%64] <= 0;
-        valid_entries2[(head+18)%64] <= 0;
-    end
-    64'b0000000000000000000000000000000000000000000010000000000000000000: begin
-        result_out <= result[(head+19)%64];
-        readys[(head+19)%64] <= 0;
-        operand1s[(head+19)%64] <= 0;
-        operand2s[(head+19)%64] <= 0;
-        operand1_datas[(head+19)%64] <= 0;
-        operand2_datas[(head+19)%64] <= 0;
-        valid_entries1[(head+19)%64] <= 0;
-        valid_entries2[(head+19)%64] <= 0;
-    end
-    64'b0000000000000000000000000000000000000000000100000000000000000000: begin
-        result_out <= result[(head+20)%64];
-        readys[(head+20)%64] <= 0;
-        operand1s[(head+20)%64] <= 0;
-        operand2s[(head+20)%64] <= 0;
-        operand1_datas[(head+20)%64] <= 0;
-        operand2_datas[(head+20)%64] <= 0;
-        valid_entries1[(head+20)%64] <= 0;
-        valid_entries2[(head+20)%64] <= 0;
-    end
-    64'b0000000000000000000000000000000000000000001000000000000000000000: begin
-        result_out <= result[(head+21)%64];
-        readys[(head+21)%64] <= 0;
-        operand1s[(head+21)%64] <= 0;
-        operand2s[(head+21)%64] <= 0;
-        operand1_datas[(head+21)%64] <= 0;
-        operand2_datas[(head+21)%64] <= 0;
-        valid_entries1[(head+21)%64] <= 0;
-        valid_entries2[(head+21)%64] <= 0;
-    end
-    64'b0000000000000000000000000000000000000000010000000000000000000000: begin
-        result_out <= result[(head+22)%64];
-        readys[(head+22)%64] <= 0;
-        operand1s[(head+22)%64] <= 0;
-        operand2s[(head+22)%64] <= 0;
-        operand1_datas[(head+22)%64] <= 0;
-        operand2_datas[(head+22)%64] <= 0;
-        valid_entries1[(head+22)%64] <= 0;
-        valid_entries2[(head+22)%64] <= 0;
-    end
-    64'b0000000000000000000000000000000000000000100000000000000000000000: begin
-        result_out <= result[(head+23)%64];
-        readys[(head+23)%64] <= 0;
-        operand1s[(head+23)%64] <= 0;
-        operand2s[(head+23)%64] <= 0;
-        operand1_datas[(head+23)%64] <= 0;
-        operand2_datas[(head+23)%64] <= 0;
-        valid_entries1[(head+23)%64] <= 0;
-        valid_entries2[(head+23)%64] <= 0;
-    end
-    64'b0000000000000000000000000000000000000001000000000000000000000000: begin
-        result_out <= result[(head+24)%64];
-        readys[(head+24)%64] <= 0;
-        operand1s[(head+24)%64] <= 0;
-        operand2s[(head+24)%64] <= 0;
-        operand1_datas[(head+24)%64] <= 0;
-        operand2_datas[(head+24)%64] <= 0;
-        valid_entries1[(head+24)%64] <= 0;
-        valid_entries2[(head+24)%64] <= 0;
-    end
-    64'b0000000000000000000000000000000000000010000000000000000000000000: begin
-        result_out <= result[(head+25)%64];
-        readys[(head+25)%64] <= 0;
-        operand1s[(head+25)%64] <= 0;
-        operand2s[(head+25)%64] <= 0;
-        operand1_datas[(head+25)%64] <= 0;
-        operand2_datas[(head+25)%64] <= 0;
-        valid_entries1[(head+25)%64] <= 0;
-        valid_entries2[(head+25)%64] <= 0;
-    end
-    64'b0000000000000000000000000000000000000100000000000000000000000000: begin
-        result_out <= result[(head+26)%64];
-        readys[(head+26)%64] <= 0;
-        operand1s[(head+26)%64] <= 0;
-        operand2s[(head+26)%64] <= 0;
-        operand1_datas[(head+26)%64] <= 0;
-        operand2_datas[(head+26)%64] <= 0;
-        valid_entries1[(head+26)%64] <= 0;
-        valid_entries2[(head+26)%64] <= 0;
-    end
-    64'b0000000000000000000000000000000000001000000000000000000000000000: begin
-        result_out <= result[(head+27)%64];
-        readys[(head+27)%64] <= 0;
-        operand1s[(head+27)%64] <= 0;
-        operand2s[(head+27)%64] <= 0;
-        operand1_datas[(head+27)%64] <= 0;
-        operand2_datas[(head+27)%64] <= 0;
-        valid_entries1[(head+27)%64] <= 0;
-        valid_entries2[(head+27)%64] <= 0;
-    end
-    64'b0000000000000000000000000000000000010000000000000000000000000000: begin
-        result_out <= result[(head+28)%64];
-        readys[(head+28)%64] <= 0;
-        operand1s[(head+28)%64] <= 0;
-        operand2s[(head+28)%64] <= 0;
-        operand1_datas[(head+28)%64] <= 0;
-        operand2_datas[(head+28)%64] <= 0;
-        valid_entries1[(head+28)%64] <= 0;
-        valid_entries2[(head+28)%64] <= 0;
-    end
-    64'b0000000000000000000000000000000000100000000000000000000000000000: begin
-        result_out <= result[(head+29)%64];
-        readys[(head+29)%64] <= 0;
-        operand1s[(head+29)%64] <= 0;
-        operand2s[(head+29)%64] <= 0;
-        operand1_datas[(head+29)%64] <= 0;
-        operand2_datas[(head+29)%64] <= 0;
-        valid_entries1[(head+29)%64] <= 0;
-        valid_entries2[(head+29)%64] <= 0;
-    end
-    64'b0000000000000000000000000000000001000000000000000000000000000000: begin
-        result_out <= result[(head+30)%64];
-        readys[(head+30)%64] <= 0;
-        operand1s[(head+30)%64] <= 0;
-        operand2s[(head+30)%64] <= 0;
-        operand1_datas[(head+30)%64] <= 0;
-        operand2_datas[(head+30)%64] <= 0;
-        valid_entries1[(head+30)%64] <= 0;
-        valid_entries2[(head+30)%64] <= 0;
-    end
-    64'b0000000000000000000000000000000010000000000000000000000000000000: begin
-        result_out <= result[(head+31)%64];
-        readys[(head+31)%64] <= 0;
-        operand1s[(head+31)%64] <= 0;
-        operand2s[(head+31)%64] <= 0;
-        operand1_datas[(head+31)%64] <= 0;
-        operand2_datas[(head+31)%64] <= 0;
-        valid_entries1[(head+31)%64] <= 0;
-        valid_entries2[(head+31)%64] <= 0;
-    end
-    64'b0000000000000000000000000000000100000000000000000000000000000000: begin
-        result_out <= result[(head+32)%64];
-        readys[(head+32)%64] <= 0;
-        operand1s[(head+32)%64] <= 0;
-        operand2s[(head+32)%64] <= 0;
-        operand1_datas[(head+32)%64] <= 0;
-        operand2_datas[(head+32)%64] <= 0;
-        valid_entries1[(head+32)%64] <= 0;
-        valid_entries2[(head+32)%64] <= 0;
-    end
-    64'b0000000000000000000000000000001000000000000000000000000000000000: begin
-        result_out <= result[(head+33)%64];
-        readys[(head+33)%64] <= 0;
-        operand1s[(head+33)%64] <= 0;
-        operand2s[(head+33)%64] <= 0;
-        operand1_datas[(head+33)%64] <= 0;
-        operand2_datas[(head+33)%64] <= 0;
-        valid_entries1[(head+33)%64] <= 0;
-        valid_entries2[(head+33)%64] <= 0;
-    end
-    64'b0000000000000000000000000000010000000000000000000000000000000000: begin
-        result_out <= result[(head+34)%64];
-        readys[(head+34)%64] <= 0;
-        operand1s[(head+34)%64] <= 0;
-        operand2s[(head+34)%64] <= 0;
-        operand1_datas[(head+34)%64] <= 0;
-        operand2_datas[(head+34)%64] <= 0;
-        valid_entries1[(head+34)%64] <= 0;
-        valid_entries2[(head+34)%64] <= 0;
-    end
-    64'b0000000000000000000000000000100000000000000000000000000000000000: begin
-        result_out <= result[(head+35)%64];
-        readys[(head+35)%64] <= 0;
-        operand1s[(head+35)%64] <= 0;
-        operand2s[(head+35)%64] <= 0;
-        operand1_datas[(head+35)%64] <= 0;
-        operand2_datas[(head+35)%64] <= 0;
-        valid_entries1[(head+35)%64] <= 0;
-        valid_entries2[(head+35)%64] <= 0;
-    end
-    64'b0000000000000000000000000001000000000000000000000000000000000000: begin
-        result_out <= result[(head+36)%64];
-        readys[(head+36)%64] <= 0;
-        operand1s[(head+36)%64] <= 0;
-        operand2s[(head+36)%64] <= 0;
-        operand1_datas[(head+36)%64] <= 0;
-        operand2_datas[(head+36)%64] <= 0;
-        valid_entries1[(head+36)%64] <= 0;
-        valid_entries2[(head+36)%64] <= 0;
-    end
-    64'b0000000000000000000000000010000000000000000000000000000000000000: begin
-        result_out <= result[(head+37)%64];
-        readys[(head+37)%64] <= 0;
-        operand1s[(head+37)%64] <= 0;
-        operand2s[(head+37)%64] <= 0;
-        operand1_datas[(head+37)%64] <= 0;
-        operand2_datas[(head+37)%64] <= 0;
-        valid_entries1[(head+37)%64] <= 0;
-        valid_entries2[(head+37)%64] <= 0;
-    end
-    64'b0000000000000000000000000100000000000000000000000000000000000000: begin
-        result_out <= result[(head+38)%64];
-        readys[(head+38)%64] <= 0;
-        operand1s[(head+38)%64] <= 0;
-        operand2s[(head+38)%64] <= 0;
-        operand1_datas[(head+38)%64] <= 0;
-        operand2_datas[(head+38)%64] <= 0;
-        valid_entries1[(head+38)%64] <= 0;
-        valid_entries2[(head+38)%64] <= 0;
-    end
-    64'b0000000000000000000000001000000000000000000000000000000000000000: begin
-        result_out <= result[(head+39)%64];
-        readys[(head+39)%64] <= 0;
-        operand1s[(head+39)%64] <= 0;
-        operand2s[(head+39)%64] <= 0;
-        operand1_datas[(head+39)%64] <= 0;
-        operand2_datas[(head+39)%64] <= 0;
-        valid_entries1[(head+39)%64] <= 0;
-        valid_entries2[(head+39)%64] <= 0;
-    end
-    64'b0000000000000000000000010000000000000000000000000000000000000000: begin
-        result_out <= result[(head+40)%64];
-        readys[(head+40)%64] <= 0;
-        operand1s[(head+40)%64] <= 0;
-        operand2s[(head+40)%64] <= 0;
-        operand1_datas[(head+40)%64] <= 0;
-        operand2_datas[(head+40)%64] <= 0;
-        valid_entries1[(head+40)%64] <= 0;
-        valid_entries2[(head+40)%64] <= 0;
-    end
-    64'b0000000000000000000000100000000000000000000000000000000000000000: begin
-        result_out <= result[(head+41)%64];
-        readys[(head+41)%64] <= 0;
-        operand1s[(head+41)%64] <= 0;
-        operand2s[(head+41)%64] <= 0;
-        operand1_datas[(head+41)%64] <= 0;
-        operand2_datas[(head+41)%64] <= 0;
-        valid_entries1[(head+41)%64] <= 0;
-        valid_entries2[(head+41)%64] <= 0;
-    end
-    64'b0000000000000000000001000000000000000000000000000000000000000000: begin
-        result_out <= result[(head+42)%64];
-        readys[(head+42)%64] <= 0;
-        operand1s[(head+42)%64] <= 0;
-        operand2s[(head+42)%64] <= 0;
-        operand1_datas[(head+42)%64] <= 0;
-        operand2_datas[(head+42)%64] <= 0;
-        valid_entries1[(head+42)%64] <= 0;
-        valid_entries2[(head+42)%64] <= 0;
-    end
-    64'b0000000000000000000010000000000000000000000000000000000000000000: begin
-        result_out <= result[(head+43)%64];
-        readys[(head+43)%64] <= 0;
-        operand1s[(head+43)%64] <= 0;
-        operand2s[(head+43)%64] <= 0;
-        operand1_datas[(head+43)%64] <= 0;
-        operand2_datas[(head+43)%64] <= 0;
-        valid_entries1[(head+43)%64] <= 0;
-        valid_entries2[(head+43)%64] <= 0;
-    end
-    64'b0000000000000000000100000000000000000000000000000000000000000000: begin
-        result_out <= result[(head+44)%64];
-        readys[(head+44)%64] <= 0;
-        operand1s[(head+44)%64] <= 0;
-        operand2s[(head+44)%64] <= 0;
-        operand1_datas[(head+44)%64] <= 0;
-        operand2_datas[(head+44)%64] <= 0;
-        valid_entries1[(head+44)%64] <= 0;
-        valid_entries2[(head+44)%64] <= 0;
-    end
-    64'b0000000000000000001000000000000000000000000000000000000000000000: begin
-        result_out <= result[(head+45)%64];
-        readys[(head+45)%64] <= 0;
-        operand1s[(head+45)%64] <= 0;
-        operand2s[(head+45)%64] <= 0;
-        operand1_datas[(head+45)%64] <= 0;
-        operand2_datas[(head+45)%64] <= 0;
-        valid_entries1[(head+45)%64] <= 0;
-        valid_entries2[(head+45)%64] <= 0;
-    end
-    64'b0000000000000000010000000000000000000000000000000000000000000000: begin
-        result_out <= result[(head+46)%64];
-        readys[(head+46)%64] <= 0;
-        operand1s[(head+46)%64] <= 0;
-        operand2s[(head+46)%64] <= 0;
-        operand1_datas[(head+46)%64] <= 0;
-        operand2_datas[(head+46)%64] <= 0;
-        valid_entries1[(head+46)%64] <= 0;
-        valid_entries2[(head+46)%64] <= 0;
-    end
-    64'b0000000000000000100000000000000000000000000000000000000000000000: begin
-        result_out <= result[(head+47)%64];
-        readys[(head+47)%64] <= 0;
-        operand1s[(head+47)%64] <= 0;
-        operand2s[(head+47)%64] <= 0;
-        operand1_datas[(head+47)%64] <= 0;
-        operand2_datas[(head+47)%64] <= 0;
-        valid_entries1[(head+47)%64] <= 0;
-        valid_entries2[(head+47)%64] <= 0;
-    end
-    64'b0000000000000001000000000000000000000000000000000000000000000000: begin
-        result_out <= result[(head+48)%64];
-        readys[(head+48)%64] <= 0;
-        operand1s[(head+48)%64] <= 0;
-        operand2s[(head+48)%64] <= 0;
-        operand1_datas[(head+48)%64] <= 0;
-        operand2_datas[(head+48)%64] <= 0;
-        valid_entries1[(head+48)%64] <= 0;
-        valid_entries2[(head+48)%64] <= 0;
-    end
-    64'b0000000000000010000000000000000000000000000000000000000000000000: begin
-        result_out <= result[(head+49)%64];
-        readys[(head+49)%64] <= 0;
-        operand1s[(head+49)%64] <= 0;
-        operand2s[(head+49)%64] <= 0;
-        operand1_datas[(head+49)%64] <= 0;
-        operand2_datas[(head+49)%64] <= 0;
-        valid_entries1[(head+49)%64] <= 0;
-        valid_entries2[(head+49)%64] <= 0;
-    end
-    64'b0000000000000100000000000000000000000000000000000000000000000000: begin
-        result_out <= result[(head+50)%64];
-        readys[(head+50)%64] <= 0;
-        operand1s[(head+50)%64] <= 0;
-        operand2s[(head+50)%64] <= 0;
-        operand1_datas[(head+50)%64] <= 0;
-        operand2_datas[(head+50)%64] <= 0;
-        valid_entries1[(head+50)%64] <= 0;
-        valid_entries2[(head+50)%64] <= 0;
-    end
-    64'b0000000000001000000000000000000000000000000000000000000000000000: begin
-        result_out <= result[(head+51)%64];
-        readys[(head+51)%64] <= 0;
-        operand1s[(head+51)%64] <= 0;
-        operand2s[(head+51)%64] <= 0;
-        operand1_datas[(head+51)%64] <= 0;
-        operand2_datas[(head+51)%64] <= 0;
-        valid_entries1[(head+51)%64] <= 0;
-        valid_entries2[(head+51)%64] <= 0;
-    end
-    64'b0000000000010000000000000000000000000000000000000000000000000000: begin
-        result_out <= result[(head+52)%64];
-        readys[(head+52)%64] <= 0;
-        operand1s[(head+52)%64] <= 0;
-        operand2s[(head+52)%64] <= 0;
-        operand1_datas[(head+52)%64] <= 0;
-        operand2_datas[(head+52)%64] <= 0;
-        valid_entries1[(head+52)%64] <= 0;
-        valid_entries2[(head+52)%64] <= 0;
-    end
-    64'b0000000000100000000000000000000000000000000000000000000000000000: begin
-        result_out <= result[(head+53)%64];
-        readys[(head+53)%64] <= 0;
-        operand1s[(head+53)%64] <= 0;
-        operand2s[(head+53)%64] <= 0;
-        operand1_datas[(head+53)%64] <= 0;
-        operand2_datas[(head+53)%64] <= 0;
-        valid_entries1[(head+53)%64] <= 0;
-        valid_entries2[(head+53)%64] <= 0;
-    end
-    64'b0000000001000000000000000000000000000000000000000000000000000000: begin
-        result_out <= result[(head+54)%64];
-        readys[(head+54)%64] <= 0;
-        operand1s[(head+54)%64] <= 0;
-        operand2s[(head+54)%64] <= 0;
-        operand1_datas[(head+54)%64] <= 0;
-        operand2_datas[(head+54)%64] <= 0;
-        valid_entries1[(head+54)%64] <= 0;
-        valid_entries2[(head+54)%64] <= 0;
-    end
-    64'b0000000010000000000000000000000000000000000000000000000000000000: begin
-        result_out <= result[(head+55)%64];
-        readys[(head+55)%64] <= 0;
-        operand1s[(head+55)%64] <= 0;
-        operand2s[(head+55)%64] <= 0;
-        operand1_datas[(head+55)%64] <= 0;
-        operand2_datas[(head+55)%64] <= 0;
-        valid_entries1[(head+55)%64] <= 0;
-        valid_entries2[(head+55)%64] <= 0;
-    end
-    64'b0000000100000000000000000000000000000000000000000000000000000000: begin
-        result_out <= result[(head+56)%64];
-        readys[(head+56)%64] <= 0;
-        operand1s[(head+56)%64] <= 0;
-        operand2s[(head+56)%64] <= 0;
-        operand1_datas[(head+56)%64] <= 0;
-        operand2_datas[(head+56)%64] <= 0;
-        valid_entries1[(head+56)%64] <= 0;
-        valid_entries2[(head+56)%64] <= 0;
-    end
-    64'b0000001000000000000000000000000000000000000000000000000000000000: begin
-        result_out <= result[(head+57)%64];
-        readys[(head+57)%64] <= 0;
-        operand1s[(head+57)%64] <= 0;
-        operand2s[(head+57)%64] <= 0;
-        operand1_datas[(head+57)%64] <= 0;
-        operand2_datas[(head+57)%64] <= 0;
-        valid_entries1[(head+57)%64] <= 0;
-        valid_entries2[(head+57)%64] <= 0;
-    end
-    64'b0000010000000000000000000000000000000000000000000000000000000000: begin
-        result_out <= result[(head+58)%64];
-        readys[(head+58)%64] <= 0;
-        operand1s[(head+58)%64] <= 0;
-        operand2s[(head+58)%64] <= 0;
-        operand1_datas[(head+58)%64] <= 0;
-        operand2_datas[(head+58)%64] <= 0;
-        valid_entries1[(head+58)%64] <= 0;
-        valid_entries2[(head+58)%64] <= 0;
-    end
-    64'b0000100000000000000000000000000000000000000000000000000000000000: begin
-        result_out <= result[(head+59)%64];
-        readys[(head+59)%64] <= 0;
-        operand1s[(head+59)%64] <= 0;
-        operand2s[(head+59)%64] <= 0;
-        operand1_datas[(head+59)%64] <= 0;
-        operand2_datas[(head+59)%64] <= 0;
-        valid_entries1[(head+59)%64] <= 0;
-        valid_entries2[(head+59)%64] <= 0;
-    end
-    64'b0001000000000000000000000000000000000000000000000000000000000000: begin
-        result_out <= result[(head+60)%64];
-        readys[(head+60)%64] <= 0;
-        operand1s[(head+60)%64] <= 0;
-        operand2s[(head+60)%64] <= 0;
-        operand1_datas[(head+60)%64] <= 0;
-        operand2_datas[(head+60)%64] <= 0;
-        valid_entries1[(head+60)%64] <= 0;
-        valid_entries2[(head+60)%64] <= 0;
-    end
-    64'b0010000000000000000000000000000000000000000000000000000000000000: begin
-        result_out <= result[(head+61)%64];
-        readys[(head+61)%64] <= 0;
-        operand1s[(head+61)%64] <= 0;
-        operand2s[(head+61)%64] <= 0;
-        operand1_datas[(head+61)%64] <= 0;
-        operand2_datas[(head+61)%64] <= 0;
-        valid_entries1[(head+61)%64] <= 0;
-        valid_entries2[(head+61)%64] <= 0;
-    end
-    64'b0100000000000000000000000000000000000000000000000000000000000000: begin
-        result_out <= result[(head+62)%64];
-        readys[(head+62)%64] <= 0;
-        operand1s[(head+62)%64] <= 0;
-        operand2s[(head+62)%64] <= 0;
-        operand1_datas[(head+62)%64] <= 0;
-        operand2_datas[(head+62)%64] <= 0;
-        valid_entries1[(head+62)%64] <= 0;
-        valid_entries2[(head+62)%64] <= 0;
-    end
-    64'b1000000000000000000000000000000000000000000000000000000000000000: begin
-        result_out <= result[(head+63)%64];
-        readys[(head+63)%64] <= 0;
-        operand1s[(head+63)%64] <= 0;
-        operand2s[(head+63)%64] <= 0;
-        operand1_datas[(head+63)%64] <= 0;
-        operand2_datas[(head+63)%64] <= 0;
-        valid_entries1[(head+63)%64] <= 0;
-        valid_entries2[(head+63)%64] <= 0;
-    end                                                                       
-            default: begin
-                result_out <= 0;
-                readys <= 0;
-               
-            end
-        endcase
-    end
+if (RS_DIV_on[head]) begin
+    head <= (head+1)%64;
+    RS_DIV_on[head] <= 0;     
 end
 
+if (valid_entries1[head] == 1 && valid_entries2[head] == 1) begin
+    result_out = {1'b1, PCs[head], Rds[head], operand1_datas[head], operand2_datas[head]};
+    readys[head] <= 0;
+    operand1s[head] <= 0;
+    operand2s[head] <= 0;
+    operand1_datas[head] <= 0;
+    operand2_datas[head] <= 0;
+    valid_entries1[head] <= 0;
+    valid_entries2[head] <= 0;
+    head <= (head+1)%64;
+    
+end
+else if (valid_entries1[(head + 1) % 64] == 1 && valid_entries2[(head + 1) % 64] == 1) begin
+    result_out = {1'b1, PCs[(head + 1) % 64], Rds[(head + 1) % 64], operand1_datas[(head + 1) % 64], operand2_datas[(head + 1) % 64]};
+    readys[(head + 1) % 64] <= 0;
+    operand1s[(head + 1) % 64] <= 0;
+    operand2s[(head + 1) % 64] <= 0;
+    operand1_datas[(head + 1) % 64] <= 0;
+    operand2_datas[(head + 1) % 64] <= 0;
+    valid_entries1[(head + 1) % 64] <= 0;
+    valid_entries2[(head + 1) % 64] <= 0;
+    RS_DIV_on[(head+1)%64] <= 1;
+end
+else if (valid_entries1[(head + 2) % 64] == 1 && valid_entries2[(head + 2) % 64] == 1) begin
+    result_out = {1'b1, PCs[(head + 2) % 64], Rds[(head + 2) % 64], operand1_datas[(head + 2) % 64], operand2_datas[(head + 2) % 64]};
+    readys[(head + 2) % 64] <= 0;
+    operand1s[(head + 2) % 64] <= 0;
+    operand2s[(head + 2) % 64] <= 0;
+    operand1_datas[(head + 2) % 64] <= 0;
+    operand2_datas[(head + 2) % 64] <= 0;
+    valid_entries1[(head + 2) % 64] <= 0;
+    valid_entries2[(head + 2) % 64] <= 0;
+    RS_DIV_on[(head+2)%64] <= 1;
+end
+else if (valid_entries1[(head + 3) % 64] == 1 && valid_entries2[(head + 3) % 64] == 1) begin
+    result_out = {1'b1, PCs[(head + 3) % 64], Rds[(head + 3) % 64], operand1_datas[(head + 3) % 64], operand2_datas[(head + 3) % 64]};
+    readys[(head + 3) % 64] <= 0;
+    operand1s[(head + 3) % 64] <= 0;
+    operand2s[(head + 3) % 64] <= 0;
+    operand1_datas[(head + 3) % 64] <= 0;
+    operand2_datas[(head + 3) % 64] <= 0;
+    valid_entries1[(head + 3) % 64] <= 0;
+    valid_entries2[(head + 3) % 64] <= 0;
+    RS_DIV_on[(head+3)%64] <= 1;
+end
+else if (valid_entries1[(head + 4) % 64] == 1 && valid_entries2[(head + 4) % 64] == 1) begin
+    result_out = {1'b1, PCs[(head + 4) % 64], Rds[(head + 4) % 64], operand1_datas[(head + 4) % 64], operand2_datas[(head + 4) % 64]};
+    readys[(head + 4) % 64] <= 0;
+    operand1s[(head + 4) % 64] <= 0;
+    operand2s[(head + 4) % 64] <= 0;
+    operand1_datas[(head + 4) % 64] <= 0;
+    operand2_datas[(head + 4) % 64] <= 0;
+    valid_entries1[(head + 4) % 64] <= 0;
+    valid_entries2[(head + 4) % 64] <= 0;
+    RS_DIV_on[(head+4)%64] <= 1;
+end
+else if (valid_entries1[(head + 5) % 64] == 1 && valid_entries2[(head + 5) % 64] == 1) begin
+    result_out = {1'b1, PCs[(head + 5) % 64], Rds[(head + 5) % 64], operand1_datas[(head + 5) % 64], operand2_datas[(head + 5) % 64]};
+    readys[(head + 5) % 64] <= 0;
+    operand1s[(head + 5) % 64] <= 0;
+    operand2s[(head + 5) % 64] <= 0;
+    operand1_datas[(head + 5) % 64] <= 0;
+    operand2_datas[(head + 5) % 64] <= 0;
+    valid_entries1[(head + 5) % 64] <= 0;
+    valid_entries2[(head + 5) % 64] <= 0;
+    RS_DIV_on[(head+5)%64] <= 1;
+end
+else if (valid_entries1[(head + 6) % 64] == 1 && valid_entries2[(head + 6) % 64] == 1) begin
+    result_out = {1'b1, PCs[(head + 6) % 64], Rds[(head + 6) % 64], operand1_datas[(head + 6) % 64], operand2_datas[(head + 6) % 64]};
+    readys[(head + 6) % 64] <= 0;
+    operand1s[(head + 6) % 64] <= 0;
+    operand2s[(head + 6) % 64] <= 0;
+    operand1_datas[(head + 6) % 64] <= 0;
+    operand2_datas[(head + 6) % 64] <= 0;
+    valid_entries1[(head + 6) % 64] <= 0;
+    valid_entries2[(head + 6) % 64] <= 0;
+    RS_DIV_on[(head + 6) % 64] <= 1;
+end
+else if (valid_entries1[(head + 7) % 64] == 1 && valid_entries2[(head + 7) % 64] == 1) begin
+    result_out = {1'b1, PCs[(head + 7) % 64], Rds[(head + 7) % 64], operand1_datas[(head + 7) % 64], operand2_datas[(head + 7) % 64]};
+    readys[(head + 7) % 64] <= 0;
+    operand1s[(head + 7) % 64] <= 0;
+    operand2s[(head + 7) % 64] <= 0;
+    operand1_datas[(head + 7) % 64] <= 0;
+    operand2_datas[(head + 7) % 64] <= 0;
+    valid_entries1[(head + 7) % 64] <= 0;
+    valid_entries2[(head + 7) % 64] <= 0;
+    RS_DIV_on[(head + 7) % 64] <= 1;
+end
+else if (valid_entries1[(head + 8) % 64] == 1 && valid_entries2[(head + 8) % 64] == 1) begin
+    result_out = {1'b1, PCs[(head + 8) % 64], Rds[(head + 8) % 64], operand1_datas[(head + 8) % 64], operand2_datas[(head + 8) % 64]};
+    readys[(head + 8) % 64] <= 0;
+    operand1s[(head + 8) % 64] <= 0;
+    operand2s[(head + 8) % 64] <= 0;
+    operand1_datas[(head + 8) % 64] <= 0;
+    operand2_datas[(head + 8) % 64] <= 0;
+    valid_entries1[(head + 8) % 64] <= 0;
+    valid_entries2[(head + 8) % 64] <= 0;
+    RS_DIV_on[(head + 8) % 64] <= 1;
+end
+else if (valid_entries1[(head + 9) % 64] == 1 && valid_entries2[(head + 9) % 64] == 1) begin
+    result_out = {1'b1, PCs[(head + 9) % 64], Rds[(head + 9) % 64], operand1_datas[(head + 9) % 64], operand2_datas[(head + 9) % 64]};
+    readys[(head + 9) % 64] <= 0;
+    operand1s[(head + 9) % 64] <= 0;
+    operand2s[(head + 9) % 64] <= 0;
+    operand1_datas[(head + 9) % 64] <= 0;
+    operand2_datas[(head + 9) % 64] <= 0;
+    valid_entries1[(head + 9) % 64] <= 0;
+    valid_entries2[(head + 9) % 64] <= 0;
+    RS_DIV_on[(head + 9) % 64] <= 1;
+end
+else if (valid_entries1[(head + 10) % 64] == 1 && valid_entries2[(head + 10) % 64] == 1) begin
+    result_out = {1'b1, PCs[(head + 10) % 64], Rds[(head + 10) % 64], operand1_datas[(head + 10) % 64], operand2_datas[(head + 10) % 64]};
+    readys[(head + 10) % 64] <= 0;
+    operand1s[(head + 10) % 64] <= 0;
+    operand2s[(head + 10) % 64] <= 0;
+    operand1_datas[(head + 10) % 64] <= 0;
+    operand2_datas[(head + 10) % 64] <= 0;
+    valid_entries1[(head + 10) % 64] <= 0;
+    valid_entries2[(head + 10) % 64] <= 0;
+    RS_DIV_on[(head + 10) % 64] <= 1;
+end
+else if (valid_entries1[(head + 11) % 64] == 1 && valid_entries2[(head + 11) % 64] == 1) begin
+    result_out = {1'b1, PCs[(head + 11) % 64], Rds[(head + 11) % 64], operand1_datas[(head + 11) % 64], operand2_datas[(head + 11) % 64]};
+    readys[(head + 11) % 64] <= 0;
+    operand1s[(head + 11) % 64] <= 0;
+    operand2s[(head + 11) % 64] <= 0;
+    operand1_datas[(head + 11) % 64] <= 0;
+    operand2_datas[(head + 11) % 64] <= 0;
+    valid_entries1[(head + 11) % 64] <= 0;
+    valid_entries2[(head + 11) % 64] <= 0;
+    RS_DIV_on[(head + 11) % 64] <= 1;
+end
+else if (valid_entries1[(head + 12) % 64] == 1 && valid_entries2[(head + 12) % 64] == 1) begin
+    result_out = {1'b1, PCs[(head + 12) % 64], Rds[(head + 12) % 64], operand1_datas[(head + 12) % 64], operand2_datas[(head + 12) % 64]};
+    readys[(head + 12) % 64] <= 0;
+    operand1s[(head + 12) % 64] <= 0;
+    operand2s[(head + 12) % 64] <= 0;
+    operand1_datas[(head + 12) % 64] <= 0;
+    operand2_datas[(head + 12) % 64] <= 0;
+    valid_entries1[(head + 12) % 64] <= 0;
+    valid_entries2[(head + 12) % 64] <= 0;
+    RS_DIV_on[(head + 12) % 64] <= 1;
+end
+else if (valid_entries1[(head + 13) % 64] == 1 && valid_entries2[(head + 13) % 64] == 1) begin
+    result_out = {1'b1, PCs[(head + 13) % 64], Rds[(head + 13) % 64], operand1_datas[(head + 13) % 64], operand2_datas[(head + 13) % 64]};
+    readys[(head + 13) % 64] <= 0;
+    operand1s[(head + 13) % 64] <= 0;
+    operand2s[(head + 13) % 64] <= 0;
+    operand1_datas[(head + 13) % 64] <= 0;
+    operand2_datas[(head + 13) % 64] <= 0;
+    valid_entries1[(head + 13) % 64] <= 0;
+    valid_entries2[(head + 13) % 64] <= 0;
+    RS_DIV_on[(head + 13) % 64] <= 1;
+end
+else if (valid_entries1[(head + 14) % 64] == 1 && valid_entries2[(head + 14) % 64] == 1) begin
+    result_out = {1'b1, PCs[(head + 14) % 64], Rds[(head + 14) % 64], operand1_datas[(head + 14) % 64], operand2_datas[(head + 14) % 64]};
+    readys[(head + 14) % 64] <= 0;
+    operand1s[(head + 14) % 64] <= 0;
+    operand2s[(head + 14) % 64] <= 0;
+    operand1_datas[(head + 14) % 64] <= 0;
+    operand2_datas[(head + 14) % 64] <= 0;
+    valid_entries1[(head + 14) % 64] <= 0;
+    valid_entries2[(head + 14) % 64] <= 0;
+    RS_DIV_on[(head + 14) % 64] <= 1;
+end
+else if (valid_entries1[(head + 15) % 64] == 1 && valid_entries2[(head + 15) % 64] == 1) begin
+    result_out = {1'b1, PCs[(head + 15) % 64], Rds[(head + 15) % 64], operand1_datas[(head + 15) % 64], operand2_datas[(head + 15) % 64]};
+    readys[(head + 15) % 64] <= 0;
+    operand1s[(head + 15) % 64] <= 0;
+    operand2s[(head + 15) % 64] <= 0;
+    operand1_datas[(head + 15) % 64] <= 0;
+    operand2_datas[(head + 15) % 64] <= 0;
+    valid_entries1[(head + 15) % 64] <= 0;
+    valid_entries2[(head + 15) % 64] <= 0;
+    RS_DIV_on[(head + 15) % 64] <= 1;
+end
+else if (valid_entries1[(head + 16) % 64] == 1 && valid_entries2[(head + 16) % 64] == 1) begin
+    result_out = {1'b1, PCs[(head + 16) % 64], Rds[(head + 16) % 64], operand1_datas[(head + 16) % 64], operand2_datas[(head + 16) % 64]};
+    readys[(head + 16) % 64] <= 0;
+    operand1s[(head + 16) % 64] <= 0;
+    operand2s[(head + 16) % 64] <= 0;
+    operand1_datas[(head + 16) % 64] <= 0;
+    operand2_datas[(head + 16) % 64] <= 0;
+    valid_entries1[(head + 16) % 64] <= 0;
+    valid_entries2[(head + 16) % 64] <= 0;
+    RS_DIV_on[(head + 16) % 64] <= 1;
+end
+else if (valid_entries1[(head + 17) % 64] == 1 && valid_entries2[(head + 17) % 64] == 1) begin
+    result_out = {1'b1, PCs[(head + 17) % 64], Rds[(head + 17) % 64], operand1_datas[(head + 17) % 64], operand2_datas[(head + 17) % 64]};
+    readys[(head + 17) % 64] <= 0;
+    operand1s[(head + 17) % 64] <= 0;
+    operand2s[(head + 17) % 64] <= 0;
+    operand1_datas[(head + 17) % 64] <= 0;
+    operand2_datas[(head + 17) % 64] <= 0;
+    valid_entries1[(head + 17) % 64] <= 0;
+    valid_entries2[(head + 17) % 64] <= 0;
+    RS_DIV_on[(head + 17) % 64] <= 1;
+end
+else if (valid_entries1[(head + 18) % 64] == 1 && valid_entries2[(head + 18) % 64] == 1) begin
+    result_out = {1'b1, PCs[(head + 18) % 64], Rds[(head + 18) % 64], operand1_datas[(head + 18) % 64], operand2_datas[(head + 18) % 64]};
+    readys[(head + 18) % 64] <= 0;
+    operand1s[(head + 18) % 64] <= 0;
+    operand2s[(head + 18) % 64] <= 0;
+    operand1_datas[(head + 18) % 64] <= 0;
+    operand2_datas[(head + 18) % 64] <= 0;
+    valid_entries1[(head + 18) % 64] <= 0;
+    valid_entries2[(head + 18) % 64] <= 0;
+    RS_DIV_on[(head + 18) % 64] <= 1;
+end
+else if (valid_entries1[(head + 19) % 64] == 1 && valid_entries2[(head + 19) % 64] == 1) begin
+    result_out = {1'b1, PCs[(head + 19) % 64], Rds[(head + 19) % 64], operand1_datas[(head + 19) % 64], operand2_datas[(head + 19) % 64]};
+    readys[(head + 19) % 64] <= 0;
+    operand1s[(head + 19) % 64] <= 0;
+    operand2s[(head + 19) % 64] <= 0;
+    operand1_datas[(head + 19) % 64] <= 0;
+    operand2_datas[(head + 19) % 64] <= 0;
+    valid_entries1[(head + 19) % 64] <= 0;
+    valid_entries2[(head + 19) % 64] <= 0;
+    RS_DIV_on[(head + 19) % 64] <= 1;
+end
+else if (valid_entries1[(head + 20) % 64] == 1 && valid_entries2[(head + 20) % 64] == 1) begin
+    result_out = {1'b1, PCs[(head + 20) % 64], Rds[(head + 20) % 64], operand1_datas[(head + 20) % 64], operand2_datas[(head + 20) % 64]};
+    readys[(head + 20) % 64] <= 0;
+    operand1s[(head + 20) % 64] <= 0;
+    operand2s[(head + 20) % 64] <= 0;
+    operand1_datas[(head + 20) % 64] <= 0;
+    operand2_datas[(head + 20) % 64] <= 0;
+    valid_entries1[(head + 20) % 64] <= 0;
+    valid_entries2[(head + 20) % 64] <= 0;
+    RS_DIV_on[(head + 20) % 64] <= 1;
+end
+else if (valid_entries1[(head + 21) % 64] == 1 && valid_entries2[(head + 21) % 64] == 1) begin
+    result_out = {1'b1, PCs[(head + 21) % 64], Rds[(head + 21) % 64], operand1_datas[(head + 21) % 64], operand2_datas[(head + 21) % 64]};
+    readys[(head + 21) % 64] <= 0;
+    operand1s[(head + 21) % 64] <= 0;
+    operand2s[(head + 21) % 64] <= 0;
+    operand1_datas[(head + 21) % 64] <= 0;
+    operand2_datas[(head + 21) % 64] <= 0;
+    valid_entries1[(head + 21) % 64] <= 0;
+    valid_entries2[(head + 21) % 64] <= 0;
+    RS_DIV_on[(head + 21) % 64] <= 1;
+end
+else if (valid_entries1[(head + 22) % 64] == 1 && valid_entries2[(head + 22) % 64] == 1) begin
+    result_out = {1'b1, PCs[(head + 22) % 64], Rds[(head + 22) % 64], operand1_datas[(head + 22) % 64], operand2_datas[(head + 22) % 64]};
+    readys[(head + 22) % 64] <= 0;
+    operand1s[(head + 22) % 64] <= 0;
+    operand2s[(head + 22) % 64] <= 0;
+    operand1_datas[(head + 22) % 64] <= 0;
+    operand2_datas[(head + 22) % 64] <= 0;
+    valid_entries1[(head + 22) % 64] <= 0;
+    valid_entries2[(head + 22) % 64] <= 0;
+    RS_DIV_on[(head + 22) % 64] <= 1;
+end
+else if (valid_entries1[(head + 23) % 64] == 1 && valid_entries2[(head + 23) % 64] == 1) begin
+    result_out = {1'b1, PCs[(head + 23) % 64], Rds[(head + 23) % 64], operand1_datas[(head + 23) % 64], operand2_datas[(head + 23) % 64]};
+    readys[(head + 23) % 64] <= 0;
+    operand1s[(head + 23) % 64] <= 0;
+    operand2s[(head + 23) % 64] <= 0;
+    operand1_datas[(head + 23) % 64] <= 0;
+    operand2_datas[(head + 23) % 64] <= 0;
+    valid_entries1[(head + 23) % 64] <= 0;
+    valid_entries2[(head + 23) % 64] <= 0;
+    RS_DIV_on[(head + 23) % 64] <= 1;
+end
+else if (valid_entries1[(head + 24) % 64] == 1 && valid_entries2[(head + 24) % 64] == 1) begin
+    result_out = {1'b1, PCs[(head + 24) % 64], Rds[(head + 24) % 64], operand1_datas[(head + 24) % 64], operand2_datas[(head + 24) % 64]};
+    readys[(head + 24) % 64] <= 0;
+    operand1s[(head + 24) % 64] <= 0;
+    operand2s[(head + 24) % 64] <= 0;
+    operand1_datas[(head + 24) % 64] <= 0;
+    operand2_datas[(head + 24) % 64] <= 0;
+    valid_entries1[(head + 24) % 64] <= 0;
+    valid_entries2[(head + 24) % 64] <= 0;
+    RS_DIV_on[(head + 24) % 64] <= 1;
+end
+else if (valid_entries1[(head + 25) % 64] == 1 && valid_entries2[(head + 25) % 64] == 1) begin
+    result_out = {1'b1, PCs[(head + 25) % 64], Rds[(head + 25) % 64], operand1_datas[(head + 25) % 64], operand2_datas[(head + 25) % 64]};
+    readys[(head + 25) % 64] <= 0;
+    operand1s[(head + 25) % 64] <= 0;
+    operand2s[(head + 25) % 64] <= 0;
+    operand1_datas[(head + 25) % 64] <= 0;
+    operand2_datas[(head + 25) % 64] <= 0;
+    valid_entries1[(head + 25) % 64] <= 0;
+    valid_entries2[(head + 25) % 64] <= 0;
+    RS_DIV_on[(head + 25) % 64] <= 1;
+end
+else if (valid_entries1[(head + 26) % 64] == 1 && valid_entries2[(head + 26) % 64] == 1) begin
+    result_out = {1'b1, PCs[(head + 26) % 64], Rds[(head + 26) % 64], operand1_datas[(head + 26) % 64], operand2_datas[(head + 26) % 64]};
+    readys[(head + 26) % 64] <= 0;
+    operand1s[(head + 26) % 64] <= 0;
+    operand2s[(head + 26) % 64] <= 0;
+    operand1_datas[(head + 26) % 64] <= 0;
+    operand2_datas[(head + 26) % 64] <= 0;
+    valid_entries1[(head + 26) % 64] <= 0;
+    valid_entries2[(head + 26) % 64] <= 0;
+    RS_DIV_on[(head + 26) % 64] <= 1;
+end
+else if (valid_entries1[(head + 27) % 64] == 1 && valid_entries2[(head + 27) % 64] == 1) begin
+    result_out = {1'b1, PCs[(head + 27) % 64], Rds[(head + 27) % 64], operand1_datas[(head + 27) % 64], operand2_datas[(head + 27) % 64]};
+    readys[(head + 27) % 64] <= 0;
+    operand1s[(head + 27) % 64] <= 0;
+    operand2s[(head + 27) % 64] <= 0;
+    operand1_datas[(head + 27) % 64] <= 0;
+    operand2_datas[(head + 27) % 64] <= 0;
+    valid_entries1[(head + 27) % 64] <= 0;
+    valid_entries2[(head + 27) % 64] <= 0;
+    RS_DIV_on[(head + 27) % 64] <= 1;
+end
+else if (valid_entries1[(head + 28) % 64] == 1 && valid_entries2[(head + 28) % 64] == 1) begin
+    result_out = {1'b1, PCs[(head + 28) % 64], Rds[(head + 28) % 64], operand1_datas[(head + 28) % 64], operand2_datas[(head + 28) % 64]};
+    readys[(head + 28) % 64] <= 0;
+    operand1s[(head + 28) % 64] <= 0;
+    operand2s[(head + 28) % 64] <= 0;
+    operand1_datas[(head + 28) % 64] <= 0;
+    operand2_datas[(head + 28) % 64] <= 0;
+    valid_entries1[(head + 28) % 64] <= 0;
+    valid_entries2[(head + 28) % 64] <= 0;
+    RS_DIV_on[(head + 28) % 64] <= 1;
+end
+else if (valid_entries1[(head + 29) % 64] == 1 && valid_entries2[(head + 29) % 64] == 1) begin
+    result_out = {1'b1, PCs[(head + 29) % 64], Rds[(head + 29) % 64], operand1_datas[(head + 29) % 64], operand2_datas[(head + 29) % 64]};
+    readys[(head + 29) % 64] <= 0;
+    operand1s[(head + 29) % 64] <= 0;
+    operand2s[(head + 29) % 64] <= 0;
+    operand1_datas[(head + 29) % 64] <= 0;
+    operand2_datas[(head + 29) % 64] <= 0;
+    valid_entries1[(head + 29) % 64] <= 0;
+    valid_entries2[(head + 29) % 64] <= 0;
+    RS_DIV_on[(head + 29) % 64] <= 1;
+end
+else if (valid_entries1[(head + 30) % 64] == 1 && valid_entries2[(head + 30) % 64] == 1) begin
+    result_out = {1'b1, PCs[(head + 30) % 64], Rds[(head + 30) % 64], operand1_datas[(head + 30) % 64], operand2_datas[(head + 30) % 64]};
+    readys[(head + 30) % 64] <= 0;
+    operand1s[(head + 30) % 64] <= 0;
+    operand2s[(head + 30) % 64] <= 0;
+    operand1_datas[(head + 30) % 64] <= 0;
+    operand2_datas[(head + 30) % 64] <= 0;
+    valid_entries1[(head + 30) % 64] <= 0;
+    valid_entries2[(head + 30) % 64] <= 0;
+    RS_DIV_on[(head + 30) % 64] <= 1;
+end
+else if (valid_entries1[(head + 31) % 64] == 1 && valid_entries2[(head + 31) % 64] == 1) begin
+    result_out = {1'b1, PCs[(head + 31) % 64], Rds[(head + 31) % 64], operand1_datas[(head + 31) % 64], operand2_datas[(head + 31) % 64]};
+    readys[(head + 31) % 64] <= 0;
+    operand1s[(head + 31) % 64] <= 0;
+    operand2s[(head + 31) % 64] <= 0;
+    operand1_datas[(head + 31) % 64] <= 0;
+    operand2_datas[(head + 31) % 64] <= 0;
+    valid_entries1[(head + 31) % 64] <= 0;
+    valid_entries2[(head + 31) % 64] <= 0;
+    RS_DIV_on[(head + 31) % 64] <= 1;
+end
+else if (valid_entries1[(head + 32) % 64] == 1 && valid_entries2[(head + 32) % 64] == 1) begin
+    result_out = {1'b1, PCs[(head + 32) % 64], Rds[(head + 32) % 64], operand1_datas[(head + 32) % 64], operand2_datas[(head + 32) % 64]};
+    readys[(head + 32) % 64] <= 0;
+    operand1s[(head + 32) % 64] <= 0;
+    operand2s[(head + 32) % 64] <= 0;
+    operand1_datas[(head + 32) % 64] <= 0;
+    operand2_datas[(head + 32) % 64] <= 0;
+    valid_entries1[(head + 32) % 64] <= 0;
+    valid_entries2[(head + 32) % 64] <= 0;
+    RS_DIV_on[(head + 32) % 64] <= 1;
+end
+else if (valid_entries1[(head + 33) % 64] == 1 && valid_entries2[(head + 33) % 64] == 1) begin
+    result_out = {1'b1, PCs[(head + 33) % 64], Rds[(head + 33) % 64], operand1_datas[(head + 33) % 64], operand2_datas[(head + 33) % 64]};
+    readys[(head + 33) % 64] <= 0;
+    operand1s[(head + 33) % 64] <= 0;
+    operand2s[(head + 33) % 64] <= 0;
+    operand1_datas[(head + 33) % 64] <= 0;
+    operand2_datas[(head + 33) % 64] <= 0;
+    valid_entries1[(head + 33) % 64] <= 0;
+    valid_entries2[(head + 33) % 64] <= 0;
+    RS_DIV_on[(head + 33) % 64] <= 1;
+end
+else if (valid_entries1[(head + 34) % 64] == 1 && valid_entries2[(head + 34) % 64] == 1) begin
+    result_out = {1'b1, PCs[(head + 34) % 64], Rds[(head + 34) % 64], operand1_datas[(head + 34) % 64], operand2_datas[(head + 34) % 64]};
+    readys[(head + 34) % 64] <= 0;
+    operand1s[(head + 34) % 64] <= 0;
+    operand2s[(head + 34) % 64] <= 0;
+    operand1_datas[(head + 34) % 64] <= 0;
+    operand2_datas[(head + 34) % 64] <= 0;
+    valid_entries1[(head + 34) % 64] <= 0;
+    valid_entries2[(head + 34) % 64] <= 0;
+    RS_DIV_on[(head + 34) % 64] <= 1;
+end
+else if (valid_entries1[(head + 35) % 64] == 1 && valid_entries2[(head + 35) % 64] == 1) begin
+    result_out = {1'b1, PCs[(head + 35) % 64], Rds[(head + 35) % 64], operand1_datas[(head + 35) % 64], operand2_datas[(head + 35) % 64]};
+    readys[(head + 35) % 64] <= 0;
+    operand1s[(head + 35) % 64] <= 0;
+    operand2s[(head + 35) % 64] <= 0;
+    operand1_datas[(head + 35) % 64] <= 0;
+    operand2_datas[(head + 35) % 64] <= 0;
+    valid_entries1[(head + 35) % 64] <= 0;
+    valid_entries2[(head + 35) % 64] <= 0;
+    RS_DIV_on[(head + 35) % 64] <= 1;
+end
+else if (valid_entries1[(head + 36) % 64] == 1 && valid_entries2[(head + 36) % 64] == 1) begin
+    result_out = {1'b1, PCs[(head + 36) % 64], Rds[(head + 36) % 64], operand1_datas[(head + 36) % 64], operand2_datas[(head + 36) % 64]};
+    readys[(head + 36) % 64] <= 0;
+    operand1s[(head + 36) % 64] <= 0;
+    operand2s[(head + 36) % 64] <= 0;
+    operand1_datas[(head + 36) % 64] <= 0;
+    operand2_datas[(head + 36) % 64] <= 0;
+    valid_entries1[(head + 36) % 64] <= 0;
+    valid_entries2[(head + 36) % 64] <= 0;
+    RS_DIV_on[(head + 36) % 64] <= 1;
+end
+else if (valid_entries1[(head + 37) % 64] == 1 && valid_entries2[(head + 37) % 64] == 1) begin
+    result_out = {1'b1, PCs[(head + 37) % 64], Rds[(head + 37) % 64], operand1_datas[(head + 37) % 64], operand2_datas[(head + 37) % 64]};
+    readys[(head + 37) % 64] <= 0;
+    operand1s[(head + 37) % 64] <= 0;
+    operand2s[(head + 37) % 64] <= 0;
+    operand1_datas[(head + 37) % 64] <= 0;
+    operand2_datas[(head + 37) % 64] <= 0;
+    valid_entries1[(head + 37) % 64] <= 0;
+    valid_entries2[(head + 37) % 64] <= 0;
+    RS_DIV_on[(head + 37) % 64] <= 1;
+end
+else if (valid_entries1[(head + 38) % 64] == 1 && valid_entries2[(head + 38) % 64] == 1) begin
+    result_out = {1'b1, PCs[(head + 38) % 64], Rds[(head + 38) % 64], operand1_datas[(head + 38) % 64], operand2_datas[(head + 38) % 64]};
+    readys[(head + 38) % 64] <= 0;
+    operand1s[(head + 38) % 64] <= 0;
+    operand2s[(head + 38) % 64] <= 0;
+    operand1_datas[(head + 38) % 64] <= 0;
+    operand2_datas[(head + 38) % 64] <= 0;
+    valid_entries1[(head + 38) % 64] <= 0;
+    valid_entries2[(head + 38) % 64] <= 0;
+    RS_DIV_on[(head + 38) % 64] <= 1;
+end
+else if (valid_entries1[(head + 39) % 64] == 1 && valid_entries2[(head + 39) % 64] == 1) begin
+    result_out = {1'b1, PCs[(head + 39) % 64], Rds[(head + 39) % 64], operand1_datas[(head + 39) % 64], operand2_datas[(head + 39) % 64]};
+    readys[(head + 39) % 64] <= 0;
+    operand1s[(head + 39) % 64] <= 0;
+    operand2s[(head + 39) % 64] <= 0;
+    operand1_datas[(head + 39) % 64] <= 0;
+    operand2_datas[(head + 39) % 64] <= 0;
+    valid_entries1[(head + 39) % 64] <= 0;
+    valid_entries2[(head + 39) % 64] <= 0;
+    RS_DIV_on[(head + 39) % 64] <= 1;
+end
+else if (valid_entries1[(head + 40) % 64] == 1 && valid_entries2[(head + 40) % 64] == 1) begin
+    result_out = {1'b1, PCs[(head + 40) % 64], Rds[(head + 40) % 64], operand1_datas[(head + 40) % 64], operand2_datas[(head + 40) % 64]};
+    readys[(head + 40) % 64] <= 0;
+    operand1s[(head + 40) % 64] <= 0;
+    operand2s[(head + 40) % 64] <= 0;
+    operand1_datas[(head + 40) % 64] <= 0;
+    operand2_datas[(head + 40) % 64] <= 0;
+    valid_entries1[(head + 40) % 64] <= 0;
+    valid_entries2[(head + 40) % 64] <= 0;
+    RS_DIV_on[(head + 40) % 64] <= 1;
+end
+else if (valid_entries1[(head + 41) % 64] == 1 && valid_entries2[(head + 41) % 64] == 1) begin
+    result_out = {1'b1, PCs[(head + 41) % 64], Rds[(head + 41) % 64], operand1_datas[(head + 41) % 64], operand2_datas[(head + 41) % 64]};
+    readys[(head + 41) % 64] <= 0;
+    operand1s[(head + 41) % 64] <= 0;
+    operand2s[(head + 41) % 64] <= 0;
+    operand1_datas[(head + 41) % 64] <= 0;
+    operand2_datas[(head + 41) % 64] <= 0;
+    valid_entries1[(head + 41) % 64] <= 0;
+    valid_entries2[(head + 41) % 64] <= 0;
+    RS_DIV_on[(head + 41) % 64] <= 1;
+end
+else if (valid_entries1[(head + 42) % 64] == 1 && valid_entries2[(head + 42) % 64] == 1) begin
+    result_out = {1'b1, PCs[(head + 42) % 64], Rds[(head + 42) % 64], operand1_datas[(head + 42) % 64], operand2_datas[(head + 42) % 64]};
+    readys[(head + 42) % 64] <= 0;
+    operand1s[(head + 42) % 64] <= 0;
+    operand2s[(head + 42) % 64] <= 0;
+    operand1_datas[(head + 42) % 64] <= 0;
+    operand2_datas[(head + 42) % 64] <= 0;
+    valid_entries1[(head + 42) % 64] <= 0;
+    valid_entries2[(head + 42) % 64] <= 0;
+    RS_DIV_on[(head + 42) % 64] <= 1;
+end
+else if (valid_entries1[(head + 43) % 64] == 1 && valid_entries2[(head + 43) % 64] == 1) begin
+    result_out = {1'b1, PCs[(head + 43) % 64], Rds[(head + 43) % 64], operand1_datas[(head + 43) % 64], operand2_datas[(head + 43) % 64]};
+    readys[(head + 43) % 64] <= 0;
+    operand1s[(head + 43) % 64] <= 0;
+    operand2s[(head + 43) % 64] <= 0;
+    operand1_datas[(head + 43) % 64] <= 0;
+    operand2_datas[(head + 43) % 64] <= 0;
+    valid_entries1[(head + 43) % 64] <= 0;
+    valid_entries2[(head + 43) % 64] <= 0;
+    RS_DIV_on[(head + 43) % 64] <= 1;
+end
+else if (valid_entries1[(head + 44) % 64] == 1 && valid_entries2[(head + 44) % 64] == 1) begin
+    result_out = {1'b1, PCs[(head + 44) % 64], Rds[(head + 44) % 64], operand1_datas[(head + 44) % 64], operand2_datas[(head + 44) % 64]};
+    readys[(head + 44) % 64] <= 0;
+    operand1s[(head + 44) % 64] <= 0;
+    operand2s[(head + 44) % 64] <= 0;
+    operand1_datas[(head + 44) % 64] <= 0;
+    operand2_datas[(head + 44) % 64] <= 0;
+    valid_entries1[(head + 44) % 64] <= 0;
+    valid_entries2[(head + 44) % 64] <= 0;
+    RS_DIV_on[(head + 44) % 64] <= 1;
+end
+else if (valid_entries1[(head + 45) % 64] == 1 && valid_entries2[(head + 45) % 64] == 1) begin
+    result_out = {1'b1, PCs[(head + 45) % 64], Rds[(head + 45) % 64], operand1_datas[(head + 45) % 64], operand2_datas[(head + 45) % 64]};
+    readys[(head + 45) % 64] <= 0;
+    operand1s[(head + 45) % 64] <= 0;
+    operand2s[(head + 45) % 64] <= 0;
+    operand1_datas[(head + 45) % 64] <= 0;
+    operand2_datas[(head + 45) % 64] <= 0;
+    valid_entries1[(head + 45) % 64] <= 0;
+    valid_entries2[(head + 45) % 64] <= 0;
+    RS_DIV_on[(head + 45) % 64] <= 1;
+end
+else if (valid_entries1[(head + 46) % 64] == 1 && valid_entries2[(head + 46) % 64] == 1) begin
+    result_out = {1'b1, PCs[(head + 46) % 64], Rds[(head + 46) % 64], operand1_datas[(head + 46) % 64], operand2_datas[(head + 46) % 64]};
+    readys[(head + 46) % 64] <= 0;
+    operand1s[(head + 46) % 64] <= 0;
+    operand2s[(head + 46) % 64] <= 0;
+    operand1_datas[(head + 46) % 64] <= 0;
+    operand2_datas[(head + 46) % 64] <= 0;
+    valid_entries1[(head + 46) % 64] <= 0;
+    valid_entries2[(head + 46) % 64] <= 0;
+    RS_DIV_on[(head + 46) % 64] <= 1;
+end
+else if (valid_entries1[(head + 47) % 64] == 1 && valid_entries2[(head + 47) % 64] == 1) begin
+    result_out = {1'b1, PCs[(head + 47) % 64], Rds[(head + 47) % 64], operand1_datas[(head + 47) % 64], operand2_datas[(head + 47) % 64]};
+    readys[(head + 47) % 64] <= 0;
+    operand1s[(head + 47) % 64] <= 0;
+    operand2s[(head + 47) % 64] <= 0;
+    operand1_datas[(head + 47) % 64] <= 0;
+    operand2_datas[(head + 47) % 64] <= 0;
+    valid_entries1[(head + 47) % 64] <= 0;
+    valid_entries2[(head + 47) % 64] <= 0;
+    RS_DIV_on[(head + 47) % 64] <= 1;
+end
+else if (valid_entries1[(head + 48) % 64] == 1 && valid_entries2[(head + 48) % 64] == 1) begin
+    result_out = {1'b1, PCs[(head + 48) % 64], Rds[(head + 48) % 64], operand1_datas[(head + 48) % 64], operand2_datas[(head + 48) % 64]};
+    readys[(head + 48) % 64] <= 0;
+    operand1s[(head + 48) % 64] <= 0;
+    operand2s[(head + 48) % 64] <= 0;
+    operand1_datas[(head + 48) % 64] <= 0;
+    operand2_datas[(head + 48) % 64] <= 0;
+    valid_entries1[(head + 48) % 64] <= 0;
+    valid_entries2[(head + 48) % 64] <= 0;
+    RS_DIV_on[(head + 48) % 64] <= 1;
+end
+else if (valid_entries1[(head + 49) % 64] == 1 && valid_entries2[(head + 49) % 64] == 1) begin
+    result_out = {1'b1, PCs[(head + 49) % 64], Rds[(head + 49) % 64], operand1_datas[(head + 49) % 64], operand2_datas[(head + 49) % 64]};
+    readys[(head + 49) % 64] <= 0;
+    operand1s[(head + 49) % 64] <= 0;
+    operand2s[(head + 49) % 64] <= 0;
+    operand1_datas[(head + 49) % 64] <= 0;
+    operand2_datas[(head + 49) % 64] <= 0;
+    valid_entries1[(head + 49) % 64] <= 0;
+    valid_entries2[(head + 49) % 64] <= 0;
+    RS_DIV_on[(head + 49) % 64] <= 1;
+end
+else if (valid_entries1[(head + 50) % 64] == 1 && valid_entries2[(head + 50) % 64] == 1) begin
+    result_out = {1'b1, PCs[(head + 50) % 64], Rds[(head + 50) % 64], operand1_datas[(head + 50) % 64], operand2_datas[(head + 50) % 64]};
+    readys[(head + 50) % 64] <= 0;
+    operand1s[(head + 50) % 64] <= 0;
+    operand2s[(head + 50) % 64] <= 0;
+    operand1_datas[(head + 50) % 64] <= 0;
+    operand2_datas[(head + 50) % 64] <= 0;
+    valid_entries1[(head + 50) % 64] <= 0;
+    valid_entries2[(head + 50) % 64] <= 0;
+    RS_DIV_on[(head + 50) % 64] <= 1;
+end
+else if (valid_entries1[(head + 51) % 64] == 1 && valid_entries2[(head + 51) % 64] == 1) begin
+    result_out = {1'b1, PCs[(head + 51) % 64], Rds[(head + 51) % 64], operand1_datas[(head + 51) % 64], operand2_datas[(head + 51) % 64]};
+    readys[(head + 51) % 64] <= 0;
+    operand1s[(head + 51) % 64] <= 0;
+    operand2s[(head + 51) % 64] <= 0;
+    operand1_datas[(head + 51) % 64] <= 0;
+    operand2_datas[(head + 51) % 64] <= 0;
+    valid_entries1[(head + 51) % 64] <= 0;
+    valid_entries2[(head + 51) % 64] <= 0;
+    RS_DIV_on[(head + 51) % 64] <= 1;
+end
+else if (valid_entries1[(head + 52) % 64] == 1 && valid_entries2[(head + 52) % 64] == 1) begin
+    result_out = {1'b1, PCs[(head + 52) % 64], Rds[(head + 52) % 64], operand1_datas[(head + 52) % 64], operand2_datas[(head + 52) % 64]};
+    readys[(head + 52) % 64] <= 0;
+    operand1s[(head + 52) % 64] <= 0;
+    operand2s[(head + 52) % 64] <= 0;
+    operand1_datas[(head + 52) % 64] <= 0;
+    operand2_datas[(head + 52) % 64] <= 0;
+    valid_entries1[(head + 52) % 64] <= 0;
+    valid_entries2[(head + 52) % 64] <= 0;
+    RS_DIV_on[(head + 52) % 64] <= 1;
+end
+else if (valid_entries1[(head + 53) % 64] == 1 && valid_entries2[(head + 53) % 64] == 1) begin
+    result_out = {1'b1, PCs[(head + 53) % 64], Rds[(head + 53) % 64], operand1_datas[(head + 53) % 64], operand2_datas[(head + 53) % 64]};
+    readys[(head + 53) % 64] <= 0;
+    operand1s[(head + 53) % 64] <= 0;
+    operand2s[(head + 53) % 64] <= 0;
+    operand1_datas[(head + 53) % 64] <= 0;
+    operand2_datas[(head + 53) % 64] <= 0;
+    valid_entries1[(head + 53) % 64] <= 0;
+    valid_entries2[(head + 53) % 64] <= 0;
+    RS_DIV_on[(head + 53) % 64] <= 1;
+end
+else if (valid_entries1[(head + 54) % 64] == 1 && valid_entries2[(head + 54) % 64] == 1) begin
+    result_out = {1'b1, PCs[(head + 54) % 64], Rds[(head + 54) % 64], operand1_datas[(head + 54) % 64], operand2_datas[(head + 54) % 64]};
+    readys[(head + 54) % 64] <= 0;
+    operand1s[(head + 54) % 64] <= 0;
+    operand2s[(head + 54) % 64] <= 0;
+    operand1_datas[(head + 54) % 64] <= 0;
+    operand2_datas[(head + 54) % 64] <= 0;
+    valid_entries1[(head + 54) % 64] <= 0;
+    valid_entries2[(head + 54) % 64] <= 0;
+    RS_DIV_on[(head + 54) % 64] <= 1;
+end
+else if (valid_entries1[(head + 55) % 64] == 1 && valid_entries2[(head + 55) % 64] == 1) begin
+    result_out = {1'b1, PCs[(head + 55) % 64], Rds[(head + 55) % 64], operand1_datas[(head + 55) % 64], operand2_datas[(head + 55) % 64]};
+    readys[(head + 55) % 64] <= 0;
+    operand1s[(head + 55) % 64] <= 0;
+    operand2s[(head + 55) % 64] <= 0;
+    operand1_datas[(head + 55) % 64] <= 0;
+    operand2_datas[(head + 55) % 64] <= 0;
+    valid_entries1[(head + 55) % 64] <= 0;
+    valid_entries2[(head + 55) % 64] <= 0;
+    RS_DIV_on[(head + 55) % 64] <= 1;
+end
+else if (valid_entries1[(head + 56) % 64] == 1 && valid_entries2[(head + 56) % 64] == 1) begin
+    result_out = {1'b1, PCs[(head + 56) % 64], Rds[(head + 56) % 64], operand1_datas[(head + 56) % 64], operand2_datas[(head + 56) % 64]};
+    readys[(head + 56) % 64] <= 0;
+    operand1s[(head + 56) % 64] <= 0;
+    operand2s[(head + 56) % 64] <= 0;
+    operand1_datas[(head + 56) % 64] <= 0;
+    operand2_datas[(head + 56) % 64] <= 0;
+    valid_entries1[(head + 56) % 64] <= 0;
+    valid_entries2[(head + 56) % 64] <= 0;
+    RS_DIV_on[(head + 56) % 64] <= 1;
+end
+else if (valid_entries1[(head + 57) % 64] == 1 && valid_entries2[(head + 57) % 64] == 1) begin
+    result_out = {1'b1, PCs[(head + 57) % 64], Rds[(head + 57) % 64], operand1_datas[(head + 57) % 64], operand2_datas[(head + 57) % 64]};
+    readys[(head + 57) % 64] <= 0;
+    operand1s[(head + 57) % 64] <= 0;
+    operand2s[(head + 57) % 64] <= 0;
+    operand1_datas[(head + 57) % 64] <= 0;
+    operand2_datas[(head + 57) % 64] <= 0;
+    valid_entries1[(head + 57) % 64] <= 0;
+    valid_entries2[(head + 57) % 64] <= 0;
+    RS_DIV_on[(head + 57) % 64] <= 1;
+end
+else if (valid_entries1[(head + 58) % 64] == 1 && valid_entries2[(head + 58) % 64] == 1) begin
+    result_out = {1'b1, PCs[(head + 58) % 64], Rds[(head + 58) % 64], operand1_datas[(head + 58) % 64], operand2_datas[(head + 58) % 64]};
+    readys[(head + 58) % 64] <= 0;
+    operand1s[(head + 58) % 64] <= 0;
+    operand2s[(head + 58) % 64] <= 0;
+    operand1_datas[(head + 58) % 64] <= 0;
+    operand2_datas[(head + 58) % 64] <= 0;
+    valid_entries1[(head + 58) % 64] <= 0;
+    valid_entries2[(head + 58) % 64] <= 0;
+    RS_DIV_on[(head + 58) % 64] <= 1;
+end
+else if (valid_entries1[(head + 59) % 64] == 1 && valid_entries2[(head + 59) % 64] == 1) begin
+    result_out = {1'b1, PCs[(head + 59) % 64], Rds[(head + 59) % 64], operand1_datas[(head + 59) % 64], operand2_datas[(head + 59) % 64]};
+    readys[(head + 59) % 64] <= 0;
+    operand1s[(head + 59) % 64] <= 0;
+    operand2s[(head + 59) % 64] <= 0;
+    operand1_datas[(head + 59) % 64] <= 0;
+    operand2_datas[(head + 59) % 64] <= 0;
+    valid_entries1[(head + 59) % 64] <= 0;
+    valid_entries2[(head + 59) % 64] <= 0;
+    RS_DIV_on[(head + 59) % 64] <= 1;
+end
+else if (valid_entries1[(head + 60) % 64] == 1 && valid_entries2[(head + 60) % 64] == 1) begin
+    result_out = {1'b1, PCs[(head + 60) % 64], Rds[(head + 60) % 64], operand1_datas[(head + 60) % 64], operand2_datas[(head + 60) % 64]};
+    readys[(head + 60) % 64] <= 0;
+    operand1s[(head + 60) % 64] <= 0;
+    operand2s[(head + 60) % 64] <= 0;
+    operand1_datas[(head + 60) % 64] <= 0;
+    operand2_datas[(head + 60) % 64] <= 0;
+    valid_entries1[(head + 60) % 64] <= 0;
+    valid_entries2[(head + 60) % 64] <= 0;
+    RS_DIV_on[(head + 60) % 64] <= 1;
+end
+else if (valid_entries1[(head + 61) % 64] == 1 && valid_entries2[(head + 61) % 64] == 1) begin
+    result_out = {1'b1, PCs[(head + 61) % 64], Rds[(head + 61) % 64], operand1_datas[(head + 61) % 64], operand2_datas[(head + 61) % 64]};
+    readys[(head + 61) % 64] <= 0;
+    operand1s[(head + 61) % 64] <= 0;
+    operand2s[(head + 61) % 64] <= 0;
+    operand1_datas[(head + 61) % 64] <= 0;
+    operand2_datas[(head + 61) % 64] <= 0;
+    valid_entries1[(head + 61) % 64] <= 0;
+    valid_entries2[(head + 61) % 64] <= 0;
+    RS_DIV_on[(head + 61) % 64] <= 1;
+end
+else if (valid_entries1[(head + 62) % 64] == 1 && valid_entries2[(head + 62) % 64] == 1) begin
+    result_out = {1'b1, PCs[(head + 62) % 64], Rds[(head + 62) % 64], operand1_datas[(head + 62) % 64], operand2_datas[(head + 62) % 64]};
+    readys[(head + 62) % 64] <= 0;
+    operand1s[(head + 62) % 64] <= 0;
+    operand2s[(head + 62) % 64] <= 0;
+    operand1_datas[(head + 62) % 64] <= 0;
+    operand2_datas[(head + 62) % 64] <= 0;
+    valid_entries1[(head + 62) % 64] <= 0;
+    valid_entries2[(head + 62) % 64] <= 0;
+    RS_DIV_on[(head + 62) % 64] <= 1;
+end
+else if (valid_entries1[(head + 63) % 64] == 1 && valid_entries2[(head + 63) % 64] == 1) begin
+    result_out = {1'b1, PCs[(head + 63) % 64], Rds[(head + 63) % 64], operand1_datas[(head + 63) % 64], operand2_datas[(head + 63) % 64]};
+    readys[(head + 63) % 64] <= 0;
+    operand1s[(head + 63) % 64] <= 0;
+    operand2s[(head + 63) % 64] <= 0;
+    operand1_datas[(head + 63) % 64] <= 0;
+    operand2_datas[(head + 63) % 64] <= 0;
+    valid_entries1[(head + 63) % 64] <= 0;
+    valid_entries2[(head + 63) % 64] <= 0;
+    RS_DIV_on[(head + 63) % 64] <= 1;
+end
+else begin
+    result_out = 0;
+end
+end
 endmodule
+
+
