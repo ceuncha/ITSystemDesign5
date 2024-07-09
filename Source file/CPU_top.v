@@ -326,7 +326,7 @@ ROB_Counter u_ROB_Counter(
 (* keep_hierarchy = "yes" *)
 Instruction_memory u_Instruction_memory(
     .pc(PC),
- 
+    .reset(rst),
     .instOut(instOut)
 );
 
