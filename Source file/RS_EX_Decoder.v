@@ -1,14 +1,13 @@
-
 module RS_EX_decoder(
-    input clk,              // ?寃�?�쑏 ?�뻿?�깈
-    input reset,            // �뵳�딅�� ?�뻿?�깈
+    input clk,              // 클럭 신호
+    input reset,            // 리셋 신호
 
-    input [6:0] in_opcode,  // 7-bit, ?肉�?沅� �굜遺얜굡
-    input [31:0] in_operand1,  // 32-bit, 力�? 甕곕뜆�럮 ?逾�?肉�?沅�?�쁽
-    input [31:0] in_operand2,  // 32-bit, ?紐� 甕곕뜆�럮 ?逾�?肉�?沅�?�쁽
-    input [2:0] in_func3,   // 3-bit, �겫?揶�??�읅 ?肉�?沅� ?�젟癰�?
-    input [6:0] in_funct7,  // 7-bit, �겫?揶�??�읅 ?肉�?沅� ?�젟癰�? (funct7 �빊遺�?)
-    input [31:0] in_pc,     // 32-bit, ?遊썸에�뮄�젃?�삪 燁삳똻�뒲?苑�
+    input [6:0] in_opcode,  // 7-bit, 명령어 오퍼코드
+    input [31:0] in_operand1,  // 32-bit, 첫 번째 피연산자
+    input [31:0] in_operand2,  // 32-bit, 두 번째 피연산자
+    input [2:0] in_func3,   // 3-bit, 기능 필드
+    input [6:0] in_funct7,  // 7-bit, 기능 필드 (funct7 필드)
+    input [31:0] in_pc,     // 32-bit, 프로그램 카운터
         
     input wire MemToReg,   
     input wire MemRead,
@@ -21,17 +20,17 @@ module RS_EX_decoder(
     input wire IF_ID_taken,
     input wire IF_ID_hit,
     
-    input [7:0] rd_phy_reg, // 8-bit, �눧�눖�봺?�읅 ?�쟿�릯??�뮞?苑� 雅뚯눘�꺖
+    input [7:0] rd_phy_reg, // 8-bit, 목적지 물리 레지스터
     input [7:0] Operand1_phy,  
     input [7:0] Operand2_phy,
     input [1:0] valid,
     input [31:0] immediate,
     input [31:0] inst_num,
 
-    output reg [31:0] add_alu_operand1,  // Add ALU嚥�? 癰귣�沅� 力�? 甕곕뜆�럮 ?逾�?肉�?沅�?�쁽
-    output reg [31:0] add_alu_operand2,  // Add ALU嚥�? 癰귣�沅� ?紐� 甕곕뜆�럮 ?逾�?肉�?沅�?�쁽
-    output reg [2:0] add_alu_func3,      // Add ALU嚥�? 癰귣�沅� func3
-    output reg [31:0] add_alu_pc,        // Add ALU嚥�? 癰귣�沅� ?遊썸에�뮄�젃?�삪 燁삳똻�뒲?苑�
+    output reg [31:0] add_alu_operand1,  // Add ALU용 첫 번째 피연산자
+    output reg [31:0] add_alu_operand2,  // Add ALU용 두 번째 피연산자
+    output reg [2:0] add_alu_func3,      // Add ALU용 func3
+    output reg [31:0] add_alu_pc,        // Add ALU용 프로그램 카운터
 
     output reg out_add_MemToReg,   
     output reg out_add_MemRead,
@@ -40,9 +39,7 @@ module RS_EX_decoder(
     output reg out_add_ALUSrc1,      
     output reg out_add_ALUSrc2,      
    
- 
-
-    output reg [7:0] add_rd_phy_reg,     // Add ALU嚥�? 癰귣�沅� �눧�눖�봺?�읅 ?�쟿�릯??�뮞?苑� 雅뚯눘�꺖
+    output reg [7:0] add_rd_phy_reg,     // Add ALU용 목적지 물리 레지스터
     output reg add_rs_on,
     output reg [7:0] out_add_Operand1_phy,
     output reg [7:0] out_add_Operand2_phy,
@@ -50,17 +47,14 @@ module RS_EX_decoder(
     output reg [31:0] out_add_immediate,
     output reg [31:0] out_add_inst_num,
     
-    output reg [31:0] mul_alu_operand1,  // Mul ALU嚥�? 癰귣�沅� 力�? 甕곕뜆�럮 ?逾�?肉�?沅�?�쁽
-    output reg [31:0] mul_alu_operand2,  // Mul ALU嚥�? 癰귣�沅� ?紐� 甕곕뜆�럮 ?逾�?肉�?沅�?�쁽
-    output reg [2:0] mul_alu_func3,      // Mul ALU嚥�? 癰귣�沅� func3
-    output reg [31:0] mul_alu_pc,        // Mul ALU嚥�? 癰귣�沅� ?遊썸에�뮄�젃?�삪 燁삳똻�뒲?苑�
+    output reg [31:0] mul_alu_operand1,  // Mul ALU용 첫 번째 피연산자
+    output reg [31:0] mul_alu_operand2,  // Mul ALU용 두 번째 피연산자
+    output reg [2:0] mul_alu_func3,      // Mul ALU용 func3
+    output reg [31:0] mul_alu_pc,        // Mul ALU용 프로그램 카운터
 
-  
     output reg [3:0] out_mul_ALUOP,
       
-   
-    
-    output reg [7:0] mul_rd_phy_reg,     // Mul ALU嚥�? 癰귣�沅� �눧�눖�봺?�읅 ?�쟿�릯??�뮞?苑� 雅뚯눘�꺖
+    output reg [7:0] mul_rd_phy_reg,     // Mul ALU용 목적지 물리 레지스터
     output reg mul_rs_on,
     output reg [7:0] out_mul_Operand1_phy,
     output reg [7:0] out_mul_Operand2_phy,
@@ -68,16 +62,14 @@ module RS_EX_decoder(
     output reg [31:0] out_mul_immediate,
     output reg [31:0] out_mul_inst_num,
     
-    output reg [31:0] div_alu_operand1,  // Div ALU嚥�? 癰귣�沅� 力�? 甕곕뜆�럮 ?逾�?肉�?沅�?�쁽
-    output reg [31:0] div_alu_operand2,  // Div ALU嚥�? 癰귣�沅� ?紐� 甕곕뜆�럮 ?逾�?肉�?沅�?�쁽
-    output reg [2:0] div_alu_func3,      // Div ALU嚥�? 癰귣�沅� func3
-    output reg [31:0] div_alu_pc,        // Div ALU嚥�? 癰귣�沅� ?遊썸에�뮄�젃?�삪 燁삳똻�뒲?苑�
+    output reg [31:0] div_alu_operand1,  // Div ALU용 첫 번째 피연산자
+    output reg [31:0] div_alu_operand2,  // Div ALU용 두 번째 피연산자
+    output reg [2:0] div_alu_func3,      // Div ALU용 func3
+    output reg [31:0] div_alu_pc,        // Div ALU용 프로그램 카운터
 
-   
     output reg [3:0] out_div_ALUOP,
      
-
-    output reg [7:0] div_rd_phy_reg,      // Div ALU嚥�? 癰귣�沅� �눧�눖�봺?�읅 ?�쟿�릯??�뮞?苑� 雅뚯눘�꺖
+    output reg [7:0] div_rd_phy_reg,      // Div ALU용 목적지 물리 레지스터
     output reg div_rs_on,
     output reg [7:0] out_div_Operand1_phy,
     output reg [7:0] out_div_Operand2_phy,
@@ -103,17 +95,11 @@ module RS_EX_decoder(
     output reg [31:0] RS_br_immediate,
     output reg [31:0] RS_br_inst_num,
     output reg [31:0] RS_br_PC
-
-
-
 );
 
-
-
 always @(*) begin
-
     if (reset) begin
-        // 榮먥뫀諭� �빊�뮆�젾?�뱽 �뵳�딅��
+        // 레지스터 초기화
         add_alu_operand1 = 0;
         add_alu_operand2 = 0;
         add_alu_func3 = 0;
@@ -123,19 +109,18 @@ always @(*) begin
         out_add_Operand1_phy = 0;
         out_add_Operand2_phy = 0;
         out_add_valid = 0;
-        out_add_inst_num =0;
+        out_add_inst_num = 0;
         
         mul_alu_operand1 = 0;
         mul_alu_operand2 = 0;
         mul_alu_func3 = 0;
         mul_alu_pc = 0;
 
-
         mul_rd_phy_reg = 0;
         out_mul_Operand1_phy = 0;
         out_mul_Operand2_phy = 0;
         out_mul_valid = 0;
-        out_mul_inst_num =0;
+        out_mul_inst_num = 0;
 
         div_alu_operand1 = 0;
         div_alu_operand2 = 0;
@@ -157,134 +142,76 @@ always @(*) begin
         out_add_ALUOP = 0;   
         out_add_ALUSrc1 = 0;
         out_add_ALUSrc2 = 0;      
-  
 
-     
         out_mul_ALUOP = 0;   
-    
-
-
-     
         out_div_ALUOP = 0;   
-    
- 
         out_div_inst_num = 0; 
 
         RS_br_IF_ID_taken = 0;
         RS_br_IF_ID_hit = 0; 
     end else begin
-    
-    case (in_opcode)
-         7'b0000000: begin
-                            add_rs_on = 0;
-                            mul_rs_on = 0;
-                            div_rs_on = 0;
-                            RS_br_start = 0;                            
-        end
-        7'b0110011: begin // R-type 榮먮굝議�?堉�
-            case (in_funct7)
-                7'b0000001: begin
-                    // MUL, DIV, REM 榮먮굝議�?堉� 力μ꼶�봺
-                    case (in_func3)
-                        3'b000: begin // MUL
-                            mul_alu_operand1= in_operand1;
-                            mul_alu_operand2 = in_operand2;
-                            mul_alu_func3 = in_func3;
-                            mul_alu_pc = in_pc;
+        add_rs_on = 0;
+        mul_rs_on = 0;
+        div_rs_on = 0;
+        RS_br_start = 0;
 
-                            mul_rd_phy_reg = rd_phy_reg;
-                            add_rs_on = 0;
-                            mul_rs_on = 1;
-                            div_rs_on = 0;
-                            RS_br_start = 0;
-                            out_mul_Operand1_phy = Operand1_phy;  
-                            out_mul_Operand2_phy  = Operand2_phy;
-                            out_mul_valid = valid;
-                            out_mul_immediate = immediate;
-     
-   
-                            out_mul_inst_num = inst_num;
-                        end
-                        3'b100: begin // DIV
-                            div_alu_operand1 = in_operand1;
-                            div_alu_operand2 = in_operand2;
-                            div_alu_func3 = in_func3;
-                            div_alu_pc = in_pc;
+        if (in_opcode == 7'b0000000) begin
+            // NOP or unsupported instruction
+        end else if (in_opcode == 7'b0110011) begin
+            if (in_funct7 == 7'b0000001) begin
+                if (in_func3 == 3'b000) begin
+                    // MUL instruction
+                    mul_alu_operand1 = in_operand1;
+                    mul_alu_operand2 = in_operand2;
+                    mul_alu_func3 = in_func3;
+                    mul_alu_pc = in_pc;
 
-                            div_rd_phy_reg= rd_phy_reg;
-                            add_rs_on = 0;
-                            mul_rs_on = 0;
-                            div_rs_on = 1;
-                            RS_br_start = 0;
-                            out_div_Operand1_phy = Operand1_phy;  
-                            out_div_Operand2_phy = Operand2_phy;
-                            out_div_valid = valid;
-                            out_div_immediate = immediate;
-                            out_div_ALUOP = ALUOP; 
-                             
+                    mul_rd_phy_reg = rd_phy_reg;
+                    mul_rs_on = 1;
+                    out_mul_Operand1_phy = Operand1_phy;
+                    out_mul_Operand2_phy = Operand2_phy;
+                    out_mul_valid = valid;
+                    out_mul_immediate = immediate;
+                    out_mul_inst_num = inst_num;
+                end else if (in_func3 == 3'b100) begin
+                    // DIV instruction
+                    div_alu_operand1 = in_operand1;
+                    div_alu_operand2 = in_operand2;
+                    div_alu_func3 = in_func3;
+                    div_alu_pc = in_pc;
 
-                            out_div_inst_num = inst_num;
-                        end
-                        3'b110: begin // REM
-                            div_alu_operand1 = in_operand1;
-                            div_alu_operand2 = in_operand2;
-                            div_alu_func3 = in_func3;
-                            div_alu_pc = in_pc;
+                    div_rd_phy_reg = rd_phy_reg;
+                    div_rs_on = 1;
+                    out_div_Operand1_phy = Operand1_phy;
+                    out_div_Operand2_phy = Operand2_phy;
+                    out_div_valid = valid;
+                    out_div_immediate = immediate;
+                    out_div_ALUOP = ALUOP; 
+                    out_div_inst_num = inst_num;
+                end else if (in_func3 == 3'b110) begin
+                    // REM instruction
+                    div_alu_operand1 = in_operand1;
+                    div_alu_operand2 = in_operand2;
+                    div_alu_func3 = in_func3;
+                    div_alu_pc = in_pc;
 
-                            div_rd_phy_reg = rd_phy_reg;
-                            add_rs_on = 0;
-                            mul_rs_on = 0;
-                            div_rs_on = 1;
-                            RS_br_start = 0;
-                            out_div_Operand1_phy = Operand1_phy;  
-                            out_div_Operand2_phy = Operand2_phy;
-                            out_div_valid = valid;
-                            out_div_immediate = immediate;
-                            out_div_ALUOP = ALUOP; 
-
-
-                            out_div_inst_num = inst_num;
-                        end
-                        default: begin
-                            // ?�뼄�몴? R-type 榮먮굝議�?堉�?�뮉 ADD ALU嚥�? 癰귣�沅→묾?
-                            add_alu_operand1 = in_operand1;
-                            add_alu_operand2 = in_operand2;
-                            add_alu_func3 = in_func3;
-                            add_alu_pc = in_pc;
-
-                            add_rd_phy_reg = rd_phy_reg;
-                            add_rs_on = 1;
-                            mul_rs_on = 0;
-                            div_rs_on = 0;
-                            RS_br_start = 0;
-                            out_add_Operand1_phy = Operand1_phy;
-                            out_add_Operand2_phy = Operand2_phy;
-                            out_add_valid = valid;
-                            out_add_immediate = immediate;
-                            out_add_MemToReg = MemToReg;   
-                            out_add_MemRead = MemRead;   
-                            out_add_MemWrite = MemWrite;      
-                            out_add_ALUOP = ALUOP;   
-                            out_add_ALUSrc1 = ALUSrc1;
-                            out_add_ALUSrc2 = ALUSrc2;      
- 
-                            out_add_inst_num = inst_num;
-   
-                        end
-                    endcase
-                end
-                default: begin
-                    // ?�뼄�몴? R-type 榮먮굝議�?堉�?�뮉 ADD ALU嚥�? 癰귣�沅→묾?
+                    div_rd_phy_reg = rd_phy_reg;
+                    div_rs_on = 1;
+                    out_div_Operand1_phy = Operand1_phy;
+                    out_div_Operand2_phy = Operand2_phy;
+                    out_div_valid = valid;
+                    out_div_immediate = immediate;
+                    out_div_ALUOP = ALUOP; 
+                    out_div_inst_num = inst_num;
+                end else begin
+                    // Default R-type to ADD ALU
                     add_alu_operand1 = in_operand1;
                     add_alu_operand2 = in_operand2;
                     add_alu_func3 = in_func3;
                     add_alu_pc = in_pc;
 
-                    add_rd_phy_reg <= rd_phy_reg;
+                    add_rd_phy_reg = rd_phy_reg;
                     add_rs_on = 1;
-                    mul_rs_on = 0;
-                    div_rs_on = 0;
-                    RS_br_start = 0;
                     out_add_Operand1_phy = Operand1_phy;
                     out_add_Operand2_phy = Operand2_phy;
                     out_add_valid = valid;
@@ -295,24 +222,37 @@ always @(*) begin
                     out_add_ALUOP = ALUOP;   
                     out_add_ALUSrc1 = ALUSrc1;
                     out_add_ALUSrc2 = ALUSrc2;      
-   
                     out_add_inst_num = inst_num;
-  
                 end
-            endcase
-        end
-        default: begin
-        if (in_opcode == 7'b1101111 || in_opcode == 7'b1100111 || in_opcode == 7'b1100011) begin
+            end else begin
+                // Default R-type to ADD ALU
+                add_alu_operand1 = in_operand1;
+                add_alu_operand2 = in_operand2;
+                add_alu_func3 = in_func3;
+                add_alu_pc = in_pc;
+
+                add_rd_phy_reg = rd_phy_reg;
+                add_rs_on = 1;
+                out_add_Operand1_phy = Operand1_phy;
+                out_add_Operand2_phy = Operand2_phy;
+                out_add_valid = valid;
+                out_add_immediate = immediate;
+                out_add_MemToReg = MemToReg;   
+                out_add_MemRead = MemRead;   
+                out_add_MemWrite = MemWrite;      
+                out_add_ALUOP = ALUOP;   
+                out_add_ALUSrc1 = ALUSrc1;
+                out_add_ALUSrc2 = ALUSrc2;      
+                out_add_inst_num = inst_num;
+            end
+        end else if (in_opcode == 7'b1101111 || in_opcode == 7'b1100111 || in_opcode == 7'b1100011) begin
+            // Branch and Jump instructions
             RS_br_operand1 = in_operand1;
             RS_br_operand2 = in_operand2;
             RS_br_func3 = in_func3;
             RS_br_PC = in_pc;
 
             RS_br_phy_reg = rd_phy_reg;
-
-            add_rs_on = 0;
-            mul_rs_on = 0;
-            div_rs_on = 0;
             RS_br_start = 1;
 
             RS_br_operand1_phy = Operand1_phy;
@@ -325,11 +265,8 @@ always @(*) begin
             RS_br_IF_ID_hit = IF_ID_hit; 
             RS_br_immediate = immediate;
             br_rd_phy_reg = rd_phy_reg;
-            
-            end else begin
-    
-
-            
+        end else begin
+            // Default to ADD ALU
             add_alu_operand1 = in_operand1;
             add_alu_operand2 = in_operand2;
             add_alu_func3 = in_func3;
@@ -337,9 +274,6 @@ always @(*) begin
 
             add_rd_phy_reg = rd_phy_reg;
             add_rs_on = 1;
-            mul_rs_on = 0;
-            div_rs_on = 0;
-            RS_br_start = 0;
             out_add_Operand1_phy = Operand1_phy;
             out_add_Operand2_phy = Operand2_phy;
             out_add_valid = valid;
@@ -350,12 +284,8 @@ always @(*) begin
             out_add_ALUOP = ALUOP;   
             out_add_ALUSrc1 = ALUSrc1;
             out_add_ALUSrc2 = ALUSrc2;      
-
             out_add_inst_num = inst_num;
-
-            end
         end
-    endcase
-end
+    end
 end
 endmodule
