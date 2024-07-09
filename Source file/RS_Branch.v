@@ -69,7 +69,7 @@ module RS_Branch (                                             //명령어 forwa
     integer i;
 
     always @(posedge clk) begin    //리셋신호로 초기화 시켜줌
-        if (reset && Predict_Result) begin
+        if (reset || Predict_Result) begin
             tail <= 0;
             head <=0;
             for (i = 0; i < 64; i = i + 1) begin
