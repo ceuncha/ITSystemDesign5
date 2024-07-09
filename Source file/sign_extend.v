@@ -9,43 +9,43 @@ wire [6:0] opcode = inst[6:0];
 
 // Opcode를 기반으로 명령어 유형 판별 및 적절한 즉시값 추출 및 신호 확장
 always @(posedge clk) begin
-    case(opcode)
+    if (opcode == 7'b0000011 || opcode == 7'b0010011 || opcode == 7'b1100111) begin
         // I-type (예: load, immediate, JALR)
-        7'b0000011, 7'b0010011, 7'b1100111: begin
-            Imm[11:0] <= inst[31:20];
-            Imm[31:12] <= {20{inst[31]}};
-        end
+        Imm[11:0] <= inst[31:20];
+        Imm[31:12] <= {20{inst[31]}};
+    end
+    else if (opcode == 7'b0100011) begin
         // S-type (store)
-        7'b0100011: begin
-            Imm[11:5] <= inst[31:25];
-            Imm[4:0] <= inst[11:7];
-            Imm[31:12] <= {20{inst[31]}};
-        end
+        Imm[11:5] <= inst[31:25];
+        Imm[4:0] <= inst[11:7];
+        Imm[31:12] <= {20{inst[31]}};
+    end
+    else if (opcode == 7'b1100011) begin
         // B-type (branch)
-        7'b1100011: begin
-            Imm[12] <= inst[31];
-            Imm[10:5] <= inst[30:25];
-            Imm[4:1] <= inst[11:8];
-            Imm[11] <= inst[7];
-            Imm[0] <= 1'b0; // B-type 즉시값은 항상 짝수
-            Imm[31:13] <= {19{inst[31]}};
-        end
+        Imm[12] <= inst[31];
+        Imm[10:5] <= inst[30:25];
+        Imm[4:1] <= inst[11:8];
+        Imm[11] <= inst[7];
+        Imm[0] <= 1'b0; // B-type 즉시값은 항상 짝수
+        Imm[31:13] <= {19{inst[31]}};
+    end
+    else if (opcode == 7'b0110111 || opcode == 7'b0010111) begin
         // U-type (LUI, AUIPC)
-        7'b0110111, 7'b0010111: begin
-            Imm[31:12] <= inst[31:12];
-            Imm[11:0] <= 12'b0; // 하위 12비트는 0
-        end
+        Imm[31:12] <= inst[31:12];
+        Imm[11:0] <= 12'b0; // 하위 12비트는 0
+    end
+    else if (opcode == 7'b1101111) begin
         // J-type (JAL)
-        7'b1101111: begin
-            Imm[20] <= inst[31];
-            Imm[10:1] <= inst[30:21];
-            Imm[11] <= inst[20];
-            Imm[19:12] <= inst[19:12];
-            Imm[0] <= 1'b0; // J-type 즉시값은 항상 짝수
-            Imm[31:21] <= {11{inst[31]}};
-        end
-        default: Imm <= 32'b0; // 즉시값이 없는 명령어 유형의 경우
-    endcase
+        Imm[20] <= inst[31];
+        Imm[10:1] <= inst[30:21];
+        Imm[11] <= inst[20];
+        Imm[19:12] <= inst[19:12];
+        Imm[0] <= 1'b0; // J-type 즉시값은 항상 짝수
+        Imm[31:21] <= {11{inst[31]}};
+    end
+    else begin
+        Imm <= 32'b0; // 즉시값이 없는 명령어 유형의 경우
+    end
 end
 
 endmodule
