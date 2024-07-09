@@ -44,7 +44,7 @@ module RAT (
 
     integer k;
 
-    always @(posedge clk) begin     // 평소의 상황 rat의 작동
+    always @(posedge clk) begin     // ?룊?냼?쓽 ?긽?솴 rat?쓽 ?옉?룞
         if (reset) begin
             for (k = 0; k < 32; k = k + 1) begin
                 phy_addr_table[k] <= k;
@@ -58,20 +58,16 @@ module RAT (
                 for (k = 0; k < 32; k = k + 1) begin
                     phy_addr_table[k] <= shadow_data_out[restore_page][k];
                 end
-                case (opcode)       
-                    7'b1100111, 7'b0000011, 7'b0010011: begin
-                        phy_addr_out1 <= shadow_data_out[restore_page][logical_addr1];
-                        phy_addr_out2 <= 8'b11111110;
-                    end
-                    7'b0110111, 7'b0010111, 7'b1101111: begin
-                        phy_addr_out1 <= 8'b11111110;
-                        phy_addr_out2 <= 8'b11111110;
-                    end
-                    default: begin
-                        phy_addr_out1 <= shadow_data_out[restore_page][logical_addr1];
-                        phy_addr_out2 <= shadow_data_out[restore_page][logical_addr2];
-                    end
-                endcase
+                if (opcode == 7'b1100111 || opcode == 7'b0000011 || opcode == 7'b0010011) begin
+                    phy_addr_out1 <= shadow_data_out[restore_page][logical_addr1];
+                    phy_addr_out2 <= 8'b11111110;
+                end else if (opcode == 7'b0110111 || opcode == 7'b0010111 || opcode == 7'b1101111) begin
+                    phy_addr_out1 <= 8'b11111110;
+                    phy_addr_out2 <= 8'b11111110;
+                end else begin
+                    phy_addr_out1 <= shadow_data_out[restore_page][logical_addr1];
+                    phy_addr_out2 <= shadow_data_out[restore_page][logical_addr2];
+                end
 
                 if ((opcode != 7'b1100011) && (opcode != 7'b0100011) && (opcode != 7'b0000000) && (rd_logical_addr != 0)) begin
                     free_phy_addr_out <= phy_addr_table[rd_logical_addr];
@@ -92,20 +88,17 @@ module RAT (
                         end
                         shadow_write_enable[save_page] <= 1;
                     end
-                    case (opcode)       
-                        7'b1100111, 7'b0000011, 7'b0010011: begin
-                            phy_addr_out1 <= phy_addr_table[logical_addr1];
-                            phy_addr_out2 <= 8'b11111110;
-                        end
-                        7'b0110111, 7'b0010111, 7'b1101111: begin
-                            phy_addr_out1 <= 8'b11111110;
-                            phy_addr_out2 <= 8'b11111110;
-                        end
-                        default: begin
-                            phy_addr_out1 <= phy_addr_table[logical_addr1];
-                            phy_addr_out2 <= phy_addr_table[logical_addr2];
-                        end
-                    endcase
+
+                    if (opcode == 7'b1100111 || opcode == 7'b0000011 || opcode == 7'b0010011) begin
+                        phy_addr_out1 <= phy_addr_table[logical_addr1];
+                        phy_addr_out2 <= 8'b11111110;
+                    end else if (opcode == 7'b0110111 || opcode == 7'b0010111 || opcode == 7'b1101111) begin
+                        phy_addr_out1 <= 8'b11111110;
+                        phy_addr_out2 <= 8'b11111110;
+                    end else begin
+                        phy_addr_out1 <= phy_addr_table[logical_addr1];
+                        phy_addr_out2 <= phy_addr_table[logical_addr2];
+                    end
 
                     if ((opcode != 7'b1100011) && (opcode != 7'b0100011) && (opcode != 7'b0000000) && (rd_logical_addr != 0)) begin
                         free_phy_addr_out <= phy_addr_table[rd_logical_addr];
