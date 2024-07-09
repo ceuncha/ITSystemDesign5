@@ -578,7 +578,7 @@ control_unit_top u_control_unit_top(
 .ALU_result(ALU_Data),
 .ALU_result_dest(ALU_Phy),
 .ALU_result_valid(ALU_Done),
-.MUL_result(MUL_Data),
+.MUL_result(MUL_Data[31:0]),
 .MUL_result_dest(MUL_Phy),
 .MUL_result_valid(MUL_Done),
 .DIV_result(DIV_Data),
