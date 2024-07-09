@@ -79,23 +79,32 @@ module divider (
          done <= 0;
          end else begin
                 // 조건부 뺄셈
-                if (temp_dividend[31][63:32] >= divisor[31]) begin
-                    temp_dividend[31][63:32] = temp_dividend[31][63:32] - divisor[31];
-                    temp_dividend[31][0] = 1'b1;
-                end else begin
-                    temp_dividend[31][0] = 1'b0;
-                end
+                
                 if(divider_op_reg[31]==4'b0001) begin
-                Result <= temp_dividend[31][31:0];
-                Physical_address_out <= Physical_address_reg[31];
-                PC_out <= PC_reg[31];
-                done <= done_reg[31];
+                if (temp_dividend[31][63:32] >= divisor[31]) begin
+                Result = {temp_dividend[31][31:1],1'b1};
+                Physical_address_out = Physical_address_reg[31];
+                PC_out = PC_reg[31];
+                done = done_reg[31];
+                end else begin 
+                Result = temp_dividend[31][31:0];
+                Physical_address_out = Physical_address_reg[31];
+                PC_out = PC_reg[31];
+                done = done_reg[31];
+                end
                 end
                 else begin
-                Result <= temp_dividend[31][63:32];
-                Physical_address_out <= Physical_address_reg[31];
-                PC_out <= PC_reg[31];
-                done <= done_reg[31];
+                if (temp_dividend[31][63:32] >= divisor[31]) begin
+                    Result = temp_dividend[31][63:32] - divisor[31];
+                     Physical_address_out = Physical_address_reg[31];
+                     PC_out = PC_reg[31];
+                     done = done_reg[31];
+                end else begin
+                Result = temp_dividend[31][63:32];
+                Physical_address_out = Physical_address_reg[31];
+                PC_out = PC_reg[31];
+                done = done_reg[31];
+                end
                 end
                 end
                 end
