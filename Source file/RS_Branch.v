@@ -69,7 +69,7 @@ module RS_Branch (                                             //명령어 forwa
     integer i;
 
     always @(posedge clk) begin    //리셋신호로 초기화 시켜줌
-        if (reset || Predict_Result) begin
+        if (reset) begin
             tail <= 0;
             head <=0;
             for (i = 0; i < 64; i = i + 1) begin
@@ -89,18 +89,50 @@ module RS_Branch (                                             //명령어 forwa
                 valid_entries2[i] <= 1'b0; 
                 takens[i] <= 1'b0;
                 hits[i] <= 1'b0;
-                end
                 RS_BR_Branch <= 0;
-                RS_BR_Jump <= 0;
-                RS_BR_Hit <= 0;
-                RS_BR_taken <= 0;
-                RS_BR_Phy <= 0;
-                RS_BR_inst_num_output <=0;
-                RS_BR_funct3 <= 0;
-                immediate_BR <= 0;
-                Operand1_BR <= 0;
-                Operand2_BR <= 0;
-                PC_BR <= 0;
+            RS_BR_Jump <= 0;
+            RS_BR_Hit <= 0;
+            RS_BR_taken <= 0;
+            RS_BR_Phy <= 0;
+            RS_BR_inst_num_output <=0;
+            RS_BR_funct3 <= 0;
+            immediate_BR <= 0;
+            Operand1_BR <= 0;
+            Operand2_BR <= 0;
+            PC_BR <= 0;
+            end
+            end else if (Predict_Result) begin
+            tail <= 0;
+            head <=0;
+            for (i = 0; i < 64; i = i + 1) begin
+                inst_nums[i] <=0;
+                PCs[i] <= 0;
+                Rds[i] <= 0;
+                readys[i] <= 0;
+                Jumps[i] <= 0;
+                Branchs[i] <= 0;
+                funct3s[i] <= 0;
+                immediates[i] <=0;
+                operand1s[i] <= 0;
+                operand2s[i] <= 0;
+                operand1_datas[i] <= 0;
+                operand2_datas[i] <= 0;
+                valid_entries1[i] <= 1'b0; 
+                valid_entries2[i] <= 1'b0; 
+                takens[i] <= 1'b0;
+                hits[i] <= 1'b0;
+                RS_BR_Branch <= 0;
+            RS_BR_Jump <= 0;
+            RS_BR_Hit <= 0;
+            RS_BR_taken <= 0;
+            RS_BR_Phy <= 0;
+            RS_BR_inst_num_output <=0;
+            RS_BR_funct3 <= 0;
+            immediate_BR <= 0;
+            Operand1_BR <= 0;
+            Operand2_BR <= 0;
+            PC_BR <= 0;
+            end
         end else if (start) begin
             if (operand1 == ALU_result_dest) begin  // 명령어가 처음 들어왔을때, alu의 결과와 명령어의 operand 물리주소를 비교하여 
                                                     // 업데이트가 필요시 수행해준다.
