@@ -7,6 +7,7 @@ module global_prediction_top (
     input wire [31:0] PC_Branch, // Corrected the bit width
     input wire ID_EX_Jump,
     input wire ID_EX_hit,
+    input wire real_taken,
     output wire [31:0] PC, // Corrected the bit width
     output wire Wrong,
     output wire first_and_Pcsrc, // New output port
@@ -72,7 +73,7 @@ branch_correction_buffer bcb_inst (
     .hit(hit),
     .PC(PC),
     .PC_Target(PC_Target),
-    .taken(taken),
+    .taken(real_taken),
     .ID_EX_PC(ID_EX_PC),
     .ID_EX_Branch(ID_EX_Branch),
     .Pcsrc(Pcsrc),
