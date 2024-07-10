@@ -228,7 +228,7 @@ module CPU_top(
 
 (* keep = "true" *)wire [31:0] Operand2_Div = result_out_div[31:0];
 (* keep = "true" *)wire [31:0] Operand1_Div = result_out_div[63:32];
-(* keep = "true" *)wire [4:0] divider_op = result_out_div[67:64];
+(* keep = "true" *)wire [3:0] divider_op = result_out_div[67:64];
 (* keep = "true" *)wire [7:0] RS_EX_Div_Physical_address_in = result_out_div[75:68];
 (* keep = "true" *)wire [31:0] RS_EX_Div_inst_num= result_out_div[107:76];
 (* keep = "true" *)wire Div_start_in = result_out_div[108];
@@ -404,7 +404,7 @@ physical_register_file u_physical_register_file(
     .ALU_load_phy(Load_Phy),
     .ALU_mul_phy(MUL_Phy),
     .ALU_div_phy(DIV_Phy),
-    .ALU_done_phy(BR_phy),
+    .ALU_done_phy(BR_Phy),
     .Operand1_data(RData1),
     .Operand2_data(RData2),
     .valid1(Valid1),
