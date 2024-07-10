@@ -2,7 +2,7 @@ module address_mapper(
     input [6:0] opcode,
     input [2:0] funct3,
     input [6:0] funct7,
-    input reset, // 리셋 신호 추가
+    input reset, // 由ъ뀑 �떊�샇 異붽�
     output reg [5:0] mapped_address
 );
 
@@ -40,7 +40,7 @@ always @(*) begin
                 endcase
             end
             // Load
-            7'b0000011: mapped_address = 6'd11; // 로드
+            7'b0000011: mapped_address = 6'd11; // 濡쒕뱶
             // Store 
             7'b0100011: mapped_address = 6'd12; 
             // B-type Branch operations
