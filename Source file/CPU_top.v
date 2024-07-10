@@ -281,6 +281,7 @@ module CPU_top(
     (* keep = "true" *)wire MEM_WB_MemToReg;
     (* keep = "true" *)wire [31:0] MEM_WB_ALUResult, MEM_WB_RData, alu_exec_value, alu_exec_PC;
     (* keep = "true" *)wire alu_exec_done;
+    assign alu_exec_done=EX_MEM_alu_exec_done|Load_Done;
     (* keep = "true" *)wire [31:0] out_value;
     (* keep = "true" *)wire [4:0] out_dest;
     (* keep = "true" *) wire out_reg_write;
@@ -797,9 +798,7 @@ control_unit_top u_control_unit_top(
     );
     
 
-    (* keep_hierarchy = "yes" *)
-    MUX_2input Savage_Mux (.a(EX_MEM_alu_exec_done),.b(Load_Done),
-    .sel(Load_Done),.y(alu_exec_done)); 
+
 
     // ROB instantiation
 
