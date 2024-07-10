@@ -98,7 +98,7 @@ module CLA_32bit(
     wire [7:0] carry;
     wire [31:0] Sum;
 
-    // B瑜� XOR �뿰�궛�븯�뿬 �뜤�뀍怨� 類꾩뀍�뿉 �궗�슜
+    // B瑜? XOR ?뿰?궛?븯?뿬 ?뜤?뀍怨? 類꾩뀍?뿉 ?궗?슜
     assign B_xor = B ^ {32{subtract}};
 
     // 4-bit CLA modules instantiation
@@ -114,10 +114,10 @@ module CLA_32bit(
     // 理쒖쥌 寃곌낵
     assign Result_Adder = Sum;
 
-    // Overflow 怨꾩궛 (Sign 鍮꾪듃�쓽 Carry)
+    // Overflow 怨꾩궛 (Sign 鍮꾪듃?쓽 Carry)
     assign Overflow = carry[6] ^ carry[7];
     
-    // Carry flag 怨꾩궛 (subtract媛� 0�씠硫� Cout, subtract媛� 1�씠硫� 諛섏쟾�맂 Cout)
+    // Carry flag 怨꾩궛 (subtract媛? 0?씠硫? Cout, subtract媛? 1?씠硫? 諛섏쟾?맂 Cout)
     assign C_out = (subtract == 0) ? carry[7] : ~carry[7];
 
 endmodule
