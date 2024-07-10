@@ -53,12 +53,12 @@ module divider (
             end else begin
                 temp_dividend[i][0] = 1'b0;
             end
-            temp_dividend[i+1] <= {temp_dividend[i][62:0], 1'b0};
-            divisor[i+1] <= divisor[i];
-            Physical_address_reg[i+1] <= Physical_address_reg[i];
-            PC_reg[i+1] <= PC_reg[i];
-            divider_op_reg[i+1] <= divider_op_reg[i];
-            done_reg[i+1] <= done_reg[i];
+            temp_dividend[i+1] = {temp_dividend[i][62:0], 1'b0};
+            divisor[i+1] = divisor[i];
+            Physical_address_reg[i+1] = Physical_address_reg[i];
+            PC_reg[i+1] = PC_reg[i];
+            divider_op_reg[i+1] = divider_op_reg[i];
+            done_reg[i+1] = done_reg[i];
         end
         end
         end
