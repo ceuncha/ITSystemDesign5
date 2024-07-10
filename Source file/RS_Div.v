@@ -29,22 +29,22 @@ module RS_Div (
 );
     
     // Internal storage for reservation station entries
-    reg [31:0] PCs [0:63];
-    reg [7:0] Rds [0:63];
-    reg [3:0] ALUOPs [0:63];
-    reg [7:0] operand1s [0:63];
-    reg [7:0] operand2s [0:63];
-    reg [31:0] operand1_datas [0:63];  // operand1 data
-    reg [31:0] operand2_datas [0:63]; // operand2 data
-    reg [63:0] valid_entries1;  // operand1??뵠 valid?釉놂쭪?
-    reg [63:0] valid_entries2; // operand2揶?? valid?釉놂쭪?
-    reg [108:0] result [0:63];
-    reg [5:0] tail;
-    reg [63:0] readys;
-    wire [63:0] Y;
-    reg [6:0] head;
-    integer i;
-    reg RS_DIV_on[0:63];
+    (* keep = "true" *) reg [31:0] PCs [0:63];
+    (* keep = "true" *) reg [7:0] Rds [0:63];
+    (* keep = "true" *) reg [3:0] ALUOPs [0:63];
+    (* keep = "true" *) reg [7:0] operand1s [0:63];
+    (* keep = "true" *) reg [7:0] operand2s [0:63];
+    (* keep = "true" *) reg [31:0] operand1_datas [0:63];  // operand1 data
+    (* keep = "true" *) reg [31:0] operand2_datas [0:63]; // operand2 data
+    (* keep = "true" *) reg [63:0] valid_entries1;  // operand1??逾� valid?�뇡�냲彛�?
+    (* keep = "true" *) reg [63:0] valid_entries2; // operand2�뤆?? valid?�뇡�냲彛�?
+    (* keep = "true" *) reg [108:0] result [0:63];
+   (* keep = "true" *)  reg [5:0] tail;
+    (* keep = "true" *) reg [63:0] readys;
+    (* keep = "true" *) wire [63:0] Y;
+    (* keep = "true" *) reg [6:0] head;
+    (* keep = "true" *) integer i;
+    (* keep = "true" *) reg RS_DIV_on[0:63];
 
    always @(posedge clk) begin
    
@@ -59,12 +59,12 @@ module RS_Div (
                 operand2s[i] <= 0;
                 operand1_datas[i] <= 0;
                 operand2_datas[i] <= 0;
-                valid_entries1[i] <= 1'b0; // �뵳�딅�� ?�뻻 �룯�뜃由겼첎誘れ몵嚥�? 癰귣벊�뜚
-                valid_entries2[i] <= 1'b0; // �뵳�딅�� ?�뻻 �룯�뜃由겼첎誘れ몵嚥�? 癰귣벊�뜚
+                valid_entries1[i] <= 1'b0; // ?逾�?�봾?? ??六� ?猷�?�쐝�뵳寃쇱쾸沃섅굦紐드슖?? �솻洹ｋ쾴?�쐸
+                valid_entries2[i] <= 1'b0; // ?逾�?�봾?? ??六� ?猷�?�쐝�뵳寃쇱쾸沃섅굦紐드슖?? �솻洹ｋ쾴?�쐸
                 RS_DIV_on[i] <= 0;
             end
         end else if (RS_div_start) begin
-            if (RS_div_operand1 == ALU_result_dest) begin  // ALU?肉�?苑� operand1?�벥 ?肉�?沅�?�뵠 ?嫄�?沅�?�뱽?釉�
+            if (RS_div_operand1 == ALU_result_dest) begin  // ALU?�굢??�땻? operand1??踰� ?�굢??亦�???逾� ?椰�??亦�???諭�?�뇡?
                 PCs[tail] <= RS_div_PC;
                 Rds[tail] <= RS_div_Rd;
                 ALUOPs[tail] <= RS_div_ALUOP;
@@ -76,7 +76,7 @@ module RS_Div (
                 valid_entries2[tail] <= RS_div_valid[1];
                 tail <= (tail + 1) % 64;
                 RS_DIV_on[tail] <= 0;
-            end else if (RS_div_operand2 == ALU_result_dest) begin  // ALU?肉�?苑� operand2?�벥 ?肉�?沅�?�뵠 ?嫄�?沅�?�뱽?釉�
+            end else if (RS_div_operand2 == ALU_result_dest) begin  // ALU?�굢??�땻? operand2??踰� ?�굢??亦�???逾� ?椰�??亦�???諭�?�뇡?
                 PCs[tail] <= RS_div_PC;
                 Rds[tail] <= RS_div_Rd;
                 ALUOPs[tail] <= RS_div_ALUOP;
@@ -88,7 +88,7 @@ module RS_Div (
                 valid_entries2[tail] <= 1; 
                 tail <= (tail + 1) % 64;   
                 RS_DIV_on[tail] <= 0;
-             end else if (RS_div_operand1 == MUL_result_dest) begin  // MUL?肉�?苑� operand1?�벥 ?肉�?沅�?�뵠 ?嫄�?沅�?�뱽?釉�
+             end else if (RS_div_operand1 == MUL_result_dest) begin  // MUL?�굢??�땻? operand1??踰� ?�굢??亦�???逾� ?椰�??亦�???諭�?�뇡?
                 PCs[tail] <= RS_div_PC;
                 Rds[tail] <= RS_div_Rd;
                 ALUOPs[tail] <= RS_div_ALUOP;
@@ -100,7 +100,7 @@ module RS_Div (
                 valid_entries2[tail] <= RS_div_valid[1];
                 tail <= (tail + 1) % 64;
                  RS_DIV_on[tail] <= 0;
-             end else if (RS_div_operand2 == MUL_result_dest) begin  // MUL?肉�?苑� operand2?�벥 ?肉�?沅�?�뵠 ?嫄�?沅�?�뱽?釉�
+             end else if (RS_div_operand2 == MUL_result_dest) begin  // MUL?�굢??�땻? operand2??踰� ?�굢??亦�???逾� ?椰�??亦�???諭�?�뇡?
                 PCs[tail] <= RS_div_PC;
                 Rds[tail] <= RS_div_Rd;
                 ALUOPs[tail] <= RS_div_ALUOP;
@@ -112,7 +112,7 @@ module RS_Div (
                 valid_entries2[tail] <= 1; 
                 tail <= (tail + 1) % 64;
                  RS_DIV_on[tail] <= 0;
-              end else if (RS_div_operand1 == DIV_result_dest) begin  // DIV?肉�?苑� operand1?�벥 ?肉�?沅�?�뵠 ?嫄�?沅�?�뱽?釉�
+              end else if (RS_div_operand1 == DIV_result_dest) begin  // DIV?�굢??�땻? operand1??踰� ?�굢??亦�???逾� ?椰�??亦�???諭�?�뇡?
                 PCs[tail] <= RS_div_PC;
                 Rds[tail] <= RS_div_Rd;
                 ALUOPs[tail] <= RS_div_ALUOP;
@@ -124,7 +124,7 @@ module RS_Div (
                 valid_entries2[tail] <= RS_div_valid[1];
                 tail <= (tail + 1) % 64;
                 RS_DIV_on[tail] <= 0;
-              end else if (RS_div_operand2 == DIV_result_dest) begin  // MUL?肉�?苑� operand2?�벥 ?肉�?沅�?�뵠 ?嫄�?沅�?�뱽?釉�
+              end else if (RS_div_operand2 == DIV_result_dest) begin  // MUL?�굢??�땻? operand2??踰� ?�굢??亦�???逾� ?椰�??亦�???諭�?�뇡?
                 PCs[tail] <= RS_div_PC;
                 Rds[tail] <= RS_div_Rd;
                 ALUOPs[tail] <= RS_div_ALUOP;
@@ -222,8 +222,8 @@ module RS_Div (
                     end
                 end     
             end
-          if (Branch_result_valid) begin                //Branch의 결과가 들어왔을때, 기존에 RS에 들어있던 명령어들과 물리주소를 비교하여
-                                                        //필요한 값들을 업데이트 시켜준다.
+          if (Branch_result_valid) begin                //Branch�쓽 寃곌낵媛� �뱾�뼱�솕�쓣�븣, 湲곗〈�뿉 RS�뿉 �뱾�뼱�엳�뜕 紐낅졊�뼱�뱾怨� 臾쇰━二쇱냼瑜� 鍮꾧탳�븯�뿬
+                                                        //�븘�슂�븳 媛믩뱾�쓣 �뾽�뜲�씠�듃 �떆耳쒖��떎.
            for (i = 0; i < 64; i = i + 1) begin
                     if (!valid_entries1[i] && operand1s[i] == BR_Phy) begin
                         operand1_datas[i] <= PC_Return;
