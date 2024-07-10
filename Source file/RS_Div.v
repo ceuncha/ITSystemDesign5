@@ -59,12 +59,12 @@ module RS_Div (
                 operand2s[i] <= 0;
                 operand1_datas[i] <= 0;
                 operand2_datas[i] <= 0;
-                valid_entries1[i] <= 1'b0; // �뵳�딅�� ?�뻻 �룯�뜃由겼첎誘れ몵嚥�? 癰귣벊�뜚
-                valid_entries2[i] <= 1'b0; // �뵳�딅�� ?�뻻 �룯�뜃由겼첎誘れ몵嚥�? 癰귣벊�뜚
+                valid_entries1[i] <= 1'b0; // ?뵳?딅?? ??뻻 ?룯?뜃由겼첎誘れ몵嚥?? 癰귣벊?뜚
+                valid_entries2[i] <= 1'b0; // ?뵳?딅?? ??뻻 ?룯?뜃由겼첎誘れ몵嚥?? 癰귣벊?뜚
                 RS_DIV_on[i] <= 0;
             end
         end else if (RS_div_start) begin
-            if (RS_div_operand1 == ALU_result_dest) begin  // ALU?肉�?苑� operand1?�벥 ?肉�?沅�?�뵠 ?嫄�?沅�?�뱽?釉�
+            if (RS_div_operand1 == ALU_result_dest) begin  // ALU?肉??苑? operand1??벥 ?肉??沅???뵠 ?嫄??沅???뱽?釉?
                 PCs[tail] <= RS_div_PC;
                 Rds[tail] <= RS_div_Rd;
                 ALUOPs[tail] <= RS_div_ALUOP;
@@ -76,7 +76,7 @@ module RS_Div (
                 valid_entries2[tail] <= RS_div_valid[1];
                 tail <= (tail + 1) % 64;
                 RS_DIV_on[tail] <= 0;
-            end else if (RS_div_operand2 == ALU_result_dest) begin  // ALU?肉�?苑� operand2?�벥 ?肉�?沅�?�뵠 ?嫄�?沅�?�뱽?釉�
+            end else if (RS_div_operand2 == ALU_result_dest) begin  // ALU?肉??苑? operand2??벥 ?肉??沅???뵠 ?嫄??沅???뱽?釉?
                 PCs[tail] <= RS_div_PC;
                 Rds[tail] <= RS_div_Rd;
                 ALUOPs[tail] <= RS_div_ALUOP;
@@ -88,7 +88,7 @@ module RS_Div (
                 valid_entries2[tail] <= 1; 
                 tail <= (tail + 1) % 64;   
                 RS_DIV_on[tail] <= 0;
-             end else if (RS_div_operand1 == MUL_result_dest) begin  // MUL?肉�?苑� operand1?�벥 ?肉�?沅�?�뵠 ?嫄�?沅�?�뱽?釉�
+             end else if (RS_div_operand1 == MUL_result_dest) begin  // MUL?肉??苑? operand1??벥 ?肉??沅???뵠 ?嫄??沅???뱽?釉?
                 PCs[tail] <= RS_div_PC;
                 Rds[tail] <= RS_div_Rd;
                 ALUOPs[tail] <= RS_div_ALUOP;
@@ -100,7 +100,7 @@ module RS_Div (
                 valid_entries2[tail] <= RS_div_valid[1];
                 tail <= (tail + 1) % 64;
                  RS_DIV_on[tail] <= 0;
-             end else if (RS_div_operand2 == MUL_result_dest) begin  // MUL?肉�?苑� operand2?�벥 ?肉�?沅�?�뵠 ?嫄�?沅�?�뱽?釉�
+             end else if (RS_div_operand2 == MUL_result_dest) begin  // MUL?肉??苑? operand2??벥 ?肉??沅???뵠 ?嫄??沅???뱽?釉?
                 PCs[tail] <= RS_div_PC;
                 Rds[tail] <= RS_div_Rd;
                 ALUOPs[tail] <= RS_div_ALUOP;
@@ -112,7 +112,7 @@ module RS_Div (
                 valid_entries2[tail] <= 1; 
                 tail <= (tail + 1) % 64;
                  RS_DIV_on[tail] <= 0;
-              end else if (RS_div_operand1 == DIV_result_dest) begin  // DIV?肉�?苑� operand1?�벥 ?肉�?沅�?�뵠 ?嫄�?沅�?�뱽?釉�
+              end else if (RS_div_operand1 == DIV_result_dest) begin  // DIV?肉??苑? operand1??벥 ?肉??沅???뵠 ?嫄??沅???뱽?釉?
                 PCs[tail] <= RS_div_PC;
                 Rds[tail] <= RS_div_Rd;
                 ALUOPs[tail] <= RS_div_ALUOP;
@@ -124,7 +124,7 @@ module RS_Div (
                 valid_entries2[tail] <= RS_div_valid[1];
                 tail <= (tail + 1) % 64;
                 RS_DIV_on[tail] <= 0;
-              end else if (RS_div_operand2 == DIV_result_dest) begin  // MUL?肉�?苑� operand2?�벥 ?肉�?沅�?�뵠 ?嫄�?沅�?�뱽?釉�
+              end else if (RS_div_operand2 == DIV_result_dest) begin  // MUL?肉??苑? operand2??벥 ?肉??沅???뵠 ?嫄??沅???뱽?釉?
                 PCs[tail] <= RS_div_PC;
                 Rds[tail] <= RS_div_Rd;
                 ALUOPs[tail] <= RS_div_ALUOP;
