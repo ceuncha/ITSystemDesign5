@@ -95,7 +95,8 @@
                 valid_entries2[i] <= 1'b0; 
              
             end
-        end else if (start) begin
+        end else begin
+        if (start) begin
 
             
    
@@ -348,6 +349,7 @@
                 tail <= (tail + 1) % 64;
                  RS_ALU_on[tail] <=0;
              end 
+             end
             
             
            
