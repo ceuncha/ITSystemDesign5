@@ -30,7 +30,7 @@ always @(posedge clk ) begin
         bht[14] <= 3'b001;
         bht[15] <= 3'b001;
     end else if (ID_EX_Branch) begin
-        bht[gbh][2] <= 1'b1; // ID_EX_Branch   1 ̸  valid bit   1       
+        bht[gbh][2] <= 1'b1; // ID_EX_Branch   1 ?  valid bit   1       
         if (Pcsrc) begin
             // Taken branch, increment state if not in strongly taken
             if (bht[gbh][1:0] != 2'b11) begin
@@ -54,7 +54,7 @@ always @(*) begin
             2'b10, 2'b11: taken = 1'b1; // Taken
         endcase
     end else begin
-        taken = 1'b0; // Valid bit   0 ̸   ⺻       not taken     
+        taken = 1'b0; // Valid bit   0 ?   ?       not taken     
     end
 end
 
