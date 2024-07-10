@@ -16,7 +16,7 @@ module control_unit_top(
 
 wire [5:0] mapped_address;
 
-// address_mapper ?��?��?��?��
+// address_mapper ?占쏙옙?占쏙옙?占쏙옙?占쏙옙
 address_mapper addr_mapper (
     .reset(rst),
     .opcode(opcode),
@@ -25,7 +25,7 @@ address_mapper addr_mapper (
     .mapped_address(mapped_address)
 );
 
-// control_rom ?��?��?��?��
+// control_rom ?占쏙옙?占쏙옙?占쏙옙?占쏙옙
 control_rom ctrl_rom (
     .reset(rst),
     .mapped_address(mapped_address),
