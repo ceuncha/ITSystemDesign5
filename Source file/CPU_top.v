@@ -176,8 +176,7 @@ module CPU_top(
 (* keep = "true" *)wire [31:0] RS_EX_PC_ALU = result_out_alu[149:118];
 (* keep = "true" *)wire ALU_Done = result_out_alu[150];
 (* keep = "true" *)wire [31:0] RS_EX_inst_num = result_out_alu[182:151];
-(* keep = "true" *)wire RS_EX_taken=result_out_alu[183];
-(* keep = "true" *)wire RS_EX_hit=result_out_alu[184];
+
 
 
     // Internal signals for RS_mul wire
