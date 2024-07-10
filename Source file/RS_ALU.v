@@ -1,4 +1,4 @@
- module RS_ALU (                                             //명령어 forwarding, 준비된 명령어부터 내보내주는 역할들을 수행.
+ module RS_ALU (                                             //紐낅졊?뼱 forwarding, 以?鍮꾨맂 紐낅졊?뼱遺??꽣 ?궡蹂대궡二쇰뒗 ?뿭?븷?뱾?쓣 ?닔?뻾.
     input wire clk,
     input wire reset,
     input wire start,
@@ -42,34 +42,34 @@
 );
     
     // Internal storage for reservation station entries
-    reg [31:0] inst_nums[0:63];
-    reg [31:0] PCs [0:63];
-    reg [7:0] Rds [0:63];
-    reg [63:0] MemToRegs;
-    reg [63:0] MemReads;
-    reg [63:0] MemWrites;
-    reg [3:0] ALUOPs [0:63];
-    reg [63:0] ALUSrc1s;
-    reg [63:0] ALUSrc2s;
-    reg [63:0] Jumps;
-    reg [63:0] Branchs;
-    reg [2:0] funct3s [0:63];
-    reg [31:0] immediates [0:63];
-    reg [7:0] operand1s [0:63];
-    reg [7:0] operand2s [0:63];
-    reg [31:0] operand1_datas [0:63];  // operand1 data
-    reg [31:0] operand2_datas [0:63]; // operand2 data
-    reg [63:0] valid_entries1;  // operand1?씠 valid?븳吏?
-    reg [63:0] valid_entries2; // operand2媛? valid?븳吏?
-    reg [182:0] result [0:63];
-    reg [6:0] tail;
-    reg [6:0] head;
-    reg [63:0] readys;
+   (* keep = "true" *) reg [31:0] inst_nums[0:63];
+   (* keep = "true" *) reg [31:0] PCs [0:63];
+    (* keep = "true" *) reg [7:0] Rds [0:63];
+   (* keep = "true" *) reg [63:0] MemToRegs;
+   (* keep = "true" *) reg [63:0] MemReads;
+   (* keep = "true" *) reg [63:0] MemWrites;
+   (* keep = "true" *) reg [3:0] ALUOPs [0:63];
+   (* keep = "true" *) reg [63:0] ALUSrc1s;
+   (* keep = "true" *) reg [63:0] ALUSrc2s;
+   (* keep = "true" *) reg [63:0] Jumps;
+   (* keep = "true" *) reg [63:0] Branchs;
+   (* keep = "true" *) reg [2:0] funct3s [0:63];
+   (* keep = "true" *) reg [31:0] immediates [0:63];
+   (* keep = "true" *) reg [7:0] operand1s [0:63];
+   (* keep = "true" *) reg [7:0] operand2s [0:63];
+   (* keep = "true" *) reg [31:0] operand1_datas [0:63];  // operand1 data
+   (* keep = "true" *) reg [31:0] operand2_datas [0:63]; // operand2 data
+   (* keep = "true" *) reg [63:0] valid_entries1;  // operand1??뵠 valid?釉놂쭪?
+   (* keep = "true" *) reg [63:0] valid_entries2; // operand2揶?? valid?釉놂쭪?
+   (* keep = "true" *) reg [182:0] result [0:63];
+   (* keep = "true" *) reg [6:0] tail;
+   (* keep = "true" *) reg [6:0] head;
+   (* keep = "true" *) reg [63:0] readys;
     wire [63:0] Y;
-    integer i;
-    reg RS_ALU_on[0:63];
+   (* keep = "true" *) integer i;
+   (* keep = "true" *) reg RS_ALU_on[0:63];
 
-    always @(posedge clk) begin    //리셋신호로 초기화 시켜줌
+    always @(posedge clk) begin    //由ъ뀑?떊?샇濡? 珥덇린?솕 ?떆耳쒖쨲
         if (reset) begin
             tail <= 0;
             head <=0;
@@ -99,8 +99,8 @@
 
             
    
-            if (operand1 == ALU_result_dest) begin  // 명령어가 처음 들어왔을때, alu의 결과와 명령어의 operand 물리주소를 비교하여 
-                                                    // 업데이트가 필요시 수행해준다.
+            if (operand1 == ALU_result_dest) begin  // 紐낅졊?뼱媛? 泥섏쓬 ?뱾?뼱?솕?쓣?븣, alu?쓽 寃곌낵?? 紐낅졊?뼱?쓽 operand 臾쇰━二쇱냼瑜? 鍮꾧탳?븯?뿬 
+                                                    // ?뾽?뜲?씠?듃媛? ?븘?슂?떆 ?닔?뻾?빐以??떎.
                 inst_nums[tail] <= RS_alu_inst_num;
                 PCs[tail] <= PC;
                 Rds[tail] <= Rd;
@@ -144,8 +144,8 @@
                 valid_entries2[tail] <= 1; 
                 tail <= (tail + 1) % 64;  
                  RS_ALU_on[tail] <=0; 
-             end else if (operand1 == MUL_result_dest) begin  // 명령어가 처음 들어왔을때, mul의 결과와 명령어의 operand 물리주소를 비교하여 
-                                                              // 업데이트가 필요시 수행해준다.
+             end else if (operand1 == MUL_result_dest) begin  // 紐낅졊?뼱媛? 泥섏쓬 ?뱾?뼱?솕?쓣?븣, mul?쓽 寃곌낵?? 紐낅졊?뼱?쓽 operand 臾쇰━二쇱냼瑜? 鍮꾧탳?븯?뿬 
+                                                              // ?뾽?뜲?씠?듃媛? ?븘?슂?떆 ?닔?뻾?빐以??떎.
                 inst_nums[tail] <= RS_alu_inst_num;
                 PCs[tail] <= PC;
                 Rds[tail] <= Rd;
@@ -189,8 +189,8 @@
                 valid_entries2[tail] <= 1; 
                 tail <= (tail + 1) % 64;
                  RS_ALU_on[tail] <=0;
-              end else if (operand1 == DIV_result_dest) begin  // 명령어가 처음 들어왔을때, div의 결과와 명령어의 operand 물리주소를 비교하여 
-                                                              // 업데이트가 필요시 수행해준다.
+              end else if (operand1 == DIV_result_dest) begin  // 紐낅졊?뼱媛? 泥섏쓬 ?뱾?뼱?솕?쓣?븣, div?쓽 寃곌낵?? 紐낅졊?뼱?쓽 operand 臾쇰━二쇱냼瑜? 鍮꾧탳?븯?뿬 
+                                                              // ?뾽?뜲?씠?듃媛? ?븘?슂?떆 ?닔?뻾?빐以??떎.
                  inst_nums[tail] <= RS_alu_inst_num;
                 PCs[tail] <= PC;
                 Rds[tail] <= Rd;
@@ -235,8 +235,8 @@
                 tail <= (tail + 1) % 64;
                  RS_ALU_on[tail] <=0;
              end else if ( operand1 == EX_MEM_Physical_Address && EX_MEM_MemRead ==1) begin     
-                                                                // 명령어가 처음 들어왔을때, load의 결과와 명령어의 operand 물리주소를 비교하여 
-                                                              // 업데이트가 필요시 수행해준다.
+                                                                // 紐낅졊?뼱媛? 泥섏쓬 ?뱾?뼱?솕?쓣?븣, load?쓽 寃곌낵?? 紐낅졊?뼱?쓽 operand 臾쇰━二쇱냼瑜? 鍮꾧탳?븯?뿬 
+                                                              // ?뾽?뜲?씠?듃媛? ?븘?슂?떆 ?닔?뻾?빐以??떎.
                 inst_nums[tail] <= RS_alu_inst_num;
                 PCs[tail] <= PC;
                 Rds[tail] <= Rd;
@@ -351,8 +351,8 @@
             
             
            
-            if (ALU_result_valid) begin                 //alu의 결과가 들어왔을때, 기존에 RS에 들어있던 명령어들과 물리주소를 비교하여
-                                                        //필요한 값들을 업데이트 시켜준다.
+            if (ALU_result_valid) begin                 //alu?쓽 寃곌낵媛? ?뱾?뼱?솕?쓣?븣, 湲곗〈?뿉 RS?뿉 ?뱾?뼱?엳?뜕 紐낅졊?뼱?뱾怨? 臾쇰━二쇱냼瑜? 鍮꾧탳?븯?뿬
+                                                        //?븘?슂?븳 媛믩뱾?쓣 ?뾽?뜲?씠?듃 ?떆耳쒖??떎.
                 for (i = 0; i < 64; i = i + 1) begin
                     if (!valid_entries1[i] && operand1s[i] == ALU_result_dest) begin
                         operand1_datas[i] <= ALU_result;
@@ -364,8 +364,8 @@
                     end
                 end
             end
-            if (MUL_result_valid) begin                     //mul의 결과가 들어왔을때, 기존에 RS에 들어있던 명령어들과 물리주소를 비교하여
-                                                        //필요한 값들을 업데이트 시켜준다.
+            if (MUL_result_valid) begin                     //mul?쓽 寃곌낵媛? ?뱾?뼱?솕?쓣?븣, 湲곗〈?뿉 RS?뿉 ?뱾?뼱?엳?뜕 紐낅졊?뼱?뱾怨? 臾쇰━二쇱냼瑜? 鍮꾧탳?븯?뿬
+                                                        //?븘?슂?븳 媛믩뱾?쓣 ?뾽?뜲?씠?듃 ?떆耳쒖??떎.
                 for (i = 0; i < 64; i = i + 1) begin
                     if (!valid_entries1[i] && operand1s[i] == MUL_result_dest) begin
                         operand1_datas[i] <= MUL_result;
@@ -377,8 +377,8 @@
                     end
                 end
             end
-            if (DIV_result_valid) begin         //div의 결과가 들어왔을때, 기존에 RS에 들어있던 명령어들과 물리주소를 비교하여
-                                                        //필요한 값들을 업데이트 시켜준다.
+            if (DIV_result_valid) begin         //div?쓽 寃곌낵媛? ?뱾?뼱?솕?쓣?븣, 湲곗〈?뿉 RS?뿉 ?뱾?뼱?엳?뜕 紐낅졊?뼱?뱾怨? 臾쇰━二쇱냼瑜? 鍮꾧탳?븯?뿬
+                                                        //?븘?슂?븳 媛믩뱾?쓣 ?뾽?뜲?씠?듃 ?떆耳쒖??떎.
                 for (i = 0; i < 64; i = i + 1) begin
                     if (!valid_entries1[i] && operand1s[i] == DIV_result_dest) begin
                         operand1_datas[i] <= DIV_result;
@@ -390,8 +390,8 @@
                     end
                 end
             end
-           if (EX_MEM_MemRead) begin                //load의 결과가 들어왔을때, 기존에 RS에 들어있던 명령어들과 물리주소를 비교하여
-                                                        //필요한 값들을 업데이트 시켜준다.
+           if (EX_MEM_MemRead) begin                //load?쓽 寃곌낵媛? ?뱾?뼱?솕?쓣?븣, 湲곗〈?뿉 RS?뿉 ?뱾?뼱?엳?뜕 紐낅졊?뼱?뱾怨? 臾쇰━二쇱냼瑜? 鍮꾧탳?븯?뿬
+                                                        //?븘?슂?븳 媛믩뱾?쓣 ?뾽?뜲?씠?듃 ?떆耳쒖??떎.
            for (i = 0; i < 64; i = i + 1) begin
                     if (!valid_entries1[i] && operand1s[i] == EX_MEM_Physical_Address) begin
                         operand1_datas[i] <= RData;
@@ -403,8 +403,8 @@
                     end
                 end     
             end
-                     if (Branch_result_valid) begin                //Branch의 결과가 들어왔을때, 기존에 RS에 들어있던 명령어들과 물리주소를 비교하여
-                                                        //필요한 값들을 업데이트 시켜준다.
+                     if (Branch_result_valid) begin                //Branch?쓽 寃곌낵媛? ?뱾?뼱?솕?쓣?븣, 湲곗〈?뿉 RS?뿉 ?뱾?뼱?엳?뜕 紐낅졊?뼱?뱾怨? 臾쇰━二쇱냼瑜? 鍮꾧탳?븯?뿬
+                                                        //?븘?슂?븳 媛믩뱾?쓣 ?뾽?뜲?씠?듃 ?떆耳쒖??떎.
            for (i = 0; i < 64; i = i + 1) begin
                     if (!valid_entries1[i] && operand1s[i] == BR_Phy) begin
                         operand1_datas[i] <= PC_Return;
