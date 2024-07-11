@@ -78,10 +78,10 @@ end
 
 
     always @(*) begin    //Operand 값이 들어오면 해당 물리주소의 data 값과 valid 값을 출력시켜 준다.
-        Operand1_data <= registers[Operand1_phy];   
-        Operand2_data <= registers[Operand2_phy];
-        valid1 <= valid[Operand1_phy];
-        valid2 <= valid[Operand2_phy];
+        Operand1_data = registers[Operand1_phy];   
+        Operand2_data = registers[Operand2_phy];
+        valid1 = valid[Operand1_phy];
+        valid2 = valid[Operand2_phy];
     end
 
 endmodule
