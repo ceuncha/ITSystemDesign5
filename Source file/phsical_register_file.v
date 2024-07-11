@@ -47,8 +47,7 @@ always @(posedge clk) begin         // 매 클락 계산기들 혹은 load로부
             registers[i] <= 32'h00000000;
            valid[i] <= 1'b1; 
         end
-    end
-    if (!reset) begin
+    end else begin
         if (ALU_add_Write == 1'b1 && ALU_add_phy != 7'b0) begin
             registers[ALU_add_phy] <= ALU_add_Data;
             valid[ALU_add_phy] <= 1'b1; // alu 신호가 들어왔을때 해당 물리주소와 데이터값을 받아서 pfile을 업데이트 시켜준다.
