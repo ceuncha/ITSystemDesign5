@@ -1,4 +1,4 @@
-module RS_Branch (                                             //명령어 forwarding, 준비된 명령어부터 내보내주는 역할들을 수행.
+module RS_Branch (                                             //榮먮굝議??堉? forwarding, 餓???뜮袁⑤쭆 榮먮굝議??堉깁겫??苑? ?沅↑퉪??沅▽틠?눖?뮉 ?肉??釉??諭???뱽 ??땾?六?.
     input wire clk,
     input wire reset,
     input wire start,
@@ -59,8 +59,8 @@ module RS_Branch (                                             //명령어 forwa
     reg [7:0] operand2s [0:63];
     reg [31:0] operand1_datas [0:63];  // operand1 data
     reg [31:0] operand2_datas [0:63]; // operand2 data
-    reg [63:0] valid_entries1;  // operand1?씠 valid?븳吏?
-    reg [63:0] valid_entries2; // operand2媛? valid?븳吏?
+    reg [63:0] valid_entries1;  // operand1??逾? valid??뇡?냲彛??
+    reg [63:0] valid_entries2; // operand2?뤆?? valid??뇡?냲彛??
     reg [63:0] takens;
     reg [63:0] hits;
     reg [6:0] tail;
@@ -68,7 +68,7 @@ module RS_Branch (                                             //명령어 forwa
     reg [63:0] readys;
     integer i;
 
-    always @(posedge clk) begin    //리셋신호로 초기화 시켜줌
+    always @(posedge clk) begin    //?뵳?딅????뻿??깈嚥?? ?룯?뜃由???넅 ??뻻?녹뮇夷?
         if (reset) begin
             tail <= 0;
             head <=0;
@@ -134,8 +134,8 @@ module RS_Branch (                                             //명령어 forwa
             PC_BR <= 0;
             end
         end else if (start) begin
-            if (operand1 == ALU_result_dest) begin  // 명령어가 처음 들어왔을때, alu의 결과와 명령어의 operand 물리주소를 비교하여 
-                                                    // 업데이트가 필요시 수행해준다.
+            if (operand1 == ALU_result_dest) begin  // 榮먮굝議??堉긷첎? 力μ꼷?벉 ?諭??堉???넅??뱽?釉?, alu??벥 野껉퀗?궢?? 榮먮굝議??堉???벥 operand ?눧?눖?봺雅뚯눘?꺖?몴? ?뜮袁㏉꺍?釉??肉? 
+                                                    // ?毓???쑓??뵠??뱜揶?? ?釉???뒄??뻻 ??땾?六??鍮먧빳???뼄.
                 inst_nums[tail] <= RS_BR_inst_num;
                 PCs[tail] <= PC;
                 Rds[tail] <= Rd;
@@ -170,8 +170,8 @@ module RS_Branch (                                             //명령어 forwa
                 valid_entries2[tail] <= 1; 
                 takens[i] <= RS_BR_IF_ID_taken;
                 tail <= (tail + 1) % 64;  
-             end else if (operand1 == MUL_result_dest) begin  // 명령어가 처음 들어왔을때, mul의 결과와 명령어의 operand 물리주소를 비교하여 
-                                                              // 업데이트가 필요시 수행해준다.
+             end else if (operand1 == MUL_result_dest) begin  // 榮먮굝議??堉긷첎? 力μ꼷?벉 ?諭??堉???넅??뱽?釉?, mul??벥 野껉퀗?궢?? 榮먮굝議??堉???벥 operand ?눧?눖?봺雅뚯눘?꺖?몴? ?뜮袁㏉꺍?釉??肉? 
+                                                              // ?毓???쑓??뵠??뱜揶?? ?釉???뒄??뻻 ??땾?六??鍮먧빳???뼄.
                 inst_nums[tail] <= RS_BR_inst_num;
                 PCs[tail] <= PC;
                 Rds[tail] <= Rd;
@@ -205,8 +205,8 @@ module RS_Branch (                                             //명령어 forwa
                 valid_entries1[tail] <= valid[0];
                 valid_entries2[tail] <= 1; 
                 tail <= (tail + 1) % 64;
-              end else if (operand1 == DIV_result_dest) begin  // 명령어가 처음 들어왔을때, div의 결과와 명령어의 operand 물리주소를 비교하여 
-                                                              // 업데이트가 필요시 수행해준다.
+              end else if (operand1 == DIV_result_dest) begin  // 榮먮굝議??堉긷첎? 力μ꼷?벉 ?諭??堉???넅??뱽?釉?, div??벥 野껉퀗?궢?? 榮먮굝議??堉???벥 operand ?눧?눖?봺雅뚯눘?꺖?몴? ?뜮袁㏉꺍?釉??肉? 
+                                                              // ?毓???쑓??뵠??뱜揶?? ?釉???뒄??뻻 ??땾?六??鍮먧빳???뼄.
                   inst_nums[tail] <= RS_BR_inst_num;
                 PCs[tail] <= PC;
                 Rds[tail] <= Rd;
@@ -241,8 +241,8 @@ module RS_Branch (                                             //명령어 forwa
                 valid_entries2[tail] <= 1; 
                 tail <= (tail + 1) % 64;
              end else if ( operand1 == EX_MEM_Physical_Address && EX_MEM_MemRead ==1) begin     
-                                                                // 명령어가 처음 들어왔을때, load의 결과와 명령어의 operand 물리주소를 비교하여 
-                                                              // 업데이트가 필요시 수행해준다.
+                                                                // 榮먮굝議??堉긷첎? 力μ꼷?벉 ?諭??堉???넅??뱽?釉?, load??벥 野껉퀗?궢?? 榮먮굝議??堉???벥 operand ?눧?눖?봺雅뚯눘?꺖?몴? ?뜮袁㏉꺍?釉??肉? 
+                                                              // ?毓???쑓??뵠??뱜揶?? ?釉???뒄??뻻 ??땾?六??鍮먧빳???뼄.
                  inst_nums[tail] <= RS_BR_inst_num;
                 PCs[tail] <= PC;
                 Rds[tail] <= Rd;
@@ -277,8 +277,8 @@ module RS_Branch (                                             //명령어 forwa
                 valid_entries2[tail] <= 1 ; 
                 tail <= (tail + 1) % 64;
                 end else if ( operand1 == BR_Phy) begin     
-                                                                // 명령어가 처음 들어왔을때, load의 결과와 명령어의 operand 물리주소를 비교하여 
-                                                              // 업데이트가 필요시 수행해준다.
+                                                                // 榮먮굝議??堉긷첎? 力μ꼷?벉 ?諭??堉???넅??뱽?釉?, load??벥 野껉퀗?궢?? 榮먮굝議??堉???벥 operand ?눧?눖?봺雅뚯눘?꺖?몴? ?뜮袁㏉꺍?釉??肉? 
+                                                              // ?毓???쑓??뵠??뱜揶?? ?釉???뒄??뻻 ??땾?六??鍮먧빳???뼄.
                  inst_nums[tail] <= RS_BR_inst_num;
                 PCs[tail] <= PC;
                 Rds[tail] <= Rd;
@@ -333,8 +333,8 @@ module RS_Branch (                                             //명령어 forwa
              end
             
            
-            if (ALU_result_valid) begin                 //alu의 결과가 들어왔을때, 기존에 RS에 들어있던 명령어들과 물리주소를 비교하여
-                                                        //필요한 값들을 업데이트 시켜준다.
+            if (ALU_result_valid) begin                 //alu??벥 野껉퀗?궢揶?? ?諭??堉???넅??뱽?釉?, 疫꿸퀣???肉? RS?肉? ?諭??堉???뿳??쐲 榮먮굝議??堉??諭얏??? ?눧?눖?봺雅뚯눘?꺖?몴? ?뜮袁㏉꺍?釉??肉?
+                                                        //?釉???뒄?釉? 揶쏅?⑸굶??뱽 ?毓???쑓??뵠??뱜 ??뻻?녹뮇???뼄.
                 for (i = 0; i < 64; i = i + 1) begin
                     if (!valid_entries1[i] && operand1s[i] == ALU_result_dest) begin
                         operand1_datas[i] <= ALU_result;
@@ -346,8 +346,8 @@ module RS_Branch (                                             //명령어 forwa
                     end
                 end
             end
-            if (MUL_result_valid) begin                     //mul의 결과가 들어왔을때, 기존에 RS에 들어있던 명령어들과 물리주소를 비교하여
-                                                        //필요한 값들을 업데이트 시켜준다.
+            if (MUL_result_valid) begin                     //mul??벥 野껉퀗?궢揶?? ?諭??堉???넅??뱽?釉?, 疫꿸퀣???肉? RS?肉? ?諭??堉???뿳??쐲 榮먮굝議??堉??諭얏??? ?눧?눖?봺雅뚯눘?꺖?몴? ?뜮袁㏉꺍?釉??肉?
+                                                        //?釉???뒄?釉? 揶쏅?⑸굶??뱽 ?毓???쑓??뵠??뱜 ??뻻?녹뮇???뼄.
                 for (i = 0; i < 64; i = i + 1) begin
                     if (!valid_entries1[i] && operand1s[i] == MUL_result_dest) begin
                         operand1_datas[i] <= MUL_result;
@@ -359,8 +359,8 @@ module RS_Branch (                                             //명령어 forwa
                     end
                 end
             end
-            if (DIV_result_valid) begin         //div의 결과가 들어왔을때, 기존에 RS에 들어있던 명령어들과 물리주소를 비교하여
-                                                        //필요한 값들을 업데이트 시켜준다.
+            if (DIV_result_valid) begin         //div??벥 野껉퀗?궢揶?? ?諭??堉???넅??뱽?釉?, 疫꿸퀣???肉? RS?肉? ?諭??堉???뿳??쐲 榮먮굝議??堉??諭얏??? ?눧?눖?봺雅뚯눘?꺖?몴? ?뜮袁㏉꺍?釉??肉?
+                                                        //?釉???뒄?釉? 揶쏅?⑸굶??뱽 ?毓???쑓??뵠??뱜 ??뻻?녹뮇???뼄.
                 for (i = 0; i < 64; i = i + 1) begin
                     if (!valid_entries1[i] && operand1s[i] == DIV_result_dest) begin
                         operand1_datas[i] <= DIV_result;
@@ -372,8 +372,8 @@ module RS_Branch (                                             //명령어 forwa
                     end
                 end
             end
-           if (EX_MEM_MemRead) begin                //load의 결과가 들어왔을때, 기존에 RS에 들어있던 명령어들과 물리주소를 비교하여
-                                                        //필요한 값들을 업데이트 시켜준다.
+           if (EX_MEM_MemRead) begin                //load??벥 野껉퀗?궢揶?? ?諭??堉???넅??뱽?釉?, 疫꿸퀣???肉? RS?肉? ?諭??堉???뿳??쐲 榮먮굝議??堉??諭얏??? ?눧?눖?봺雅뚯눘?꺖?몴? ?뜮袁㏉꺍?釉??肉?
+                                                        //?釉???뒄?釉? 揶쏅?⑸굶??뱽 ?毓???쑓??뵠??뱜 ??뻻?녹뮇???뼄.
            for (i = 0; i < 64; i = i + 1) begin
                     if (!valid_entries1[i] && operand1s[i] == EX_MEM_Physical_Address) begin
                         operand1_datas[i] <= RData;
@@ -385,8 +385,8 @@ module RS_Branch (                                             //명령어 forwa
                     end
                 end     
             end
-           if (BR_Done) begin                //load의 결과가 들어왔을때, 기존에 RS에 들어있던 명령어들과 물리주소를 비교하여
-                                                        //필요한 값들을 업데이트 시켜준다.
+           if (BR_Done) begin                //load??벥 野껉퀗?궢揶?? ?諭??堉???넅??뱽?釉?, 疫꿸퀣???肉? RS?肉? ?諭??堉???뿳??쐲 榮먮굝議??堉??諭얏??? ?눧?눖?봺雅뚯눘?꺖?몴? ?뜮袁㏉꺍?釉??肉?
+                                                        //?釉???뒄?釉? 揶쏅?⑸굶??뱽 ?毓???쑓??뵠??뱜 ??뻻?녹뮇???뼄.
            for (i = 0; i < 64; i = i + 1) begin
                     if (!valid_entries1[i] && operand1s[i] == BR_Phy) begin
                         operand1_datas[i] <= PC_Return;
@@ -432,7 +432,4 @@ module RS_Branch (                                             //명령어 forwa
          end
 end
     
-
-
-
 endmodule
