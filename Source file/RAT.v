@@ -44,7 +44,7 @@ module RAT (
 
     integer k;
 
-    always @(posedge clk) begin     // ?룊?냼?쓽 ?긽?솴 rat?쓽 ?옉?룞
+    always @(posedge clk) begin     // ?猷�?�꺖?�벥 ?湲�?�넺 rat?�벥 ?�삂?猷�
         if (reset) begin
             for (k = 0; k < 32; k = k + 1) begin
                 phy_addr_table[k] <= k;
