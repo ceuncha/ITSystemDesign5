@@ -399,7 +399,7 @@
                         operand1_datas[l] <= RData;
                         valid_entries1[l] <= 1;
                     end
-                    if (!valid_entries2[li] && operand2s[li] == EX_MEM_Physical_Address) begin
+                    if (!valid_entries2[l] && operand2s[l] == EX_MEM_Physical_Address) begin
                         operand2_datas[l] <= RData;
                         valid_entries2[l] <= 1;
                     end
