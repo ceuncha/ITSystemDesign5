@@ -24,7 +24,7 @@ module multiplier (
     integer j;
     genvar i;
 
-    // A占쏙옙 B 揶쏅�れ뱽 占쎌삋燁삼옙
+    // A?? B 媛믪쓣 ?옒移?
     always @(posedge clk) begin
         if (rst) begin
             A_reg <= 0;
@@ -41,14 +41,14 @@ module multiplier (
         end
     end
 
-    // �겫占썽겫占� �⑨옙 占쎄문占쎄쉐
+    // 遺?遺? 怨? ?깮?꽦
     generate
         for (i = 0; i < 32; i = i + 1) begin : gen_partial_products
             assign partial_products[i] = (B_reg[i]) ? ({32'd0, A_reg} << i) : 64'd0;
         end
     endgenerate
 
-    // 1占쎈뼊�⑨옙
+    // 1?떒怨?
     reg [63:0] stage1_sums_reg[15:0], stage1_carries_reg[15:0];
     reg stage1_done_reg;
     reg [7:0] stage1_Physical_address_reg;
@@ -84,7 +84,7 @@ module multiplier (
         end
     end
 
-    // 2占쎈뼊�⑨옙
+    // 2?떒怨?
     reg [63:0] stage2_sums_reg[7:0], stage2_carries_reg[7:0];
     reg stage2_done_reg;
     reg [7:0] stage2_Physical_address_reg;
@@ -121,7 +121,7 @@ module multiplier (
         end
     end
 
-    // 3占쎈뼊�⑨옙
+    // 3?떒怨?
     reg [63:0] stage3_sums_reg[3:0], stage3_carries_reg[3:0];
     reg stage3_done_reg;
     reg [7:0] stage3_Physical_address_reg;
@@ -158,7 +158,7 @@ module multiplier (
         end
     end
 
-    // 4占쎈뼊�⑨옙
+    // 4?떒怨?
     reg [63:0] stage4_sums_reg[1:0], stage4_carries_reg[1:0];
     reg stage4_done_reg;
     reg [7:0] stage4_Physical_address_reg;
@@ -192,7 +192,7 @@ module multiplier (
         end
     end
 
-    // 筌ㅼ뮇伊� 野껉퀗�궢占쏙옙 done 占쎈뻿占쎌깈 占쎈씜占쎈쑓占쎌뵠占쎈뱜
+    // 理쒖쥌 寃곌낵?? done ?떊?샇 ?뾽?뜲?씠?듃
     always @(posedge clk) begin
         if (rst) begin
             Product <= 0;
@@ -209,7 +209,7 @@ module multiplier (
     end
 endmodule
 
-// 64�뜮袁る뱜 CSA 筌뤴뫀諭� 占쎌젟占쎌벥
+// 64鍮꾪듃 CSA 紐⑤뱢 ?젙?쓽
 module CSA_64bit (
     input [63:0] a,
     input [63:0] b,
