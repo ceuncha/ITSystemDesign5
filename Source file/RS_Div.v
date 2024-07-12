@@ -29,26 +29,26 @@ module RS_Div (
 );
     
     // Internal storage for reservation station entries
-    reg [31:0] PCs [0:63];
-    reg [7:0] Rds [0:63];
-    reg [3:0] ALUOPs [0:63];
-    reg [7:0] operand1s [0:63];
-    reg [7:0] operand2s [0:63];
-    reg [31:0] operand1_datas [0:63];  // operand1 data
-    reg [31:0] operand2_datas [0:63]; // operand2 data
-    reg [63:0] valid_entries1;  // operand1??逾� valid?�뇡�냲彛�?
-    reg [63:0] valid_entries2; // operand2�뤆?? valid?�뇡�냲彛�?
-    reg [108:0] result [0:63];
-    reg [5:0] tail;
-    reg [63:0] readys;
+    (* keep = "true" *) reg [31:0] PCs [0:63];
+    (* keep = "true" *)reg [7:0] Rds [0:63];
+    (* keep = "true" *)reg [3:0] ALUOPs [0:63];
+    (* keep = "true" *)reg [7:0] operand1s [0:63];
+    (* keep = "true" *)reg [7:0] operand2s [0:63];
+    (* keep = "true" *)reg [31:0] operand1_datas [0:63];  // operand1 data
+    (* keep = "true" *)reg [31:0] operand2_datas [0:63]; // operand2 data
+    (* keep = "true" *)reg [63:0] valid_entries1;  // operand1??逾� valid?�뇡�냲彛�?
+    (* keep = "true" *)reg [63:0] valid_entries2; // operand2�뤆?? valid?�뇡�냲彛�?
+    (* keep = "true" *)reg [108:0] result [0:63];
+    (* keep = "true" *)reg [5:0] tail;
+    (* keep = "true" *)reg [63:0] readys;
     wire [63:0] Y;
-    reg [6:0] head;
-    integer i;
-    integer j;
-    integer k;
-    integer l;
-    integer m;
-    reg RS_DIV_on[0:63];
+    (* keep = "true" *)reg [6:0] head;
+    (* keep = "true" *)integer i;
+    (* keep = "true" *)integer j;
+    (* keep = "true" *)integer k;
+    (* keep = "true" *)integer l;
+    (* keep = "true" *)integer m;
+    (* keep = "true" *)reg RS_DIV_on[0:63];
 
    always @(posedge clk) begin
    
