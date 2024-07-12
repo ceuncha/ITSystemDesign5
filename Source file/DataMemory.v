@@ -10,38 +10,44 @@ module DataMemory(
 );
 integer i;
 reg [31:0] memory [0:2047];
-    always @(posedge clk) begin                       //由ъ뀑?떆?뿉 媛? 踰덉??닔?쓽 ?뜲?씠?꽣?뒗 踰덉??닔+3?쑝濡? ?븳?떎,
-   if (reset) begin
-       for (i = 0; i < 2047; i = i + 1) begin
-            memory[i] <= i+3;
+
+always @(posedge clk) begin
+    if (reset) begin
+        for (i = 0; i < 2047; i = i + 1) begin
+            memory[i] <= i + 3;
         end
     end else begin
-    
-    if (EX_MEM_MemWrite) begin
-        case (EX_MEM_funct3)
-            3'b000: memory[EX_MEM_ALUResult][7:0] <= EX_MEM_Rdata2[7:0]; // SB
-            3'b001: memory[EX_MEM_ALUResult][15:0] <= EX_MEM_Rdata2[15:0]; // SH
-            3'b010: memory[EX_MEM_ALUResult] <= EX_MEM_Rdata2; // SW
-            default: ; // No operation (NOP) for other funct3 values, explicitly defined
-        endcase
-    end
-    else if (!EX_MEM_MemWrite) ; // If EX_MEM_MemWrite is false, no changes are made to memory - it retains its previous state
-end
-end
-always @ (*) begin
-// Default value for RData, ensures it is always assigned
-    Load_Data <= 32'd0; // if MemRead is false
-    if (Load_Done) begin
-        case (EX_MEM_funct3)
-            3'b000: Load_Data = {{24{memory[EX_MEM_ALUResult][31]}}, memory[EX_MEM_ALUResult][7:0]}; // LB
-            3'b001: Load_Data = {{16{memory[EX_MEM_ALUResult][31]}}, memory[EX_MEM_ALUResult][15:0]}; // LH
-            3'b010: Load_Data = memory[EX_MEM_ALUResult]; // LW
-            3'b100: Load_Data = {{24{1'b0}}, memory[EX_MEM_ALUResult][7:0]}; // LBU
-            3'b101: Load_Data = {{16{1'b0}}, memory[EX_MEM_ALUResult][15:0]}; // LHU
-            default: Load_Data = 32'd0; // Default value assignment to handle cases when MemRead is false
-        endcase
+        if (EX_MEM_MemWrite) begin
+            if (EX_MEM_funct3 == 3'b000) begin
+                memory[EX_MEM_ALUResult][7:0] <= EX_MEM_Rdata2[7:0]; // SB
+            end else if (EX_MEM_funct3 == 3'b001) begin
+                memory[EX_MEM_ALUResult][15:0] <= EX_MEM_Rdata2[15:0]; // SH
+            end else if (EX_MEM_funct3 == 3'b010) begin
+                memory[EX_MEM_ALUResult] <= EX_MEM_Rdata2; // SW
+            end
+        end
     end
 end
 
+always @ (*) begin
+    // Default value for Load_Data, ensures it is always assigned
+    Load_Data <= 32'd0; // if Load_Done is false
+
+    if (Load_Done) begin
+        if (EX_MEM_funct3 == 3'b000) begin
+            Load_Data = {{24{memory[EX_MEM_ALUResult][31]}}, memory[EX_MEM_ALUResult][7:0]}; // LB
+        end else if (EX_MEM_funct3 == 3'b001) begin
+            Load_Data = {{16{memory[EX_MEM_ALUResult][31]}}, memory[EX_MEM_ALUResult][15:0]}; // LH
+        end else if (EX_MEM_funct3 == 3'b010) begin
+            Load_Data = memory[EX_MEM_ALUResult]; // LW
+        end else if (EX_MEM_funct3 == 3'b100) begin
+            Load_Data = {{24{1'b0}}, memory[EX_MEM_ALUResult][7:0]}; // LBU
+        end else if (EX_MEM_funct3 == 3'b101) begin
+            Load_Data = {{16{1'b0}}, memory[EX_MEM_ALUResult][15:0]}; // LHU
+        end else begin
+            Load_Data = 32'd0; // Default value assignment to handle cases when Load_Done is false or EX_MEM_funct3 is not matched
+        end
+    end
+end
 
 endmodule
