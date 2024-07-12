@@ -352,9 +352,9 @@ ifid_pipeline_register u_ifid_pipeline_register(
 
 (* keep_hierarchy = "yes" *)
 sign_extend u_sign_extend(
-    .inst(instOut),  // 전체 명령어 입력
-    .clk(clk),          // 클락 신호 입력
-    .Imm(imm32)  // 신호 확장된 즉시값 출력
+    .inst(instOut),  // ?쟾泥? 紐낅졊?뼱 ?엯?젰
+    .clk(clk),          // ?겢?씫 ?떊?샇 ?엯?젰
+    .Imm(imm32)  // ?떊?샇 ?솗?옣?맂 利됱떆媛? 異쒕젰
 );
 
 
@@ -364,21 +364,21 @@ RAT u_RAT(
     .reset(rst),
 
     .if_id_flush(Predict_Result),
-    .save_state(save_on),    // 사본 레지스터에 상태 저장 신호
-    .restore_state(restore_on), // 사본 레지스터에서 상태 복원 신호
-    .save_page(save_page),     // 상태 저장용 사본 레지스터 페이지 선택 신호
-    .restore_page(restore_page),  // 상태 복원 신호
-    .logical_addr1(Rs1), // 오퍼랜드 1 논리 주소
-    .logical_addr2(Rs2), // 오퍼랜드 2 논리 주소
-    .rd_logical_addr(Rd), // 쓰기 작업을 하는 논리 주소 (Rd)
-    .free_phy_addr(chuchu_addr),   // 프리리스트로부터 받은 비어있는 물리 주소
+    .save_state(save_on),    // ?궗蹂? ?젅吏??뒪?꽣?뿉 ?긽?깭 ???옣 ?떊?샇
+    .restore_state(restore_on), // ?궗蹂? ?젅吏??뒪?꽣?뿉?꽌 ?긽?깭 蹂듭썝 ?떊?샇
+    .save_page(save_page),     // ?긽?깭 ???옣?슜 ?궗蹂? ?젅吏??뒪?꽣 ?럹?씠吏? ?꽑?깮 ?떊?샇
+    .restore_page(restore_page),  // ?긽?깭 蹂듭썝 ?떊?샇
+    .logical_addr1(Rs1), // ?삤?띁?옖?뱶 1 ?끉由? 二쇱냼
+    .logical_addr2(Rs2), // ?삤?띁?옖?뱶 2 ?끉由? 二쇱냼
+    .rd_logical_addr(Rd), // ?벐湲? ?옉?뾽?쓣 ?븯?뒗 ?끉由? 二쇱냼 (Rd)
+    .free_phy_addr(chuchu_addr),   // ?봽由щ━?뒪?듃濡쒕??꽣 諛쏆? 鍮꾩뼱?엳?뒗 臾쇰━ 二쇱냼
     .opcode(instOut_opcode),
 
-    .phy_addr_out1(Phy_addr_OP1),   // 오퍼랜드 1 물리 주소 출력
-    .phy_addr_out2(Phy_addr_OP2),   // 오퍼랜드 2 물리 주소 출력
+    .phy_addr_out1(Phy_addr_OP1),   // ?삤?띁?옖?뱶 1 臾쇰━ 二쇱냼 異쒕젰
+    .phy_addr_out2(Phy_addr_OP2),   // ?삤?띁?옖?뱶 2 臾쇰━ 二쇱냼 異쒕젰
     .rd_phy_out(Rd_phy),
 
-    .free_phy_addr_out(original_phy_addr) // 프리리스트로 비어있는 주소 전송
+    .free_phy_addr_out(original_phy_addr) // ?봽由щ━?뒪?듃濡? 鍮꾩뼱?엳?뒗 二쇱냼 ?쟾?넚
 );
 
 
@@ -388,7 +388,7 @@ physical_register_file u_physical_register_file(
     .reset(rst),
     .Operand1_phy(Phy_addr_OP1),
     .Operand2_phy(Phy_addr_OP2),
-    .Rd_phy(Rd_phy), // 명령어의 Rd 주소
+    .Rd_phy(Rd_phy), // 紐낅졊?뼱?쓽 Rd 二쇱냼
 
     .ALU_add_Write(ALU_Done),
     .ALU_load_Write(Load_Done),
@@ -433,10 +433,10 @@ BB u_BB(
 chuchu u_chuchu(
     .clk(clk),
     .reset(rst),
-    .save_state(save_on),          // 상태 저장 신호
-    .restore_state(restore_on),       // 상태 복원 신호
-    .save_page(save_page),     // 상태 저장 페이지 선택 신호
-    .restore_page(restore_page),  // 상태 복원 페이지 선택 신호
+    .save_state(save_on),          // ?긽?깭 ???옣 ?떊?샇
+    .restore_state(restore_on),       // ?긽?깭 蹂듭썝 ?떊?샇
+    .save_page(save_page),     // ?긽?깭 ???옣 ?럹?씠吏? ?꽑?깮 ?떊?샇
+    .restore_page(restore_page),  // ?긽?깭 蹂듭썝 ?럹?씠吏? ?꽑?깮 ?떊?샇
     .rat_data(original_phy_addr),
     .chuchu_out(chuchu_addr)
 );
