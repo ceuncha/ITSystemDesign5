@@ -8,8 +8,8 @@ module DataMemory(
     input wire [31:0] EX_MEM_Rdata2,
     output reg [31:0] Load_Data
 );
-integer i;
-reg [31:0] memory [0:2047];
+   (* keep = "true" *) integer i;
+   (* keep = "true" *) reg [31:0] memory [0:2047];
 
 always @(posedge clk) begin
     if (reset) begin
