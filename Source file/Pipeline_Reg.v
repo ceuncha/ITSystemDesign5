@@ -17,7 +17,7 @@ module ifid_pipeline_register (
     
     always @(posedge clk or posedge reset) begin
         if (reset) begin
-            // ?뵳?딅?? ??뻿??깈揶?? ??넞?苑???넅?由븝쭖? ?룯?뜃由???넅
+            // ?逾�?�봾?? ??六�??源덃뤆?? ??�꽎?�땻???�꼨?�뵳釉앹춺? ?猷�?�쐝�뵳???�꼨
             IF_ID_instOut <= 32'b0;
             IF_ID_inst_num <= 32'b0;
             IF_ID_PC <= 32'b0;
@@ -33,7 +33,7 @@ module ifid_pipeline_register (
             IF_ID_taken<= 1'b0;
             IF_ID_hit <= 1'b0;
         end else begin
-            // ?逾???쑎??뻻揶?? ?釉???빍??? ??뮞??꽘?猷? ?釉???빜 ?釉? ??젟?湲? ?猷???삂
+            // ?��???�몠??六삥뤆?? ?�뇡???鍮�??? ??裕�??苑�?�뙴? ?�뇡???鍮� ?�뇡? ??�젧?疫�? ?�뙴???�굚
             IF_ID_instOut <= instOut;
             IF_ID_inst_num <= inst_num;
             IF_ID_PC <= PC;
@@ -86,7 +86,7 @@ module exmem_pipeline_register (
         
     always @(posedge clk or posedge reset) begin
         if (reset) begin
-            // 由ъ뀑 ?떊?샇媛? ?솢?꽦?솕?릺硫? 珥덇린?솕
+            // �뵳�딅�� ?�뻿?�깈揶�? ?�넞?苑�?�넅?由븀∥? �룯�뜃由�?�넅
             EX_MEM_MemToReg <= 1'b0;
             Load_Done <= 1'b0;
             EX_MEM_MemWrite <= 1'b0;
@@ -103,7 +103,7 @@ module exmem_pipeline_register (
             div_exec_PC <= 32'b0;
             div_exec_done <= 1'b0; 
         end else begin
-            // ?젙?긽 ?룞?옉
+            // ?�젟?湲� ?猷�?�삂
             EX_MEM_MemToReg <= ID_EX_MemToReg;
             Load_Done <= ID_EX_MemRead;
             EX_MEM_MemWrite <= ID_EX_MemWrite; 
