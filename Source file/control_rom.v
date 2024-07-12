@@ -1,6 +1,6 @@
 module control_rom(
     input [5:0] mapped_address,
-    input reset, // 由ъ뀑 �떊�샇 異붽�
+    input reset, // �뵳�딅�� 占쎈뻿占쎌깈 �빊遺쏙옙
     output RegWrite,
     output MemToReg,
     output MemRead,
@@ -9,19 +9,19 @@ module control_rom(
     output [1:0] ALUSrc,
     output RWsel,
     output Branch,
-    output Jump // 異붽��맂 Jump �떊�샇
+    output Jump // �빊遺쏙옙占쎈쭆 Jump 占쎈뻿占쎌깈
 );
 
-reg [12:0] ROM [0:63]; // ROM �겕湲곕�� 13鍮꾪듃濡� 利앷�
+reg [12:0] ROM [0:63]; // ROM 占쎄쾿疫꿸퀡占쏙옙 13�뜮袁る뱜嚥∽옙 筌앹빓占�
 
 assign {RegWrite, MemToReg, MemRead, MemWrite, ALUOp, ALUSrc, RWsel, Branch, Jump} = ROM[mapped_address];
 
     always @(posedge reset) begin
    
-        // 紐⑤뱺 �젣�뼱 �떊�샇瑜� 二쇱냼 0�뿉�꽌 0�쑝濡� 珥덇린�솕
+        // 筌뤴뫀諭� 占쎌젫占쎈선 占쎈뻿占쎌깈�몴占� 雅뚯눘�꺖 0占쎈퓠占쎄퐣 0占쎌몵嚥∽옙 �룯�뜃由곤옙�넅
         ROM[0] = 13'b0_0_0_0_0000_00_0_0_0;
 
-        // R-���엯 紐낅졊�뼱
+        // R-占쏙옙占쎌뿯 筌뤿굝議딉옙堉�
         ROM[1] = 13'b1_0_0_0_0010_10_0_0_0; // ADD
         ROM[2] = 13'b1_0_0_0_0110_10_0_0_0; // SUB
         ROM[3] = 13'b1_0_0_0_0000_10_0_0_0; // AND
@@ -33,14 +33,14 @@ assign {RegWrite, MemToReg, MemRead, MemWrite, ALUOp, ALUSrc, RWsel, Branch, Jum
         ROM[9] = 13'b1_0_0_0_1000_10_0_0_0; // SLT
         ROM[10] = 13'b1_0_0_0_1001_10_0_0_0; // SLTU
 
-        // 濡쒕뱶 諛� �뒪�넗�뼱
-        ROM[11] = 13'b1_1_1_0_0010_11_0_0_0; // 濡쒕뱶
-        ROM[12] = 13'b0_0_0_1_0010_11_0_0_0; // �뒪�넗�뼱
+        // 嚥≪뮆諭� 獄쏉옙 占쎈뮞占쎈꽅占쎈선
+        ROM[11] = 13'b1_1_1_0_0010_11_0_0_0; // 嚥≪뮆諭�
+        ROM[12] = 13'b0_0_0_1_0010_11_0_0_0; // 占쎈뮞占쎈꽅占쎈선
 
-        // Branch 紐낅졊�뼱
-        ROM[13] = 13'b0_0_0_0_0110_10_0_1_0; // 遺꾧린 紐낅졊�뼱�뿉 ���븳 ALUOp �꽕�젙
+        // Branch 筌뤿굝議딉옙堉�
+        ROM[13] = 13'b0_0_0_0_0110_10_0_1_0; // �겫袁㏓┛ 筌뤿굝議딉옙堉깍옙肉� 占쏙옙占쎈립 ALUOp 占쎄퐬占쎌젟
 
-        // I-���엯 利됱떆媛� �뿰�궛 諛� ALU 紐낅졊�뼱
+        // I-占쏙옙占쎌뿯 筌앸맩�뻻揶쏉옙 占쎈염占쎄텦 獄쏉옙 ALU 筌뤿굝議딉옙堉�
         ROM[14] = 13'b1_0_0_0_0010_11_0_0_0; // ADDI
         ROM[15] = 13'b1_0_0_0_1000_11_0_0_0; // SLTI
         ROM[16] = 13'b1_0_0_0_1001_11_0_0_0; // SLTIU
@@ -57,10 +57,10 @@ assign {RegWrite, MemToReg, MemRead, MemWrite, ALUOp, ALUSrc, RWsel, Branch, Jum
         ROM[25] = 13'b1_0_0_0_0010_01_1_0_1; // JAL
         ROM[26] = 13'b1_0_0_0_0010_11_1_0_1; // JALR
 
-        // 異붽��맂 紐낅졊�뼱
+        // �빊遺쏙옙占쎈쭆 筌뤿굝議딉옙堉�
         ROM[27] = 13'b1_0_0_0_1010_10_0_0_0; // MUL
-        ROM[28] = 13'b1_0_0_0_0001_10_0_0_0; // DIV (紐�)
-        ROM[29] = 13'b1_0_0_0_0000_10_0_0_0; // REM (�굹癒몄�)
+        ROM[28] = 13'b1_0_0_0_0001_10_0_0_0; // DIV (筌륅옙)
+        ROM[29] = 13'b1_0_0_0_0000_10_0_0_0; // REM (占쎄돌�솒紐꾬옙)
 
 end
 
