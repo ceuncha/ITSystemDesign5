@@ -87,7 +87,7 @@ always @(posedge clk) begin
                  out_value <= rob_entry[head][95:64];     // Output value
                  out_dest <= rob_entry[head][43:39];      // Extract out_dest from instr[11:7]
                  out_reg_write <= rob_entry[head][96];   // Output RegWrite status
-                rob_entry[head] <= 99'bz;            // Clear the ready flag after consuming the entry
+                 rob_entry[head] <= 99'bz;            // Clear the ready flag after consuming the entry
                  head <= (head + 1) % 64;                 // Circular buffer handling
             end
     end
