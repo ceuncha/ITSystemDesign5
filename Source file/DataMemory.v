@@ -31,9 +31,9 @@ end
 
 always @ (*) begin
     // Default value for Load_Data, ensures it is always assigned
-    Load_Data <= 32'd0; // if Load_Done is false
+    Load_Data = 32'd0; // if Load_Done is false
 
-    if (Load_Done) begin
+   
         if (EX_MEM_funct3 == 3'b000) begin
             Load_Data = {{24{memory[EX_MEM_ALUResult][31]}}, memory[EX_MEM_ALUResult][7:0]}; // LB
         end else if (EX_MEM_funct3 == 3'b001) begin
@@ -48,6 +48,6 @@ always @ (*) begin
             Load_Data = 32'd0; // Default value assignment to handle cases when Load_Done is false or EX_MEM_funct3 is not matched
         end
     end
-end
+
 
 endmodule
