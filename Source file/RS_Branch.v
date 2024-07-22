@@ -56,7 +56,6 @@ module RS_Branch (                                             //紐낅졊?뼱 f
     reg [63:0] hits;
     reg [6:0] tail;
     reg [6:0] head;
-    reg [63:0] readys;
        integer i;
     integer j;
     integer k;
@@ -71,7 +70,6 @@ module RS_Branch (                                             //紐낅졊?뼱 f
                 inst_nums[i] <=0;
                 PCs[i] <= 0;
                 Rds[i] <= 0;
-                readys[i] <= 0;
                 Jumps[i] <= 0;
                 Branchs[i] <= 0;
                 funct3s[i] <= 0;
@@ -99,7 +97,6 @@ module RS_Branch (                                             //紐낅졊?뼱 f
                 inst_nums[i] <=0;
                 PCs[i] <= 0;
                 Rds[i] <= 0;
-                readys[i] <= 0;
                 Jumps[i] <= 0;
                 Branchs[i] <= 0;
                 funct3s[i] <= 0;
