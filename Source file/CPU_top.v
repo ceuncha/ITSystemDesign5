@@ -1,4 +1,4 @@
-module CPU_top(
+module OoO_top(
     input clk,
     input rst,
     output [31:0] x0, x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11, x12, x13, x14, x15,
@@ -195,14 +195,14 @@ module CPU_top(
    (* keep = "true" *) wire [7:0] MUL_Phy;
     (* keep = "true" *)wire [31:0] DIV_Data;
     (* keep = "true" *)wire [7:0] DIV_Phy;
-   (* keep = "true" *)wire [104:0]result_out_mul;
+   (* keep = "true" *)wire [56:0]result_out_mul;
    (* keep = "true" *)wire [31:0] RS_EX_inst_num_Mul_out;
 
-(* keep = "true" *)wire [31:0] Operand2_Mul = result_out_mul[31:0];
-(* keep = "true" *)wire [31:0] Operand1_Mul = result_out_mul[63:32];
-(* keep = "true" *)wire [7:0] RS_EX_Mul_Physical_address_in = result_out_mul[71:64];
-(* keep = "true" *)wire [31:0] RS_EX_inst_num_Mul_in = result_out_mul[103:72];
-(* keep = "true" *)wire  Mul_start_in= result_out_mul[104];
+(* keep = "true" *)wire [7:0] Operand2_Mul = result_out_mul[7:0];
+(* keep = "true" *)wire [7:0] Operand1_Mul = result_out_mul[15:8];
+(* keep = "true" *)wire [7:0] RS_EX_Mul_Physical_address_in = result_out_mul[23:16];
+(* keep = "true" *)wire [31:0] RS_EX_inst_num_Mul_in = result_out_mul[55:24];
+(* keep = "true" *)wire  Mul_start_in= result_out_mul[56];
 (* keep = "true" *)wire MUL_Done;
 
 
@@ -220,14 +220,14 @@ module CPU_top(
     
   
   
-    (* keep = "true" *)wire [108:0]result_out_div;
+    (* keep = "true" *)wire [60:0]result_out_div;
 
-(* keep = "true" *)wire [31:0] Operand2_Div = result_out_div[31:0];
-(* keep = "true" *)wire [31:0] Operand1_Div = result_out_div[63:32];
-(* keep = "true" *)wire [3:0] divider_op = result_out_div[67:64];
-(* keep = "true" *)wire [7:0] RS_EX_Div_Physical_address_in = result_out_div[75:68];
-(* keep = "true" *)wire [31:0] RS_EX_Div_inst_num= result_out_div[107:76];
-(* keep = "true" *)wire Div_start_in = result_out_div[108];
+(* keep = "true" *)wire [7:0] Operand2_Div = result_out_div[7:0];
+(* keep = "true" *)wire [7:0] Operand1_Div = result_out_div[15:8];
+(* keep = "true" *)wire [3:0] divider_op = result_out_div[19:16];
+(* keep = "true" *)wire [7:0] RS_EX_Div_Physical_address_in = result_out_div[27:20];
+(* keep = "true" *)wire [31:0] RS_EX_Div_inst_num= result_out_div[59:28];
+(* keep = "true" *)wire Div_start_in = result_out_div[60];
 
 
 
@@ -656,24 +656,17 @@ control_unit_top u_control_unit_top(
         .RS_mul_PC(RS_mul_inst_num),
         .RS_mul_Rd(RS_mul_Rd),
         .EX_MEM_MemRead(Load_Done),
-        .RData(Load_Data),
         .EX_MEM_Physical_Address(Load_Phy),
         .RS_mul_operand1(RS_mul_operand1),
         .RS_mul_operand2(RS_mul_operand2),
-        .RS_mul_operand1_data(RS_mul_operand1_data),
-        .RS_mul_operand2_data(RS_mul_operand2_data),
         .RS_mul_valid(RS_mul_valid),
-        .ALU_result(ALU_Data),
         .ALU_result_dest(ALU_Phy),
         .ALU_result_valid(ALU_Done),
-        .MUL_result(MUL_Data[31:0]),
         .MUL_result_dest(MUL_Phy),
         .MUL_result_valid(MUL_Done),
-        .DIV_result(DIV_Data),
         .DIV_result_dest(DIV_Phy),
         .DIV_result_valid(DIV_Done),
         .Branch_result_valid(RS_BR_Jump),
-        .PC_Return(PC_Return),
         .BR_Phy(BR_Phy),
         .result_out(result_out_mul)
     );
@@ -685,12 +678,12 @@ control_unit_top u_control_unit_top(
 (* keep_hierarchy = "yes" *)
     RS_Div RS_Div (.clk(clk),.reset(rst),.RS_div_start(RS_div_start),.RS_div_PC(RS_div_inst_num),
                    .RS_div_Rd(RS_div_Rd),.RS_div_ALUOP(RS_div_ALUOP),.EX_MEM_MemRead(Load_Done),
-                   .RData(Load_Data),.EX_MEM_Physical_Address(Load_Phy),.RS_div_operand1(RS_div_operand1),
-                   .RS_div_operand2(RS_div_operand2),.RS_div_operand1_data(RS_div_operand1_data),
-                   .RS_div_operand2_data(RS_div_operand2_data),.RS_div_valid(RS_div_valid),.ALU_result(ALU_Data),
-                   .ALU_result_dest(ALU_Phy),.ALU_result_valid(ALU_Done),.MUL_result(MUL_Data[31:0]),.MUL_result_dest(MUL_Phy),
-                   .MUL_result_valid(MUL_Done),.DIV_result(DIV_Data),.DIV_result_dest(DIV_Phy),.DIV_result_valid(DIV_Done),
-                   .Branch_result_valid(RS_BR_Jump),.PC_Return(PC_Return),.BR_Phy(BR_Phy),
+                   .EX_MEM_Physical_Address(Load_Phy),.RS_div_operand1(RS_div_operand1),
+                   .RS_div_operand2(RS_div_operand2),
+                   .RS_div_valid(RS_div_valid),
+                   .ALU_result_dest(ALU_Phy),.ALU_result_valid(ALU_Done),.MUL_result_dest(MUL_Phy),
+                   .MUL_result_valid(MUL_Done),.DIV_result_dest(DIV_Phy),.DIV_result_valid(DIV_Done),
+                   .Branch_result_valid(RS_BR_Jump),.BR_Phy(BR_Phy),
                    .result_out(result_out_div));
 
 
