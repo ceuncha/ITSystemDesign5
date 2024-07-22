@@ -6,7 +6,6 @@ module RS_Div (
     input wire [7:0] RS_div_Rd,
     input wire [3:0] RS_div_ALUOP,
     input wire EX_MEM_MemRead,
-    input wire [31:0] RData,
     input wire [7:0] EX_MEM_Physical_Address,
     input wire [7:0] RS_div_operand1,
     input wire [7:0] RS_div_operand2,
