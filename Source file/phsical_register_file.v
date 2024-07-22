@@ -92,7 +92,7 @@ always @(posedge clk) begin
     end
 end
 
-
+always @(*) begin    
 
 
         Operand1_data = registers[Operand1_phy];   
@@ -124,7 +124,7 @@ end
         Operand1_data_branch = registers[Operand1_phy_branch];
         Operand2_data_branch = registers[Operand2_phy_branch];
 
-    
+end   
 
 
 endmodule 
