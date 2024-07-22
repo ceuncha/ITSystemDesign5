@@ -156,7 +156,7 @@ module CPU_top(
 
   
   
-    (* keep = "true" *) wire [116:0]result_out_alu;
+    (* keep = "true" *) wire [132:0]result_out_alu;
     (* keep = "true" *)wire RS_alu_IF_ID_taken;
    (* keep = "true" *) wire RS_alu_IF_ID_hit;
 
@@ -173,6 +173,8 @@ module CPU_top(
 (* keep = "true" *)wire [31:0] RS_EX_PC_ALU = result_out_alu[83:52];
 (* keep = "true" *)wire ALU_Done = result_out_alu[84];
 (* keep = "true" *)wire [31:0] RS_EX_inst_num = result_out_alu[116:85];
+    (* keep = "true" *)wire [7:0] Operand1_ALU_phy = result_out_alu[124:117];
+    (* keep = "true" *)wire [7:0] Operand2_ALU_phy = result_out_alu[132:125];
 
 
 
@@ -613,29 +615,21 @@ control_unit_top u_control_unit_top(
         .ALUOP(RS_alu_ALUOP),
         .ALUSrc1(RS_alu_ALUSrc1),
         .ALUSrc2(RS_alu_ALUSrc2),
-        .Jump(RS_alu_Jump),
-        .Branch(RS_alu_Branch),
         .funct3(RS_alu_funct3),
         .immediate(RS_alu_immediate),
         .EX_MEM_MemRead(Load_Done),
-        .RData(Load_Data),
         .EX_MEM_Physical_Address(Load_Phy),
         .operand1(RS_alu_operand1),
         .operand2(RS_alu_operand2),
-        .operand1_data(RS_alu_operand1_data),
-        .operand2_data(RS_alu_operand2_data),
         .valid(RS_alu_valid),
         .ALU_result(ALU_Data),
         .ALU_result_dest(ALU_Phy),
         .ALU_result_valid(ALU_Done),
-        .MUL_result(MUL_Data[31:0]),
         .MUL_result_dest(MUL_Phy),
         .MUL_result_valid(MUL_Done),
-        .DIV_result(DIV_Data),
         .DIV_result_dest(DIV_Phy),
         .DIV_result_valid(DIV_Done),
         .Branch_result_valid(RS_BR_Jump),
-        .PC_Return(PC_Return),
         .BR_Phy(BR_Phy),
         .result_out(result_out_alu)
     );
