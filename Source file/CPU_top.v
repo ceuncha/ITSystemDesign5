@@ -416,8 +416,8 @@ physical_register_file u_physical_register_file(
     .Operand2_phy_MUL(Operand2_Mul_phy),
     .Operand1_phy_DIV(Operand1_Div_phy),
     .Operand2_phy_DIV(Operand2_Div_phy),
-    .Operand1_phy_branch(RS_br_operand1_phy),
-    .Operand2_phy_branch(RS_br_operand2_phy),
+    .Operand1_phy_branch(Operand1_BR_phy),
+    .Operand2_phy_branch(Operand2_BR_phy),
 
     .Operand1_data_ALU(Operand1_ALU),
     .Operand2_data_ALU(Operand2_ALU),
@@ -425,26 +425,10 @@ physical_register_file u_physical_register_file(
     .Operand2_data_MUL(Operand2_Mul),
     .Operand1_data_DIV(Operand1_Div),
     .Operand2_data_DIV(Operand2_Div),
-    .Operand1_data_branch(RS_br_operand1),
-    .Operand2_data_branch(RS_br_operand2)
+    .Operand1_data_branch(Operand1_BR),
+    .Operand2_data_branch(Operand2_BR)
 );
 
-
-(* keep_hierarchy = "yes" *)
-BB u_BB(
-    .clk(clk),                      // Clock signal
-    .rst(rst),                      // Reset signal
-    .opcode(instOut_opcode),             // Input opcode
-    .PCSrc(Predict_Result),                    // Branch decision signal
-    .branch_PC(Branch_index),         // Branch index in ROB
-    .PC(inst_num),                // Current PC value (expanded to 32 bits)
-    .tail_num(save_page),           // Output value
-    .Copy_RAT(save_on),                 // Output register destination extracted from instr[11:7]
-    .head_num(restore_page),           // Output RegWrite signal to indicate a register write operation
-    .Paste_RAT(restore_on),
-    .RS_EX_Branch(RS_BR_Branch), 
-    .RS_EX_Jump(RS_BR_Jump)
-);
 
 
 (* keep_hierarchy = "yes" *)
