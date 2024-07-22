@@ -72,8 +72,6 @@
                 ALUOPs[i] <= 0;
                 ALUSrc1s[i] <= 0;
                 ALUSrc2s[i] <= 0;
-                Jumps[i] <= 0;
-                Branchs[i] <= 0;
                 funct3s[i] <= 0;
                 immediates[i] <=0;
                 operand1s[i] <= 0;
