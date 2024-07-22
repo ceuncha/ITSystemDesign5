@@ -471,8 +471,6 @@ control_unit_top u_control_unit_top(
         .clk(clk),
         .reset(rst),
         .in_opcode(opcode),
-        .in_operand1(RData1),
-        .in_operand2(RData2),
         .in_func3(funct3),
         .in_funct7(funct7),
         .in_pc(IF_ID_PC),
