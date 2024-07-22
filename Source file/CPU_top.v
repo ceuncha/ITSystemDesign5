@@ -133,7 +133,8 @@ module CPU_top(
 
   (* keep = "true" *)wire [31:0]PC_Return;
 
-    
+    (* keep = "true" *) wire [7:0] Operand1_BR_phy;
+    (* keep = "true" *) wire [7:0] Operand2_BR_phy;
 
 
 
