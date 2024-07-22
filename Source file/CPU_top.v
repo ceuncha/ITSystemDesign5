@@ -585,19 +585,13 @@ control_unit_top u_control_unit_top(
 .EX_MEM_Physical_Address(Load_Phy),
 .operand1(RS_br_operand1_phy),
 .operand2(RS_br_operand2_phy),
-.operand1_data(RS_br_operand1),
-.operand2_data(RS_br_operand2),
 .valid(RS_br_valid),
-.ALU_result(ALU_Data),
 .ALU_result_dest(ALU_Phy),
 .ALU_result_valid(ALU_Done),
-.MUL_result(MUL_Data[31:0]),
 .MUL_result_dest(MUL_Phy),
 .MUL_result_valid(MUL_Done),
-.DIV_result(DIV_Data),
 .DIV_result_dest(DIV_Phy),
 .DIV_result_valid(DIV_Done),
-.PC_Return(PC_Return),
 .RS_BR_IF_ID_taken(RS_br_IF_ID_taken),
 .RS_BR_IF_ID_hit(RS_br_IF_ID_hit),
 .BR_Phy(BR_Phy),
@@ -614,7 +608,9 @@ control_unit_top u_control_unit_top(
 .immediate_BR(immediate_BR),
 .Operand1_BR(Operand1_BR),
 .Operand2_BR(Operand2_BR),
-.PC_BR(PC_BR)
+     .PC_BR(PC_BR),
+     .Operand1_BR_phy(Operand1_BR_phy),
+     .Operand2_BR_phy(Operand2_BR_phy)
 );
       
     
