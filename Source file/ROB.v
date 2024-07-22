@@ -35,7 +35,7 @@ integer i;
 task reset_rob_entries;
     begin
         for (i = 0; i < 64; i = i + 1) begin
-            rob_entry[i][98] <= 0;     // Reset ROB entry with all fields set to 0
+            rob_entry[i] <= 99'b0;     // Reset ROB entry with all fields set to 0
         end
     end
 endtask
@@ -53,8 +53,8 @@ always @(posedge clk) begin
                 if (rob_entry[i][31:0] == branch_index) begin
                     rob_entry[i][98:0] <= {rob_entry[i][98], 1'b1, rob_entry[i][96], PC_Return, rob_entry[i][63:32], rob_entry[i][31:0]};
                     tail <= (i + 1) % 64; // Move tail to the entry right after the branch entry
-                    rob_entry[(i+1)%64][98] <= 0; // Flush under tail entry
-                    rob_entry[(i+2)%64][98] <= 0; // Fulsh under tail entry
+                    rob_entry[(i+1)%64][98:0] <= 0; // Flush under tail entry
+                    rob_entry[(i+2)%64][98:0] <= 0; // Fulsh under tail entry
   
                 end
             end
@@ -63,7 +63,6 @@ always @(posedge clk) begin
             rob_entry[tail] <= {1'b1, 1'b0, reg_write, 32'b0, IF_ID_instOut, PC}; // Store input data in the ROB entry with value set to 32'b0 and new_bit set to 1
             tail <= (tail + 1) % 64;                // Circular buffer handling
         end
-        
 
         // Update the value and set ready flag upon execution completion
         
@@ -81,7 +80,6 @@ always @(posedge clk) begin
                     if ( BR_Done&& rob_entry[i][31:0] == branch_index) begin
                         rob_entry[i][98:0] <= {rob_entry[i][98], 1'b1, rob_entry[i][96], PC_Return, rob_entry[i][63:32], rob_entry[i][31:0]}; // Update value and maintain new_bit, reg_write, instr, PC
                     end
-                    
                 end
             end
         
@@ -89,10 +87,9 @@ always @(posedge clk) begin
                  out_value <= rob_entry[head][95:64];     // Output value
                  out_dest <= rob_entry[head][43:39];      // Extract out_dest from instr[11:7]
                  out_reg_write <= rob_entry[head][96];   // Output RegWrite status
-                 rob_entry[head][98] <= 0;            // Clear the ready flag after consuming the entry
+                 rob_entry[head] <= 0;            // Clear the ready flag after consuming the entry
                  head <= (head + 1) % 64;                 // Circular buffer handling
             end
-          
     end
 end
 
