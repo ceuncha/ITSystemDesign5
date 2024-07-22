@@ -55,6 +55,15 @@ module CPU_top(
 //RAT to pfile
 (* keep = "true" *)wire [7:0] Phy_addr_OP1;
 (* keep = "true" *)wire [7:0] Phy_addr_OP2;
+(* keep = "true" *)wire [31:0] Operand1_BR;
+(* keep = "true" *)wire [31:0] Operand2_BR;
+(* keep = "true" *)wire [31:0] Operand1_ALU;
+(* keep = "true" *)wire [31:0] Operand2_ALU;
+(* keep = "true" *)wire [31:0] Operand1_Mul;
+(* keep = "true" *)wire [31:0] Operand2_Mul;
+(* keep = "true" *)wire [31:0] Operand1_Div;
+(* keep = "true" *)wire [31:0] Operand2_Div;
+
 //pfile to decoder
 (* keep = "true" *)wire Valid1;
 (* keep = "true" *)wire Valid2;
