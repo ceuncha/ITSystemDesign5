@@ -35,7 +35,9 @@ module RS_Branch (                                             //紐낅졊?뼱 f
     output reg [31:0] RS_BR_inst_num_output,
     output reg [2:0] RS_BR_funct3,
     output reg [31:0] immediate_BR,
-    output reg [31:0] PC_BR
+    output reg [31:0] PC_BR,
+    output reg [7:0] Operand1s_BR_phy,
+    output reg [7:0] Operand2s_BR_phy
 );
     
     // Internal storage for reservation station entries
@@ -89,6 +91,8 @@ module RS_Branch (                                             //紐낅졊?뼱 f
             RS_BR_funct3 <= 0;
             immediate_BR <= 0;
             PC_BR <= 0;
+            Operand1s_BR_phy<=0;
+            Operand2s_BR_phy<=0;
             end
             end else if (Predict_Result) begin
             tail <= 0;
@@ -116,6 +120,8 @@ module RS_Branch (                                             //紐낅졊?뼱 f
             RS_BR_funct3 <= 0;
             immediate_BR <= 0;
             PC_BR <= 0;
+            Operand1s_BR_phy<=0;
+            Operand2s_BR_phy<=0;
             end
         end else if (start) begin
             if (operand1 == ALU_result_dest) begin  // 紐낅졊?뼱媛? 泥섏쓬 ?뱾?뼱?솕?쓣?븣, alu?쓽 寃곌낵?? 紐낅졊?뼱?쓽 operand 臾쇰━二쇱냼瑜? 鍮꾧탳?븯?뿬 
@@ -360,6 +366,8 @@ module RS_Branch (                                             //紐낅졊?뼱 f
             RS_BR_funct3 <= funct3s[head];
             immediate_BR <= immediates[head];
             PC_BR <= PCs[head];
+            Operand1s_BR_phy <= operand1s[head];
+            Operand2s_BR_phy <= operand2s[head];
             valid_entries1[head] <= 0;            // Clear the ready flag after consuming the entry
             valid_entries2[head] <= 0;
             operand1s[head] <= 0;
@@ -377,6 +385,8 @@ module RS_Branch (                                             //紐낅졊?뼱 f
             RS_BR_funct3 <= 0;
             immediate_BR <= 0;
             PC_BR <= 0;
+            Operand1s_BR_phy <= 0;
+            Operand2s_BR_phy <= 0;
          end
 end
     
