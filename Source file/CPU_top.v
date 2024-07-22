@@ -156,26 +156,23 @@ module CPU_top(
 
   
   
-   (* keep = "true" *) wire [182:0]result_out_alu;
+    (* keep = "true" *) wire [116:0]result_out_alu;
     (* keep = "true" *)wire RS_alu_IF_ID_taken;
    (* keep = "true" *) wire RS_alu_IF_ID_hit;
 
-(* keep = "true" *) wire [31:0] Operand2_ALU = result_out_alu[31:0];
-(* keep = "true" *)wire [31:0] Operand1_ALU = result_out_alu[63:32];
-(* keep = "true" *)wire [31:0] immediate = result_out_alu[95:64];
-(* keep = "true" *)wire [2:0] RS_EX_funct3 = result_out_alu[98:96];
-(* keep = "true" *)wire RS_EX_Branch = result_out_alu[99];
-(* keep = "true" *)wire RS_EX_Jump = result_out_alu[100];
-(* keep = "true" *)wire RS_EX_ALU_Src1 = result_out_alu[101];
-(* keep = "true" *)wire RS_EX_ALU_Src2 = result_out_alu[102];
-(* keep = "true" *)wire [3:0] ALUop = result_out_alu[106:103];
-(* keep = "true" *)wire RS_EX_MemWrite = result_out_alu[107];
-(* keep = "true" *)wire RS_EX_MemRead = result_out_alu[108];
-(* keep = "true" *)wire RS_EX_MemToReg = result_out_alu[109];
-(* keep = "true" *)wire [7:0] ALU_Phy = result_out_alu[117:110];
-(* keep = "true" *)wire [31:0] RS_EX_PC_ALU = result_out_alu[149:118];
-(* keep = "true" *)wire ALU_Done = result_out_alu[150];
-(* keep = "true" *)wire [31:0] RS_EX_inst_num = result_out_alu[182:151];
+
+(* keep = "true" *)wire [31:0] immediate = result_out_alu[31:0];
+(* keep = "true" *)wire [2:0] RS_EX_funct3 = result_out_alu[34:32];
+(* keep = "true" *)wire RS_EX_ALU_Src1 = result_out_alu[35];
+(* keep = "true" *)wire RS_EX_ALU_Src2 = result_out_alu[36];
+(* keep = "true" *)wire [3:0] ALUop = result_out_alu[40:37];
+(* keep = "true" *)wire RS_EX_MemWrite = result_out_alu[41];
+(* keep = "true" *)wire RS_EX_MemRead = result_out_alu[42];
+(* keep = "true" *)wire RS_EX_MemToReg = result_out_alu[43];
+(* keep = "true" *)wire [7:0] ALU_Phy = result_out_alu[51:44];
+(* keep = "true" *)wire [31:0] RS_EX_PC_ALU = result_out_alu[83:52];
+(* keep = "true" *)wire ALU_Done = result_out_alu[84];
+(* keep = "true" *)wire [31:0] RS_EX_inst_num = result_out_alu[116:85];
 
 
 
