@@ -488,8 +488,7 @@ control_unit_top u_control_unit_top(
         .Operand2_phy(Phy_addr_OP2),
         .valid(Valid),
         .immediate(imm32),
-        .add_alu_operand1(RS_alu_operand1_data),
-        .add_alu_operand2(RS_alu_operand2_data),
+
         .add_alu_func3(RS_alu_funct3),
         .add_alu_pc(RS_alu_PC),
         .out_add_MemToReg(RS_alu_MemToReg),
@@ -506,8 +505,7 @@ control_unit_top u_control_unit_top(
         .out_add_valid(RS_alu_valid),
         .out_add_immediate(RS_alu_immediate),
         .out_add_inst_num(RS_alu_inst_num),
-        .mul_alu_operand1(RS_mul_operand1_data),
-        .mul_alu_operand2(RS_mul_operand2_data),
+
         .mul_alu_func3(RS_mul_funct3),
         .out_mul_inst_num(RS_mul_inst_num),
 
@@ -520,8 +518,7 @@ control_unit_top u_control_unit_top(
         .out_mul_Operand2_phy(RS_mul_operand2),
         .out_mul_valid(RS_mul_valid),
         .out_mul_immediate(RS_mul_immediate),
-        .div_alu_operand1(RS_div_operand1_data),
-        .div_alu_operand2(RS_div_operand2_data),
+ 
         .div_alu_func3(RS_div_funct3),
         .out_div_inst_num(RS_div_inst_num),
 
@@ -543,8 +540,7 @@ control_unit_top u_control_unit_top(
         .RS_br_func3(RS_br_func3),
         .br_rd_phy_reg(br_rd_phy_reg),
         .RS_br_start(RS_br_start),
-       .RS_br_operand1(RS_br_operand1),
-       .RS_br_operand2(RS_br_operand2),
+
        .RS_br_operand1_phy(RS_br_operand1_phy),
        .RS_br_operand2_phy(RS_br_operand2_phy),
         .RS_br_phy_reg(RS_br_phy_reg),
