@@ -201,8 +201,8 @@ module CPU_top(
    (* keep = "true" *)wire [56:0]result_out_mul;
    (* keep = "true" *)wire [31:0] RS_EX_inst_num_Mul_out;
 
-(* keep = "true" *)wire [7:0] Operand2_Mul = result_out_mul[7:0];
-(* keep = "true" *)wire [7:0] Operand1_Mul = result_out_mul[15:8];
+(* keep = "true" *)wire [7:0] Operand2_Mul_phy = result_out_mul[7:0];
+(* keep = "true" *)wire [7:0] Operand1_Mul_phy = result_out_mul[15:8];
 (* keep = "true" *)wire [7:0] RS_EX_Mul_Physical_address_in = result_out_mul[23:16];
 (* keep = "true" *)wire [31:0] RS_EX_inst_num_Mul_in = result_out_mul[55:24];
 (* keep = "true" *)wire  Mul_start_in= result_out_mul[56];
@@ -225,8 +225,8 @@ module CPU_top(
   
     (* keep = "true" *)wire [60:0]result_out_div;
 
-(* keep = "true" *)wire [7:0] Operand2_Div = result_out_div[7:0];
-(* keep = "true" *)wire [7:0] Operand1_Div = result_out_div[15:8];
+(* keep = "true" *)wire [7:0] Operand2_Div_phy = result_out_div[7:0];
+(* keep = "true" *)wire [7:0] Operand1_Div_phy = result_out_div[15:8];
 (* keep = "true" *)wire [3:0] divider_op = result_out_div[19:16];
 (* keep = "true" *)wire [7:0] RS_EX_Div_Physical_address_in = result_out_div[27:20];
 (* keep = "true" *)wire [31:0] RS_EX_Div_inst_num= result_out_div[59:28];
