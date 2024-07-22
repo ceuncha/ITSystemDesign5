@@ -591,8 +591,6 @@ control_unit_top u_control_unit_top(
 .RS_BR_inst_num_output(RS_BR_inst_num_output),
 .RS_BR_funct3(RS_BR_funct3),
 .immediate_BR(immediate_BR),
-.Operand1_BR(Operand1_BR),
-.Operand2_BR(Operand2_BR),
      .PC_BR(PC_BR),
      .Operand1_BR_phy(Operand1_BR_phy),
      .Operand2_BR_phy(Operand2_BR_phy)
