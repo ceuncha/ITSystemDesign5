@@ -49,7 +49,7 @@
 
    (* keep = "true" *) reg [63:0] valid_entries1;  // operand1??逾? valid??뇡?냲彛??
    (* keep = "true" *) reg [63:0] valid_entries2; // operand2?뤆?? valid??뇡?냲彛??
-   (* keep = "true" *) reg [182:0] result [0:63];
+  (* keep = "true" *) reg [132:0] result [0:63];
    (* keep = "true" *) reg [6:0] tail;
    (* keep = "true" *) reg [6:0] head;
 
