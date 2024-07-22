@@ -5,7 +5,6 @@ module RS_Mul (
     input wire [31:0] RS_mul_PC,
     input wire [7:0] RS_mul_Rd,
     input wire EX_MEM_MemRead,
-    input wire [31:0] RData,
     input wire [7:0] EX_MEM_Physical_Address,
     input wire [7:0] RS_mul_operand1,
     input wire [7:0] RS_mul_operand2,
