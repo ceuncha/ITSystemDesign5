@@ -11,8 +11,6 @@
     input wire [3:0] ALUOP,
     input wire ALUSrc1,
     input wire ALUSrc2,
-    input wire Jump,
-    input wire Branch,
     input wire [2:0] funct3,
     input wire [31:0] immediate,
     input wire EX_MEM_MemRead,
