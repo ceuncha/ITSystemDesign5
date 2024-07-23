@@ -206,6 +206,7 @@ always @(*) begin
         div_rs_on = 0;
         RS_br_start = 0;
         pass_rs_on = 0;
+        LS_on = 0;
 
         if (in_opcode == 7'b0000000) begin
             // NOP or unsupported instruction
