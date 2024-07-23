@@ -4,20 +4,33 @@ module ROB(
     input wire ROB_Flush,                // ROB Flush signal
     input wire [31:0] IF_ID_instOut,     // Input instruction (expanded to 32 bits)
     input wire reg_write,                // Register write enable signal from the decode stage
+    input wire [31:0] PC,                // Current PC value (expanded to 32 bits)
+    
     input wire alu_exec_done,            // ALU execution completion signal
     input wire [31:0] alu_exec_value,    // ALU executed value
     input wire [31:0] alu_exec_PC,       // ALU execution index
+    
     input wire mul_exec_done,            // Multiplier execution completion signal
     input wire [31:0] mul_exec_value,    // Multiplier executed value
     input wire [31:0] mul_exec_PC,       // Multiplier execution index
+    
     input wire div_exec_done,            // Divider execution completion signal
     input wire [31:0] div_exec_value,    // Divider executed value
     input wire [31:0] div_exec_PC,       // Divider execution index
+    
     input wire PcSrc,                    // Branch signal (acts like a done signal)
     input wire [31:0] PC_Return,         // Jump address
     input wire [31:0] branch_index,      // Branch index in ROB
-    input wire [31:0] PC,
-    input wire BR_Done,                // Current PC value (expanded to 32 bits)
+    input wire BR_Done,                
+
+    input wire P_Done,
+    input wire [31:0] P_Data,
+    input wire [31:0] P_inst_num,
+
+    input wire Load_Done,
+    input wire [31:0] Load_Data,
+    input wire [31:0] Load_inst_num,
+    
     output reg [31:0] out_value,         // Output value
     output reg [4:0] out_dest,           // Output register destination extracted from instr[11:7]
     output reg out_reg_write             // Output RegWrite signal to indicate a register write operation
@@ -79,6 +92,12 @@ always @(posedge clk) begin
                     end
                     if ( BR_Done&& rob_entry[i][31:0] == branch_index) begin
                         rob_entry[i][98:0] <= {rob_entry[i][98], 1'b1, rob_entry[i][96], PC_Return, rob_entry[i][63:32], rob_entry[i][31:0]}; // Update value and maintain new_bit, reg_write, instr, PC
+                    end
+                    if ( P_Done&& rob_entry[i][31:0] == P_inst_num) begin
+                        rob_entry[i][98:0] <= {rob_entry[i][98], 1'b1, rob_entry[i][96], P_Data, rob_entry[i][63:32], rob_entry[i][31:0]}; // Update value and maintain new_bit, reg_write, instr, PC
+                    end
+                    if ( Load_Done&& rob_entry[i][31:0] == Load_inst_num) begin
+                        rob_entry[i][98:0] <= {rob_entry[i][98], 1'b1, rob_entry[i][96], Load_Data, rob_entry[i][63:32], rob_entry[i][31:0]}; // Update value and maintain new_bit, reg_write, instr, PC
                     end
                 end
             end
