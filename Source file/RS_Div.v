@@ -18,6 +18,8 @@ module RS_Div (
     input wire DIV_result_valid,
     input wire Branch_result_valid,
     input wire [7:0] BR_Phy,
+    input wire P_Done,
+    input wire [7:0] P_Phy,
     output reg [60:0] result_out
 );
     
@@ -37,6 +39,7 @@ module RS_Div (
     integer k;
     integer l;
     integer m;
+    integer n;
     reg RS_DIV_on[0:63];
 
    always @(posedge clk) begin
@@ -195,6 +198,17 @@ module RS_Div (
                     end
                     if (!valid_entries2[m] && operand2s[m] == BR_Phy) begin
                         valid_entries2[m] <= 1;
+                    end
+                end     
+            end
+            
+             if (P_Done) begin
+           for (n = 0; n < 64; n = n + 1) begin
+                    if (!valid_entries1[l] && operand1s[l] == P_Phy) begin
+                        valid_entries1[l] <= 1;
+                    end
+                    if (!valid_entries2[l] && operand2s[l] == P_Phy) begin
+                        valid_entries2[l] <= 1;
                     end
                 end     
             end
