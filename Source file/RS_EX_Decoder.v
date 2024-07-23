@@ -25,14 +25,12 @@ module RS_EX_decoder(
     input [1:0] valid,
     input [31:0] immediate,
     input [31:0] inst_num,
+    input [31:0] Operand1_data,
+    input [31:0] Operand2_data,
 
 
-    output reg [2:0] add_alu_func3,      
-    output reg [31:0] add_alu_pc,        
-
-    output reg out_add_MemToReg,   
-    output reg out_add_MemRead,
-    output reg out_add_MemWrite,   
+      
+    output reg [31:0] add_alu_pc,          
     output reg [3:0] out_add_ALUOP,
     output reg out_add_ALUSrc1,      
     output reg out_add_ALUSrc2,      
@@ -44,7 +42,39 @@ module RS_EX_decoder(
     output reg [1:0] out_add_valid,
     output reg [31:0] out_add_immediate,
     output reg [31:0] out_add_inst_num,
+
     
+    output reg [31:0] pass_pc,           
+    output reg [3:0] pass_ALUOP,
+    output reg pass_ALUSrc1,      
+    output reg pass_ALUSrc2,
+
+    output reg [7:0] pass_rd_phy_reg,     
+    output reg pass_rs_on,
+    output reg [31:0] pass_Operand1,
+    output reg [31:0] pass_Operand2,
+    output reg [31:0] pass_immediate,
+    output reg [31:0] pass_inst_num,
+    
+    output reg [2:0] LS_func3,      
+        
+
+    output reg LS_MemToReg,   
+    output reg LS_MemRead,
+    output reg LS_MemWrite,   
+    output reg [3:0] LS_ALUOP,
+          
+    output reg LS_ALUSrc2,      
+   
+    output reg [7:0] LS_phy_reg,     
+    output reg LS_on,
+    output reg [7:0] LS_Operand1_phy,
+    output reg [7:0] LS_Operand2_phy,
+    output reg [1:0] LS_valid,
+    output reg [31:0] LS_immediate,
+    output reg [31:0] LS_inst_num,
+
+
 
     output reg [2:0] mul_alu_func3,     
     output reg [31:0] mul_alu_pc,       
@@ -90,13 +120,14 @@ module RS_EX_decoder(
     output reg [31:0] RS_br_immediate,
     output reg [31:0] RS_br_inst_num,
     output reg [31:0] RS_br_PC
+
 );
 
 always @(*) begin
     if (reset) begin
         // �젅吏��뒪�꽣 珥덇린�솕
 
-        add_alu_func3 = 0;
+
         add_alu_pc = 0;
 
         add_rd_phy_reg = 0;
@@ -128,9 +159,7 @@ always @(*) begin
         div_rs_on = 0;
         RS_br_start = 0;
 
-        out_add_MemToReg = 0;   
-        out_add_MemRead = 0;   
-        out_add_MemWrite = 0;      
+
         out_add_ALUOP = 0;   
         out_add_ALUSrc1 = 0;
         out_add_ALUSrc2 = 0;      
@@ -141,11 +170,42 @@ always @(*) begin
 
         RS_br_IF_ID_taken = 0;
         RS_br_IF_ID_hit = 0; 
+
+        pass_ALUOP = 0;
+        pass_pc = 0;
+        pass_ALUSrc1 = 0;
+        pass_ALUSrc2 = 0;
+        pass_rd_phy_reg = 0;
+        pass_rs_on = 0;
+        pass_Operand1 = 0;
+        pass_Operand2 = 0;
+        pass_immediate = 0;
+        pass_inst_num = 0;
+
+        LS_ALUOP = 0;
+        LS_MemRead = 0;
+        LS_func3=0;
+     
+        LS_MemToReg = 0;
+        LS_MemWrite = 0;
+   
+        LS_ALUSrc2 = 0;
+        LS_phy_reg = 0;
+        LS_on = 0;
+        LS_valid = 0;
+        LS_Operand1_phy = 0;
+        LS_Operand2_phy = 0;
+        LS_immediate = 0;
+        LS_inst_num = 0;
+
+
+
     end else begin
         add_rs_on = 0;
         mul_rs_on = 0;
         div_rs_on = 0;
         RS_br_start = 0;
+        pass_rs_on = 0;
 
         if (in_opcode == 7'b0000000) begin
             // NOP or unsupported instruction
@@ -194,8 +254,23 @@ always @(*) begin
                     out_div_inst_num = inst_num;
                 end else begin
                     // Default R-type to ADD ALU
+                    if(valid == 2'b11) begin
 
-                    add_alu_func3 = in_func3;
+                        pass_pc = in_pc;
+
+                        pass_rd_phy_reg = rd_phy_reg;
+                        pass_rs_on = 1;
+                        pass_Operand1 = Operand1_data;
+                        pass_Operand2 = Operand2_data;
+
+                        pass_immediate = immediate;     
+                        pass_ALUOP = ALUOP;   
+                        pass_ALUSrc1 = ALUSrc1;
+                        pass_ALUSrc2 = ALUSrc2;      
+                        pass_inst_num = inst_num;     
+
+                    end else begin
+
                     add_alu_pc = in_pc;
 
                     add_rd_phy_reg = rd_phy_reg;
@@ -204,18 +279,34 @@ always @(*) begin
                     out_add_Operand2_phy = Operand2_phy;
                     out_add_valid = valid;
                     out_add_immediate = immediate;
-                    out_add_MemToReg = MemToReg;   
-                    out_add_MemRead = MemRead;   
-                    out_add_MemWrite = MemWrite;      
+ 
                     out_add_ALUOP = ALUOP;   
                     out_add_ALUSrc1 = ALUSrc1;
                     out_add_ALUSrc2 = ALUSrc2;      
                     out_add_inst_num = inst_num;
+                    end
                 end
             end else begin
                 // Default R-type to ADD ALU
 
-                add_alu_func3 = in_func3;
+                    if(valid == 2'b11) begin
+
+                        pass_pc = in_pc;
+
+                        pass_rd_phy_reg = rd_phy_reg;
+                        pass_rs_on = 1;
+                        pass_Operand1 = Operand1_data;
+                        pass_Operand2 = Operand2_data;
+
+                        pass_immediate = immediate;     
+                        pass_ALUOP = ALUOP;   
+                        pass_ALUSrc1 = ALUSrc1;
+                        pass_ALUSrc2 = ALUSrc2;      
+                        pass_inst_num = inst_num;     
+
+                    end else begin
+
+
                 add_alu_pc = in_pc;
 
                 add_rd_phy_reg = rd_phy_reg;
@@ -224,13 +315,12 @@ always @(*) begin
                 out_add_Operand2_phy = Operand2_phy;
                 out_add_valid = valid;
                 out_add_immediate = immediate;
-                out_add_MemToReg = MemToReg;   
-                out_add_MemRead = MemRead;   
-                out_add_MemWrite = MemWrite;      
+   
                 out_add_ALUOP = ALUOP;   
                 out_add_ALUSrc1 = ALUSrc1;
                 out_add_ALUSrc2 = ALUSrc2;      
                 out_add_inst_num = inst_num;
+                    end
             end
         end else if (in_opcode == 7'b1101111 || in_opcode == 7'b1100111 || in_opcode == 7'b1100011) begin
             // Branch and Jump instructions
@@ -251,10 +341,43 @@ always @(*) begin
             RS_br_IF_ID_hit = IF_ID_hit; 
             RS_br_immediate = immediate;
             br_rd_phy_reg = rd_phy_reg;
+        end else if (in_opcode == 0000011 || in_opcode == 0100011) begin  //load and store
+            LS_func3 = in_func3;
+            
+            LS_phy_reg = rd_phy_reg;
+            LS_on = 1;
+            LS_Operand1_phy = Operand1_phy;
+            LS_Operand2_phy = Operand2_phy;
+            LS_valid = valid;
+            LS_immediate = immediate;
+            LS_MemToReg = MemToReg;   
+            LS_MemRead = MemRead;   
+            LS_MemWrite = MemWrite;      
+            LS_ALUOP = ALUOP;   
+           
+            LS_ALUSrc2 = ALUSrc2;      
+            LS_inst_num = inst_num;
         end else begin
             // Default to ADD ALU
 
-            add_alu_func3 = in_func3;
+                    if(valid == 2'b11) begin
+
+                        pass_pc = in_pc;
+
+                        pass_rd_phy_reg = rd_phy_reg;
+                        pass_rs_on = 1;
+                        pass_Operand1 = Operand1_data;
+                        pass_Operand2 = Operand2_data;
+
+                        pass_immediate = immediate;     
+                        pass_ALUOP = ALUOP;   
+                        pass_ALUSrc1 = ALUSrc1;
+                        pass_ALUSrc2 = ALUSrc2;      
+                        pass_inst_num = inst_num;     
+
+                    end else begin
+
+ 
             add_alu_pc = in_pc;
 
             add_rd_phy_reg = rd_phy_reg;
@@ -263,13 +386,12 @@ always @(*) begin
             out_add_Operand2_phy = Operand2_phy;
             out_add_valid = valid;
             out_add_immediate = immediate;
-            out_add_MemToReg = MemToReg;   
-            out_add_MemRead = MemRead;   
-            out_add_MemWrite = MemWrite;      
+ 
             out_add_ALUOP = ALUOP;   
             out_add_ALUSrc1 = ALUSrc1;
             out_add_ALUSrc2 = ALUSrc2;      
             out_add_inst_num = inst_num;
+                    end
         end
     end
 end
