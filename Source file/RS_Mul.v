@@ -17,6 +17,8 @@ module RS_Mul (
     input wire DIV_result_valid,
     input wire Branch_result_valid,
     input wire [7:0] BR_Phy,
+    input wire P_Done,
+    input wire [7:0] P_Phy,
     output reg [56:0] result_out
 );
 
@@ -35,6 +37,7 @@ module RS_Mul (
    (* keep = "true" *) integer k;
    (* keep = "true" *) integer l;
    (* keep = "true" *) integer m;
+   (* keep = "true" *) integer n;
    (* keep = "true" *) reg [6:0] head;
    (* keep = "true" *) reg RS_MUL_on[0:63];
 
@@ -183,6 +186,17 @@ module RS_Mul (
                     end
                     if (!valid_entries2[m] && operand2s[m] == BR_Phy) begin
                         valid_entries2[m] <= 1;
+                    end
+                end     
+            end
+            
+            if (P_Done) begin
+           for (n = 0; n < 64; n = n + 1) begin
+                    if (!valid_entries1[l] && operand1s[l] == P_Phy) begin
+                        valid_entries1[l] <= 1;
+                    end
+                    if (!valid_entries2[l] && operand2s[l] == P_Phy) begin
+                        valid_entries2[l] <= 1;
                     end
                 end     
             end
