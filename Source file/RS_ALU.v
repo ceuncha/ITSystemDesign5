@@ -26,7 +26,8 @@
     input wire DIV_result_valid,
     input wire Branch_result_valid,
     input wire [7:0] BR_Phy,
-
+  input wire P_Done,
+  input wire [7:0] P_Phy,
   
   output reg [132:0] result_out
     
@@ -53,7 +54,7 @@
    (* keep = "true" *) reg [6:0] tail;
    (* keep = "true" *) reg [6:0] head;
 
-   (* keep = "true" *) integer i, j, k, l, m;
+  (* keep = "true" *) integer i, j, k, l, m, n;
    (* keep = "true" *) reg RS_ALU_on[0:63];
 
     always @(posedge clk) begin    //?逾�?�봾????六�??源덂슖?? ?猷�?�쐝�뵳???�꼨 ??六�?�끃裕뉐ㅇ?
@@ -267,8 +268,45 @@
                 valid_entries1[tail] <= valid[0];
                 valid_entries2[tail] <= 1;
                 tail <= (tail + 1) % 64;
-                 RS_ALU_on[tail] <=0;                   
-              
+                 RS_ALU_on[tail] <=0;  
+               
+              end else if(operand1 == P_Phy) begin
+                inst_nums[tail] <= RS_alu_inst_num;
+                PCs[tail] <= PC;
+                Rds[tail] <= Rd;
+                MemToRegs[tail] <= MemToReg;
+                MemReads[tail] <= MemRead;
+                MemWrites[tail] <= MemWrite;
+                ALUOPs[tail] <= ALUOP;
+                ALUSrc1s[tail] <= ALUSrc1;
+                ALUSrc2s[tail] <= ALUSrc2;
+                funct3s[tail] <= funct3;
+                immediates[tail] <= immediate;
+                operand1s[tail] <= operand1;
+                operand2s[tail] <= operand2;
+                valid_entries1[tail] <= 1;
+                valid_entries2[tail] <= valid[1];
+                tail <= (tail + 1) % 64;
+                 RS_ALU_on[tail] <=0;
+               
+              end else if(operand2 == P_Phy) begin
+                inst_nums[tail] <= RS_alu_inst_num;
+                PCs[tail] <= PC;
+                Rds[tail] <= Rd;
+                MemToRegs[tail] <= MemToReg;
+                MemReads[tail] <= MemRead;
+                MemWrites[tail] <= MemWrite;
+                ALUOPs[tail] <= ALUOP;
+                ALUSrc1s[tail] <= ALUSrc1;
+                ALUSrc2s[tail] <= ALUSrc2;
+                funct3s[tail] <= funct3;
+                immediates[tail] <= immediate;
+                operand1s[tail] <= operand1;
+                operand2s[tail] <= operand2;
+                valid_entries1[tail] <= valid[0];
+                valid_entries2[tail] <= 1;
+                tail <= (tail + 1) % 64;
+                 RS_ALU_on[tail] <=0;       
             end else begin
                 inst_nums[tail] <= RS_alu_inst_num;
                 PCs[tail] <= PC;
@@ -290,7 +328,7 @@
              end 
              end
             
-            
+
            
             if (ALU_result_valid) begin                 //alu??踰� �뇦猿됲��?沅€뤆?? ?獄�??�젆???�꼨??諭�?�뇡?, �뼨轅명��???�굢? RS?�굢? ?獄�??�젆???肉�??�맪 嶺뚮ㅏ援앲��??�젆??獄��뼅??? ?�닱?�닑?遊븅썒�슣�닔?爰�?紐�? ?�쑏熬곥룊爰�?�뇡??�굢?
                                                         //?�뇡???�뭵?�뇡? �뤆�룆?�뫖援�??諭� ?驪�???�몥??逾�??諭� ??六�?�끃裕�???堉�.
@@ -336,7 +374,7 @@
                     end
                 end     
             end
-                     if (Branch_result_valid) begin                //Branch??踰� �뇦猿됲��?沅€뤆?? ?獄�??�젆???�꼨??諭�?�뇡?, �뼨轅명��???�굢? RS?�굢? ?獄�??�젆???肉�??�맪 嶺뚮ㅏ援앲��??�젆??獄��뼅??? ?�닱?�닑?遊븅썒�슣�닔?爰�?紐�? ?�쑏熬곥룊爰�?�뇡??�굢?
+           if (Branch_result_valid) begin                //Branch??踰� �뇦猿됲��?沅€뤆?? ?獄�??�젆???�꼨??諭�?�뇡?, �뼨轅명��???�굢? RS?�굢? ?獄�??�젆???肉�??�맪 嶺뚮ㅏ援앲��??�젆??獄��뼅??? ?�닱?�닑?遊븅썒�슣�닔?爰�?紐�? ?�쑏熬곥룊爰�?�뇡??�굢?
                                                         //?�뇡???�뭵?�뇡? �뤆�룆?�뫖援�??諭� ?驪�???�몥??逾�??諭� ??六�?�끃裕�???堉�.
            for (m = 0; m < 64; m = m + 1) begin
                     if (!valid_entries1[m] && operand1s[m] == BR_Phy) begin
@@ -347,6 +385,17 @@
                     end
                 end     
             end
+         if (P_Done) begin                
+          for (n = 0; n < 64; n = n + 1) begin
+           if (!valid_entries1[n] && operand1s[n] == P_Phy) begin
+            valid_entries1[n] <= 1;
+           end
+           if (!valid_entries2[n] && operand2s[n] == P_Phy) begin
+             valid_entries2[n] <= 1;
+           end
+          end
+         end
+         
          end
  
       if (RS_ALU_on[head]) begin
