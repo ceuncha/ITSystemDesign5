@@ -9,17 +9,22 @@ module physical_register_file (
     input ALU_load_Write,
     input ALU_mul_Write,
     input ALU_div_Write,
-    input ALU_done_Write,
+    input BR_Write,
+    input Pass_done,
+
     input [31:0] ALU_add_Data,
     input [31:0] ALU_load_Data,
     input [31:0] ALU_mul_Data,
     input [31:0] ALU_div_Data,
-    input [31:0] ALU_done_Data,
+    input [31:0] BR_Data,
+    input [31:0] Pass_done_data,
+
     input [7:0] ALU_add_phy,
     input [7:0] ALU_load_phy,
     input [7:0] ALU_mul_phy,
     input [7:0] ALU_div_phy,
-    input [7:0] ALU_done_phy,
+    input [7:0] BR_phy,
+    input [7:0] Pass_done_phy,
 
     input [7:0] Operand1_phy_ALU,
     input [7:0] Operand2_phy_ALU,
@@ -82,13 +87,18 @@ always @(posedge clk) begin
             registers[ALU_div_phy] <= ALU_div_Data;
             valid[ALU_div_phy] <= 1'b1; 
         end
-        if (ALU_done_Write == 1'b1 && ALU_done_phy != 7'b0) begin
-            registers[ALU_done_phy] <= ALU_done_Data;
-            valid[ALU_done_phy] <= 1'b1; 
+        if (BR_Write == 1'b1 && BR_phy != 7'b0) begin
+            registers[BR_phy] <= BR_Data;
+            valid[BR_phy] <= 1'b1; 
+        end
+        if (Pass_done == 1'b1 && Pass_done_phy != 7'b0) begin
+            registers[Pass_done_phy] <= Pass_done_data;
+            valid[Pass_done_phy] <= 1'b1; 
         end
         if (Rd_phy != 7'b0) begin
         valid[Rd_phy] <= 1'b0;
         end
+
     end
 end
 
