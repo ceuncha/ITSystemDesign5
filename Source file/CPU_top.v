@@ -263,7 +263,7 @@ module CPU_top(
 (* keep = "true" *)wire [7:0] RS_EX_Div_Physical_address_in = result_out_div[27:20];
 (* keep = "true" *)wire [31:0] RS_EX_Div_inst_num= result_out_div[59:28];
 (* keep = "true" *)wire Div_start_in = result_out_div[60];
-(* keep = "true" *) wire [126:0] result_out_pass;
+(* keep = "true" *) wire [174:0] result_out_pass;
 
 
 
@@ -275,8 +275,8 @@ module CPU_top(
 (* keep = "true" *)wire [31:0] P_PC=result_out_pass[77:46];
 (* keep = "true" *)wire P_Done=result_out_pass[78];
 (* keep = "true" *)wire [31:0] P_inst_num=result_out_pass[110:79];
-(* keep = "true" *)wire [7:0] P_Operand1=result_out_pass[118:111];
-(* keep = "true" *)wire [7:0] P_Operand2=result_out_pass[126:119];
+(* keep = "true" *)wire [31:0] P_Operand1=result_out_pass[142:111];
+(* keep = "true" *)wire [31:0] P_Operand2=result_out_pass[174:143];
 
 (* keep = "true" *)wire [31:0] P_ALU_A;
 (* keep = "true" *)wire [31:0] P_ALU_B;
