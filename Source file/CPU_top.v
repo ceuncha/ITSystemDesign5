@@ -167,7 +167,7 @@ module CPU_top(
     (* keep = "true" *)wire pass_rs_on;
     (* keep = "true" *)wire [31:0] pass_Operand1;
     (* keep = "true" *)wire [31:0] pass_Operand2;
-    (* keep = "true" *)wire [31:0] immediate;
+    (* keep = "true" *)wire [31:0] pass_immediate;
     (* keep = "true" *)wire [31:0] pass_inst_num;
 
 
