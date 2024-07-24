@@ -41,11 +41,11 @@
    (* keep = "true" *) reg [63:0] MemReads;
    (* keep = "true" *) reg [63:0] MemWrites;
    (* keep = "true" *) reg [3:0] ALUOPs [0:63];
-   (* keep = "true" *) reg [63:0] ALUSrc1s;
+
    (* keep = "true" *) reg [63:0] ALUSrc2s;
    (* keep = "true" *) reg [2:0] funct3s [0:63];
    (* keep = "true" *) reg [31:0] immediates [0:63];
-
+   (* keep = "true" *) reg [7:0] operand1s [0:63];
    (* keep = "true" *) reg [7:0] operand2s [0:63];
 
    (* keep = "true" *) reg [63:0] valid_entries1;  // operand1??��? valid??�눀?�꺋壤�??
