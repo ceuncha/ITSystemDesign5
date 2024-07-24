@@ -127,6 +127,43 @@ module RS_Mul (
                 valid_entries2[tail] <= 1 ; 
                 tail <= (tail + 1) % 64;
                 RS_MUL_on[tail] <=0; 
+                  
+              end else if (RS_mul_operand1 == BR_Phy) begin  // DIV??굢???땻? operand1??踰? ??굢??亦????逾? ?椰???亦????諭???뇡?
+                PCs[tail] <= RS_mul_PC;
+                Rds[tail] <= RS_mul_Rd;
+                operand1s[tail] <= RS_mul_operand1;
+                operand2s[tail] <= RS_mul_operand2;
+                valid_entries1[tail] <= 1;
+                valid_entries2[tail] <= RS_mul_valid[1];
+                tail <= (tail + 1) % 64;
+                RS_MUL_on[tail] <=0;
+              end else if (RS_mul_operand2 == BR_Phy) begin  // MUL??굢???땻? operand2??踰? ??굢??亦????逾? ?椰???亦????諭???뇡?
+                PCs[tail] <= RS_mul_PC;
+                Rds[tail] <= RS_mul_Rd;
+                operand1s[tail] <= RS_mul_operand1;
+                operand2s[tail] <= RS_mul_operand2;
+                valid_entries1[tail] <= RS_mul_valid[0];
+                valid_entries2[tail] <= 1; 
+                tail <= (tail + 1) % 64;
+                 RS_MUL_on[tail] <=0;
+              end else if (RS_mul_operand1 == P_Phy) begin  // DIV??굢???땻? operand1??踰? ??굢??亦????逾? ?椰???亦????諭???뇡?
+                PCs[tail] <= RS_mul_PC;
+                Rds[tail] <= RS_mul_Rd;
+                operand1s[tail] <= RS_mul_operand1;
+                operand2s[tail] <= RS_mul_operand2;
+                valid_entries1[tail] <= 1;
+                valid_entries2[tail] <= RS_mul_valid[1];
+                tail <= (tail + 1) % 64;
+                RS_MUL_on[tail] <=0;
+              end else if (RS_mul_operand2 == P_Phy) begin  // MUL??굢???땻? operand2??踰? ??굢??亦????逾? ?椰???亦????諭???뇡?
+                PCs[tail] <= RS_mul_PC;
+                Rds[tail] <= RS_mul_Rd;
+                operand1s[tail] <= RS_mul_operand1;
+                operand2s[tail] <= RS_mul_operand2;
+                valid_entries1[tail] <= RS_mul_valid[0];
+                valid_entries2[tail] <= 1; 
+                tail <= (tail + 1) % 64;
+                 RS_MUL_on[tail] <=0;
             end else begin
                 PCs[tail] <= RS_mul_PC;
                 Rds[tail] <= RS_mul_Rd;
