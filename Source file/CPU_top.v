@@ -157,6 +157,10 @@ module CPU_top(
     (* keep = "true" *)wire [31:0] pass_inst_num;
 
 
+//PassBuffer wire
+    (* keep = "true" *)wire P_Done;
+    (* keep = "true" *)wire [31:0] P_inst_num;
+    (* keep = "true" *)wire [31:0] P_Data;
 
             // rs_alu_wire
 
@@ -295,21 +299,12 @@ module CPU_top(
    (* keep = "true" *)wire [31:0] RS_EX_Div_inst_num_out;
 
 
-       //MEM_WB////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    (* keep = "true" *)wire EX_MEM_MemToReg, EX_MEM_MemWrite, EX_MEM_alu_exec_done, mul_exec_done, div_exec_done;
-    (* keep = "true" *)wire [2:0] EX_MEM_funct3;
-    (* keep = "true" *)wire [31:0] EX_MEM_Rdata2, EX_MEM_ALUResult, EX_MEM_alu_inst_num, EX_MEM_alu_physical_address;
-    (* keep = "true" *)wire [31:0] mul_exec_value, mul_exec_PC, div_exec_value, div_exec_PC;
+       //dd////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
    
-    (* keep = "true" *)wire MEM_WB_MemToReg;
-    (* keep = "true" *)wire [31:0] MEM_WB_ALUResult, MEM_WB_RData, alu_exec_value, alu_exec_PC;
-    (* keep = "true" *)wire alu_exec_done;
-    assign alu_exec_done=EX_MEM_alu_exec_done|Load_Done;
     (* keep = "true" *)wire [31:0] out_value;
     (* keep = "true" *)wire [4:0] out_dest;
     (* keep = "true" *) wire out_reg_write;
-    (* keep = "true" *) wire [31:0] EX_MEM_div_inst_num;
-    (* keep = "true" *) wire [31:0] EX_MEM_mul_inst_num;
     
 
     (* keep = "true" *) wire [31:0] Branch_index;
@@ -618,7 +613,8 @@ control_unit_top u_control_unit_top(
 .BR_Phy(BR_Phy),
 .BR_Done(RS_BR_Jump),
 .Predict_Result(Predict_Result),
-
+     .P_Phy(P_Phy),
+     .P_Done(P_Done),
 .RS_BR_Branch(RS_BR_Branch),
 .RS_BR_Jump(RS_BR_Jump),
 .RS_BR_Hit(RS_BR_hit),
@@ -679,6 +675,8 @@ control_unit_top u_control_unit_top(
         .DIV_result_valid(DIV_Done),
         .Branch_result_valid(RS_BR_Jump),
         .BR_Phy(BR_Phy),
+            .P_Done(P_Done),
+            .P_Phy(P_Phy),
         .result_out(result_out_alu)
     );
 
@@ -839,19 +837,25 @@ control_unit_top u_control_unit_top(
         .ROB_Flush(ROB_Flush),
         .IF_ID_instOut(IF_ID_instOut),
         .reg_write(RegWrite),
-        .alu_exec_done(alu_exec_done),
-        .alu_exec_value(alu_exec_value),
-        .alu_exec_PC(EX_MEM_alu_inst_num),
-        .mul_exec_done(mul_exec_done),
-        .mul_exec_value(mul_exec_value),
-        .mul_exec_PC(EX_MEM_mul_inst_num),
-        .div_exec_done(div_exec_done),
-        .div_exec_value(div_exec_value),
-        .div_exec_PC(EX_MEM_div_inst_num),
+        .alu_exec_done(ALU_Done),
+        .alu_exec_value(ALU_Data),
+        .alu_exec_PC(RS_EX_inst_num),
+        .mul_exec_done(MUL_Done),
+        .mul_exec_value(MUL_Data),
+        .mul_exec_PC(RS_EX_inst_num_Mul_out),
+        .div_exec_done(DIV_Done),
+        .div_exec_value(DIV_Data),
+        .div_exec_PC(RS_EX_Div_inst_num_out),
         .PcSrc(Predict_Result),
         .PC_Return(PC_Return),
         .branch_index(Branch_index),
         .PC(IF_ID_inst_num),
+        .P_Done(P_Done),
+        .P_Data(P_Data),
+        .P_inst_num(P_inst_num),
+        .Load_Done(Load_Done),
+        .Load_Data(Load_Data),
+        .Load_inst_num(Load_inst_num),
         .out_value(out_value),
         .out_dest(out_dest),
         .BR_Done(BR_Done),
