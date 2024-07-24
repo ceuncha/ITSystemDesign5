@@ -1,3 +1,24 @@
+
+//////////////////////////////////////////////////////////////////////////////////
+// Company: 
+// Engineer: 
+// 
+// Create Date: 2024/07/24 13:59:23
+// Design Name: 
+// Module Name: cpu_top_tb
+// Project Name: 
+// Target Devices: 
+// Tool Versions: 
+// Description: 
+// 
+// Dependencies: 
+// 
+// Revision:
+// Revision 0.01 - File Created
+// Additional Comments:
+// 
+//////////////////////////////////////////////////////////////////////////////////
+
 `timescale 1ns / 1ps
 
 module CPU_top_tb;
@@ -26,7 +47,7 @@ module CPU_top_tb;
         rst = 1;
 
         // Wait 10 ns for global reset to finish
-        #10;
+        #20;
         
         // Deassert reset
         rst = 0;
@@ -35,13 +56,13 @@ module CPU_top_tb;
         // Example: Apply some input stimuli and observe the outputs
         
         // Run the simulation for a certain period
-        #5000;
+        #150000;
         
         // Finish simulation
         $finish;
     end
     
     // Clock generator
-    always #5 clk = ~clk;
+    always #10 clk = ~clk;
 
 endmodule
