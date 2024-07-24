@@ -652,7 +652,7 @@ control_unit_top u_control_unit_top(
         .pass_Operand1(pass_Operand1),
         .pass_Operand2(pass_Operand2),
         .pass_immediate(pass_immediate),
-        .pass_inst_num(pass_inst_num),
+        .pass_inst_num(pass_inst_num)
         
 
         
