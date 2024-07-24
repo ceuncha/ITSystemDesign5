@@ -568,7 +568,9 @@ control_unit_top u_control_unit_top(
         .Operand2_phy(Phy_addr_OP2),
         .valid(Valid),
         .immediate(imm32),
-
+        .Operand1_data(Rdata1),
+        .Operand1_data(Rdata2),
+        
         
         .add_alu_pc(RS_alu_PC),
    
@@ -650,7 +652,9 @@ control_unit_top u_control_unit_top(
         .pass_Operand1(pass_Operand1),
         .pass_Operand2(pass_Operand2),
         .pass_immediate(pass_immediate),
-        .pass_inst_num(pass_inst_num)
+        .pass_inst_num(pass_inst_num),
+        
+
         
     );
 
