@@ -121,6 +121,7 @@ module CPU_top(
     (* keep = "true" *)wire [1:0] LS_valid_out;
     (* keep = "true" *)wire [31:0] LS_immediate_out;
     (* keep = "true" *)wire [31:0] LS_inst_num_out;
+    (* keep = "true" *)wire [2:0] LS_func3_out;
 
   
   /// RS_BR
