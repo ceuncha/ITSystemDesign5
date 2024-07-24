@@ -34,6 +34,8 @@ module physical_register_file (
     input [7:0] Operand2_phy_DIV,
     input [7:0] Operand1_phy_branch,
     input [7:0] Operand2_phy_branch,
+    input [7:0] Operand1_phy_LS,
+    input [7:0] Operand2_phy_LS,
 
     output reg [31:0] Operand1_data_ALU,
     output reg [31:0] Operand2_data_ALU,
@@ -43,12 +45,17 @@ module physical_register_file (
     output reg [31:0] Operand2_data_DIV,
     output reg [31:0] Operand1_data_branch,
     output reg [31:0] Operand2_data_branch,
+    output reg [31:0] Operand1_data_LS,
+    output reg [31:0] Operand2_data_LS,
+
 
     output reg [31:0] Operand1_data,
     output reg [31:0] Operand2_data,
     output reg valid1,
     output reg valid2
 );
+
+
 
 
    (* keep = "true" *) reg [31:0] registers [0:255];
@@ -133,6 +140,10 @@ always @(*) begin
     
         Operand1_data_branch = registers[Operand1_phy_branch];
         Operand2_data_branch = registers[Operand2_phy_branch];
+        
+     //LS
+        Operand1_data_LS = registers[Operand1_phy_LS];
+        Operand2_data_LS = registers[Operand2_phy_LS];
 
 end   
 
