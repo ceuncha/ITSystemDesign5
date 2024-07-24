@@ -299,6 +299,13 @@ module CPU_top(
 (* keep = "true" *) wire [31:0] immediate_LS = result_out_ls[31:0];
 
 
+//datamemory
+(* keep = "true" *)wire [31:0] Operand1_LS;
+(* keep = "true" *)wire [31:0] Operand2_LS;
+(* keep = "true" *)wire [31:0] LS_B;
+(* keep = "true" *)wire [31:0] LS_result;
+assign LS_Result = Operand1_LS + LS_B;
+
     ////////////////ex_mem wire
     //////////
 
@@ -878,7 +885,11 @@ control_unit_top u_control_unit_top(
 
 
 
+
     // DataMemory instantiation
+
+ (* keep_hierarchy = "yes" *)
+    MUX_2input MUX_LS (.a(Operand2_LS),.b(immediate_LS),.sel(RS_LS_Src2),.y(LS_B)); 
 
     (* keep_hierarchy = "yes" *)
     DataMemory datamem (
