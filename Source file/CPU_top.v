@@ -307,7 +307,7 @@ module CPU_top(
 (* keep = "true" *)wire [31:0] LS_Result;
 assign LS_Result = Operand1_LS + LS_B;
 (* keep = "true" *)wire [31:0] Load_inst_num;
-(* keep = "true" *)wire [31:0] funct3_LS;
+(* keep = "true" *)wire [31:0] func3_LS;
     ////////////////ex_mem wire
     //////////
 
@@ -900,7 +900,7 @@ control_unit_top u_control_unit_top(
         .LS_MemRead(LS_MemRead),
         .LS_MemWrite(LS_MemWrite),
         .LS_inst_num(LS_inst_num),
-        .funct3_LS(funct3_LS),
+        .funct3_LS(func3_LS),
         .LS_Result(LS_Result),
         .Operand2_LS(Operand2_LS),
         .Load_Done(Load_Done),
