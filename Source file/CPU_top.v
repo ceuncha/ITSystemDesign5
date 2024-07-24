@@ -268,7 +268,20 @@ module CPU_top(
 (* keep = "true" *)wire P_Done;
 (* keep = "true" *)wire [7:0] P_Phy;
 
+(* keep = "true" *)wire [31:0] P_immediate=result_out_pass[31:0];
+(* keep = "true" *)wire P_Src1=result_out_pass[32];
+(* keep = "true" *)wire P_Src2=result_out_pass[33];
+(* keep = "true" *)wire [3:0] P_ALUop=result_out_pass[37:34];
+(* keep = "true" *)wire [7:0] P_Phy=result_out_pass[45:38];
+(* keep = "true" *)wire [31:0] P_PC=result_out_pass[77:46];
+(* keep = "true" *)wire P_Done=result_out_pass[78];
+(* keep = "true" *)wire [31:0] P_inst_num=result_out_pass[110:79];
+(* keep = "true" *)wire [7:0] P_Operand1=result_out_pass[118:111];
+(* keep = "true" *)wire [7:0] P_Operand1=result_out_pass[126:119];
 
+(* keep = "true" *)wire [31:0] P_ALU_A;
+(* keep = "true" *)wire [31:0] P_ALU_B;
+(* keep = "true" *)wire [31:0] P_Data;
 //ls reservation
 
 
@@ -824,6 +837,13 @@ control_unit_top u_control_unit_top(
   subtractor_32bit subtractor( .A(Operand1_BR),.B(Operand2_BR),.negative(negative),.overflow(overflow),.zero(zero),.carry(carry));
 
   ////////////ALU
+  
+     (* keep_hierarchy = "yes" *)
+    ALU ALU_pass(.A(P_ALU_A),.B(P_ALU_B),.ALUop(P_ALUop),.Result(P_Data));
+    (* keep_hierarchy = "yes" *)
+    MUX_2input MUX_pass_A (.a(P_PC),.b(P_Operand1),.sel(P_Src1),.y(P_ALU_A)); 
+    (* keep_hierarchy = "yes" *)
+    MUX_2input MUX_pass_B (.a(P_Operand2),.b(P_immediate),.sel(P_Src2),.y(P_ALU_B)); 
   (* keep_hierarchy = "yes" *)
     ALU ALU(.A(ALU_A),.B(ALU_B),.ALUop(ALUop),.Result(ALU_Data));
     (* keep_hierarchy = "yes" *)
