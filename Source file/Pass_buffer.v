@@ -25,6 +25,7 @@
    (* keep = "true" *) reg [31:0] immediates ;
    (* keep = "true" *) reg [31:0] operand1s ;
    (* keep = "true" *) reg [31:0] operand2s ;
+   (* keep = "true" *) reg dones ;
 
 
 
@@ -39,6 +40,7 @@
                 immediates <=0;
                 operand1s <= 0;
                 operand2s <= 0;
+                dones<=0;
              
             end
          else begin
@@ -52,8 +54,9 @@
                 immediates <= immediate;
                 operand1s <= operand1;
                 operand2s <= operand2;
+                dones<=1'b1;
              end 
              end
              end
-        assign result_out={operand2s ,operand1s,inst_nums, 1'b1, PCs, Rds, ALUOPs, ALUSrc1s, ALUSrc2s, immediates};
+        assign result_out={operand2s ,operand1s,inst_nums, dones, PCs, Rds, ALUOPs, ALUSrc1s, ALUSrc2s, immediates};
  endmodule
