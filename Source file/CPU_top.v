@@ -144,6 +144,17 @@ module CPU_top(
 
     (* keep = "true" *) wire [7:0] Operand1_BR_phy;
     (* keep = "true" *) wire [7:0] Operand2_BR_phy;
+    
+    (* keep = "true" *)wire [31:0] pass_pc;
+    (* keep = "true" *)wire [3:0] pass_ALUOP;
+   (* keep = "true" *) wire pass_ALUSrc1;
+    (* keep = "true" *)wire pass_ALUSrc2;
+    (* keep = "true" *)wire [7:0] pass_rd_phy_reg;
+    (* keep = "true" *)wire pass_rs_on;
+    (* keep = "true" *)wire [31:0] pass_Operand1;
+    (* keep = "true" *)wire [31:0] pass_Operand2;
+    (* keep = "true" *)wire [31:0] immediate;
+    (* keep = "true" *)wire [31:0] pass_inst_num;
 
 
 
@@ -240,6 +251,10 @@ module CPU_top(
 (* keep = "true" *)wire [7:0] RS_EX_Div_Physical_address_in = result_out_div[27:20];
 (* keep = "true" *)wire [31:0] RS_EX_Div_inst_num= result_out_div[59:28];
 (* keep = "true" *)wire Div_start_in = result_out_div[60];
+(* keep = "true" *) wire [126:0] result_out_pass;
+
+(* keep = "true" *)wire P_Done;
+(* keep = "true" *)wire [7:0] P_Phy;
 
 
 
@@ -418,17 +433,17 @@ physical_register_file u_physical_register_file(
     .ALU_load_Write(Load_Done),
     .ALU_mul_Write(MUL_Done),
     .ALU_div_Write(DIV_Done),
-    .BR_Write(RS_BR_Jump),
+    .ALU_done_Write(RS_BR_Jump),
     .ALU_add_Data(ALU_Data),
     .ALU_load_Data(Load_Data),
     .ALU_mul_Data(MUL_Data[31:0]),
     .ALU_div_Data(DIV_Data),
-    .BR_Data(PC_Return),
+    .ALU_done_Data(PC_Return),
     .ALU_add_phy(ALU_Phy),
     .ALU_load_phy(Load_Phy),
     .ALU_mul_phy(MUL_Phy),
     .ALU_div_phy(DIV_Phy),
-    .BR_phy(BR_Phy),
+    .ALU_done_phy(BR_Phy),
     .Operand1_data(RData1),
     .Operand2_data(RData2),
     .valid1(Valid1),
@@ -616,7 +631,23 @@ control_unit_top u_control_unit_top(
      .Operand1_BR_phy(Operand1_BR_phy),
      .Operand2_BR_phy(Operand2_BR_phy)
 );
-      
+    (* keep_hierarchy = "yes" *)
+    Pass_buffer pass_buffer(
+    .clk(clk),
+    .reset(rst),
+    .start(pass_rs_on),
+    .P_inst_num(pass_inst_num),
+    .PC(pass_pc),
+    .Rd(pass_rd_phy_reg),
+    .ALUOP(pass_ALUOP),
+    .ALUSrc1(pass_ALUSrc1),
+    .ALUSrc2(pass_ALUSrc2),
+    .immediate(pass_immediate),
+    .operand1(pass_Operand1),
+    .operand3(pass_Operand2),
+    .result_out(result_out_pass)
+    );
+    
     
 
     (* keep_hierarchy = "yes" *)
@@ -679,6 +710,8 @@ control_unit_top u_control_unit_top(
         .DIV_result_valid(DIV_Done),
         .Branch_result_valid(RS_BR_Jump),
         .BR_Phy(BR_Phy),
+        .P_Done(P_Done),
+        .P_Phy(P_Phy),
         .result_out(result_out_mul)
     );
  
@@ -694,7 +727,8 @@ control_unit_top u_control_unit_top(
                    .RS_div_valid(RS_div_valid),
                    .ALU_result_dest(ALU_Phy),.ALU_result_valid(ALU_Done),.MUL_result_dest(MUL_Phy),
                    .MUL_result_valid(MUL_Done),.DIV_result_dest(DIV_Phy),.DIV_result_valid(DIV_Done),
-                   .Branch_result_valid(RS_BR_Jump),.BR_Phy(BR_Phy),
+                   .Branch_result_valid(RS_BR_Jump),.BR_Phy(BR_Phy),.P_Done(P_Done),
+                    .P_Phy(P_Phy),
                    .result_out(result_out_div));
 
 
