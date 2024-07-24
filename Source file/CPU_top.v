@@ -172,7 +172,7 @@ module CPU_top(
 
 
 //PassBuffer wire
-    (* keep = "true" *)wire P_Done;
+
     (* keep = "true" *)wire [31:0] P_inst_num;
     (* keep = "true" *)wire [31:0] P_Data;
 
@@ -265,8 +265,7 @@ module CPU_top(
 (* keep = "true" *)wire Div_start_in = result_out_div[60];
 (* keep = "true" *) wire [126:0] result_out_pass;
 
-(* keep = "true" *)wire P_Done;
-(* keep = "true" *)wire [7:0] P_Phy;
+
 
 (* keep = "true" *)wire [31:0] P_immediate=result_out_pass[31:0];
 (* keep = "true" *)wire P_Src1=result_out_pass[32];
@@ -277,7 +276,7 @@ module CPU_top(
 (* keep = "true" *)wire P_Done=result_out_pass[78];
 (* keep = "true" *)wire [31:0] P_inst_num=result_out_pass[110:79];
 (* keep = "true" *)wire [7:0] P_Operand1=result_out_pass[118:111];
-(* keep = "true" *)wire [7:0] P_Operand1=result_out_pass[126:119];
+(* keep = "true" *)wire [7:0] P_Operand2=result_out_pass[126:119];
 
 (* keep = "true" *)wire [31:0] P_ALU_A;
 (* keep = "true" *)wire [31:0] P_ALU_B;
