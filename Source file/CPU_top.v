@@ -290,7 +290,7 @@ module CPU_top(
 (* keep = "true" *) wire [7:0] Operand1_LS_phy = result_out_ls[91:84];
 (* keep = "true" *) wire [31:0] LS_inst_num = result_out_ls[83:52];
 (* keep = "true" *) wire LS_on = result_out_ls[51];
-(* keep = "true" *) wire [7:0] LS_phy_reg = result_out_ls[50:43];
+(* keep = "true" *) wire [7:0] Load_Phy = result_out_ls[50:43];
 (* keep = "true" *) wire LS_MemToReg = result_out_ls[42];
 (* keep = "true" *) wire LS_MemRead = result_out_ls[41];
 (* keep = "true" *) wire LS_MemWrite = result_out_ls[40];
