@@ -9,9 +9,9 @@
     input wire ALUSrc1,
     input wire ALUSrc2,
     input wire [31:0] immediate,
-    input wire [7:0] operand1,
-    input wire [7:0] operand2,
-    output wire [126:0] result_out
+    input wire [31:0] operand1,
+    input wire [31:0] operand2,
+    output wire [174:0] result_out
     
 );
     
@@ -23,8 +23,8 @@
    (* keep = "true" *) reg  ALUSrc1s;
    (* keep = "true" *) reg  ALUSrc2s;
    (* keep = "true" *) reg [31:0] immediates ;
-   (* keep = "true" *) reg [7:0] operand1s ;
-   (* keep = "true" *) reg [7:0] operand2s ;
+   (* keep = "true" *) reg [31:0] operand1s ;
+   (* keep = "true" *) reg [31:0] operand2s ;
 
 
 
