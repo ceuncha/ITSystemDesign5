@@ -108,6 +108,20 @@ module CPU_top(
     (* keep = "true" *)wire [1:0] RS_div_valid;
     (* keep = "true" *)wire [31:0] RS_div_immediate;
    (* keep = "true" *) wire RS_div_start;
+   
+    (* keep = "true" *)wire LS_MemToReg_out;
+    (* keep = "true" *)wire LS_MemRead_out;
+    (* keep = "true" *)wire LS_MemWrite_out;
+    (* keep = "true" *)wire [3:0] LS_ALUOP_out;
+    (* keep = "true" *)wire LS_ALUSrc2_out;
+    (* keep = "true" *)wire [7:0] LS_phy_reg_out;
+    (* keep = "true" *)wire LS_on_out;
+    (* keep = "true" *)wire [7:0] LS_Operand1_phy_out;
+    (* keep = "true" *)wire [7:0] LS_Operand2_phy_out;
+    (* keep = "true" *)wire [1:0] LS_valid_out;
+    (* keep = "true" *)wire [31:0] LS_immediate_out;
+    (* keep = "true" *)wire [31:0] LS_inst_num_out;
+
   
   /// RS_BR
  (* keep = "true" *) wire RS_br_Jump;
@@ -134,8 +148,8 @@ module CPU_top(
  (* keep = "true" *) wire [31:0] RS_BR_inst_num_output;
  (* keep = "true" *) wire [2:0] RS_BR_funct3;
  (* keep = "true" *) wire [31:0] immediate_BR;
-  (* keep = "true" *)wire [31:0] Operand1_BR;
-  (* keep = "true" *)wire [31:0] Operand2_BR;
+
+
   (* keep = "true" *)wire [31:0] PC_BR;
  (* keep = "true" *) wire BR_Done;
   assign BR_Done= RS_BR_Branch|RS_BR_Jump;
@@ -181,26 +195,20 @@ module CPU_top(
 
   
   
-    (* keep = "true" *) wire [132:0]result_out_alu;
-    (* keep = "true" *)wire RS_alu_IF_ID_taken;
-   (* keep = "true" *) wire RS_alu_IF_ID_hit;
+(* keep = "true" *) wire [126:0] result_out_alu;  // result_out_alu의 비트 수를 127로 변경
+(* keep = "true" *) wire RS_alu_IF_ID_taken;
+(* keep = "true" *) wire RS_alu_IF_ID_hit;
 
-
-(* keep = "true" *)wire [31:0] immediate = result_out_alu[31:0];
-(* keep = "true" *)wire [2:0] RS_EX_funct3 = result_out_alu[34:32];
-(* keep = "true" *)wire RS_EX_ALU_Src1 = result_out_alu[35];
-(* keep = "true" *)wire RS_EX_ALU_Src2 = result_out_alu[36];
-(* keep = "true" *)wire [3:0] ALUop = result_out_alu[40:37];
-(* keep = "true" *)wire RS_EX_MemWrite = result_out_alu[41];
-(* keep = "true" *)wire RS_EX_MemRead = result_out_alu[42];
-(* keep = "true" *)wire RS_EX_MemToReg = result_out_alu[43];
-(* keep = "true" *)wire [7:0] ALU_Phy = result_out_alu[51:44];
-(* keep = "true" *)wire [31:0] RS_EX_PC_ALU = result_out_alu[83:52];
-(* keep = "true" *)wire ALU_Done = result_out_alu[84];
-(* keep = "true" *)wire [31:0] RS_EX_inst_num = result_out_alu[116:85];
-    (* keep = "true" *)wire [7:0] Operand1_ALU_phy = result_out_alu[124:117];
-    (* keep = "true" *)wire [7:0] Operand2_ALU_phy = result_out_alu[132:125];
-
+(* keep = "true" *) wire [31:0] immediate = result_out_alu[31:0];
+(* keep = "true" *) wire RS_EX_ALU_Src1 = result_out_alu[32];
+(* keep = "true" *) wire RS_EX_ALU_Src2 = result_out_alu[33];
+(* keep = "true" *) wire [3:0] ALUop = result_out_alu[37:34];
+(* keep = "true" *) wire [7:0] ALU_Phy = result_out_alu[45:38];
+(* keep = "true" *) wire [31:0] RS_EX_PC_ALU = result_out_alu[77:46];
+(* keep = "true" *) wire ALU_Done = result_out_alu[78];
+(* keep = "true" *) wire [31:0] RS_EX_inst_num = result_out_alu[110:79];
+(* keep = "true" *) wire [7:0] Operand1_ALU_phy = result_out_alu[118:111];
+(* keep = "true" *) wire [7:0] Operand2_ALU_phy = result_out_alu[126:119];
 
 
     // Internal signals for RS_mul wire
@@ -260,6 +268,23 @@ module CPU_top(
 (* keep = "true" *)wire P_Done;
 (* keep = "true" *)wire [7:0] P_Phy;
 
+
+//ls reservation
+
+
+(* keep = "true" *) wire [99:0] result_out_ls;
+(* keep = "true" *) wire [7:0] Operand2_LS_phy = result_out_ls[99:92];
+(* keep = "true" *) wire [7:0] Operand1_LS_phy = result_out_ls[91:84];
+(* keep = "true" *) wire [31:0] LS_inst_num = result_out_ls[83:52];
+(* keep = "true" *) wire LS_on = result_out_ls[51];
+(* keep = "true" *) wire [7:0] LS_phy_reg = result_out_ls[50:43];
+(* keep = "true" *) wire LS_MemToReg = result_out_ls[42];
+(* keep = "true" *) wire LS_MemRead = result_out_ls[41];
+(* keep = "true" *) wire LS_MemWrite = result_out_ls[40];
+(* keep = "true" *) wire [3:0] LS_ALUOP = result_out_ls[39:36];
+(* keep = "true" *) wire RS_LS_Src2 = result_out_ls[35];
+(* keep = "true" *) wire [2:0] func3_LS = result_out_ls[34:32];
+(* keep = "true" *) wire [31:0] immediate_LS = result_out_ls[31:0];
 
 
     ////////////////ex_mem wire
@@ -428,17 +453,20 @@ physical_register_file u_physical_register_file(
     .ALU_load_Write(Load_Done),
     .ALU_mul_Write(MUL_Done),
     .ALU_div_Write(DIV_Done),
-    .ALU_done_Write(RS_BR_Jump),
+    .BR_Write(RS_BR_Jump),
+    .Pass_done(P_Done),
     .ALU_add_Data(ALU_Data),
     .ALU_load_Data(Load_Data),
     .ALU_mul_Data(MUL_Data[31:0]),
     .ALU_div_Data(DIV_Data),
-    .ALU_done_Data(PC_Return),
+    .BR_Data(PC_Return),
+    .Pass_done_data(P_Data),
     .ALU_add_phy(ALU_Phy),
     .ALU_load_phy(Load_Phy),
     .ALU_mul_phy(MUL_Phy),
     .ALU_div_phy(DIV_Phy),
-    .ALU_done_phy(BR_Phy),
+    .BR_phy(BR_Phy),
+    .Pass_done_phy(P_Phy),
     .Operand1_data(RData1),
     .Operand2_data(RData2),
     .valid1(Valid1),
@@ -452,6 +480,9 @@ physical_register_file u_physical_register_file(
     .Operand2_phy_DIV(Operand2_Div_phy),
     .Operand1_phy_branch(Operand1_BR_phy),
     .Operand2_phy_branch(Operand2_BR_phy),
+    .Operand1_phy_LS(Operand1_LS_phy),
+    .Operand2_phy_LS(Operand2_LS_phy),
+
 
     .Operand1_data_ALU(Operand1_ALU),
     .Operand2_data_ALU(Operand2_ALU),
@@ -460,7 +491,9 @@ physical_register_file u_physical_register_file(
     .Operand1_data_DIV(Operand1_Div),
     .Operand2_data_DIV(Operand2_Div),
     .Operand1_data_branch(Operand1_BR),
-    .Operand2_data_branch(Operand2_BR)
+    .Operand2_data_branch(Operand2_BR),
+    .Operand1_data_LS(Operand1_LS),
+    .Operand2_data_LS(Operand2_LS)
 );
 
 
@@ -523,11 +556,9 @@ control_unit_top u_control_unit_top(
         .valid(Valid),
         .immediate(imm32),
 
-        .add_alu_func3(RS_alu_funct3),
+        
         .add_alu_pc(RS_alu_PC),
-        .out_add_MemToReg(RS_alu_MemToReg),
-       .out_add_MemRead(RS_alu_MemRead),
-        .out_add_MemWrite(RS_alu_MemWrite),
+   
         .out_add_ALUOP(RS_alu_ALUOP),
         .out_add_ALUSrc1(RS_alu_ALUSrc1),
         .out_add_ALUSrc2(RS_alu_ALUSrc2),
@@ -581,7 +612,33 @@ control_unit_top u_control_unit_top(
         .RS_br_valid(RS_br_valid),
         .RS_br_immediate(RS_br_immediate),
         .RS_br_inst_num(RS_br_inst_num),
-        .RS_br_PC(RS_br_PC)
+        .RS_br_PC(RS_br_PC),
+        
+        .LS_func3(LS_func3_out),
+        .LS_MemToReg(LS_MemToReg_out),
+        .LS_MemRead(LS_MemRead_out),
+        .LS_MemWrite(LS_MemWrite_out),
+        .LS_ALUOP(LS_ALUOP_out),
+        .LS_ALUSrc2(LS_ALUSrc2_out),
+        .LS_phy_reg(LS_phy_reg_out),
+        .LS_on(LS_on_out),
+        .LS_Operand1_phy(LS_Operand1_phy_out),
+        .LS_Operand2_phy(LS_Operand2_phy_out),
+        .LS_valid(LS_valid_out),
+        .LS_immediate(LS_immediate_out),
+        .LS_inst_num(LS_inst_num_out),
+        
+        .pass_pc(pass_pc),
+        .pass_ALUOP(pass_ALUOP),
+        .pass_ALUSrc1(pass_ALUSrc1),
+        .pass_ALUSrc2(pass_ALUSrc2),
+        .pass_rd_phy_reg(pass_rd_phy_reg),
+        .pass_rs_on(pass_rs_on),
+        .pass_Operand1(pass_Operand1),
+        .pass_Operand2(pass_Operand2),
+        .pass_immediate(pass_immediate),
+        .pass_inst_num(pass_inst_num)
+        
     );
 
 
@@ -654,13 +711,11 @@ control_unit_top u_control_unit_top(
         .PC(RS_alu_PC),
         .Rd(RS_alu_Rd),
         .RS_alu_inst_num(RS_alu_inst_num),
-        .MemToReg(RS_alu_MemToReg),
-        .MemRead(RS_alu_MemRead),
-        .MemWrite(RS_alu_MemWrite),
+ 
         .ALUOP(RS_alu_ALUOP),
         .ALUSrc1(RS_alu_ALUSrc1),
         .ALUSrc2(RS_alu_ALUSrc2),
-        .funct3(RS_alu_funct3),
+    
         .immediate(RS_alu_immediate),
         .EX_MEM_MemRead(Load_Done),
         .EX_MEM_Physical_Address(Load_Phy),
@@ -671,14 +726,49 @@ control_unit_top u_control_unit_top(
         .ALU_result_valid(ALU_Done),
         .MUL_result_dest(MUL_Phy),
         .MUL_result_valid(MUL_Done),
+        .P_Done(P_Done),
         .DIV_result_dest(DIV_Phy),
         .DIV_result_valid(DIV_Done),
         .Branch_result_valid(RS_BR_Jump),
         .BR_Phy(BR_Phy),
-            .P_Done(P_Done),
-            .P_Phy(P_Phy),
+        .P_Phy(P_Phy),
         .result_out(result_out_alu)
     );
+    
+      (* keep_hierarchy = "yes" *)
+        RS_LS rs_ls (
+        .clk(clk),
+        .reset(rst),
+        .start(LS_on_out),
+     
+        .Rd(LS_phy_reg_out),
+        .RS_alu_inst_num(LS_inst_num_out),
+        .MemToReg(LS_MemToReg_out),
+        .MemRead(LS_MemRead_out),
+        .MemWrite(LS_MemWrite_out),
+        .ALUOP(LS_ALUOP_out),
+        
+        .ALUSrc2(LS_ALUSrc2_out),
+        .funct3(LS_func3_out),
+        .immediate(LS_immediate_out),
+        .EX_MEM_MemRead(Load_Done),
+        .EX_MEM_Physical_Address(Load_Phy),
+        .operand1(LS_Operand1_phy_out),
+        .operand2(LS_Operand2_phy_out),
+        .valid(LS_valid_out),
+        .ALU_result_dest(ALU_Phy),
+        .ALU_result_valid(ALU_Done),
+        .MUL_result_dest(MUL_Phy),
+        .MUL_result_valid(MUL_Done),
+        .DIV_result_dest(DIV_Phy),
+        .DIV_result_valid(DIV_Done),
+        .Branch_result_valid(RS_BR_Jump),
+        .BR_Phy(BR_Phy),
+        .P_Done(P_Done),
+        .P_Phy(P_Phy),
+        .result_out(result_out_ls)
+    );
+
 
 
 
@@ -763,67 +853,31 @@ control_unit_top u_control_unit_top(
 
 ////////////////////EX_MEM
 
-(* keep_hierarchy = "yes" *)
-    exmem_pipeline_register exmem (
-        .clk(clk),
-        .reset(rst),
-        .ID_EX_MemToReg(RS_EX_MemToReg),
-        .ID_EX_MemRead(RS_EX_MemRead),
-        .ID_EX_MemWrite(RS_EX_MemWrite),
-        .RS_EX_funt3(RS_EX_funct3),
-        .operand2_Phy_Data(Operand2_ALU),
-        .RS_EX_ALUResult(ALU_Data),
-        .RS_EX_PC_ALU(RS_EX_inst_num),
-        .ALU_done(ALU_Done),
-        .RS_EX_alu_Physical_address(ALU_Phy),
-        .Mul_Result(MUL_Data[31:0]),
-        .RS_EX_PC_Mul_out(RS_EX_inst_num_Mul_out),
-        .Mul_done_out(MUL_Done),
-        .Div_Result(DIV_Data),
-        .RS_EX_PC_Div_out(RS_EX_Div_inst_num_out),
-        .Div_done_out(DIV_Done),
-        .EX_MEM_MemToReg(EX_MEM_MemToReg),
-        .Load_Done(Load_Done),
-        .EX_MEM_MemWrite(EX_MEM_MemWrite),
-        .EX_MEM_funct3(EX_MEM_funct3),
-        .EX_MEM_Rdata2(EX_MEM_Rdata2),
-        .EX_MEM_ALUResult(EX_MEM_ALUResult),
-        .EX_MEM_alu_exec_PC(EX_MEM_alu_inst_num),
-        .EX_MEM_alu_exec_done(EX_MEM_alu_exec_done),
-        .EX_MEM_alu_physical_address(Load_Phy),
-        .mul_exec_value(mul_exec_value),
-        .mul_exec_PC(EX_MEM_mul_inst_num),
-        .mul_exec_done(mul_exec_done),
-        .div_exec_value(div_exec_value),
-        .div_exec_PC(EX_MEM_div_inst_num),
-        .div_exec_done(div_exec_done)
-    );
+
 
     // DataMemory instantiation
 
     (* keep_hierarchy = "yes" *)
     DataMemory datamem (
-        .Load_Done(Load_Done),
         .clk(clk),
-        .EX_MEM_MemWrite(EX_MEM_MemWrite),
         .reset(rst),
-        .EX_MEM_funct3(EX_MEM_funct3),
-        .EX_MEM_ALUResult(EX_MEM_ALUResult),
-        .EX_MEM_Rdata2(EX_MEM_Rdata2),
-        .Load_Data(Load_Data)
+        .LS_MemRead(LS_MemRead),
+        .LS_MemWrite(LS_MemWrite),
+        .LS_inst_num(LS_inst_num),
+        .funct3_LS(funct3_LS),
+        .LS_Result(LS_Result),
+        .Operand2_LS(Operand2_LS),
+        .Load_Done(Load_Done),
+        .Load_Data(Load_Data),
+        .Load_inst_num(Load_inst_num)
     );
+
 
   
 
     // WbMux instantiation
 
-    (* keep_hierarchy = "yes" *)
-    WbMux wb_mux (
-        .MEM_WB_ALUResult(EX_MEM_ALUResult),
-        .MEM_WB_RData(Load_Data),
-        .MEM_WB_MemToReg(EX_MEM_MemToReg),
-        .alu_exec_value(alu_exec_value)
-    );
+
     
 
 
