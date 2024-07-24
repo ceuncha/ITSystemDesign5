@@ -569,7 +569,7 @@ control_unit_top u_control_unit_top(
         .valid(Valid),
         .immediate(imm32),
         .Operand1_data(Rdata1),
-        .Operand1_data(Rdata2),
+        .Operand2_data(Rdata2),
         
         
         .add_alu_pc(RS_alu_PC),
