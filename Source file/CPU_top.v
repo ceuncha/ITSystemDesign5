@@ -173,7 +173,7 @@ module CPU_top(
 
 //PassBuffer wire
 
-    (* keep = "true" *)wire [31:0] P_inst_num;
+  
     (* keep = "true" *)wire [31:0] P_Data;
 
             // rs_alu_wire
@@ -280,7 +280,7 @@ module CPU_top(
 
 (* keep = "true" *)wire [31:0] P_ALU_A;
 (* keep = "true" *)wire [31:0] P_ALU_B;
-(* keep = "true" *)wire [31:0] P_Data;
+
 //ls reservation
 
 
