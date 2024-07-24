@@ -218,7 +218,7 @@ module CPU_top(
    
    (* keep = "true" *) wire Load_Done;
     (* keep = "true" *)wire [31:0] Load_Data;
-    (* keep = "true" *)wire [7:0] Load_Phy;
+
    
    
    
@@ -307,7 +307,7 @@ module CPU_top(
 (* keep = "true" *)wire [31:0] LS_Result;
 assign LS_Result = Operand1_LS + LS_B;
 (* keep = "true" *)wire [31:0] Load_inst_num;
-(* keep = "true" *)wire [31:0] func3_LS;
+
     ////////////////ex_mem wire
     //////////
 
