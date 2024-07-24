@@ -710,7 +710,7 @@ control_unit_top u_control_unit_top(
     .ALUSrc2(pass_ALUSrc2),
     .immediate(pass_immediate),
     .operand1(pass_Operand1),
-    .operand3(pass_Operand2),
+    .operand2(pass_Operand2),
     .result_out(result_out_pass)
     );
     
