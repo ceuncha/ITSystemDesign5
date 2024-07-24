@@ -574,8 +574,8 @@ control_unit_top u_control_unit_top(
         .Operand2_phy(Phy_addr_OP2),
         .valid(Valid),
         .immediate(imm32),
-        .Operand1_data(Rdata1),
-        .Operand2_data(Rdata2),
+        .Operand1_data(RData1),
+        .Operand2_data(RData2),
         
         
         .add_alu_pc(RS_alu_PC),
