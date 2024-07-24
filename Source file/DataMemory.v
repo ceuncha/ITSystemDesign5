@@ -32,7 +32,7 @@ always @(posedge clk) begin
     end
 end
 
-always @ (*) begin
+    always @ (clk) begin
     // Default value for Load_Data, ensures it is always assigned
     Load_Data = 32'd0; // if Load_Done is false
 
