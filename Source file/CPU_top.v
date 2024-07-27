@@ -299,6 +299,15 @@ module CPU_top(
 (* keep = "true" *) wire [2:0] func3_LS = result_out_ls[34:32];
 (* keep = "true" *) wire [31:0] immediate_LS = result_out_ls[31:0];
 
+(* keep = "true" *) wire LS_que_MemWrite;
+(* keep = "true" *) wire LS_que_MemRead;
+(* keep = "true" *) wire [31:0] LS_que_inst_num;
+(* keep = "true" *) wire [7:0] LS_que_phy;
+(* keep = "true" *) wire [2:0] LS_que_func3;
+(* keep = "true" *) wire [31:0] LS_que_Address;
+(* keep = "true" *) wire [31:0] LS_que_WriteData;
+(* keep = "true" *) wire LS_que_exception;
+
 
 //datamemory
 (* keep = "true" *)wire [31:0] Operand1_LS;
@@ -329,7 +338,7 @@ assign LS_Result = Operand1_LS + LS_B;
   
 
  
-  
+  (* keep = "true" *) wire[7:0] Load_phy_out;
   
  
    (* keep = "true" *)wire [31:0] RS_EX_PC_Mul_in;
@@ -483,7 +492,7 @@ physical_register_file u_physical_register_file(
     .BR_Data(PC_Return),
     .Pass_done_data(P_Data),
     .ALU_add_phy(ALU_Phy),
-    .ALU_load_phy(Load_Phy),
+    .ALU_load_phy(Load_phy_out),
     .ALU_mul_phy(MUL_Phy),
     .ALU_div_phy(DIV_Phy),
     .BR_phy(BR_Phy),
@@ -680,7 +689,7 @@ control_unit_top u_control_unit_top(
 .funct3(RS_br_func3),
 .immediate(RS_br_immediate),
 .EX_MEM_MemRead(Load_Done),
-.EX_MEM_Physical_Address(Load_Phy),
+.EX_MEM_Physical_Address(Load_phy_out),
 .operand1(RS_br_operand1_phy),
 .operand2(RS_br_operand2_phy),
 .valid(RS_br_valid),
@@ -743,7 +752,7 @@ control_unit_top u_control_unit_top(
     
         .immediate(RS_alu_immediate),
         .EX_MEM_MemRead(Load_Done),
-        .EX_MEM_Physical_Address(Load_Phy),
+        .EX_MEM_Physical_Address(Load_phy_out),
         .operand1(RS_alu_operand1),
         .operand2(RS_alu_operand2),
         .valid(RS_alu_valid),
@@ -777,7 +786,7 @@ control_unit_top u_control_unit_top(
         .funct3(LS_func3_out),
         .immediate(LS_immediate_out),
         .EX_MEM_MemRead(Load_Done),
-        .EX_MEM_Physical_Address(Load_Phy),
+        .EX_MEM_Physical_Address(Load_phy_out),
         .operand1(LS_Operand1_phy_out),
         .operand2(LS_Operand2_phy_out),
         .valid(LS_valid_out),
@@ -793,7 +802,27 @@ control_unit_top u_control_unit_top(
         .P_Phy(P_Phy),
         .result_out(result_out_ls)
     );
-
+(* keep_hierarchy = "yes" *)
+LS_que LS_que (
+     .clk(clk),
+     .reset(rst),
+     .LS_Memwrite(LS_MemWrite),
+     .LS_MemRead(LS_MemRead),
+     .LS_inst_num(LS_inst_num),
+     .Load_Phy(Load_Phy),
+     .func3_LS(func3_LS),
+     .LS_Result(LS_Result),
+     .Operand2_LS(Operand2_LS),
+     .LS_on(LS_on),
+     .LS_que_MemWrite(LS_que_MemWrite),
+     .LS_que_MemRead(LS_que_MemRead),
+     .LS_que_inst_num(LS_que_inst_num),
+     .LS_que_phy(LS_que_phy),
+     .LS_que_func3(LS_que_func3),
+     .LS_que_Address(LS_que_Address),
+     .LS_que_WriteData(LS_que_WriteData),
+     .LS_que_exception(LS_que_exception)
+     );
 
 
 
@@ -811,7 +840,7 @@ control_unit_top u_control_unit_top(
         .RS_mul_PC(RS_mul_inst_num),
         .RS_mul_Rd(RS_mul_Rd),
         .EX_MEM_MemRead(Load_Done),
-        .EX_MEM_Physical_Address(Load_Phy),
+        .EX_MEM_Physical_Address(Load_phy_out),
         .RS_mul_operand1(RS_mul_operand1),
         .RS_mul_operand2(RS_mul_operand2),
         .RS_mul_valid(RS_mul_valid),
@@ -835,7 +864,7 @@ control_unit_top u_control_unit_top(
 (* keep_hierarchy = "yes" *)
     RS_Div RS_Div (.clk(clk),.reset(rst),.RS_div_start(RS_div_start),.RS_div_PC(RS_div_inst_num),
                    .RS_div_Rd(RS_div_Rd),.RS_div_ALUOP(RS_div_ALUOP),.EX_MEM_MemRead(Load_Done),
-                   .EX_MEM_Physical_Address(Load_Phy),.RS_div_operand1(RS_div_operand1),
+                   .EX_MEM_Physical_Address(Load_phy_out),.RS_div_operand1(RS_div_operand1),
                    .RS_div_operand2(RS_div_operand2),
                    .RS_div_valid(RS_div_valid),
                    .ALU_result_dest(ALU_Phy),.ALU_result_valid(ALU_Done),.MUL_result_dest(MUL_Phy),
@@ -897,12 +926,14 @@ control_unit_top u_control_unit_top(
     DataMemory datamem (
         .clk(clk),
         .reset(rst),
-        .LS_MemRead(LS_MemRead),
-        .LS_MemWrite(LS_MemWrite),
-        .LS_inst_num(LS_inst_num),
-        .funct3_LS(func3_LS),
-        .LS_Result(LS_Result),
-        .Operand2_LS(Operand2_LS),
+        .LS_MemRead(LS_que_MemRead),
+        .LS_MemWrite(LS_que_MemWrite),
+        .LS_inst_num(LS_que_inst_num),
+        .funct3_LS(LS_que_func3),
+        .LS_Result(LS_que_Address),
+        .Operand2_LS(LS_que_WriteData),
+        .Load_phy_in(LS_que_phy),
+        .Load_phy_out(Load_phy_out),
         .Load_Done(Load_Done),
         .Load_Data(Load_Data),
         .Load_inst_num(Load_inst_num)
