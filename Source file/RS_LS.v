@@ -1,4 +1,4 @@
- module RS_LS (                                             //嶺뚮ㅏ援앲��??�젆? forwarding, 繞�???�쑏熬곣뫀彛� 嶺뚮ㅏ援앲��??�젆源곴껀??�땻? ?亦끸넁�돦??亦끸뼺�떊?�닑?裕� ?�굢??�뇡??獄�???諭� ??�빢?筌�?.
+ module RS_LS (                                             //嶺뚮ㅏ援앲?????젆? forwarding, 繞?????쑏熬곣뫀彛? 嶺뚮ㅏ援앲?????젆源곴껀???땻? ?亦끸넁?돦??亦끸뼺?떊??닑?裕? ??굢???뇡??獄????諭? ???빢?筌??.
     input wire clk,
     input wire reset,
     input wire start,
@@ -48,8 +48,8 @@
    (* keep = "true" *) reg [7:0] operand1s [0:63];
    (* keep = "true" *) reg [7:0] operand2s [0:63];
 
-   (* keep = "true" *) reg [63:0] valid_entries1;  // operand1??��? valid??�눀?�꺋壤�??
-   (* keep = "true" *) reg [63:0] valid_entries2; // operand2?琉�?? valid??�눀?�꺋壤�??
+   (* keep = "true" *) reg [63:0] valid_entries1;  // operand1????? valid???눀??꺋壤???
+   (* keep = "true" *) reg [63:0] valid_entries2; // operand2?琉??? valid???눀??꺋壤???
 
    (* keep = "true" *) reg [6:0] tail;
    (* keep = "true" *) reg [6:0] head;
@@ -57,7 +57,7 @@
   (* keep = "true" *) integer i, j, k, l, m, n;
    (* keep = "true" *) reg RS_ALU_on[0:63];
 
-    always @(posedge clk) begin    //?逾�?�봾????六�??源덂슖?? ?猷�?�쐝�뵳???�꼨 ??六�?�끃裕뉐ㅇ?
+    always @(posedge clk) begin    //?逾???봾????六???源덂슖?? ?猷???쐝?뵳????꼨 ??六???끃裕뉐ㅇ?
         if (reset) begin
             tail <= 0;
             head <=0;
@@ -84,8 +84,8 @@
 
             
    
-            if (operand1 == ALU_result_dest) begin  // 嶺뚮ㅏ援앲��??�젆湲룹쾸? 嶺뚳퐣瑗�?踰� ?獄�??�젆???�꼨??諭�?�뇡?, alu??踰� �뇦猿됲��?沅�?? 嶺뚮ㅏ援앲��??�젆???踰� operand ?�닱?�닑?遊븅썒�슣�닔?爰�?紐�? ?�쑏熬곥룊爰�?�뇡??�굢? 
-                                                    // ?驪�???�몥??逾�??諭쒏뤆?? ?�뇡???�뭵??六� ??�빢?筌�??�뜮癒㏓뭄???堉�.
+            if (operand1 == ALU_result_dest) begin  // 嶺뚮ㅏ援앲?????젆湲룹쾸? 嶺뚳퐣瑗??踰? ?獄????젆????꼨??諭???뇡?, alu??踰? ?뇦猿됲???沅??? 嶺뚮ㅏ援앲?????젆???踰? operand ??닱??닑?遊븅썒?슣?닔?爰??紐?? ??쑏熬곥룊爰???뇡???굢? 
+                                                    // ?驪?????몥??逾???諭쒏뤆?? ??뇡????뭵??六? ???빢?筌????뜮癒㏓뭄???堉?.
                 inst_nums[tail] <= RS_alu_inst_num;
                
                 Rds[tail] <= Rd;
@@ -121,8 +121,8 @@
                 valid_entries2[tail] <= 1; 
                 tail <= (tail + 1) % 64;  
                  RS_ALU_on[tail] <=0; 
-             end else if (operand1 == MUL_result_dest) begin  // 嶺뚮ㅏ援앲��??�젆湲룹쾸? 嶺뚳퐣瑗�?踰� ?獄�??�젆???�꼨??諭�?�뇡?, mul??踰� �뇦猿됲��?沅�?? 嶺뚮ㅏ援앲��??�젆???踰� operand ?�닱?�닑?遊븅썒�슣�닔?爰�?紐�? ?�쑏熬곥룊爰�?�뇡??�굢? 
-                                                              // ?驪�???�몥??逾�??諭쒏뤆?? ?�뇡???�뭵??六� ??�빢?筌�??�뜮癒㏓뭄???堉�.
+             end else if (operand1 == MUL_result_dest) begin  // 嶺뚮ㅏ援앲?????젆湲룹쾸? 嶺뚳퐣瑗??踰? ?獄????젆????꼨??諭???뇡?, mul??踰? ?뇦猿됲???沅??? 嶺뚮ㅏ援앲?????젆???踰? operand ??닱??닑?遊븅썒?슣?닔?爰??紐?? ??쑏熬곥룊爰???뇡???굢? 
+                                                              // ?驪?????몥??逾???諭쒏뤆?? ??뇡????뭵??六? ???빢?筌????뜮癒㏓뭄???堉?.
                 inst_nums[tail] <= RS_alu_inst_num;
           
                 Rds[tail] <= Rd;
@@ -158,8 +158,8 @@
                 valid_entries2[tail] <= 1; 
                 tail <= (tail + 1) % 64;
                  RS_ALU_on[tail] <=0;
-              end else if (operand1 == DIV_result_dest) begin  // 嶺뚮ㅏ援앲��??�젆湲룹쾸? 嶺뚳퐣瑗�?踰� ?獄�??�젆???�꼨??諭�?�뇡?, div??踰� �뇦猿됲��?沅�?? 嶺뚮ㅏ援앲��??�젆???踰� operand ?�닱?�닑?遊븅썒�슣�닔?爰�?紐�? ?�쑏熬곥룊爰�?�뇡??�굢? 
-                                                              // ?驪�???�몥??逾�??諭쒏뤆?? ?�뇡???�뭵??六� ??�빢?筌�??�뜮癒㏓뭄???堉�.
+              end else if (operand1 == DIV_result_dest) begin  // 嶺뚮ㅏ援앲?????젆湲룹쾸? 嶺뚳퐣瑗??踰? ?獄????젆????꼨??諭???뇡?, div??踰? ?뇦猿됲???沅??? 嶺뚮ㅏ援앲?????젆???踰? operand ??닱??닑?遊븅썒?슣?닔?爰??紐?? ??쑏熬곥룊爰???뇡???굢? 
+                                                              // ?驪?????몥??逾???諭쒏뤆?? ??뇡????뭵??六? ???빢?筌????뜮癒㏓뭄???堉?.
                  inst_nums[tail] <= RS_alu_inst_num;
            
                 Rds[tail] <= Rd;
@@ -196,8 +196,8 @@
                 tail <= (tail + 1) % 64;
                  RS_ALU_on[tail] <=0;
              end else if ( operand1 == EX_MEM_Physical_Address && EX_MEM_MemRead ==1) begin     
-                                                                // 嶺뚮ㅏ援앲��??�젆湲룹쾸? 嶺뚳퐣瑗�?踰� ?獄�??�젆???�꼨??諭�?�뇡?, load??踰� �뇦猿됲��?沅�?? 嶺뚮ㅏ援앲��??�젆???踰� operand ?�닱?�닑?遊븅썒�슣�닔?爰�?紐�? ?�쑏熬곥룊爰�?�뇡??�굢? 
-                                                              // ?驪�???�몥??逾�??諭쒏뤆?? ?�뇡???�뭵??六� ??�빢?筌�??�뜮癒㏓뭄???堉�.
+                                                                // 嶺뚮ㅏ援앲?????젆湲룹쾸? 嶺뚳퐣瑗??踰? ?獄????젆????꼨??諭???뇡?, load??踰? ?뇦猿됲???沅??? 嶺뚮ㅏ援앲?????젆???踰? operand ??닱??닑?遊븅썒?슣?닔?爰??紐?? ??쑏熬곥룊爰???뇡???굢? 
+                                                              // ?驪?????몥??逾???諭쒏뤆?? ??뇡????뭵??六? ???빢?筌????뜮癒㏓뭄???堉?.
                 inst_nums[tail] <= RS_alu_inst_num;
                 
                 Rds[tail] <= Rd;
@@ -330,8 +330,8 @@
             
 
            
-            if (ALU_result_valid) begin                 //alu??踰� �뇦猿됲��?沅€뤆?? ?獄�??�젆???�꼨??諭�?�뇡?, �뼨轅명��???�굢? RS?�굢? ?獄�??�젆???肉�??�맪 嶺뚮ㅏ援앲��??�젆??獄��뼅??? ?�닱?�닑?遊븅썒�슣�닔?爰�?紐�? ?�쑏熬곥룊爰�?�뇡??�굢?
-                                                        //?�뇡???�뭵?�뇡? �뤆�룆?�뫖援�??諭� ?驪�???�몥??逾�??諭� ??六�?�끃裕�???堉�.
+            if (ALU_result_valid) begin                 //alu??踰? ?뇦猿됲???沅€뤆?? ?獄????젆????꼨??諭???뇡?, ?뼨轅명??????굢? RS??굢? ?獄????젆???肉????맪 嶺뚮ㅏ援앲?????젆??獄??뼅??? ??닱??닑?遊븅썒?슣?닔?爰??紐?? ??쑏熬곥룊爰???뇡???굢?
+                                                        //??뇡????뭵??뇡? ?뤆?룆??뫖援???諭? ?驪?????몥??逾???諭? ??六???끃裕????堉?.
                 for (i = 0; i < 64; i = i + 1) begin
                     if (!valid_entries1[i] && operand1s[i] == ALU_result_dest) begin
                         valid_entries1[i] <= 1;
@@ -341,8 +341,8 @@
                     end
                 end
             end
-            if (MUL_result_valid) begin                     //mul??踰� �뇦猿됲��?沅€뤆?? ?獄�??�젆???�꼨??諭�?�뇡?, �뼨轅명��???�굢? RS?�굢? ?獄�??�젆???肉�??�맪 嶺뚮ㅏ援앲��??�젆??獄��뼅??? ?�닱?�닑?遊븅썒�슣�닔?爰�?紐�? ?�쑏熬곥룊爰�?�뇡??�굢?
-                                                        //?�뇡???�뭵?�뇡? �뤆�룆?�뫖援�??諭� ?驪�???�몥??逾�??諭� ??六�?�끃裕�???堉�.
+            if (MUL_result_valid) begin                     //mul??踰? ?뇦猿됲???沅€뤆?? ?獄????젆????꼨??諭???뇡?, ?뼨轅명??????굢? RS??굢? ?獄????젆???肉????맪 嶺뚮ㅏ援앲?????젆??獄??뼅??? ??닱??닑?遊븅썒?슣?닔?爰??紐?? ??쑏熬곥룊爰???뇡???굢?
+                                                        //??뇡????뭵??뇡? ?뤆?룆??뫖援???諭? ?驪?????몥??逾???諭? ??六???끃裕????堉?.
                 for (j = 0; j < 64; j = j + 1) begin
                     if (!valid_entries1[j] && operand1s[j] == MUL_result_dest) begin
                         valid_entries1[j] <= 1;
@@ -352,8 +352,8 @@
                     end
                 end
             end
-            if (DIV_result_valid) begin         //div??踰� �뇦猿됲��?沅€뤆?? ?獄�??�젆???�꼨??諭�?�뇡?, �뼨轅명��???�굢? RS?�굢? ?獄�??�젆???肉�??�맪 嶺뚮ㅏ援앲��??�젆??獄��뼅??? ?�닱?�닑?遊븅썒�슣�닔?爰�?紐�? ?�쑏熬곥룊爰�?�뇡??�굢?
-                                                        //?�뇡???�뭵?�뇡? �뤆�룆?�뫖援�??諭� ?驪�???�몥??逾�??諭� ??六�?�끃裕�???堉�.
+            if (DIV_result_valid) begin         //div??踰? ?뇦猿됲???沅€뤆?? ?獄????젆????꼨??諭???뇡?, ?뼨轅명??????굢? RS??굢? ?獄????젆???肉????맪 嶺뚮ㅏ援앲?????젆??獄??뼅??? ??닱??닑?遊븅썒?슣?닔?爰??紐?? ??쑏熬곥룊爰???뇡???굢?
+                                                        //??뇡????뭵??뇡? ?뤆?룆??뫖援???諭? ?驪?????몥??逾???諭? ??六???끃裕????堉?.
                 for (k = 0; k < 64; k = k + 1) begin
                     if (!valid_entries1[k] && operand1s[k] == DIV_result_dest) begin
                         valid_entries1[k] <= 1;
@@ -363,8 +363,8 @@
                     end
                 end
             end
-           if (EX_MEM_MemRead) begin                //load??踰� �뇦猿됲��?沅€뤆?? ?獄�??�젆???�꼨??諭�?�뇡?, �뼨轅명��???�굢? RS?�굢? ?獄�??�젆???肉�??�맪 嶺뚮ㅏ援앲��??�젆??獄��뼅??? ?�닱?�닑?遊븅썒�슣�닔?爰�?紐�? ?�쑏熬곥룊爰�?�뇡??�굢?
-                                                        //?�뇡???�뭵?�뇡? �뤆�룆?�뫖援�??諭� ?驪�???�몥??逾�??諭� ??六�?�끃裕�???堉�.
+           if (EX_MEM_MemRead) begin                //load??踰? ?뇦猿됲???沅€뤆?? ?獄????젆????꼨??諭???뇡?, ?뼨轅명??????굢? RS??굢? ?獄????젆???肉????맪 嶺뚮ㅏ援앲?????젆??獄??뼅??? ??닱??닑?遊븅썒?슣?닔?爰??紐?? ??쑏熬곥룊爰???뇡???굢?
+                                                        //??뇡????뭵??뇡? ?뤆?룆??뫖援???諭? ?驪?????몥??逾???諭? ??六???끃裕????堉?.
            for (l = 0; l < 64; l = l + 1) begin
                     if (!valid_entries1[l] && operand1s[l] == EX_MEM_Physical_Address) begin
                         valid_entries1[l] <= 1;
@@ -374,8 +374,8 @@
                     end
                 end     
             end
-           if (Branch_result_valid) begin                //Branch??踰� �뇦猿됲��?沅€뤆?? ?獄�??�젆???�꼨??諭�?�뇡?, �뼨轅명��???�굢? RS?�굢? ?獄�??�젆???肉�??�맪 嶺뚮ㅏ援앲��??�젆??獄��뼅??? ?�닱?�닑?遊븅썒�슣�닔?爰�?紐�? ?�쑏熬곥룊爰�?�뇡??�굢?
-                                                        //?�뇡???�뭵?�뇡? �뤆�룆?�뫖援�??諭� ?驪�???�몥??逾�??諭� ??六�?�끃裕�???堉�.
+           if (Branch_result_valid) begin                //Branch??踰? ?뇦猿됲???沅€뤆?? ?獄????젆????꼨??諭???뇡?, ?뼨轅명??????굢? RS??굢? ?獄????젆???肉????맪 嶺뚮ㅏ援앲?????젆??獄??뼅??? ??닱??닑?遊븅썒?슣?닔?爰??紐?? ??쑏熬곥룊爰???뇡???굢?
+                                                        //??뇡????뭵??뇡? ?뤆?룆??뫖援???諭? ?驪?????몥??逾???諭? ??六???끃裕????堉?.
            for (m = 0; m < 64; m = m + 1) begin
                     if (!valid_entries1[m] && operand1s[m] == BR_Phy) begin
                         valid_entries1[m] <= 1;
@@ -404,11 +404,7 @@
       end
  
  if (valid_entries1[head] == 1 && valid_entries2[head] == 1) begin
-    if (!MemReads[head]) begin
-        result_out <= {operand2s[head], operand1s[head], inst_nums[head], 1'b1, Rds[head], MemToRegs[head], MemReads[head], MemWrites[head], ALUOPs[head], ALUSrc2s[head], funct3s[head], immediates[head]};
-    end else begin
-        result_out <= {operand2s[head], operand1s[head], inst_nums[head], 1'b0, Rds[head], MemToRegs[head], MemReads[head], MemWrites[head], ALUOPs[head], ALUSrc2s[head], funct3s[head], immediates[head]};
-    end
+    result_out <= {operand2s[head], operand1s[head], inst_nums[head], 1'b1, Rds[head], MemToRegs[head], MemReads[head], MemWrites[head], ALUOPs[head], ALUSrc2s[head], funct3s[head], immediates[head]};
     operand1s[head] <= 0;
     operand2s[head] <= 0;
     valid_entries1[head] <= 0;
@@ -416,11 +412,7 @@
     head <= (head+1)%64;
 end
 else if (valid_entries1[(head + 1) % 64] == 1 && valid_entries2[(head + 1) % 64] == 1) begin
-    if (!MemReads[(head + 1) % 64]) begin
-        result_out <= {operand2s[(head + 1) % 64], operand1s[(head + 1) % 64], inst_nums[(head + 1) % 64], 1'b1, Rds[(head + 1) % 64], MemToRegs[(head + 1) % 64], MemReads[(head + 1) % 64], MemWrites[(head + 1) % 64], ALUOPs[(head + 1) % 64], ALUSrc2s[(head + 1) % 64], funct3s[(head + 1) % 64], immediates[(head + 1) % 64]};
-    end else begin
-        result_out <= {operand2s[(head + 1) % 64], operand1s[(head + 1) % 64], inst_nums[(head + 1) % 64], 1'b0, Rds[(head + 1) % 64], MemToRegs[(head + 1) % 64], MemReads[(head + 1) % 64], MemWrites[(head + 1) % 64], ALUOPs[(head + 1) % 64], ALUSrc2s[(head + 1) % 64], funct3s[(head + 1) % 64], immediates[(head + 1) % 64]};
-    end
+    result_out <= {operand2s[(head + 1) % 64], operand1s[(head + 1) % 64], inst_nums[(head + 1) % 64], 1'b1, Rds[(head + 1) % 64], MemToRegs[(head + 1) % 64], MemReads[(head + 1) % 64], MemWrites[(head + 1) % 64], ALUOPs[(head + 1) % 64], ALUSrc2s[(head + 1) % 64], funct3s[(head + 1) % 64], immediates[(head + 1) % 64]};
     operand1s[(head + 1) % 64] <= 0;
     operand2s[(head + 1) % 64] <= 0;
     valid_entries1[(head + 1) % 64] <= 0;
@@ -428,11 +420,9 @@ else if (valid_entries1[(head + 1) % 64] == 1 && valid_entries2[(head + 1) % 64]
     RS_ALU_on[(head+1)%64] <= 1;
 end
 else if (valid_entries1[(head + 2) % 64] == 1 && valid_entries2[(head + 2) % 64] == 1) begin
-    if (!MemReads[(head + 2) % 64]) begin
+
         result_out <= {operand2s[(head + 2) % 64], operand1s[(head + 2) % 64], inst_nums[(head + 2) % 64], 1'b1, Rds[(head + 2) % 64], MemToRegs[(head + 2) % 64], MemReads[(head + 2) % 64], MemWrites[(head + 2) % 64], ALUOPs[(head + 2) % 64], ALUSrc2s[(head + 2) % 64], funct3s[(head + 2) % 64], immediates[(head + 2) % 64]};
-    end else begin
-        result_out <= {operand2s[(head + 2) % 64], operand1s[(head + 2) % 64], inst_nums[(head + 2) % 64], 1'b0, Rds[(head + 2) % 64], MemToRegs[(head + 2) % 64], MemReads[(head + 2) % 64], MemWrites[(head + 2) % 64], ALUOPs[(head + 2) % 64], ALUSrc2s[(head + 2) % 64], funct3s[(head + 2) % 64], immediates[(head + 2) % 64]};
-    end
+  
     operand1s[(head + 2) % 64] <= 0;
     operand2s[(head + 2) % 64] <= 0;
     valid_entries1[(head + 2) % 64] <= 0;
@@ -440,11 +430,9 @@ else if (valid_entries1[(head + 2) % 64] == 1 && valid_entries2[(head + 2) % 64]
     RS_ALU_on[(head+2)%64] <= 1;
 end
 else if (valid_entries1[(head + 3) % 64] == 1 && valid_entries2[(head + 3) % 64] == 1) begin
-    if (!MemReads[(head + 3) % 64]) begin
+
         result_out <= {operand2s[(head + 3) % 64], operand1s[(head + 3) % 64], inst_nums[(head + 3) % 64], 1'b1, Rds[(head + 3) % 64], MemToRegs[(head + 3) % 64], MemReads[(head + 3) % 64], MemWrites[(head + 3) % 64], ALUOPs[(head + 3) % 64], ALUSrc2s[(head + 3) % 64], funct3s[(head + 3) % 64], immediates[(head + 3) % 64]};
-    end else begin
-        result_out <= {operand2s[(head + 3) % 64], operand1s[(head + 3) % 64], inst_nums[(head + 3) % 64], 1'b0, Rds[(head + 3) % 64], MemToRegs[(head + 3) % 64], MemReads[(head + 3) % 64], MemWrites[(head + 3) % 64], ALUOPs[(head + 3) % 64], ALUSrc2s[(head + 3) % 64], funct3s[(head + 3) % 64], immediates[(head + 3) % 64]};
-    end
+   
     operand1s[(head + 3) % 64] <= 0;
     operand2s[(head + 3) % 64] <= 0;
     valid_entries1[(head + 3) % 64] <= 0;
@@ -452,11 +440,9 @@ else if (valid_entries1[(head + 3) % 64] == 1 && valid_entries2[(head + 3) % 64]
     RS_ALU_on[(head+3)%64] <= 1;
 end
 else if (valid_entries1[(head + 4) % 64] == 1 && valid_entries2[(head + 4) % 64] == 1) begin
-    if (!MemReads[(head + 4) % 64]) begin
+
         result_out <= {operand2s[(head + 4) % 64], operand1s[(head + 4) % 64], inst_nums[(head + 4) % 64], 1'b1, Rds[(head + 4) % 64], MemToRegs[(head + 4) % 64], MemReads[(head + 4) % 64], MemWrites[(head + 4) % 64], ALUOPs[(head + 4) % 64], ALUSrc2s[(head + 4) % 64], funct3s[(head + 4) % 64], immediates[(head + 4) % 64]};
-    end else begin
-        result_out <= {operand2s[(head + 4) % 64], operand1s[(head + 4) % 64], inst_nums[(head + 4) % 64], 1'b0, Rds[(head + 4) % 64], MemToRegs[(head + 4) % 64], MemReads[(head + 4) % 64], MemWrites[(head + 4) % 64], ALUOPs[(head + 4) % 64], ALUSrc2s[(head + 4) % 64], funct3s[(head + 4) % 64], immediates[(head + 4) % 64]};
-    end
+    
     operand1s[(head + 4) % 64] <= 0;
     operand2s[(head + 4) % 64] <= 0;
     valid_entries1[(head + 4) % 64] <= 0;
@@ -464,11 +450,9 @@ else if (valid_entries1[(head + 4) % 64] == 1 && valid_entries2[(head + 4) % 64]
     RS_ALU_on[(head+4)%64] <= 1;
 end
 else if (valid_entries1[(head + 5) % 64] == 1 && valid_entries2[(head + 5) % 64] == 1) begin
-    if (!MemReads[(head + 5) % 64]) begin
+    
         result_out <= {operand2s[(head + 5) % 64], operand1s[(head + 5) % 64], inst_nums[(head + 5) % 64], 1'b1, Rds[(head + 5) % 64], MemToRegs[(head + 5) % 64], MemReads[(head + 5) % 64], MemWrites[(head + 5) % 64], ALUOPs[(head + 5) % 64], ALUSrc2s[(head + 5) % 64], funct3s[(head + 5) % 64], immediates[(head + 5) % 64]};
-    end else begin
-        result_out <= {operand2s[(head + 5) % 64], operand1s[(head + 5) % 64], inst_nums[(head + 5) % 64], 1'b0, Rds[(head + 5) % 64], MemToRegs[(head + 5) % 64], MemReads[(head + 5) % 64], MemWrites[(head + 5) % 64], ALUOPs[(head + 5) % 64], ALUSrc2s[(head + 5) % 64], funct3s[(head + 5) % 64], immediates[(head + 5) % 64]};
-    end
+   
     operand1s[(head + 5) % 64] <= 0;
     operand2s[(head + 5) % 64] <= 0;
     valid_entries1[(head + 5) % 64] <= 0;
@@ -476,11 +460,9 @@ else if (valid_entries1[(head + 5) % 64] == 1 && valid_entries2[(head + 5) % 64]
     RS_ALU_on[(head+5)%64] <= 1;
 end
 else if (valid_entries1[(head + 6) % 64] == 1 && valid_entries2[(head + 6) % 64] == 1) begin
-    if (!MemReads[(head + 6) % 64]) begin
+   
         result_out <= {operand2s[(head + 6) % 64], operand1s[(head + 6) % 64], inst_nums[(head + 6) % 64], 1'b1, Rds[(head + 6) % 64], MemToRegs[(head + 6) % 64], MemReads[(head + 6) % 64], MemWrites[(head + 6) % 64], ALUOPs[(head + 6) % 64], ALUSrc2s[(head + 6) % 64], funct3s[(head + 6) % 64], immediates[(head + 6) % 64]};
-    end else begin
-        result_out <= {operand2s[(head + 6) % 64], operand1s[(head + 6) % 64], inst_nums[(head + 6) % 64], 1'b0, Rds[(head + 6) % 64], MemToRegs[(head + 6) % 64], MemReads[(head + 6) % 64], MemWrites[(head + 6) % 64], ALUOPs[(head + 6) % 64], ALUSrc2s[(head + 6) % 64], funct3s[(head + 6) % 64], immediates[(head + 6) % 64]};
-    end
+   
     operand1s[(head + 6) % 64] <= 0;
     operand2s[(head + 6) % 64] <= 0;
     valid_entries1[(head + 6) % 64] <= 0;
@@ -488,11 +470,9 @@ else if (valid_entries1[(head + 6) % 64] == 1 && valid_entries2[(head + 6) % 64]
     RS_ALU_on[(head+6)%64] <= 1;
 end
 else if (valid_entries1[(head + 7) % 64] == 1 && valid_entries2[(head + 7) % 64] == 1) begin
-    if (!MemReads[(head + 7) % 64]) begin
+  
         result_out <= {operand2s[(head + 7) % 64], operand1s[(head + 7) % 64], inst_nums[(head + 7) % 64], 1'b1, Rds[(head + 7) % 64], MemToRegs[(head + 7) % 64], MemReads[(head + 7) % 64], MemWrites[(head + 7) % 64], ALUOPs[(head + 7) % 64], ALUSrc2s[(head + 7) % 64], funct3s[(head + 7) % 64], immediates[(head + 7) % 64]};
-    end else begin
-        result_out <= {operand2s[(head + 7) % 64], operand1s[(head + 7) % 64], inst_nums[(head + 7) % 64], 1'b0, Rds[(head + 7) % 64], MemToRegs[(head + 7) % 64], MemReads[(head + 7) % 64], MemWrites[(head + 7) % 64], ALUOPs[(head + 7) % 64], ALUSrc2s[(head + 7) % 64], funct3s[(head + 7) % 64], immediates[(head + 7) % 64]};
-    end
+    
     operand1s[(head + 7) % 64] <= 0;
     operand2s[(head + 7) % 64] <= 0;
     valid_entries1[(head + 7) % 64] <= 0;
@@ -500,11 +480,9 @@ else if (valid_entries1[(head + 7) % 64] == 1 && valid_entries2[(head + 7) % 64]
     RS_ALU_on[(head+7)%64] <= 1;
 end
 else if (valid_entries1[(head + 8) % 64] == 1 && valid_entries2[(head + 8) % 64] == 1) begin
-    if (!MemReads[(head + 8) % 64]) begin
+   
         result_out <= {operand2s[(head + 8) % 64], operand1s[(head + 8) % 64], inst_nums[(head + 8) % 64], 1'b1, Rds[(head + 8) % 64], MemToRegs[(head + 8) % 64], MemReads[(head + 8) % 64], MemWrites[(head + 8) % 64], ALUOPs[(head + 8) % 64], ALUSrc2s[(head + 8) % 64], funct3s[(head + 8) % 64], immediates[(head + 8) % 64]};
-    end else begin
-        result_out <= {operand2s[(head + 8) % 64], operand1s[(head + 8) % 64], inst_nums[(head + 8) % 64], 1'b0, Rds[(head + 8) % 64], MemToRegs[(head + 8) % 64], MemReads[(head + 8) % 64], MemWrites[(head + 8) % 64], ALUOPs[(head + 8) % 64], ALUSrc2s[(head + 8) % 64], funct3s[(head + 8) % 64], immediates[(head + 8) % 64]};
-    end
+   
     operand1s[(head + 8) % 64] <= 0;
     operand2s[(head + 8) % 64] <= 0;
     valid_entries1[(head + 8) % 64] <= 0;
@@ -512,11 +490,9 @@ else if (valid_entries1[(head + 8) % 64] == 1 && valid_entries2[(head + 8) % 64]
     RS_ALU_on[(head+8)%64] <= 1;
 end
 else if (valid_entries1[(head + 9) % 64] == 1 && valid_entries2[(head + 9) % 64] == 1) begin
-    if (!MemReads[(head + 9) % 64]) begin
+    
         result_out <= {operand2s[(head + 9) % 64], operand1s[(head + 9) % 64], inst_nums[(head + 9) % 64], 1'b1, Rds[(head + 9) % 64], MemToRegs[(head + 9) % 64], MemReads[(head + 9) % 64], MemWrites[(head + 9) % 64], ALUOPs[(head + 9) % 64], ALUSrc2s[(head + 9) % 64], funct3s[(head + 9) % 64], immediates[(head + 9) % 64]};
-    end else begin
-        result_out <= {operand2s[(head + 9) % 64], operand1s[(head + 9) % 64], inst_nums[(head + 9) % 64], 1'b0, Rds[(head + 9) % 64], MemToRegs[(head + 9) % 64], MemReads[(head + 9) % 64], MemWrites[(head + 9) % 64], ALUOPs[(head + 9) % 64], ALUSrc2s[(head + 9) % 64], funct3s[(head + 9) % 64], immediates[(head + 9) % 64]};
-    end
+  
     operand1s[(head + 9) % 64] <= 0;
     operand2s[(head + 9) % 64] <= 0;
     valid_entries1[(head + 9) % 64] <= 0;
@@ -524,11 +500,9 @@ else if (valid_entries1[(head + 9) % 64] == 1 && valid_entries2[(head + 9) % 64]
     RS_ALU_on[(head+9)%64] <= 1;
 end
 else if (valid_entries1[(head + 10) % 64] == 1 && valid_entries2[(head + 10) % 64] == 1) begin
-    if (!MemReads[(head + 10) % 64]) begin
+    
         result_out <= {operand2s[(head + 10) % 64], operand1s[(head + 10) % 64], inst_nums[(head + 10) % 64], 1'b1, Rds[(head + 10) % 64], MemToRegs[(head + 10) % 64], MemReads[(head + 10) % 64], MemWrites[(head + 10) % 64], ALUOPs[(head + 10) % 64], ALUSrc2s[(head + 10) % 64], funct3s[(head + 10) % 64], immediates[(head + 10) % 64]};
-    end else begin
-        result_out <= {operand2s[(head + 10) % 64], operand1s[(head + 10) % 64], inst_nums[(head + 10) % 64], 1'b0, Rds[(head + 10) % 64], MemToRegs[(head + 10) % 64], MemReads[(head + 10) % 64], MemWrites[(head + 10) % 64], ALUOPs[(head + 10) % 64], ALUSrc2s[(head + 10) % 64], funct3s[(head + 10) % 64], immediates[(head + 10) % 64]};
-    end
+    
     operand1s[(head + 10) % 64] <= 0;
     operand2s[(head + 10) % 64] <= 0;
     valid_entries1[(head + 10) % 64] <= 0;
@@ -536,11 +510,9 @@ else if (valid_entries1[(head + 10) % 64] == 1 && valid_entries2[(head + 10) % 6
     RS_ALU_on[(head+10)%64] <= 1;
 end
 else if (valid_entries1[(head + 11) % 64] == 1 && valid_entries2[(head + 11) % 64] == 1) begin
-    if (!MemReads[(head + 11) % 64]) begin
+   
         result_out <= {operand2s[(head + 11) % 64], operand1s[(head + 11) % 64], inst_nums[(head + 11) % 64], 1'b1, Rds[(head + 11) % 64], MemToRegs[(head + 11) % 64], MemReads[(head + 11) % 64], MemWrites[(head + 11) % 64], ALUOPs[(head + 11) % 64], ALUSrc2s[(head + 11) % 64], funct3s[(head + 11) % 64], immediates[(head + 11) % 64]};
-    end else begin
-        result_out <= {operand2s[(head + 11) % 64], operand1s[(head + 11) % 64], inst_nums[(head + 11) % 64], 1'b0, Rds[(head + 11) % 64], MemToRegs[(head + 11) % 64], MemReads[(head + 11) % 64], MemWrites[(head + 11) % 64], ALUOPs[(head + 11) % 64], ALUSrc2s[(head + 11) % 64], funct3s[(head + 11) % 64], immediates[(head + 11) % 64]};
-    end
+   
     operand1s[(head + 11) % 64] <= 0;
     operand2s[(head + 11) % 64] <= 0;
     valid_entries1[(head + 11) % 64] <= 0;
@@ -548,11 +520,9 @@ else if (valid_entries1[(head + 11) % 64] == 1 && valid_entries2[(head + 11) % 6
     RS_ALU_on[(head+11)%64] <= 1;
 end
 else if (valid_entries1[(head + 12) % 64] == 1 && valid_entries2[(head + 12) % 64] == 1) begin
-    if (!MemReads[(head + 12) % 64]) begin
+    
         result_out <= {operand2s[(head + 12) % 64], operand1s[(head + 12) % 64], inst_nums[(head + 12) % 64], 1'b1, Rds[(head + 12) % 64], MemToRegs[(head + 12) % 64], MemReads[(head + 12) % 64], MemWrites[(head + 12) % 64], ALUOPs[(head + 12) % 64], ALUSrc2s[(head + 12) % 64], funct3s[(head + 12) % 64], immediates[(head + 12) % 64]};
-    end else begin
-        result_out <= {operand2s[(head + 12) % 64], operand1s[(head + 12) % 64], inst_nums[(head + 12) % 64], 1'b0, Rds[(head + 12) % 64], MemToRegs[(head + 12) % 64], MemReads[(head + 12) % 64], MemWrites[(head + 12) % 64], ALUOPs[(head + 12) % 64], ALUSrc2s[(head + 12) % 64], funct3s[(head + 12) % 64], immediates[(head + 12) % 64]};
-    end
+    
     operand1s[(head + 12) % 64] <= 0;
     operand2s[(head + 12) % 64] <= 0;
     valid_entries1[(head + 12) % 64] <= 0;
@@ -560,11 +530,9 @@ else if (valid_entries1[(head + 12) % 64] == 1 && valid_entries2[(head + 12) % 6
     RS_ALU_on[(head+12)%64] <= 1;
 end
 else if (valid_entries1[(head + 13) % 64] == 1 && valid_entries2[(head + 13) % 64] == 1) begin
-    if (!MemReads[(head + 13) % 64]) begin
+   
         result_out <= {operand2s[(head + 13) % 64], operand1s[(head + 13) % 64], inst_nums[(head + 13) % 64], 1'b1, Rds[(head + 13) % 64], MemToRegs[(head + 13) % 64], MemReads[(head + 13) % 64], MemWrites[(head + 13) % 64], ALUOPs[(head + 13) % 64], ALUSrc2s[(head + 13) % 64], funct3s[(head + 13) % 64], immediates[(head + 13) % 64]};
-    end else begin
-        result_out <= {operand2s[(head + 13) % 64], operand1s[(head + 13) % 64], inst_nums[(head + 13) % 64], 1'b0, Rds[(head + 13) % 64], MemToRegs[(head + 13) % 64], MemReads[(head + 13) % 64], MemWrites[(head + 13) % 64], ALUOPs[(head + 13) % 64], ALUSrc2s[(head + 13) % 64], funct3s[(head + 13) % 64], immediates[(head + 13) % 64]};
-    end
+   
     operand1s[(head + 13) % 64] <= 0;
     operand2s[(head + 13) % 64] <= 0;
     valid_entries1[(head + 13) % 64] <= 0;
@@ -572,11 +540,9 @@ else if (valid_entries1[(head + 13) % 64] == 1 && valid_entries2[(head + 13) % 6
     RS_ALU_on[(head+13)%64] <= 1;
 end
 else if (valid_entries1[(head + 14) % 64] == 1 && valid_entries2[(head + 14) % 64] == 1) begin
-    if (!MemReads[(head + 14) % 64]) begin
+    
         result_out <= {operand2s[(head + 14) % 64], operand1s[(head + 14) % 64], inst_nums[(head + 14) % 64], 1'b1, Rds[(head + 14) % 64], MemToRegs[(head + 14) % 64], MemReads[(head + 14) % 64], MemWrites[(head + 14) % 64], ALUOPs[(head + 14) % 64], ALUSrc2s[(head + 14) % 64], funct3s[(head + 14) % 64], immediates[(head + 14) % 64]};
-    end else begin
-        result_out <= {operand2s[(head + 14) % 64], operand1s[(head + 14) % 64], inst_nums[(head + 14) % 64], 1'b0, Rds[(head + 14) % 64], MemToRegs[(head + 14) % 64], MemReads[(head + 14) % 64], MemWrites[(head + 14) % 64], ALUOPs[(head + 14) % 64], ALUSrc2s[(head + 14) % 64], funct3s[(head + 14) % 64], immediates[(head + 14) % 64]};
-    end
+   
     operand1s[(head + 14) % 64] <= 0;
     operand2s[(head + 14) % 64] <= 0;
     valid_entries1[(head + 14) % 64] <= 0;
@@ -584,11 +550,9 @@ else if (valid_entries1[(head + 14) % 64] == 1 && valid_entries2[(head + 14) % 6
     RS_ALU_on[(head+14)%64] <= 1;
 end
 else if (valid_entries1[(head + 15) % 64] == 1 && valid_entries2[(head + 15) % 64] == 1) begin
-    if (!MemReads[(head + 15) % 64]) begin
+   
         result_out <= {operand2s[(head + 15) % 64], operand1s[(head + 15) % 64], inst_nums[(head + 15) % 64], 1'b1, Rds[(head + 15) % 64], MemToRegs[(head + 15) % 64], MemReads[(head + 15) % 64], MemWrites[(head + 15) % 64], ALUOPs[(head + 15) % 64], ALUSrc2s[(head + 15) % 64], funct3s[(head + 15) % 64], immediates[(head + 15) % 64]};
-    end else begin
-        result_out <= {operand2s[(head + 15) % 64], operand1s[(head + 15) % 64], inst_nums[(head + 15) % 64], 1'b0, Rds[(head + 15) % 64], MemToRegs[(head + 15) % 64], MemReads[(head + 15) % 64], MemWrites[(head + 15) % 64], ALUOPs[(head + 15) % 64], ALUSrc2s[(head + 15) % 64], funct3s[(head + 15) % 64], immediates[(head + 15) % 64]};
-    end
+   
     operand1s[(head + 15) % 64] <= 0;
     operand2s[(head + 15) % 64] <= 0;
     valid_entries1[(head + 15) % 64] <= 0;
@@ -596,11 +560,9 @@ else if (valid_entries1[(head + 15) % 64] == 1 && valid_entries2[(head + 15) % 6
     RS_ALU_on[(head+15)%64] <= 1;
 end
 else if (valid_entries1[(head + 16) % 64] == 1 && valid_entries2[(head + 16) % 64] == 1) begin
-    if (!MemReads[(head + 16) % 64]) begin
+    
         result_out <= {operand2s[(head + 16) % 64], operand1s[(head + 16) % 64], inst_nums[(head + 16) % 64], 1'b1, Rds[(head + 16) % 64], MemToRegs[(head + 16) % 64], MemReads[(head + 16) % 64], MemWrites[(head + 16) % 64], ALUOPs[(head + 16) % 64], ALUSrc2s[(head + 16) % 64], funct3s[(head + 16) % 64], immediates[(head + 16) % 64]};
-    end else begin
-        result_out <= {operand2s[(head + 16) % 64], operand1s[(head + 16) % 64], inst_nums[(head + 16) % 64], 1'b0, Rds[(head + 16) % 64], MemToRegs[(head + 16) % 64], MemReads[(head + 16) % 64], MemWrites[(head + 16) % 64], ALUOPs[(head + 16) % 64], ALUSrc2s[(head + 16) % 64], funct3s[(head + 16) % 64], immediates[(head + 16) % 64]};
-    end
+    
     operand1s[(head + 16) % 64] <= 0;
     operand2s[(head + 16) % 64] <= 0;
     valid_entries1[(head + 16) % 64] <= 0;
@@ -608,11 +570,9 @@ else if (valid_entries1[(head + 16) % 64] == 1 && valid_entries2[(head + 16) % 6
     RS_ALU_on[(head+16)%64] <= 1;
 end
 else if (valid_entries1[(head + 17) % 64] == 1 && valid_entries2[(head + 17) % 64] == 1) begin
-    if (!MemReads[(head + 17) % 64]) begin
+ 
         result_out <= {operand2s[(head + 17) % 64], operand1s[(head + 17) % 64], inst_nums[(head + 17) % 64], 1'b1, Rds[(head + 17) % 64], MemToRegs[(head + 17) % 64], MemReads[(head + 17) % 64], MemWrites[(head + 17) % 64], ALUOPs[(head + 17) % 64], ALUSrc2s[(head + 17) % 64], funct3s[(head + 17) % 64], immediates[(head + 17) % 64]};
-    end else begin
-        result_out <= {operand2s[(head + 17) % 64], operand1s[(head + 17) % 64], inst_nums[(head + 17) % 64], 1'b0, Rds[(head + 17) % 64], MemToRegs[(head + 17) % 64], MemReads[(head + 17) % 64], MemWrites[(head + 17) % 64], ALUOPs[(head + 17) % 64], ALUSrc2s[(head + 17) % 64], funct3s[(head + 17) % 64], immediates[(head + 17) % 64]};
-    end
+    
     operand1s[(head + 17) % 64] <= 0;
     operand2s[(head + 17) % 64] <= 0;
     valid_entries1[(head + 17) % 64] <= 0;
@@ -620,11 +580,9 @@ else if (valid_entries1[(head + 17) % 64] == 1 && valid_entries2[(head + 17) % 6
     RS_ALU_on[(head+17)%64] <= 1;
 end
 else if (valid_entries1[(head + 18) % 64] == 1 && valid_entries2[(head + 18) % 64] == 1) begin
-    if (!MemReads[(head + 18) % 64]) begin
+   
         result_out <= {operand2s[(head + 18) % 64], operand1s[(head + 18) % 64], inst_nums[(head + 18) % 64], 1'b1, Rds[(head + 18) % 64], MemToRegs[(head + 18) % 64], MemReads[(head + 18) % 64], MemWrites[(head + 18) % 64], ALUOPs[(head + 18) % 64], ALUSrc2s[(head + 18) % 64], funct3s[(head + 18) % 64], immediates[(head + 18) % 64]};
-    end else begin
-        result_out <= {operand2s[(head + 18) % 64], operand1s[(head + 18) % 64], inst_nums[(head + 18) % 64], 1'b0, Rds[(head + 18) % 64], MemToRegs[(head + 18) % 64], MemReads[(head + 18) % 64], MemWrites[(head + 18) % 64], ALUOPs[(head + 18) % 64], ALUSrc2s[(head + 18) % 64], funct3s[(head + 18) % 64], immediates[(head + 18) % 64]};
-    end
+    
     operand1s[(head + 18) % 64] <= 0;
     operand2s[(head + 18) % 64] <= 0;
     valid_entries1[(head + 18) % 64] <= 0;
@@ -632,11 +590,9 @@ else if (valid_entries1[(head + 18) % 64] == 1 && valid_entries2[(head + 18) % 6
     RS_ALU_on[(head+18)%64] <= 1;
 end
 else if (valid_entries1[(head + 19) % 64] == 1 && valid_entries2[(head + 19) % 64] == 1) begin
-    if (!MemReads[(head + 19) % 64]) begin
+   
         result_out <= {operand2s[(head + 19) % 64], operand1s[(head + 19) % 64], inst_nums[(head + 19) % 64], 1'b1, Rds[(head + 19) % 64], MemToRegs[(head + 19) % 64], MemReads[(head + 19) % 64], MemWrites[(head + 19) % 64], ALUOPs[(head + 19) % 64], ALUSrc2s[(head + 19) % 64], funct3s[(head + 19) % 64], immediates[(head + 19) % 64]};
-    end else begin
-        result_out <= {operand2s[(head + 19) % 64], operand1s[(head + 19) % 64], inst_nums[(head + 19) % 64], 1'b0, Rds[(head + 19) % 64], MemToRegs[(head + 19) % 64], MemReads[(head + 19) % 64], MemWrites[(head + 19) % 64], ALUOPs[(head + 19) % 64], ALUSrc2s[(head + 19) % 64], funct3s[(head + 19) % 64], immediates[(head + 19) % 64]};
-    end
+   
     operand1s[(head + 19) % 64] <= 0;
     operand2s[(head + 19) % 64] <= 0;
     valid_entries1[(head + 19) % 64] <= 0;
@@ -644,11 +600,9 @@ else if (valid_entries1[(head + 19) % 64] == 1 && valid_entries2[(head + 19) % 6
     RS_ALU_on[(head+19)%64] <= 1;
 end
 else if (valid_entries1[(head + 20) % 64] == 1 && valid_entries2[(head + 20) % 64] == 1) begin
-    if (!MemReads[(head + 20) % 64]) begin
+  
         result_out <= {operand2s[(head + 20) % 64], operand1s[(head + 20) % 64], inst_nums[(head + 20) % 64], 1'b1, Rds[(head + 20) % 64], MemToRegs[(head + 20) % 64], MemReads[(head + 20) % 64], MemWrites[(head + 20) % 64], ALUOPs[(head + 20) % 64], ALUSrc2s[(head + 20) % 64], funct3s[(head + 20) % 64], immediates[(head + 20) % 64]};
-    end else begin
-        result_out <= {operand2s[(head + 20) % 64], operand1s[(head + 20) % 64], inst_nums[(head + 20) % 64], 1'b0, Rds[(head + 20) % 64], MemToRegs[(head + 20) % 64], MemReads[(head + 20) % 64], MemWrites[(head + 20) % 64], ALUOPs[(head + 20) % 64], ALUSrc2s[(head + 20) % 64], funct3s[(head + 20) % 64], immediates[(head + 20) % 64]};
-    end
+    
     operand1s[(head + 20) % 64] <= 0;
     operand2s[(head + 20) % 64] <= 0;
     valid_entries1[(head + 20) % 64] <= 0;
@@ -656,11 +610,9 @@ else if (valid_entries1[(head + 20) % 64] == 1 && valid_entries2[(head + 20) % 6
     RS_ALU_on[(head+20)%64] <= 1;
 end
 else if (valid_entries1[(head + 21) % 64] == 1 && valid_entries2[(head + 21) % 64] == 1) begin
-    if (!MemReads[(head + 21) % 64]) begin
+    
         result_out <= {operand2s[(head + 21) % 64], operand1s[(head + 21) % 64], inst_nums[(head + 21) % 64], 1'b1, Rds[(head + 21) % 64], MemToRegs[(head + 21) % 64], MemReads[(head + 21) % 64], MemWrites[(head + 21) % 64], ALUOPs[(head + 21) % 64], ALUSrc2s[(head + 21) % 64], funct3s[(head + 21) % 64], immediates[(head + 21) % 64]};
-    end else begin
-        result_out <= {operand2s[(head + 21) % 64], operand1s[(head + 21) % 64], inst_nums[(head + 21) % 64], 1'b0, Rds[(head + 21) % 64], MemToRegs[(head + 21) % 64], MemReads[(head + 21) % 64], MemWrites[(head + 21) % 64], ALUOPs[(head + 21) % 64], ALUSrc2s[(head + 21) % 64], funct3s[(head + 21) % 64], immediates[(head + 21) % 64]};
-    end
+  
     operand1s[(head + 21) % 64] <= 0;
     operand2s[(head + 21) % 64] <= 0;
     valid_entries1[(head + 21) % 64] <= 0;
@@ -668,11 +620,9 @@ else if (valid_entries1[(head + 21) % 64] == 1 && valid_entries2[(head + 21) % 6
     RS_ALU_on[(head+21)%64] <= 1;
 end
 else if (valid_entries1[(head + 22) % 64] == 1 && valid_entries2[(head + 22) % 64] == 1) begin
-    if (!MemReads[(head + 22) % 64]) begin
+   
         result_out <= {operand2s[(head + 22) % 64], operand1s[(head + 22) % 64], inst_nums[(head + 22) % 64], 1'b1, Rds[(head + 22) % 64], MemToRegs[(head + 22) % 64], MemReads[(head + 22) % 64], MemWrites[(head + 22) % 64], ALUOPs[(head + 22) % 64], ALUSrc2s[(head + 22) % 64], funct3s[(head + 22) % 64], immediates[(head + 22) % 64]};
-    end else begin
-        result_out <= {operand2s[(head + 22) % 64], operand1s[(head + 22) % 64], inst_nums[(head + 22) % 64], 1'b0, Rds[(head + 22) % 64], MemToRegs[(head + 22) % 64], MemReads[(head + 22) % 64], MemWrites[(head + 22) % 64], ALUOPs[(head + 22) % 64], ALUSrc2s[(head + 22) % 64], funct3s[(head + 22) % 64], immediates[(head + 22) % 64]};
-    end
+   
     operand1s[(head + 22) % 64] <= 0;
     operand2s[(head + 22) % 64] <= 0;
     valid_entries1[(head + 22) % 64] <= 0;
@@ -680,11 +630,9 @@ else if (valid_entries1[(head + 22) % 64] == 1 && valid_entries2[(head + 22) % 6
     RS_ALU_on[(head+22)%64] <= 1;
 end
 else if (valid_entries1[(head + 23) % 64] == 1 && valid_entries2[(head + 23) % 64] == 1) begin
-    if (!MemReads[(head + 23) % 64]) begin
+    
         result_out <= {operand2s[(head + 23) % 64], operand1s[(head + 23) % 64], inst_nums[(head + 23) % 64], 1'b1, Rds[(head + 23) % 64], MemToRegs[(head + 23) % 64], MemReads[(head + 23) % 64], MemWrites[(head + 23) % 64], ALUOPs[(head + 23) % 64], ALUSrc2s[(head + 23) % 64], funct3s[(head + 23) % 64], immediates[(head + 23) % 64]};
-    end else begin
-        result_out <= {operand2s[(head + 23) % 64], operand1s[(head + 23) % 64], inst_nums[(head + 23) % 64], 1'b0, Rds[(head + 23) % 64], MemToRegs[(head + 23) % 64], MemReads[(head + 23) % 64], MemWrites[(head + 23) % 64], ALUOPs[(head + 23) % 64], ALUSrc2s[(head + 23) % 64], funct3s[(head + 23) % 64], immediates[(head + 23) % 64]};
-    end
+    
     operand1s[(head + 23) % 64] <= 0;
     operand2s[(head + 23) % 64] <= 0;
     valid_entries1[(head + 23) % 64] <= 0;
@@ -692,11 +640,9 @@ else if (valid_entries1[(head + 23) % 64] == 1 && valid_entries2[(head + 23) % 6
     RS_ALU_on[(head+23)%64] <= 1;
 end
 else if (valid_entries1[(head + 24) % 64] == 1 && valid_entries2[(head + 24) % 64] == 1) begin
-    if (!MemReads[(head + 24) % 64]) begin
+    
         result_out <= {operand2s[(head + 24) % 64], operand1s[(head + 24) % 64], inst_nums[(head + 24) % 64], 1'b1, Rds[(head + 24) % 64], MemToRegs[(head + 24) % 64], MemReads[(head + 24) % 64], MemWrites[(head + 24) % 64], ALUOPs[(head + 24) % 64], ALUSrc2s[(head + 24) % 64], funct3s[(head + 24) % 64], immediates[(head + 24) % 64]};
-    end else begin
-        result_out <= {operand2s[(head + 24) % 64], operand1s[(head + 24) % 64], inst_nums[(head + 24) % 64], 1'b0, Rds[(head + 24) % 64], MemToRegs[(head + 24) % 64], MemReads[(head + 24) % 64], MemWrites[(head + 24) % 64], ALUOPs[(head + 24) % 64], ALUSrc2s[(head + 24) % 64], funct3s[(head + 24) % 64], immediates[(head + 24) % 64]};
-    end
+   
     operand1s[(head + 24) % 64] <= 0;
     operand2s[(head + 24) % 64] <= 0;
     valid_entries1[(head + 24) % 64] <= 0;
@@ -704,11 +650,9 @@ else if (valid_entries1[(head + 24) % 64] == 1 && valid_entries2[(head + 24) % 6
     RS_ALU_on[(head+24)%64] <= 1;
 end
 else if (valid_entries1[(head + 25) % 64] == 1 && valid_entries2[(head + 25) % 64] == 1) begin
-    if (!MemReads[(head + 25) % 64]) begin
+    
         result_out <= {operand2s[(head + 25) % 64], operand1s[(head + 25) % 64], inst_nums[(head + 25) % 64], 1'b1, Rds[(head + 25) % 64], MemToRegs[(head + 25) % 64], MemReads[(head + 25) % 64], MemWrites[(head + 25) % 64], ALUOPs[(head + 25) % 64], ALUSrc2s[(head + 25) % 64], funct3s[(head + 25) % 64], immediates[(head + 25) % 64]};
-    end else begin
-        result_out <= {operand2s[(head + 25) % 64], operand1s[(head + 25) % 64], inst_nums[(head + 25) % 64], 1'b0, Rds[(head + 25) % 64], MemToRegs[(head + 25) % 64], MemReads[(head + 25) % 64], MemWrites[(head + 25) % 64], ALUOPs[(head + 25) % 64], ALUSrc2s[(head + 25) % 64], funct3s[(head + 25) % 64], immediates[(head + 25) % 64]};
-    end
+   
     operand1s[(head + 25) % 64] <= 0;
     operand2s[(head + 25) % 64] <= 0;
     valid_entries1[(head + 25) % 64] <= 0;
@@ -716,11 +660,9 @@ else if (valid_entries1[(head + 25) % 64] == 1 && valid_entries2[(head + 25) % 6
     RS_ALU_on[(head+25)%64] <= 1;
 end
 else if (valid_entries1[(head + 26) % 64] == 1 && valid_entries2[(head + 26) % 64] == 1) begin
-    if (!MemReads[(head + 26) % 64]) begin
+  
         result_out <= {operand2s[(head + 26) % 64], operand1s[(head + 26) % 64], inst_nums[(head + 26) % 64], 1'b1, Rds[(head + 26) % 64], MemToRegs[(head + 26) % 64], MemReads[(head + 26) % 64], MemWrites[(head + 26) % 64], ALUOPs[(head + 26) % 64], ALUSrc2s[(head + 26) % 64], funct3s[(head + 26) % 64], immediates[(head + 26) % 64]};
-    end else begin
-        result_out <= {operand2s[(head + 26) % 64], operand1s[(head + 26) % 64], inst_nums[(head + 26) % 64], 1'b0, Rds[(head + 26) % 64], MemToRegs[(head + 26) % 64], MemReads[(head + 26) % 64], MemWrites[(head + 26) % 64], ALUOPs[(head + 26) % 64], ALUSrc2s[(head + 26) % 64], funct3s[(head + 26) % 64], immediates[(head + 26) % 64]};
-    end
+   
     operand1s[(head + 26) % 64] <= 0;
     operand2s[(head + 26) % 64] <= 0;
     valid_entries1[(head + 26) % 64] <= 0;
@@ -728,11 +670,9 @@ else if (valid_entries1[(head + 26) % 64] == 1 && valid_entries2[(head + 26) % 6
     RS_ALU_on[(head+26)%64] <= 1;
 end
 else if (valid_entries1[(head + 27) % 64] == 1 && valid_entries2[(head + 27) % 64] == 1) begin
-    if (!MemReads[(head + 27) % 64]) begin
+  
         result_out <= {operand2s[(head + 27) % 64], operand1s[(head + 27) % 64], inst_nums[(head + 27) % 64], 1'b1, Rds[(head + 27) % 64], MemToRegs[(head + 27) % 64], MemReads[(head + 27) % 64], MemWrites[(head + 27) % 64], ALUOPs[(head + 27) % 64], ALUSrc2s[(head + 27) % 64], funct3s[(head + 27) % 64], immediates[(head + 27) % 64]};
-    end else begin
-        result_out <= {operand2s[(head + 27) % 64], operand1s[(head + 27) % 64], inst_nums[(head + 27) % 64], 1'b0, Rds[(head + 27) % 64], MemToRegs[(head + 27) % 64], MemReads[(head + 27) % 64], MemWrites[(head + 27) % 64], ALUOPs[(head + 27) % 64], ALUSrc2s[(head + 27) % 64], funct3s[(head + 27) % 64], immediates[(head + 27) % 64]};
-    end
+    
     operand1s[(head + 27) % 64] <= 0;
     operand2s[(head + 27) % 64] <= 0;
     valid_entries1[(head + 27) % 64] <= 0;
@@ -740,11 +680,9 @@ else if (valid_entries1[(head + 27) % 64] == 1 && valid_entries2[(head + 27) % 6
     RS_ALU_on[(head+27)%64] <= 1;
 end
 else if (valid_entries1[(head + 28) % 64] == 1 && valid_entries2[(head + 28) % 64] == 1) begin
-    if (!MemReads[(head + 28) % 64]) begin
+   
         result_out <= {operand2s[(head + 28) % 64], operand1s[(head + 28) % 64], inst_nums[(head + 28) % 64], 1'b1, Rds[(head + 28) % 64], MemToRegs[(head + 28) % 64], MemReads[(head + 28) % 64], MemWrites[(head + 28) % 64], ALUOPs[(head + 28) % 64], ALUSrc2s[(head + 28) % 64], funct3s[(head + 28) % 64], immediates[(head + 28) % 64]};
-    end else begin
-        result_out <= {operand2s[(head + 28) % 64], operand1s[(head + 28) % 64], inst_nums[(head + 28) % 64], 1'b0, Rds[(head + 28) % 64], MemToRegs[(head + 28) % 64], MemReads[(head + 28) % 64], MemWrites[(head + 28) % 64], ALUOPs[(head + 28) % 64], ALUSrc2s[(head + 28) % 64], funct3s[(head + 28) % 64], immediates[(head + 28) % 64]};
-    end
+    
     operand1s[(head + 28) % 64] <= 0;
     operand2s[(head + 28) % 64] <= 0;
     valid_entries1[(head + 28) % 64] <= 0;
@@ -752,11 +690,9 @@ else if (valid_entries1[(head + 28) % 64] == 1 && valid_entries2[(head + 28) % 6
     RS_ALU_on[(head+28)%64] <= 1;
 end
 else if (valid_entries1[(head + 29) % 64] == 1 && valid_entries2[(head + 29) % 64] == 1) begin
-    if (!MemReads[(head + 29) % 64]) begin
+   
         result_out <= {operand2s[(head + 29) % 64], operand1s[(head + 29) % 64], inst_nums[(head + 29) % 64], 1'b1, Rds[(head + 29) % 64], MemToRegs[(head + 29) % 64], MemReads[(head + 29) % 64], MemWrites[(head + 29) % 64], ALUOPs[(head + 29) % 64], ALUSrc2s[(head + 29) % 64], funct3s[(head + 29) % 64], immediates[(head + 29) % 64]};
-    end else begin
-        result_out <= {operand2s[(head + 29) % 64], operand1s[(head + 29) % 64], inst_nums[(head + 29) % 64], 1'b0, Rds[(head + 29) % 64], MemToRegs[(head + 29) % 64], MemReads[(head + 29) % 64], MemWrites[(head + 29) % 64], ALUOPs[(head + 29) % 64], ALUSrc2s[(head + 29) % 64], funct3s[(head + 29) % 64], immediates[(head + 29) % 64]};
-    end
+   
     operand1s[(head + 29) % 64] <= 0;
     operand2s[(head + 29) % 64] <= 0;
     valid_entries1[(head + 29) % 64] <= 0;
@@ -764,11 +700,9 @@ else if (valid_entries1[(head + 29) % 64] == 1 && valid_entries2[(head + 29) % 6
     RS_ALU_on[(head+29)%64] <= 1;
 end
 else if (valid_entries1[(head + 30) % 64] == 1 && valid_entries2[(head + 30) % 64] == 1) begin
-    if (!MemReads[(head + 30) % 64]) begin
+    
         result_out <= {operand2s[(head + 30) % 64], operand1s[(head + 30) % 64], inst_nums[(head + 30) % 64], 1'b1, Rds[(head + 30) % 64], MemToRegs[(head + 30) % 64], MemReads[(head + 30) % 64], MemWrites[(head + 30) % 64], ALUOPs[(head + 30) % 64], ALUSrc2s[(head + 30) % 64], funct3s[(head + 30) % 64], immediates[(head + 30) % 64]};
-    end else begin
-        result_out <= {operand2s[(head + 30) % 64], operand1s[(head + 30) % 64], inst_nums[(head + 30) % 64], 1'b0, Rds[(head + 30) % 64], MemToRegs[(head + 30) % 64], MemReads[(head + 30) % 64], MemWrites[(head + 30) % 64], ALUOPs[(head + 30) % 64], ALUSrc2s[(head + 30) % 64], funct3s[(head + 30) % 64], immediates[(head + 30) % 64]};
-    end
+   
     operand1s[(head + 30) % 64] <= 0;
     operand2s[(head + 30) % 64] <= 0;
     valid_entries1[(head + 30) % 64] <= 0;
@@ -776,11 +710,9 @@ else if (valid_entries1[(head + 30) % 64] == 1 && valid_entries2[(head + 30) % 6
     RS_ALU_on[(head+30)%64] <= 1;
 end
 else if (valid_entries1[(head + 31) % 64] == 1 && valid_entries2[(head + 31) % 64] == 1) begin
-    if (!MemReads[(head + 31) % 64]) begin
+  
         result_out <= {operand2s[(head + 31) % 64], operand1s[(head + 31) % 64], inst_nums[(head + 31) % 64], 1'b1, Rds[(head + 31) % 64], MemToRegs[(head + 31) % 64], MemReads[(head + 31) % 64], MemWrites[(head + 31) % 64], ALUOPs[(head + 31) % 64], ALUSrc2s[(head + 31) % 64], funct3s[(head + 31) % 64], immediates[(head + 31) % 64]};
-    end else begin
-        result_out <= {operand2s[(head + 31) % 64], operand1s[(head + 31) % 64], inst_nums[(head + 31) % 64], 1'b0, Rds[(head + 31) % 64], MemToRegs[(head + 31) % 64], MemReads[(head + 31) % 64], MemWrites[(head + 31) % 64], ALUOPs[(head + 31) % 64], ALUSrc2s[(head + 31) % 64], funct3s[(head + 31) % 64], immediates[(head + 31) % 64]};
-    end
+
     operand1s[(head + 31) % 64] <= 0;
     operand2s[(head + 31) % 64] <= 0;
     valid_entries1[(head + 31) % 64] <= 0;
