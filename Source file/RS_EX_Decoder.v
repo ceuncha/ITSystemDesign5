@@ -125,7 +125,7 @@ module RS_EX_decoder(
 
 always @(*) begin
     if (reset) begin
-        // �젅吏��뒪�꽣 珥덇린�솕
+        // ?젅吏??뒪?꽣 珥덇린?솕
 
 
         add_alu_pc = 0;
@@ -342,7 +342,7 @@ always @(*) begin
             RS_br_IF_ID_hit = IF_ID_hit; 
             RS_br_immediate = immediate;
             br_rd_phy_reg = rd_phy_reg;
-        end else if (in_opcode == 0000011 || in_opcode == 0100011) begin  //load and store
+        end else if (in_opcode == 7'b0000011 || in_opcode == 7'b0100011) begin  //load and store
             LS_func3 = in_func3;
             
             LS_phy_reg = rd_phy_reg;
