@@ -7,8 +7,9 @@ module divider (
     input wire [7:0] Physical_address_in, 
     input wire [31:0] PC_in,
     input wire [3:0] divider_op_in,
+    output wire divide_zero,
     output reg [31:0] Result,
-    output  reg done,
+    output reg done,
     output reg [7:0] Physical_address_out,
     output reg [31:0] PC_out
 );
@@ -54,10 +55,10 @@ module divider (
     reg [63:0] temp_dividend_cal31;
 
     
-
+  assign divide_zero= (A!=0) && (B==0);
     // 초기화 및 시작
     always @(posedge clk ) begin
-       if (start) begin
+       if (start&!divide_zero) begin
             temp_dividend[0] <= {31'b0, A, 1'b0};
             divisor[0] <= B;
             Physical_address_reg[0] <= Physical_address_in;
