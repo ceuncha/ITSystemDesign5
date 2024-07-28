@@ -37,6 +37,10 @@ module physical_register_file (
     input [7:0] Operand1_phy_LS,
     input [7:0] Operand2_phy_LS,
 
+    input exception, // 추가된 exception 신호
+    input [31:0] x0, x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11, x12, x13, x14, x15,
+    input [31:0] x16, x17, x18, x19, x20, x21, x22, x23, x24, x25, x26, x27, x28, x29, x30, x31,
+
     output reg [31:0] Operand1_data_ALU,
     output reg [31:0] Operand2_data_ALU,
     output reg [31:0] Operand1_data_MUL,
@@ -53,6 +57,8 @@ module physical_register_file (
     output reg [31:0] Operand2_data,
     output reg valid1,
     output reg valid2
+
+
 );
 
 
@@ -75,6 +81,49 @@ always @(posedge clk) begin
        for (i = 32; i < 256; i = i + 1) begin
             registers[i] <= 32'h00000000;
            valid[i] <= 1'b1; 
+        end
+     end else if (exception) begin
+        // exception 신호가 들어오면 논리 레지스터의 데이터를 물리 레지스터로 복사
+        registers[0] <= x0;
+        registers[1] <= x1;
+        registers[2] <= x2;
+        registers[3] <= x3;
+        registers[4] <= x4;
+        registers[5] <= x5;
+        registers[6] <= x6;
+        registers[7] <= x7;
+        registers[8] <= x8;
+        registers[9] <= x9;
+        registers[10] <= x10;
+        registers[11] <= x11;
+        registers[12] <= x12;
+        registers[13] <= x13;
+        registers[14] <= x14;
+        registers[15] <= x15;
+        registers[16] <= x16;
+        registers[17] <= x17;
+        registers[18] <= x18;
+        registers[19] <= x19;
+        registers[20] <= x20;
+        registers[21] <= x21;
+        registers[22] <= x22;
+        registers[23] <= x23;
+        registers[24] <= x24;
+        registers[25] <= x25;
+        registers[26] <= x26;
+        registers[27] <= x27;
+        registers[28] <= x28;
+        registers[29] <= x29;
+        registers[30] <= x30;
+        registers[31] <= x31;
+
+        for (i = 0; i < 32; i = i + 1) begin
+            
+            valid[i] <= 1'b1; 
+        end
+       for (i = 32; i < 256; i = i + 1) begin
+            registers[i] <= 32'h00000000;
+            valid[i] <= 1'b1; 
         end
     end else begin
     
