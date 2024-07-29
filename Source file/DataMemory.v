@@ -36,7 +36,7 @@ always @(posedge clk) begin
              memory[i] <= backup_memory[i]; // restore data from backup memory to memory
         end
     end else if (LS_Result >= 32'd2048) begin
-            addr_exception <= 1'b1
+            addr_exception <= 1'b1;
             Load_Done <= 1'b1;
     end else begin
         if (ROB_MemWrite) begin
