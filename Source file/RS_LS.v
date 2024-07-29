@@ -3,7 +3,8 @@
     input wire reset,
     input wire start,
     input wire [31:0] RS_alu_inst_num,
- 
+    input wire exception,
+
     input wire [7:0] Rd,
     input wire MemToReg,
     input wire MemRead,
@@ -58,7 +59,7 @@
    (* keep = "true" *) reg RS_ALU_on[0:63];
 
     always @(posedge clk) begin    //?逾???봾????六???源덂슖?? ?猷???쐝?뵳????꼨 ??六???끃裕뉐ㅇ?
-        if (reset) begin
+        if (reset || exception) begin
             tail <= 0;
             head <=0;
             for (i = 0; i < 64; i = i + 1) begin
