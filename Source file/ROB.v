@@ -145,7 +145,7 @@ always @(posedge clk) begin
                     out_value <= 0;     // Output value
                     out_dest <= 0;      // Extract out_dest from instr[11:7]
                     out_reg_write <= 0;   // Output RegWrite status
-                    out_Addr <= 0;
+                    out_Addr <= 32'd1025;
                     exception_sig <= 0;
             end
         
