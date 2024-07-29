@@ -5,7 +5,8 @@ module ROB(
     input wire [31:0] IF_ID_instOut,     // Input instruction (expanded to 32 bits)
     input wire reg_write,                // Register write enable signal from the decode stage
     input wire [31:0] PC,                // Current PC value (expanded to 32 bits)
-        
+    input wire ID_excpetion,
+    
     input wire alu_exec_done,            // ALU execution completion signal
     input wire [31:0] alu_exec_value,    // ALU executed value
     input wire [31:0] alu_exec_PC,       // ALU execution index
@@ -81,10 +82,9 @@ always @(posedge clk) begin
             if (ID_exception == 1'b0) begin
                 rob_entry[tail] <= {1'b0, 1'b1, 1'b0, reg_write, 32'b0, IF_ID_instOut, PC}; // Store input data in the ROB entry with value set to 32'b0 and new_bit set to 1
                 tail <= (tail + 1) % 64;                // Circular buffer handling
-            end else if (ID_exception ==1'b1) begin
+            end else begin
                 rob_entry[tail] <= {1'b1, 1'b1, 1'b0, reg_write, 32'b0, IF_ID_instOut, PC}; // Store input data in the ROB entry with value set to 32'b0 and new_bit set to 1
                 tail <= (tail + 1) % 64;                // Circular buffer handling
-
             end
         end
 
@@ -132,7 +132,7 @@ always @(posedge clk) begin
                     exception_sig <= 1'b0;
                     rob_entry[head] <= 0;            // Clear the ready flag after consuming the entry
                     head <= (head + 1) % 64;                 // Circular buffer handling
-                end else if (rob_entry[head][99] == 1'b1) begin
+                end else begin
                     exception_sig <= 1'b1;
                     head <= 0;
                     tail <= 0;
