@@ -85,10 +85,8 @@ always @(posedge clk) begin
                 rob_entry[tail] <= {MemWrite, 1'b0, 1'b1, 1'b0, reg_write, 32'b0, IF_ID_instOut, PC}; // Store input data in the ROB entry with value set to 32'b0 and new_bit set to 1 [99]는 exceptionflag
                 tail <= (tail + 1) % 64;                // Circular buffer handling
             end else begin
-                exception_sig <= 1'b1;
-                head <= 0;
-                tail <= 0;
-                reset_rob_entries(); 
+                rob_entry[tail] <= {MemWrite, 1'b1, 1'b1, 1'b0, reg_write, 32'b0, IF_ID_instOut, PC}; // Store input data in the ROB entry with value set to 32'b0 and new_bit set to 1 [99]는 exceptionflag
+                tail <= (tail + 1) % 64;                // Circular buffer handling
             end
         end
 
@@ -101,7 +99,7 @@ always @(posedge clk) begin
                         rob_entry[i][99:0] <= {rob_entry[i][100], rob_entry[i][99], rob_entry[i][98], 1'b1, rob_entry[i][96], alu_exec_value, rob_entry[i][63:32], rob_entry[i][31:0]}; // Update value and maintain new_bit, reg_write, instr, PC
                     end
                     if ( mul_exec_done && rob_entry[i][31:0] == mul_exec_PC) begin
-                        rob_entry[i][99:0] <= {rob_entry[i][100], rob_entry[i][98], 1'b1, rob_entry[i][96], mul_exec_value, rob_entry[i][63:32], rob_entry[i][31:0]}; // Update value and maintain new_bit, reg_write, instr, PC       
+                        rob_entry[i][99:0] <= {rob_entry[i][100], rob_entry[i][99], rob_entry[i][98], 1'b1, rob_entry[i][96], mul_exec_value, rob_entry[i][63:32], rob_entry[i][31:0]}; // Update value and maintain new_bit, reg_write, instr, PC       
                     end
                     if ( div_exec_done &&rob_entry[i][31:0] == div_exec_PC) begin
                         if (LS_exception == 1'b1) begin
