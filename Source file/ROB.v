@@ -134,7 +134,6 @@ always @(posedge clk) begin
                     out_Addr <= Store_Addrs[head][31:0];
                     exception_sig <= 1'b0;
                     rob_entry[head] <= 0;            // Clear the ready flag after consuming the entry
-                    Store_Addrs[head] <= 32'd2048;
                     head <= (head + 1) % 64;                 // Circular buffer handling
                 end else begin
                     exception_sig <= 1'b1;
