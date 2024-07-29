@@ -12,12 +12,13 @@ module DataMemory(
     input wire exception_sig,
     input wire [31:0] ROB_Store_Addr,
     input reg [31:0] ROB_Store_Data,
-
+    
     
     output reg [31:0] Load_Data,
     output reg [31:0] Load_inst_num,
     output reg Load_Done,
-    output reg [7:0]  Load_phy_out
+    output reg [7:0]  Load_phy_out,
+    output reg [31:0] Store_Address
 );
    (* keep = "true" *) integer i;
    (* keep = "true" *) reg [31:0] memory [0:2047];
@@ -40,10 +41,22 @@ always @(posedge clk) begin
         if (LS_MemWrite) begin
             if (funct3_LS == 3'b000) begin
                 memory[LS_Result][7:0] <= Operand2_LS[7:0]; // SB
+                Load_Data <= {{24{Operand2_LS[7]}}, Operand2_LS[7:0]}; // LB
+                Load_inst_num <= LS_inst_num;
+                Load_Done <= LS_MemWrite;
+                Store_Address <= LS_Result;
             end else if (funct3_LS == 3'b001) begin
                 memory[LS_Result][15:0] <= Operand2_LS[15:0]; // SH
+                Load_Data <= {{16{Operand2_LS[15]}}, Operand2_LS[15:0]}; // LB
+                Load_inst_num <= LS_inst_num;
+                Load_Done <= LS_MemWrite;
+                Store_Address <= LS_Result;
             end else if (funct3_LS == 3'b010) begin
                 memory[LS_Result] <= Operand2_LS; // SW
+                Load_Data <= Operand2_LS[31:0]}; // LB
+                Load_inst_num <= LS_inst_num;
+                Load_Done <= LS_MemWrite;
+                Store_Address <= LS_Result;
             end
         end
 
