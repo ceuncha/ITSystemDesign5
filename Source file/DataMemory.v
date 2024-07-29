@@ -11,8 +11,8 @@ module DataMemory(
 
     input wire exception_sig,
     input wire [31:0] ROB_Store_Addr,
-    input reg [31:0] ROB_Store_Data,
-    
+    input wire [31:0] ROB_Store_Data,
+    input wire ROB_MemWrite,
     
     output reg [31:0] Load_Data,
     output reg [31:0] Load_inst_num,
@@ -35,7 +35,7 @@ always @(posedge clk) begin
              memory[i] <= backup_memory[i]; // restore data from backup memory to memory
         end
     end else begin
-        if (ROB_Store_Addr != 32'd2048) begin
+        if (ROB_MemWrite) begin
             bakcup_memory[ROB_Store_Addr][31:0] <= ROB_Store_Data;
         end
         if (LS_MemWrite) begin
