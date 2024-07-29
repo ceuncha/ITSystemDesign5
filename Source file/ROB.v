@@ -117,7 +117,7 @@ always @(posedge clk) begin
                             rob_entry[i][99:0] <= {1'b1, rob_entry[i][98], 1'b1, rob_entry[i][96], Load_Data, rob_entry[i][63:32], rob_entry[i][31:0]}; // Update value and maintain new_bit, reg_write, instr, PC
                             Store_Addrs[i][31:0] <= Store_Addr;
                         end else begin
-                            rob_entry[i][99:0] <= {1'b0, rob_entry[i][98], 1'b1, rob_entry[i][96], Load_Data, rob_entry[i][63:32], rob_entry[i][31:0]}; // Update value and maintain new_bit, reg_write, instr, PC
+                            rob_entry[i][99:0] <= {rob_entry[i][99], rob_entry[i][98], 1'b1, rob_entry[i][96], Load_Data, rob_entry[i][63:32], rob_entry[i][31:0]}; // Update value and maintain new_bit, reg_write, instr, PC
                             Store_Addrs[i][31:0] <= Store_Addr;
                         end
                     end
