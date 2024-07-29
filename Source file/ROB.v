@@ -6,6 +6,7 @@ module ROB(
     input wire reg_write,                // Register write enable signal from the decode stage
     input wire [31:0] PC,                // Current PC value (expanded to 32 bits)
     input wire ID_excpetion,
+    input wire MemWrite,
     
     input wire alu_exec_done,            // ALU execution completion signal
     input wire [31:0] alu_exec_value,    // ALU executed value
@@ -43,7 +44,7 @@ module ROB(
 );
 
 // ROB memory
-    reg [99:0] rob_entry [0:63];            // ROB entry: new_bit(1), ready(1), reg_write(1), value(32), instr(32), PC(32)
+    reg [100:0] rob_entry [0:63];            // ROB entry: new_bit(1), ready(1), reg_write(1), value(32), instr(32), PC(32)
     reg [31:0] Store_Addrs [0:63];
     reg [5:0] head;                        // Head pointer (5 bits for 32 entries)
     reg [5:0] tail;                        // Tail pointer (5 bits for 32 entries)
@@ -53,8 +54,8 @@ module ROB(
 task reset_rob_entries;
     begin
         for (i = 0; i < 64; i = i + 1) begin
-            rob_entry[i] <= 100'b0;     // Reset ROB entry with all fields set to 0
-            Store_Addrs[i] <= 32'd2048;
+            rob_entry[i] <= 101'b0;     // Reset ROB entry with all fields set to 0
+            Store_Addrs[i] <= 32'b0;
         end
     end
 endtask
@@ -71,7 +72,7 @@ always @(posedge clk) begin
             // Update the branch entry with PC_Return value
             for (i = 0; i < 64; i = i + 1) begin
                 if (rob_entry[i][31:0] == branch_index) begin
-                    rob_entry[i][99:0] <= {rob_entry[i][99], rob_entry[i][98], 1'b1, rob_entry[i][96], PC_Return, rob_entry[i][63:32], rob_entry[i][31:0]};
+                    rob_entry[i][100:0] <= {rob_entry[i][100], rob_entry[i][99], rob_entry[i][98], 1'b1, rob_entry[i][96], PC_Return, rob_entry[i][63:32], rob_entry[i][31:0]};
                     tail <= (i + 1) % 64; // Move tail to the entry right after the branch entry
                     rob_entry[(i+1)%64][98:0] <= 0; // Flush under tail entry
                     rob_entry[(i+2)%64][98:0] <= 0; // Fulsh under tail entry
@@ -80,7 +81,7 @@ always @(posedge clk) begin
             end
         end else if (IF_ID_instOut != 32'b0) begin  // Only increment tail if the instruction is not invalid (i.e., not a bubble)
             if (ID_exception == 1'b0) begin
-                rob_entry[tail] <= {1'b0, 1'b1, 1'b0, reg_write, 32'b0, IF_ID_instOut, PC}; // Store input data in the ROB entry with value set to 32'b0 and new_bit set to 1
+                rob_entry[tail] <= {MemWrite, 1'b0, 1'b1, 1'b0, reg_write, 32'b0, IF_ID_instOut, PC}; // Store input data in the ROB entry with value set to 32'b0 and new_bit set to 1 [99]는 exceptionflag
                 tail <= (tail + 1) % 64;                // Circular buffer handling
             end else begin
                 exception_sig <= 1'b1;
@@ -96,30 +97,30 @@ always @(posedge clk) begin
             for (i = 0; i < 64; i = i + 1) begin
                 if (rob_entry[i][98]) begin // Check if the new bit is set to 1
                     if ( alu_exec_done &&rob_entry[i][31:0] == alu_exec_PC) begin
-                        rob_entry[i][99:0] <= {rob_entry[i][99], rob_entry[i][98], 1'b1, rob_entry[i][96], alu_exec_value, rob_entry[i][63:32], rob_entry[i][31:0]}; // Update value and maintain new_bit, reg_write, instr, PC
+                        rob_entry[i][99:0] <= {rob_entry[i][100], rob_entry[i][99], rob_entry[i][98], 1'b1, rob_entry[i][96], alu_exec_value, rob_entry[i][63:32], rob_entry[i][31:0]}; // Update value and maintain new_bit, reg_write, instr, PC
                     end
                     if ( mul_exec_done && rob_entry[i][31:0] == mul_exec_PC) begin
-                        rob_entry[i][99:0] <= {rob_entry[i][98], 1'b1, rob_entry[i][96], mul_exec_value, rob_entry[i][63:32], rob_entry[i][31:0]}; // Update value and maintain new_bit, reg_write, instr, PC       
+                        rob_entry[i][99:0] <= {rob_entry[i][100], rob_entry[i][98], 1'b1, rob_entry[i][96], mul_exec_value, rob_entry[i][63:32], rob_entry[i][31:0]}; // Update value and maintain new_bit, reg_write, instr, PC       
                     end
                     if ( div_exec_done &&rob_entry[i][31:0] == div_exec_PC) begin
                         if (LS_exception == 1'b1) begin
-                            rob_entry[i][99:0] <= {1'b1, rob_entry[i][98], 1'b1, rob_entry[i][96], div_exec_value, rob_entry[i][63:32], rob_entry[i][31:0]}; // Update value and maintain new_bit, reg_write, instr, PC  
+                            rob_entry[i][99:0] <= {rob_entry[i][100], 1'b1, rob_entry[i][98], 1'b1, rob_entry[i][96], div_exec_value, rob_entry[i][63:32], rob_entry[i][31:0]}; // Update value and maintain new_bit, reg_write, instr, PC  
                         end else begin
-                            rob_entry[i][99:0] <= {rob_entry[i][99], rob_entry[i][98], 1'b1, rob_entry[i][96], div_exec_value, rob_entry[i][63:32], rob_entry[i][31:0]}; // Update value and maintain new_bit, reg_write, instr, PC     
+                            rob_entry[i][99:0] <= {rob_entry[i][100], rob_entry[i][99], rob_entry[i][98], 1'b1, rob_entry[i][96], div_exec_value, rob_entry[i][63:32], rob_entry[i][31:0]}; // Update value and maintain new_bit, reg_write, instr, PC     
                         end
                     end
                     if ( BR_Done&& rob_entry[i][31:0] == branch_index) begin
-                        rob_entry[i][99:0] <= {rob_entry[i][99], rob_entry[i][98], 1'b1, rob_entry[i][96], PC_Return, rob_entry[i][63:32], rob_entry[i][31:0]}; // Update value and maintain new_bit, reg_write, instr, PC
+                        rob_entry[i][99:0] <= {rob_entry[i][100], rob_entry[i][99], rob_entry[i][98], 1'b1, rob_entry[i][96], PC_Return, rob_entry[i][63:32], rob_entry[i][31:0]}; // Update value and maintain new_bit, reg_write, instr, PC
                     end
                     if ( P_Done&& rob_entry[i][31:0] == P_inst_num) begin
-                        rob_entry[i][99:0] <= {rob_entry[i][99], rob_entry[i][98], 1'b1, rob_entry[i][96], P_Data, rob_entry[i][63:32], rob_entry[i][31:0]}; // Update value and maintain new_bit, reg_write, instr, PC
+                        rob_entry[i][99:0] <= {rob_entry[i][100], rob_entry[i][99], rob_entry[i][98], 1'b1, rob_entry[i][96], P_Data, rob_entry[i][63:32], rob_entry[i][31:0]}; // Update value and maintain new_bit, reg_write, instr, PC
                     end
                     if ( Load_Done&& rob_entry[i][31:0] == Load_inst_num) begin
                         if (LS_exception == 1'b1) begin
-                            rob_entry[i][99:0] <= {1'b1, rob_entry[i][98], 1'b1, rob_entry[i][96], Load_Data, rob_entry[i][63:32], rob_entry[i][31:0]}; // Update value and maintain new_bit, reg_write, instr, PC
+                            rob_entry[i][99:0] <= {rob_entry[i][100], 1'b1, rob_entry[i][98], 1'b1, rob_entry[i][96], Load_Data, rob_entry[i][63:32], rob_entry[i][31:0]}; // Update value and maintain new_bit, reg_write, instr, PC
                             Store_Addrs[i][31:0] <= Store_Addr;
                         end else begin
-                            rob_entry[i][99:0] <= {rob_entry[i][99], rob_entry[i][98], 1'b1, rob_entry[i][96], Load_Data, rob_entry[i][63:32], rob_entry[i][31:0]}; // Update value and maintain new_bit, reg_write, instr, PC
+                            rob_entry[i][99:0] <= {rob_entry[i][100], rob_entry[i][99], rob_entry[i][98], 1'b1, rob_entry[i][96], Load_Data, rob_entry[i][63:32], rob_entry[i][31:0]}; // Update value and maintain new_bit, reg_write, instr, PC
                             Store_Addrs[i][31:0] <= Store_Addr;
                         end
                     end
@@ -132,9 +133,10 @@ always @(posedge clk) begin
                     out_dest <= rob_entry[head][43:39];      // Extract out_dest from instr[11:7]
                     out_reg_write <= rob_entry[head][96];   // Output RegWrite status
                     out_Addr <= Store_Addrs[head][31:0];
+                    out_MemWrite <= rob_entry[head][100];
                     exception_sig <= 1'b0;
                     rob_entry[head] <= 0;            // Clear the ready flag after consuming the entry
-                    Store_Addrs[head] <= 32'd2048;
+                    Store_Addrs[head] <= 32'd0;
                     head <= (head + 1) % 64;                 // Circular buffer handling
                 end else begin
                     exception_sig <= 1'b1;
@@ -146,7 +148,8 @@ always @(posedge clk) begin
                     out_value <= 0;     // Output value
                     out_dest <= 0;      // Extract out_dest from instr[11:7]
                     out_reg_write <= 0;   // Output RegWrite status
-                    out_Addr <= 32'd2048;
+                    out_Addr <= 32'd0;
+                    out_MemWrite <= 0;
                     exception_sig <= 0;
             end
         
