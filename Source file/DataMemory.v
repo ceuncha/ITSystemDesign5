@@ -45,18 +45,21 @@ always @(posedge clk) begin
                 Load_inst_num <= LS_inst_num;
                 Load_Done <= LS_MemWrite;
                 Store_Address <= LS_Result;
+                Load_phy_out <= 8'd160;
             end else if (funct3_LS == 3'b001) begin
                 memory[LS_Result][15:0] <= Operand2_LS[15:0]; // SH
                 Load_Data <= {{16{Operand2_LS[15]}}, Operand2_LS[15:0]}; // LB
                 Load_inst_num <= LS_inst_num;
                 Load_Done <= LS_MemWrite;
                 Store_Address <= LS_Result;
+                Load_phy_out <= 8'd160;
             end else if (funct3_LS == 3'b010) begin
                 memory[LS_Result] <= Operand2_LS; // SW
                 Load_Data <= Operand2_LS[31:0]}; // LB
                 Load_inst_num <= LS_inst_num;
                 Load_Done <= LS_MemWrite;
                 Store_Address <= LS_Result;
+                Load_phy_out <= 8'd160;
             end
         end
 
