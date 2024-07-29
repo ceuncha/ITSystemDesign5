@@ -66,6 +66,7 @@ always @(posedge clk) begin
         tail <= 0;
         reset_rob_entries();
     end else begin
+        
         if (PcSrc) begin
             // Update the branch entry with PC_Return value
             for (i = 0; i < 64; i = i + 1) begin
@@ -77,7 +78,6 @@ always @(posedge clk) begin
   
                 end
             end
-      
         end else if (IF_ID_instOut != 32'b0) begin  // Only increment tail if the instruction is not invalid (i.e., not a bubble)
             if (ID_exception == 1'b0) begin
                 rob_entry[tail] <= {1'b0, 1'b1, 1'b0, reg_write, 32'b0, IF_ID_instOut, PC}; // Store input data in the ROB entry with value set to 32'b0 and new_bit set to 1
@@ -90,6 +90,7 @@ always @(posedge clk) begin
             end
         end
 
+        
         // Update the value and set ready flag upon execution completion
         
             for (i = 0; i < 64; i = i + 1) begin
@@ -140,7 +141,14 @@ always @(posedge clk) begin
                     tail <= 0;
                     reset_rob_entries();
                 end
+            end else begin
+                    out_value <= 0;     // Output value
+                    out_dest <= 0;      // Extract out_dest from instr[11:7]
+                    out_reg_write <= 0;   // Output RegWrite status
+                    out_Addr <= 0;
+                    exception_sig <= 0;
             end
+        
     end
 end
 
