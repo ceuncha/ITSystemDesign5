@@ -37,7 +37,7 @@ always @(posedge clk) begin
         end
     end else if (LS_Result >= 32'd2048) begin
             addr_exception <= 1'b1
-            Load_Done <= LS_MemWrite;
+            Load_Done <= 1'b1;
     end else begin
         if (ROB_MemWrite) begin
             bakcup_memory[ROB_Store_Addr][31:0] <= ROB_Store_Data;
