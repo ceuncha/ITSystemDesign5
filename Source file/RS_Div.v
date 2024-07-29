@@ -20,6 +20,9 @@ module RS_Div (
     input wire [7:0] BR_Phy,
     input wire P_Done,
     input wire [7:0] P_Phy,
+
+    input wire exception,
+
     output reg [60:0] result_out
 );
     
@@ -44,7 +47,7 @@ module RS_Div (
 
    always @(posedge clk) begin
    
-        if (reset) begin
+        if (reset || exception) begin
             head <= 0;
             tail <= 0;
             for (i = 0; i < 64; i = i + 1) begin
