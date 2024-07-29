@@ -41,7 +41,7 @@ module ROB(
 
 // ROB memory
     reg [98:0] rob_entry [0:63];            // ROB entry: new_bit(1), ready(1), reg_write(1), value(32), instr(32), PC(32)
-    reg [7:0] Store_Addrs [0:63;
+    reg [7:0] Store_Addrs [0:63];
     reg [5:0] head;                        // Head pointer (5 bits for 32 entries)
     reg [5:0] tail;                        // Tail pointer (5 bits for 32 entries)
     integer i;
