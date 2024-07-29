@@ -35,7 +35,7 @@ always @(posedge clk) begin
         end
     end else begin
         if (ROB_Store_Addr != 32'd2048) begin
-        bakcup_memory[ROB_Store_Addr][31:0] <= ROB_Store_Data;
+            bakcup_memory[ROB_Store_Addr][31:0] <= ROB_Store_Data;
         end
         if (LS_MemWrite) begin
             if (funct3_LS == 3'b000) begin
