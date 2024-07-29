@@ -1,6 +1,7 @@
 module RAT (
     input wire clk,
     input wire reset,
+    input wire excetion,
 
     input wire save_state,    
     input wire restore_state, 
@@ -45,7 +46,7 @@ module RAT (
     integer k;
 
     always @(posedge clk) begin     // ?猷�?�꺖?�벥 ?湲�?�넺 rat?�벥 ?�삂?猷�
-        if (reset) begin
+        if (reset || exception) begin
             for (k = 0; k < 32; k = k + 1) begin
                 phy_addr_table[k] <= k;
             end
