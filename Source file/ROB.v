@@ -54,7 +54,7 @@ task reset_rob_entries;
     begin
         for (i = 0; i < 64; i = i + 1) begin
             rob_entry[i] <= 100'b0;     // Reset ROB entry with all fields set to 0
-            Store_Addrs[i] <= 32'b0;
+            Store_Addrs[i] <= 32'd2048;
         end
     end
 endtask
