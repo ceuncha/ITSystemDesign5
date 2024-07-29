@@ -19,6 +19,8 @@ module RS_Mul (
     input wire [7:0] BR_Phy,
     input wire P_Done,
     input wire [7:0] P_Phy,
+    input wire exception,
+
     output reg [56:0] result_out
 );
 
@@ -42,7 +44,7 @@ module RS_Mul (
    (* keep = "true" *) reg RS_MUL_on[0:63];
 
      always @(posedge clk ) begin
-        if (reset) begin
+        if (reset || exception) begin
             head <= 0;
             tail <= 0;
             for (i = 0; i < 64; i = i + 1) begin
