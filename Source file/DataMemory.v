@@ -31,7 +31,7 @@ always @(posedge clk) begin
         end
     end else if (exception_sig) begin
          for (i = 0; i < 2047; i = i + 1) begin
-             memory[i] <= backup_memory[i]; // Copy data to backup memory
+             memory[i] <= backup_memory[i]; // restore data from backup memory to memory
         end
     end else begin
         if (ROB_Store_Addr != 32'd2048) begin
