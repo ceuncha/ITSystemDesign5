@@ -83,6 +83,7 @@ always @(posedge clk) begin
                 rob_entry[tail] <= {1'b0, 1'b1, 1'b0, reg_write, 32'b0, IF_ID_instOut, PC}; // Store input data in the ROB entry with value set to 32'b0 and new_bit set to 1
                 tail <= (tail + 1) % 64;                // Circular buffer handling
             end else begin
+                exception_sig <= 1'b1;
                 head <= 0;
                 tail <= 0;
                 reset_rob_entries(); 
