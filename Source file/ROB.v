@@ -28,21 +28,23 @@ module ROB(
     input wire [31:0] P_inst_num,
 
     input wire Load_Done,
+    input wire [7:0] Store_Addr,
     input wire [31:0] Load_Data,
     input wire [31:0] Load_inst_num,
     
     output reg [31:0] out_value,         // Output value
     output reg [4:0] out_dest,           // Output register destination extracted from instr[11:7]
-    output reg out_reg_write             // Output RegWrite signal to indicate a register write operation
-
+    output reg out_reg_write,            // Output RegWrite signal to indicate a register write operation
+    output reg [7:0] out_Addr
 
 );
 
 // ROB memory
-reg [98:0] rob_entry [0:63];            // ROB entry: new_bit(1), ready(1), reg_write(1), value(32), instr(32), PC(32)
-reg [5:0] head;                        // Head pointer (5 bits for 32 entries)
-reg [5:0] tail;                        // Tail pointer (5 bits for 32 entries)
-integer i;
+    reg [98:0] rob_entry [0:63];            // ROB entry: new_bit(1), ready(1), reg_write(1), value(32), instr(32), PC(32)
+    reg [7:0] Store_Addrs [0:63;
+    reg [5:0] head;                        // Head pointer (5 bits for 32 entries)
+    reg [5:0] tail;                        // Tail pointer (5 bits for 32 entries)
+    integer i;
 
 // Reset ROB entries
 task reset_rob_entries;
@@ -98,6 +100,7 @@ always @(posedge clk) begin
                     end
                     if ( Load_Done&& rob_entry[i][31:0] == Load_inst_num) begin
                         rob_entry[i][98:0] <= {rob_entry[i][98], 1'b1, rob_entry[i][96], Load_Data, rob_entry[i][63:32], rob_entry[i][31:0]}; // Update value and maintain new_bit, reg_write, instr, PC
+                        Store_Addrs[i][7:0] <= Store_Addr;
                     end
                 end
             end
@@ -106,6 +109,7 @@ always @(posedge clk) begin
                  out_value <= rob_entry[head][95:64];     // Output value
                  out_dest <= rob_entry[head][43:39];      // Extract out_dest from instr[11:7]
                  out_reg_write <= rob_entry[head][96];   // Output RegWrite status
+                 out_Addr <= Store_Addrs[head][7:0];
                  rob_entry[head] <= 0;            // Clear the ready flag after consuming the entry
                  head <= (head + 1) % 64;                 // Circular buffer handling
             end
