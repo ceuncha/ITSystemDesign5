@@ -8,6 +8,12 @@ module DataMemory(
     input wire [31:0] LS_Result,
     input wire [31:0] Operand2_LS,
     input wire [7:0] Load_phy_in,
+
+    input wire exception_sig,
+    input wire [31:0] ROB_Store_Addr,
+    input reg [31:0] ROB_Store_Data,
+
+    
     output reg [31:0] Load_Data,
     output reg [31:0] Load_inst_num,
     output reg Load_Done,
@@ -15,13 +21,22 @@ module DataMemory(
 );
    (* keep = "true" *) integer i;
    (* keep = "true" *) reg [31:0] memory [0:2047];
+   (* keep = "true" *) reg [31:0] backup_memory [0:2047]; // Backup memory for exception signal
 
 always @(posedge clk) begin
     if (reset) begin
         for (i = 0; i < 2047; i = i + 1) begin
             memory[i] <= i + 3;
+            backup_memory[i] <= i + 3;
+        end
+    end else if (exception_sig) begin
+         for (i = 0; i < 2047; i = i + 1) begin
+             memory[i] <= backup_memory[i]; // Copy data to backup memory
         end
     end else begin
+        if (ROB_Store_Addr != 32'd2048) begin
+        bakcup_memory[ROB_Store_Addr][31:0] <= ROB_Store_Data;
+        end
         if (LS_MemWrite) begin
             if (funct3_LS == 3'b000) begin
                 memory[LS_Result][7:0] <= Operand2_LS[7:0]; // SB
@@ -31,6 +46,8 @@ always @(posedge clk) begin
                 memory[LS_Result] <= Operand2_LS; // SW
             end
         end
+
+        
     end
 end
 
