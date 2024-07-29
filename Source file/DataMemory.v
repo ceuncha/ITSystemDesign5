@@ -18,7 +18,8 @@ module DataMemory(
     output reg [31:0] Load_inst_num,
     output reg Load_Done,
     output reg [7:0]  Load_phy_out,
-    output reg [31:0] Store_Address
+    output reg [31:0] Store_Address,
+    output reg addr_exception
 );
    (* keep = "true" *) integer i;
    (* keep = "true" *) reg [31:0] memory [0:2047];
@@ -34,6 +35,9 @@ always @(posedge clk) begin
          for (i = 0; i < 2047; i = i + 1) begin
              memory[i] <= backup_memory[i]; // restore data from backup memory to memory
         end
+    end else if (LS_Result >= 32'd2048) begin
+            addr_exception <= 1'b1
+            Load_Done <= LS_MemWrite;
     end else begin
         if (ROB_MemWrite) begin
             bakcup_memory[ROB_Store_Addr][31:0] <= ROB_Store_Data;
