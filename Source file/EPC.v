@@ -1,7 +1,6 @@
 module EPC(
   input wire exception_sig,
-  input wire mret_sig,
-  input wire EPC,
+  input wire [31:0] EPC,
   output reg [31:0] Return_PC
   
 );
@@ -9,10 +8,7 @@ module EPC(
   reg [31:0] register;
   always @(posedge clk) begin
     if (exception_sig) begin
-      register <= EPC;
-    end
-    if (mret_sig) begin
-      Return_PC <= register;
+      Return_PC <= EPC;
     end
   end
   
