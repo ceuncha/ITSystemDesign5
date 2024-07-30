@@ -5,7 +5,6 @@ module EPC(
   
 );
 
-  reg [31:0] register;
   always @(posedge clk) begin
     if (exception_sig) begin
       Return_PC <= EPC;
