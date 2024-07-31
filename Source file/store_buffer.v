@@ -79,7 +79,7 @@ module store_buffer(
                 if (funct3 == 3'b000) begin
                     buffer_mem_data[current_block] <= mem_data[7:0]; // SB
                 end else if (funct3 == 3'b001) begin
-                    buffer_mem_data[current_block] <= mem_data[15:0];; // SH  
+                    buffer_mem_data[current_block] <= mem_data[15:0]; // SH  
                 end else if (funct3 == 3'b010) begin
                     buffer_mem_data[current_block] <= mem_data; // SW  
                 end
