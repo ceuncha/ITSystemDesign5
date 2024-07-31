@@ -72,7 +72,7 @@ module store_buffer(
                 buffer_mem_addr[current_block] <= mem_addr;  
                 buffer_inst_num[current_block] <= inst_num; 
                 entry_val[current_block] <= 1'b1;
-                inst_num <= inst_num_out;
+                inst_num_out <= inst_num;
                 load_phy_out <= 8'd160;
 
 
@@ -113,9 +113,9 @@ module store_buffer(
                         if (funct3 == 3'b000) begin
                             load_data <= {{24{buffer_mem_data[i][7]}}, buffer_mem_data[i][7:0]}; // LB
                         end else if (funct3 == 3'b001) begin
-                            load_data <= {{16{buffer_mem_data[15]}}, buffer_mem_data[15:0]}; // LH
+                            load_data <= {{16{buffer_mem_data[i][15]}}, buffer_mem_data[i][15:0]}; // LH
                         end else if (funct3 == 3'b010) begin
-                            load_data <= buffer_mem_data; // LW
+                            load_data <= buffer_mem_data[i]; // LW
                         end
                     end
                 end
