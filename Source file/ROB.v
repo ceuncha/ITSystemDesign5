@@ -45,7 +45,8 @@ module ROB(
     output reg [31:0] out_Addr,
     output reg out_MemWrite,
     output reg exception_sig,
-    output reg mret_sig
+    output reg mret_sig,
+    output reg [31:0] out_inst_num
 );
 
 // ROB memory
@@ -149,6 +150,7 @@ always @(posedge clk) begin
                 end else begin
                     exception_sig <= 1'b1;
                     mret_sig <= 1'b0;
+                    out_inst_num <= rob_entry[head][31:0];
                     EPC <= rob_entry[head][132:101];
                     head <= 0;
                     tail <= 0;
