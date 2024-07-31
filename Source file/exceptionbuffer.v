@@ -14,7 +14,7 @@ module ExceptionBuffer (
     reg [31:0] inst_num [0:15];
 
     // Exception buffer logic
-    always @(posedge clk or posedge rst) begin
+    always @(posedge clk) begin
         if (rst) begin
             // Reset the buffer and write pointer
             for (i = 0; i < 16; i = i + 1) begin
