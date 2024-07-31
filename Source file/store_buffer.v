@@ -62,7 +62,7 @@ module store_buffer(
              end
 
             
-             for (i = SIZE-1; i > 0; i = i - 1) begin
+            for (i = SIZE-1; i >= 0; i = i - 1) begin
                if(!entry_val[i] && (i != current_block)) begin
                     next_block <= i;
                end
