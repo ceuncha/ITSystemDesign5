@@ -9,7 +9,7 @@ module IVT(
 reg [3:0] exception_cause
     // 예외 원인에 따른 예외 핸들러 주소
     always @(*) begin
-      exception_cause = {Adress, Div_0, LS, illegal_instruction}
+        exception_cause = {Adress, Div_0, LS, illegal_instruction};
         case (exception_cause)
             4'b0001: handler_address = 16'h02BC; // Illegal Instruction: 700번지
             4'b0010: handler_address = 16'h02E4; // LS: 740번지
