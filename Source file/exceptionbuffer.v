@@ -5,7 +5,7 @@ module ExceptionBuffer (
 
     input [31:0] inst_num_rob,
     input exception_on,
-    output exception_on_out,
+  
     output [31:0] handler_pc,
 
 );
@@ -38,7 +38,7 @@ module ExceptionBuffer (
             for (i = 0; i < 16; i = i + 1) begin
                 if (inst_num[i] == inst_num_rob) begin
                     handler_pc = pc[i];
-                    exception_on_out = 1'b1;                    
+                                 
                 end
             end
         end
