@@ -1,4 +1,5 @@
 module IVT(
+    input clk,
     input illegal_instruction,
     input LS,
     input Div_0,
@@ -6,7 +7,7 @@ module IVT(
     output reg [15:0] handler_address  // 예외 핸들러 주소
 );
 
-always @(*) begin
+    always @(posedge clk) begin
     if (illegal_instruction) begin
         handler_address = 16'h02BC; // Illegal Instruction: 700번지
     end else if (LS) begin
