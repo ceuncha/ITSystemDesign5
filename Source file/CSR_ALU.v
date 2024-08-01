@@ -1,10 +1,12 @@
-module ALU(A,B,ALUop,Result);
-    input [31:0] A,B;
-    input [3:0] ALUop;
-    output reg [31:0] Result;
-
+module CSR_ALU (
+    input wire [31:0] A,
+    input wire [31:0] B,
+    input wire [3:0] CSR_ALUop,
+    output reg [31:0] Result
+);
+    
 always @(*) begin
-    case (ALUop)
+    case (CSR_ALUop)
         4'b0011: begin  //PASS
             Result = B; 
             end
