@@ -36,7 +36,7 @@ module CSR (
         CSR_WRITE <= CSR_Result; 
       end
       if(RS_CSR_Address == address[1]) begin //exception 원인 레지스터는 특정목적외에는 접근하지말것*
-        CSR_=CAUSE <= CSR_Result; 
+        CSR_CAUSE <= CSR_Result; 
       end
       if(RS_CSR_Address == address[2]) begin //exception 발생 주소 레지스터는 특정목적외에는 접근하지말것*
         CSR_EPC <= CSR_Result;
@@ -54,6 +54,9 @@ module CSR (
     end
     if(ID_CSR_Address == address[2]) begin
       csr_out = CSR_EPC;
+    end
+    if(mret_sig == 1'b1) begin
+      epc <= CSR_EPC;
     end
   end
   
