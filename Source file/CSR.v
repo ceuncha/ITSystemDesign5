@@ -12,7 +12,8 @@ module CSR (
 
   reg [31:0] CSR_EPC;
   reg [31:0] CSR_CAUSE;
-  
+
+  //exception_sig를 받으면 CSR레지스터에 epc와 cause를 저장 하는 코드 (write)
   always @(posedge clk) begin
     if (rst) begin
       CSR_EPC <= 0;
@@ -23,7 +24,7 @@ module CSR (
     end
   end
 
-
+  //csr과 관련된 명령어를 받으면 CSR레지스터의 epc와 cause를 읽는 코드 (read)
   always @(*) begin
     if (CSR_inst_in) begin
       epc = CSR_EPC;
