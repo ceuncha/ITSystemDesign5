@@ -10,7 +10,7 @@
     input wire [7:0] EX_MEM_Physical_Address,
     input wire [7:0] operand1,
     input wire [7:0] operand2,
-    input wire valid,
+  input wire [1:0] valid,
     input wire [7:0] ALU_result_dest,
     input wire ALU_result_valid,
     input wire [7:0] MUL_result_dest,
@@ -97,7 +97,7 @@
                     csr_datas[current_block] <= csr_data;
                     operand1s[current_block] <= operand1;
         
-                    valid_entries1[current_block] <= valid;
+                 valid_entries1[current_block] <= valid[0];
    
                     RS_ALU_on[current_block] <=0;
                 end 
