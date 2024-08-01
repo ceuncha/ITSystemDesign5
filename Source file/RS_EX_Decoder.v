@@ -380,18 +380,24 @@ always @(*) begin
             LS_ALUSrc2 = ALUSrc2;      
             LS_inst_num = inst_num;
         end else if(in_opcode == 7'b1110011) begin
+                if(in_func3 == 0) begin
+                    //do nothing
+                
+                end else begin
+                    CSR_rd_phy = rd_phy_reg;
+                    csr_on = 1;
+                    CSR_operand1 = Operand1_phy;
+                    CSR_operand2 = Operand2_phy;
+                    CSR_valid = valid;
+                    CSR_immediate = immediate;     
+                    CSR_aluop = ALUOP;   
+                    CSR_instnum = inst_num;  
+                    CSR_data = csr_data_in;
+                    CSR_addr = csr_addr_in;
+                    CSR_ALUSrc2 = ALUSrc2;
+                end
 
-            CSR_rd_phy = rd_phy_reg;
-            csr_on = 1;
-            CSR_operand1 = Operand1_phy;
-            CSR_operand2 = Operand2_phy;
-            CSR_valid = valid;
-            CSR_immediate = immediate;     
-            CSR_aluop = ALUOP;   
-            CSR_instnum = inst_num;  
-            CSR_data = csr_data_in;
-            CSR_addr = csr_addr_in;
-            CSR_ALUSrc2 = ALUSrc2;
+
         end else begin
             // Default to ADD ALU
 
