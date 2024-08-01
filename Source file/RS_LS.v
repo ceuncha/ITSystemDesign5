@@ -28,6 +28,9 @@
     input wire [7:0] BR_Phy,
   input wire P_Done,
   input wire [7:0] P_Phy,
+
+  input wire CSR_done,
+  input wire [7:0] CSR_phy,
   
   output reg [99:0] result_out
     
