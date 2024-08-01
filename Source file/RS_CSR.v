@@ -1,4 +1,4 @@
- module RS_CSR (                                             //嶺뚮ㅏ援앲��??�젆? forwarding, 繞�???�쑏熬곣뫀彛� 嶺뚮ㅏ援앲��??�젆源곴껀??�땻? ?亦끸넁�돦??亦끸뼺�떊?�닑?裕� ?�굢??�뇡??獄�???諭� ??�빢?筌�?.
+ module RS_CSR (                                            
     input wire clk,
     input wire reset,
     input wire start,
@@ -26,26 +26,28 @@
   output reg [82:0] result_out
     
 );
-    
+
+   parameter SIZE = 16;
+  
     // Internal storage for reservation station entries
-   (* keep = "true" *) reg [31:0] inst_nums[0:63];
+  (* keep = "true" *) reg [31:0] inst_nums[0:SIZE-1];
 
-    (* keep = "true" *) reg [7:0] Rds [0:63];
+  (* keep = "true" *) reg [7:0] Rds [0:SIZE-1];
 
-   (* keep = "true" *) reg [3:0] ALUOPs [0:63];
-
-
-   (* keep = "true" *) reg [31:0] csr_datas [0:63];
-   (* keep = "true" *) reg [7:0] operand1s [0:63];
+  (* keep = "true" *) reg [3:0] ALUOPs [0:SIZE-1];
 
 
-   (* keep = "true" *) reg [63:0] valid_entries1;  
+  (* keep = "true" *) reg [31:0] csr_datas [0:SIZE-1];
+  (* keep = "true" *) reg [7:0] operand1s [0:SIZE-1];
 
-   (* keep = "true" *) reg [6:0] current_block;
-   (* keep = "true" *) reg [6:0] next_block;
+
+  (* keep = "true" *) reg valid_entries1 [0:SIZE-1];  
+
+  (* keep = "true" *) reg [3:0] current_block;
+  (* keep = "true" *) reg [3:0] next_block;
 
    (* keep = "true" *) integer i, j, k, l, m, n;
-   (* keep = "true" *) reg RS_ALU_on [0:63];
+  (* keep = "true" *) reg RS_ALU_on [0:SIZE-1];
 
     wire operand1_ALU_conflict = (operand1 == ALU_result_dest);
     wire operand1_MUL_conflict = (operand1 == MUL_result_dest);
@@ -60,7 +62,7 @@
         if (reset) begin
             current_block <= 0;
             next_block <= 1;
-            for (i = 0; i < 64; i = i + 1) begin
+         for (i = 0; i < SIZE; i = i + 1) begin
                 inst_nums[i] <=0;
 
                 Rds[i] <= 0;
@@ -102,7 +104,7 @@
                     RS_ALU_on[current_block] <=0;
                 end 
              
-                for (i = 63; i >= 0; i = i - 1) begin
+             for (i = SIZE-1; i >= 0; i = i - 1) begin
                     if(!RS_ALU_on[i] && (i != current_block)) begin
                         next_block <= i;
                     end
@@ -112,7 +114,7 @@
         
            
                 if (ALU_result_valid) begin                
-                    for (i = 0; i < 64; i = i + 1) begin
+                 for (i = 0; i < SIZE; i = i + 1) begin
                         if (!valid_entries1[i] && operand1s[i] == ALU_result_dest) begin
                             valid_entries1[i] <= 1;
                         end
@@ -120,7 +122,7 @@
                     end
                 end
                 if (MUL_result_valid) begin                     
-                    for (j = 0; j < 64; j = j + 1) begin
+                 for (j = 0; j < SIZE; j = j + 1) begin
                         if (!valid_entries1[j] && operand1s[j] == MUL_result_dest) begin
                             valid_entries1[j] <= 1;
                         end
@@ -128,7 +130,7 @@
                     end
                 end
                 if (DIV_result_valid) begin        
-                    for (k = 0; k < 64; k = k + 1) begin
+                 for (k = 0; k < SIZE; k = k + 1) begin
                         if (!valid_entries1[k] && operand1s[k] == DIV_result_dest) begin
                             valid_entries1[k] <= 1;
                         end
@@ -136,7 +138,7 @@
                     end
                 end
                 if (EX_MEM_MemRead) begin               
-                    for (l = 0; l < 64; l = l + 1) begin
+                 for (l = 0; l < SIZE; l = l + 1) begin
                         if (!valid_entries1[l] && operand1s[l] == EX_MEM_Physical_Address) begin
                             valid_entries1[l] <= 1;
                         end
@@ -144,7 +146,7 @@
                     end     
                 end
                 if (Branch_result_valid) begin               
-                    for (m = 0; m < 64; m = m + 1) begin
+                 for (m = 0; m < SIZE; m = m + 1) begin
                         if (!valid_entries1[m] && operand1s[m] == BR_Phy) begin
                             valid_entries1[m] <= 1;
                         end
@@ -152,7 +154,7 @@
                     end     
                 end
             if (P_Done) begin                
-                for (n = 0; n < 64; n = n + 1) begin
+             for (n = 0; n < SIZE; n = n + 1) begin
                     if (!valid_entries1[n] && operand1s[n] == P_Phy) begin
                         valid_entries1[n] <= 1;
                     end
@@ -165,7 +167,7 @@
             result_out <= 0;
 
 
-            for (i = 63; i >= 0; i = i - 1) begin
+         for (i = SIZE-1; i >= 0; i = i - 1) begin
                 if (valid_entries1[i] == 1) begin
                 result_out <= {1'b1, operand1s[i], inst_nums[i], 1'b1, Rds[i], ALUOPs[i], csr_datas[i]};
                 operand1s[i] <= 0;
