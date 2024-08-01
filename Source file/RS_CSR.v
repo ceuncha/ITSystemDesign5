@@ -26,6 +26,9 @@
     input wire [11:0] CSR_addr,
     input wire ALUSrc2,
 
+    input wire [7:0] CSR_phy,
+    input wire [7:0] CSR_done,
+
   output reg [129:0] result_out
     
 );
@@ -62,7 +65,9 @@
     wire operand1_MEM_conflict = (operand1 == EX_MEM_Physical_Address && EX_MEM_MemRead == 1);
     wire operand1_BR_conflict = (operand1 == BR_Phy);
     wire operand1_P_conflict = (operand1 == P_Phy);
-    wire operand1_conflict = operand1_ALU_conflict || operand1_MUL_conflict || operand1_DIV_conflict || operand1_MEM_conflict || operand1_BR_conflict || operand1_P_conflict;
+    wire operand1_CSR_conflict = (operand1 == CSR_phy);
+    
+    wire operand1_conflict = operand1_ALU_conflict || operand1_MUL_conflict || operand1_DIV_conflict || operand1_MEM_conflict || operand1_BR_conflict || operand1_P_conflict || operand1_CSR_conflict;
 
 
     always @(posedge clk) begin    
@@ -169,6 +174,14 @@
             if (P_Done) begin                
              for (n = 0; n < SIZE; n = n + 1) begin
                     if (!valid_entries1[n] && operand1s[n] == P_Phy) begin
+                        valid_entries1[n] <= 1;
+                    end
+
+                end
+            end
+            if(CSR_done) begin
+                for (n = 0; n < SIZE; n = n + 1) begin
+                    if (!valid_entries1[n] && operand1s[n] == CSR_phy) begin
                         valid_entries1[n] <= 1;
                     end
 
