@@ -24,15 +24,15 @@ module store_buffer(
     input [31:0] mem_addr_rob,
     input [31:0] inst_num_rob
 );
-    parameter SIZE = 64;
+    parameter SIZE = 32;
     
     reg [31:0] buffer_inst_num [0:SIZE-1];
     reg [31:0] buffer_mem_addr [0:SIZE-1];
     reg [31:0] buffer_mem_data [0:SIZE-1];
 
     reg [SIZE-1:0] entry_val;
-    reg [5:0] current_block;
-    reg [5:0] next_block;
+    reg [4:0] current_block;
+    reg [4:0] next_block;
     integer i;
     
     // Reset logic
