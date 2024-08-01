@@ -11,7 +11,8 @@ module control_unit_top(
     output [1:0]ALUSrc,
     output RWsel,
     output Branch,
-    output Jump
+    output Jump,
+    output mret
 );
 
 wire [5:0] mapped_address;
@@ -37,7 +38,8 @@ control_rom ctrl_rom (
     .ALUSrc(ALUSrc),
     .RWsel(RWsel),
     .Branch(Branch),
-    .Jump(Jump)
+    .Jump(Jump),
+    .mret(mret)
 );
 
 endmodule
