@@ -5,6 +5,8 @@ module CSR (
   input wire [31:0] exception_pc,
   input wire [4:0] exception_cause,
   input wire [11:0] ID_CSR_Address,
+
+  input wire mret_sig,
   
   input wire CSR_done,
   input wire [31:0] CSR_Result,
