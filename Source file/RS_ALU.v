@@ -68,7 +68,7 @@
   (* keep = "true" *)wire operand2_MEM_conflict = (operand2 == EX_MEM_Physical_Address && EX_MEM_MemRead == 1);
    (* keep = "true" *)wire operand2_BR_conflict = (operand2 == BR_Phy);
    (* keep = "true" *)wire operand2_P_conflict = (operand2 == P_Phy);
-   (* keep = "true" *)wire operand1_CSR_conflict = (operand2 == CSR_Phy);
+  (* keep = "true" *)wire operand2_CSR_conflict = (operand2 == CSR_Phy);
   (* keep = "true" *)wire operand2_conflict = operand2_ALU_conflict || operand2_MUL_conflict || operand2_DIV_conflict || operand12_MEM_conflict || operand2_BR_conflict || operand2_P_conflict || operand2_CSR_conflict;
 
 
