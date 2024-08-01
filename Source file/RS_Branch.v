@@ -19,6 +19,7 @@ module RS_Branch (                                             //紐낅졊?뼱 f
     input wire [7:0] MUL_result_dest,
     input wire MUL_result_valid,
     input wire [7:0] DIV_result_dest,
+    
     input wire DIV_result_valid,
     input wire RS_BR_IF_ID_taken,
     input wire RS_BR_IF_ID_hit,
@@ -29,6 +30,9 @@ module RS_Branch (                                             //紐낅졊?뼱 f
 
     input wire [7:0] P_Phy,
     input wire P_Done,
+    
+    input wire [7:0] CSR_Phy,
+    input wire CSR_Done,
     
     output reg RS_BR_Branch,
     output reg RS_BR_Jump,
