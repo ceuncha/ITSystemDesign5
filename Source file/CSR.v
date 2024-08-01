@@ -7,11 +7,12 @@ module CSR (
 
   input wire CSR_done,
   input wire [31:0] CSR_Result,
+  input wire [11:0] CSR_Address,
   
   output reg [31:0] epc,
   output reg [31:0] cause
 );
-
+  reg [11:0] address [0:2];
   reg [31:0] CSR_EPC;
   reg [31:0] CSR_CAUSE;
   reg [31:0] CSR_WRITE;
@@ -20,12 +21,23 @@ module CSR (
     if (rst) begin
       CSR_EPC <= 0;
       CSR_CAUSE <= 0;
+      address [0] = 12'b000000000000; //CSR_WRITE
+      address [1] = 12'b000000000001; //CSR_CAUSE
+      address [2] = 12'b000000000010; //CSR_EPC
     end else if (exception_sig) begin
       CSR_EPC <= exception_pc;
       CSR_CAUSE <= excpetion_cause;
     end
     if (CSR_done) begin
-      CSR_WRITE <= CSR_Result;
+      if(CSR_Address == address[0]) begin
+        CSR_WRITE <= CSR_Result; 
+      end
+      if(CSR_Address == address[1]) begin //exception 원인 레지스터는 특정목적외에는 접근하지말것*
+        CSR_=CAUSE <= CSR_Result; 
+      end
+      if(CSR_Address == address[2]) begin //exception 발생 주소 레지스터는 특정목적외에는 접근하지말것*
+        CSR_EPC <= CSR_Result;
+      end
     end
   end
 
