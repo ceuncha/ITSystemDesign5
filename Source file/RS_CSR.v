@@ -97,7 +97,7 @@
                     csr_datas[current_block] <= csr_data;
                     operand1s[current_block] <= operand1;
         
-                    valid_entries1[current_block] <= valid[0];
+                    valid_entries1[current_block] <= valid;
    
                     RS_ALU_on[current_block] <=0;
                 end 
