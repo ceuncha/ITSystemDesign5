@@ -28,6 +28,9 @@ module CSR (
     if (CSR_inst_in) begin
       epc = CSR_EPC;
       cause = CSR_cause;
+    end else begin
+      epc = 0;
+      cause = 0;
     end
   end
   
