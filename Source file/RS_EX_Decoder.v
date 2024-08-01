@@ -119,7 +119,16 @@ module RS_EX_decoder(
     output reg [1:0] RS_br_valid,
     output reg [31:0] RS_br_immediate,
     output reg [31:0] RS_br_inst_num,
-    output reg [31:0] RS_br_PC
+    output reg [31:0] RS_br_PC,
+
+    output reg csr_on, 
+    output reg [31:0] CSR_data,
+    output reg [7:0] CSR_operand1,
+    output reg [7:0] CSR_operand2,
+    output reg [3:0] CSR_aluop,
+    output reg [7:0] CSR_rd_phy,
+    output reg CSR_valid,
+    output reg CSR_instnum
 
 );
 
@@ -358,6 +367,17 @@ always @(*) begin
            
             LS_ALUSrc2 = ALUSrc2;      
             LS_inst_num = inst_num;
+        end else if(in_opcode == 7'b1110011) begin
+
+            CSR_rd_phy = rd_phy_reg;
+            csr_on = 1;
+            CSR_operand1 = Operand1_phy;
+            CSR_operand2 = Operand2_phy;
+            CSR_valid = valid[1];
+            CSR_data = immediate;     
+            CSR_aluop = ALUOP;   
+            CSR_instnum = inst_num;  
+
         end else begin
             // Default to ADD ALU
 
