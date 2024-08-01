@@ -6,7 +6,10 @@ module RS_EX_decoder(
 
     input [2:0] in_func3,   
     input [6:0] in_funct7,  
-    input [31:0] in_pc,     
+    input [31:0] in_pc,   
+
+    input [31:0] csr_data_in,
+    input [11:0] csr_addr_in,  
         
     input wire MemToReg,   
     input wire MemRead,
@@ -128,7 +131,10 @@ module RS_EX_decoder(
     output reg [3:0] CSR_aluop,
     output reg [7:0] CSR_rd_phy,
     output reg [1:0] CSR_valid,
-    output reg CSR_instnum
+    output reg CSR_instnum,
+    output reg [31:0] CSR_immediate,
+    output reg CSR_ALUSrc2,
+    output reg [11:0] CSR_data
 
 );
 
@@ -380,10 +386,12 @@ always @(*) begin
             CSR_operand1 = Operand1_phy;
             CSR_operand2 = Operand2_phy;
             CSR_valid = valid;
-            CSR_data = immediate;     
+            CSR_immediate = immediate;     
             CSR_aluop = ALUOP;   
             CSR_instnum = inst_num;  
-
+            CSR_data = csr_data_in;
+            CSR_addr = csr_addr_in;
+            CSR_ALUSrc2 = ALUSrc2;
         end else begin
             // Default to ADD ALU
 
