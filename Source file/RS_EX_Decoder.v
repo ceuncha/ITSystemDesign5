@@ -127,7 +127,7 @@ module RS_EX_decoder(
     output reg [7:0] CSR_operand2,
     output reg [3:0] CSR_aluop,
     output reg [7:0] CSR_rd_phy,
-    output reg CSR_valid,
+    output reg [1:0] CSR_valid,
     output reg CSR_instnum
 
 );
@@ -167,7 +167,7 @@ always @(*) begin
         mul_rs_on = 0;
         div_rs_on = 0;
         RS_br_start = 0;
-
+        csr_on = 0;
 
         out_add_ALUOP = 0;   
         out_add_ALUSrc1 = 0;
@@ -207,7 +207,13 @@ always @(*) begin
         LS_immediate = 0;
         LS_inst_num = 0;
 
-
+        CSR_data =0;
+        CSR_operand1 = 0;
+        CSR_operand2 = 0;
+        CSR_aluop = 0;
+        CSR_rd_phy = 0;
+        CSR_valid = 0;
+        CSR_instnum = 0;
 
     end else begin
         add_rs_on = 0;
@@ -216,7 +222,7 @@ always @(*) begin
         RS_br_start = 0;
         pass_rs_on = 0;
         LS_on = 0;
-
+        csr_on = 0;
         if (in_opcode == 7'b0000000) begin
             // NOP or unsupported instruction
         end else if (in_opcode == 7'b0110011) begin
@@ -373,7 +379,7 @@ always @(*) begin
             csr_on = 1;
             CSR_operand1 = Operand1_phy;
             CSR_operand2 = Operand2_phy;
-            CSR_valid = valid[1];
+            CSR_valid = valid;
             CSR_data = immediate;     
             CSR_aluop = ALUOP;   
             CSR_instnum = inst_num;  
