@@ -8,6 +8,10 @@ module global_prediction_top (
     input wire ID_EX_Jump,
     input wire ID_EX_hit,
     input wire real_taken,
+    input wire CSR_EPC,
+    input wire EHR_address,
+    input wire mret_sig,
+    input wire exception_sig,
     output wire [31:0] PC, // Corrected the bit width
     output wire Wrong,
     output wire first_and_Pcsrc, // New output port
@@ -27,6 +31,7 @@ module global_prediction_top (
 (* keep = "true" *)wire [31:0] Mux_1_out; // Corrected the bit width
 (* keep = "true" *)wire [31:0] Mux_2_out; // Corrected the bit width
 (* keep = "true" *)wire [31:0] PC_final_next; // Corrected the bit width
+(* keep = "true" *)wire [31:0] PC_real_final; // Corrected the bit width
 (* keep = "true" *)wire or_gate_out;
 
 // Instantiate the global_branch_history module
@@ -115,4 +120,8 @@ Program_Counter pc_inst (
 
 (* keep = "true" *)assign PC_final_next = or_gate_out ? PC_Branch : Mux_2_out;
 
+ (* keep = "true" *)assign PC_real_final = (mret_sig == 1'b0 && exception_sig == 1'b0) ? PC_final_next :
+                                           (mret_sig == 1'b1 && exception_sig == 1'b0) ? CSR_EPC :
+                                           (mret_sig == 1'b0 && exception_sig == 1'b1) ? EHR_address :
+                                            32'b0; // 기본값으로 0을 할당 (다른 모든 경우)
 endmodule
