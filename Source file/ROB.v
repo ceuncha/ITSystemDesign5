@@ -38,6 +38,9 @@ module ROB(
     input wire [31:0] Load_Data,
     input wire [31:0] Load_inst_num,
 
+    input wire CSR_Done,
+    input wire CSR_Data,
+    
     output reg [31:0] EPC,
     output reg [31:0] out_value,         // Output value
     output reg [4:0] out_dest,           // Output register destination extracted from instr[11:7]
@@ -127,6 +130,9 @@ always @(posedge clk) begin
                             rob_entry[i][133:0] <= {rob_entry[i][133], rob_entry[i][132:101], rob_entry[i][100], rob_entry[i][99], rob_entry[i][98], 1'b1, rob_entry[i][96], Load_Data, rob_entry[i][63:32], rob_entry[i][31:0]}; // Update value and maintain new_bit, reg_write, instr, PC
                             Store_Addrs[i][31:0] <= Store_Addr;
                         end
+                    end
+                    if ( CSR_Done&& rob_entry[i][31:0] == CSR_inst_num) begin
+                        rob_entry[i][133:0] <= {rob_entry[i][133], rob_entry[i][132:101], rob_entry[i][100], rob_entry[i][99], rob_entry[i][98], 1'b1, rob_entry[i][96], CSR_Data, rob_entry[i][63:32], rob_entry[i][31:0]}; // Update value and maintain new_bit, reg_write, instr, PC
                     end
                 end
             end
