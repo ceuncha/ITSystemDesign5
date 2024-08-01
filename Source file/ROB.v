@@ -9,6 +9,7 @@ module ROB(
     input wire MemWrite,
     input wire [31:0] IF_ID_PC,
     input wire mret_inst,
+
     
     input wire alu_exec_done,            // ALU execution completion signal
     input wire [31:0] alu_exec_value,    // ALU executed value
@@ -90,10 +91,15 @@ always @(posedge clk) begin
             end
         end else if (IF_ID_instOut != 32'b0) begin  // Only increment tail if the instruction is not invalid (i.e., not a bubble)
             if (ID_exception == 1'b0) begin
-                rob_entry[tail] <= {mret_inst, IF_ID_PC, MemWrite, 1'b0, 1'b1, 1'b0, reg_write, 32'b0, IF_ID_instOut, PC}; // Store input data in the ROB entry with value set to 32'b0 and new_bit set to 1 [99]는 exceptionflag
-                tail <= (tail + 1) % 64;                // Circular buffer handling
+                if (mret_inst == 1'b1) begin
+                    rob_entry[tail] <= {mret_inst, IF_ID_PC, MemWrite, 1'b0, 1'b1, 1'b1, reg_write, 32'b0, IF_ID_instOut, PC}; // Store input data in the ROB entry with value set to 32'b0 and new_bit set to 1 [99]는 exceptionflag
+                    tail <= (tail + 1) % 64;                // Circular buffer handling
+                end else begin
+                    rob_entry[tail] <= {mret_inst, IF_ID_PC, MemWrite, 1'b0, 1'b1, 1'b0, reg_write, 32'b0, IF_ID_instOut, PC}; // Store input data in the ROB entry with value set to 32'b0 and new_bit set to 1 [99]는 exceptionflag
+                    tail <= (tail + 1) % 64;                // Circular buffer handling
+                end
             end else begin
-                rob_entry[tail] <= {mret_inst, MemWrite, 1'b1, 1'b1, 1'b0, reg_write, 32'b0, IF_ID_instOut, PC}; // Store input data in the ROB entry with value set to 32'b0 and new_bit set to 1 [99]는 exceptionflag
+                rob_entry[tail] <= {mret_inst, IF_ID_PC, MemWrite, 1'b1, 1'b1, 1'b0, reg_write, 32'b0, IF_ID_instOut, PC}; // Store input data in the ROB entry with value set to 32'b0 and new_bit set to 1 [99]는 exceptionflag
                 tail <= (tail + 1) % 64;                // Circular buffer handling
             end
         end
