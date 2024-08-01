@@ -26,12 +26,8 @@ module CSR (
 
   //csr과 관련된 명령어를 받으면 CSR레지스터의 epc와 cause를 읽는 코드 (read)
   always @(*) begin
-    if (CSR_inst_in) begin
       epc = CSR_EPC;
       cause = CSR_cause;
-    end else begin
-      epc = 0;
-      cause = 0;
     end
   end
   
