@@ -9,7 +9,7 @@ module ExceptionBuffer (
     input exception_on,
   
     output [31:0] handler_pc,
-    output [31:0] CSR_EPC
+    output [31:0] CSR_EPC,
     output [3:0] CSR_cause
 );
     reg [4:0] tail;
@@ -27,7 +27,9 @@ module ExceptionBuffer (
                 inst_num[i] <= 0;
                 cause[i] <= 0;
             end
-        handler_pc <= 0;
+         handler_pc <= 0;
+         CSR_EPC <= 0;
+         CSR_cause <= 0;
          tail <= 0;
         end else begin
             if(exception_pc != 0) begin
