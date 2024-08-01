@@ -10,7 +10,7 @@
     input wire [7:0] EX_MEM_Physical_Address,
     input wire [7:0] operand1,
     input wire [7:0] operand2,
-  input wire [1:0] valid,
+    input wire [1:0] valid,
     input wire [7:0] ALU_result_dest,
     input wire ALU_result_valid,
     input wire [7:0] MUL_result_dest,
@@ -20,10 +20,13 @@
     input wire Branch_result_valid,
     input wire [7:0] BR_Phy,
     input wire EX_MEM_MemRead,
-  input wire P_Done,
-  input wire [7:0] P_Phy,
-  
-  output reg [84:0] result_out
+    input wire P_Done,
+    input wire [7:0] P_Phy,
+    input wire [31:0] immediate,
+    input wire [11:0] CSR_addr,
+    input wire ALUSrc2,
+
+  output reg [129:0] result_out
     
 );
 
@@ -38,16 +41,20 @@
 
 
   (* keep = "true" *) reg [31:0] csr_datas [0:SIZE-1];
+(* keep = "true" *) reg [31:0] immediates [0:SIZE-1];
+  (* keep = "true" *) reg [11:0] csr_addrs [0:SIZE-1];
   (* keep = "true" *) reg [7:0] operand1s [0:SIZE-1];
 
 
   (* keep = "true" *) reg valid_entries1 [0:SIZE-1];  
+  (* keep = "true" *) reg ALUSrc2s [0:SIZE-1]; 
 
   (* keep = "true" *) reg [3:0] current_block;
   (* keep = "true" *) reg [3:0] next_block;
 
    (* keep = "true" *) integer i, j, k, l, m, n;
   (* keep = "true" *) reg RS_ALU_on [0:SIZE-1];
+
 
     wire operand1_ALU_conflict = (operand1 == ALU_result_dest);
     wire operand1_MUL_conflict = (operand1 == MUL_result_dest);
@@ -70,7 +77,10 @@
                 csr_datas[i] <=0;
                 operand1s[i] <= 0;
                 valid_entries1[i] <= 1'b0; 
-                RS_ALU_on[i] <=0; 
+                RS_ALU_on[i] <=0;
+                immediates[i] <= 0;
+                csr_addrs[i] <= 0;
+                ALUSrc2s[i] <= 0; 
             end
         end else begin
             if (start) begin
@@ -86,6 +96,9 @@
                     operand1s[current_block] <= operand1;
                     valid_entries1[current_block] <= 1;
                     RS_ALU_on[current_block] <= 1;
+                    immediates[i] <= immediate;
+                    csr_addrs[i] <= CSR_addr;
+                    ALUSrc2s[i] <= ALUSrc2; 
 
          
                 end else begin
@@ -169,7 +182,8 @@
 
          for (i = SIZE-1; i >= 0; i = i - 1) begin
                 if (valid_entries1[i] == 1) begin
-                result_out <= {1'b1, operand1s[i], inst_nums[i], Rds[i], ALUOPs[i], csr_datas[i]};
+                result_out <= {1'b1, operand1s[i], inst_nums[i], Rds[i], ALUOPs[i], ALUSrc2s[i], csr_datas[i], csr_addrs[i], immediates[i]};
+
                 operand1s[i] <= 0;
                 valid_entries1[i] <= 0;
                 RS_ALU_on[i] <= 0;
