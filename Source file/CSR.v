@@ -28,7 +28,6 @@ module CSR (
   always @(*) begin
       epc = CSR_EPC;
       cause = CSR_cause;
-    end
   end
   
   endmodule
