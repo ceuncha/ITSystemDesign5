@@ -23,7 +23,7 @@
   input wire P_Done,
   input wire [7:0] P_Phy,
   
-  output reg [82:0] result_out
+  output reg [84:0] result_out
     
 );
 
@@ -169,7 +169,7 @@
 
          for (i = SIZE-1; i >= 0; i = i - 1) begin
                 if (valid_entries1[i] == 1) begin
-                result_out <= {1'b1, operand1s[i], inst_nums[i], 1'b1, Rds[i], ALUOPs[i], csr_datas[i]};
+                result_out <= {1'b1, operand1s[i], inst_nums[i], Rds[i], ALUOPs[i], csr_datas[i]};
                 operand1s[i] <= 0;
                 valid_entries1[i] <= 0;
                 RS_ALU_on[i] <= 0;
