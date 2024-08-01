@@ -237,10 +237,10 @@
          if (CSR_Done) begin                 //alu?쓽 寃곌낵媛? ?뱾?뼱?솕?쓣?븣, 湲곗〈?뿉 RS?뿉 ?뱾?뼱?엳?뜕 紐낅졊?뼱?뱾怨? 臾쇰━二쇱냼瑜? 鍮꾧탳?븯?뿬
                                                         //?븘?슂?븳 媛믩뱾?쓣 ?뾽?뜲?씠?듃 ?떆耳쒖??떎.
                 for (o = 0; n < 64; o = o + 1) begin
-                    if (!valid_entries1[o] && operand1s[o] == P_Phy) begin
+                 if (!valid_entries1[o] && operand1s[o] == CSR_Phy) begin
                         valid_entries1[o] <= 1;
                     end
-                    if (!valid_entries2[o] && operand2s[o] == P_Phy) begin
+                 if (!valid_entries2[o] && operand2s[o] == CSR_Phy) begin
                         valid_entries2[o] <= 1;
                     end
                 end
