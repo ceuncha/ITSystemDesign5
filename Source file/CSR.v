@@ -10,11 +10,12 @@ module CSR (
   input wire [11:0] CSR_Address,
   
   output reg [31:0] epc,
-  output reg [31:0] cause
+  output reg [1:0] cause,
+  output reg [31:0] csr
 );
   reg [11:0] address [0:2];
   reg [31:0] CSR_EPC;
-  reg [31:0] CSR_CAUSE;
+  reg [1:0] CSR_CAUSE;
   reg [31:0] CSR_WRITE;
   //exception_sig를 받으면 CSR레지스터에 epc와 cause를 저장 하는 코드 (write)
   always @(posedge clk) begin
@@ -45,6 +46,7 @@ module CSR (
   always @(*) begin
       epc = CSR_EPC;
       cause = CSR_cause;
+      csr = csr_write;
   end
   
   endmodule
