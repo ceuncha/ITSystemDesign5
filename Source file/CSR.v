@@ -23,7 +23,8 @@ module CSR (
     end else if (exception_sig) begin
       CSR_EPC <= exception_pc;
       CSR_CAUSE <= excpetion_cause;
-    end else if (CSR_done) begin
+    end
+    if (CSR_done) begin
       CSR_WRITE <= CSR_Result;
     end
   end
