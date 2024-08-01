@@ -21,9 +21,9 @@ module CSR (
     if (rst) begin
       CSR_EPC <= 0;
       CSR_CAUSE <= 0;
-      address [0] = 12'b000000000000; //CSR_WRITE
-      address [1] = 12'b000000000001; //CSR_CAUSE
-      address [2] = 12'b000000000010; //CSR_EPC
+      address[0][11:0] <= 12'b000000000000; //CSR_WRITE
+      address[1][11:0] <= 12'b000000000001; //CSR_CAUSE
+      address[2][11:0] <= 12'b000000000010; //CSR_EPC
     end else if (exception_sig) begin
       CSR_EPC <= exception_pc;
       CSR_CAUSE <= excpetion_cause;
