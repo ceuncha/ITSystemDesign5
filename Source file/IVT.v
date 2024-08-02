@@ -16,6 +16,9 @@ always @(*) begin
         e_cause <=2'b10;
     end else if (rob_cause == 2'b11) begin
         handler_address <= 16'h0334; // Address: 820번지
-        e_cause <=4'b11;
+        e_cause <=2'b11;
+    end else begin
+        handler_address <=16'h0000;
+        e_cause <= 2'b00;
     end
 end
