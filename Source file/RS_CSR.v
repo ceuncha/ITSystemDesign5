@@ -28,6 +28,7 @@
 
     input wire [7:0] CSR_phy,
     input wire [7:0] CSR_done,
+  input wire exception_sig,
 
   output reg [129:0] result_out
     
@@ -71,7 +72,7 @@
 
 
     always @(posedge clk) begin    
-        if (reset) begin
+     if (reset | exception_sig) begin
             current_block <= 0;
             next_block <= 1;
          for (i = 0; i < SIZE; i = i + 1) begin
