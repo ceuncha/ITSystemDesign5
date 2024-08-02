@@ -371,14 +371,18 @@ global_prediction_top u_global_prediction_top(
     .ID_EX_Branch(RS_BR_Branch),
     .Pcsrc(PCSrc),
     .ID_EX_PC(PC_BR),
-    .real_taken(real_taken),
     .PC_Branch(PC_Branch),
     .ID_EX_Jump(RS_BR_Jump),
+    .ID_EX_hit(RS_BR_hit),
+    .real_taken(real_taken),
+    .CSR_epc(CSR_epc),
+    .EHR_Address(EHR_Address),
+    .mret_sig(mret_sig),
+    .exception_sig(exception_sig),
     .PC(PC),
     .Wrong(Wrong),
     .hit(hit),    
     .PC_taken(PC_taken),
-    .ID_EX_hit(RS_BR_hit)
 );
 
 (* keep_hierarchy = "yes" *)
