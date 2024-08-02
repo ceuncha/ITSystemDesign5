@@ -16,9 +16,10 @@ module store_buffer(
     output reg [31:0] load_data,
     output reg [7:0] load_phy_out,
     output reg [31:0] inst_num_out,
-    output reg [1:0] load_valid,
+    output reg [2:0] load_valid,
     output reg [2:0] funct3_out,
     output reg load_done_out,
+    output reg exception_flag,
 
     input memwrite_rob,
     input [31:0] mem_addr_rob,
@@ -136,28 +137,31 @@ module store_buffer(
         
      
             end else if (memread) begin
-                load_valid <= 2'b00;
+                load_valid <= 3'b000;
                 load_done_out <= 0;
                 load_phy_out <= load_phy;
                 inst_num_out <= inst_num;
                 for (i = 0; i < SIZE; i = i + 1) begin
                     if (buffer_mem_addr[i] == mem_addr) begin
+                        if(buffer_inst_num[i] > inst_num) begin
+                            exception_flag <= 1'b1;
+                        end
                         load_data <= buffer_mem_data[i];
-                        load_valid <= 2'b11;
+                        load_valid <= 3'b111;
                         if (funct3 == 3'b000) begin 
                             load_data <= {{24{buffer_mem_data[i][7]}}, buffer_mem_data[i][7:0]}; // LB
                         end else if (funct3 == 3'b001) begin //LH
                             load_data <= {{16{buffer_mem_data[i][15]}}, buffer_mem_data[i][15:0]}; // LH
                             if(funct3s[i] == 3'b000) begin //하위 8바이트만 맞음
-                                load_valid <= 2'b01;
+                                load_valid <= 3'b001;
                             end
 
                         end else if (funct3 == 3'b010) begin //하위 16바이트만 맞음
                             load_data <= buffer_mem_data[i]; // LW
                                 if(funct3s[i] == 3'b000) begin
-                                    load_valid <= 2'b01;
-                                end else if(funct3s[i] == 3'b000) begin
-                                    load_valid <= 2'b10;
+                                    load_valid <= 3'b010;
+                                end else if(funct3s[i] == 3'b001) begin
+                                    load_valid <= 3'b011;
                             end
                         end
                     end
