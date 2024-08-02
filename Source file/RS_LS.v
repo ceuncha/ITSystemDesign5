@@ -28,9 +28,12 @@
     input wire [7:0] BR_Phy,
   input wire P_Done,
   input wire [7:0] P_Phy,
+
+  input wire CSR_done,
+  input wire [7:0] CSR_phy,
+
   input wire exception_sig,
   input wire mret_sig,
-  
   output reg [99:0] result_out
     
 );
@@ -59,8 +62,30 @@
   (* keep = "true" *) integer i, j, k, l, m, n;
    (* keep = "true" *) reg RS_ALU_on[0:63];
 
+
+   wire operand1_ALU_conflict = (operand1 == ALU_result_dest);
+    wire operand1_MUL_conflict = (operand1 == MUL_result_dest);
+    wire operand1_DIV_conflict = (operand1 == DIV_result_dest);
+    wire operand1_MEM_conflict = (operand1 == EX_MEM_Physical_Address && EX_MEM_MemRead == 1);
+    wire operand1_BR_conflict = (operand1 == BR_Phy);
+    wire operand1_P_conflict = (operand1 == P_Phy);
+    wire operand1_CSR_conflict = (operand1 == CSR_phy);
+    
+    wire operand1_conflict = operand1_ALU_conflict || operand1_MUL_conflict || operand1_DIV_conflict || operand1_MEM_conflict || operand1_BR_conflict || operand1_P_conflict || operand1_CSR_conflict;
+
+    wire operand2_ALU_conflict = (operand2 == ALU_result_dest);
+    wire operand2_MUL_conflict = (operand2 == MUL_result_dest);
+    wire operand2_DIV_conflict = (operand2 == DIV_result_dest);
+    wire operand2_MEM_conflict = (operand2 == EX_MEM_Physical_Address && EX_MEM_MemRead == 1);
+    wire operand2_BR_conflict = (operand2 == BR_Phy);
+    wire operand2_P_conflict = (operand2 == P_Phy);
+    wire operand2_CSR_conflict = (operand2 == CSR_phy);
+
+    wire operand2_conflict = operand2_ALU_conflict || operand2_MUL_conflict || operand2_DIV_conflict || operand2_MEM_conflict || operand2_BR_conflict || operand2_P_conflict || operand2_CSR_conflict;
+
+
     always @(posedge clk) begin    //?逾???봾????六???源덂슖?? ?猷???쐝?뵳????꼨 ??六???끃裕뉐ㅇ?
-        if (reset|exception_sig|mret_sig) begin
+     if (reset|exception_sig|mret_sig) begin
             tail <= 0;
             head <=0;
             for (i = 0; i < 64; i = i + 1) begin
@@ -86,8 +111,7 @@
 
             
    
-            if (operand1 == ALU_result_dest) begin  // 嶺뚮ㅏ援앲?????젆湲룹쾸? 嶺뚳퐣瑗??踰? ?獄????젆????꼨??諭???뇡?, alu??踰? ?뇦猿됲???沅??? 嶺뚮ㅏ援앲?????젆???踰? operand ??닱??닑?遊븅썒?슣?닔?爰??紐?? ??쑏熬곥룊爰???뇡???굢? 
-                                                    // ?驪?????몥??逾???諭쒏뤆?? ??뇡????뭵??六? ???빢?筌????뜮癒㏓뭄???堉?.
+            if (operand1_conflict) begin  
                 inst_nums[tail] <= RS_alu_inst_num;
                
                 Rds[tail] <= Rd;
@@ -105,7 +129,7 @@
                 valid_entries2[tail] <= valid[1];
                 tail <= (tail + 1) % 64;
                 RS_ALU_on[tail] <=0;
-            end else if (operand2 == ALU_result_dest) begin 
+            end else if (operand2_conflict) begin 
                 inst_nums[tail] <= RS_alu_inst_num;
              
                 Rds[tail] <= Rd;
@@ -123,192 +147,7 @@
                 valid_entries2[tail] <= 1; 
                 tail <= (tail + 1) % 64;  
                  RS_ALU_on[tail] <=0; 
-             end else if (operand1 == MUL_result_dest) begin  // 嶺뚮ㅏ援앲?????젆湲룹쾸? 嶺뚳퐣瑗??踰? ?獄????젆????꼨??諭???뇡?, mul??踰? ?뇦猿됲???沅??? 嶺뚮ㅏ援앲?????젆???踰? operand ??닱??닑?遊븅썒?슣?닔?爰??紐?? ??쑏熬곥룊爰???뇡???굢? 
-                                                              // ?驪?????몥??逾???諭쒏뤆?? ??뇡????뭵??六? ???빢?筌????뜮癒㏓뭄???堉?.
-                inst_nums[tail] <= RS_alu_inst_num;
-          
-                Rds[tail] <= Rd;
-                MemToRegs[tail] <= MemToReg;
-                MemReads[tail] <= MemRead;
-                MemWrites[tail] <= MemWrite;
-                ALUOPs[tail] <= ALUOP;
-       
-                ALUSrc2s[tail] <= ALUSrc2;
-                funct3s[tail] <= funct3;
-                immediates[tail] <= immediate;
-                operand1s[tail] <= operand1;
-                operand2s[tail] <= operand2;
-                valid_entries1[tail] <= 1;
-                valid_entries2[tail] <= valid[1];
-                tail <= (tail + 1) % 64;
-                 RS_ALU_on[tail] <=0;
-             end else if (operand2 == MUL_result_dest) begin  
-                inst_nums[tail] <= RS_alu_inst_num;
-              
-                Rds[tail] <= Rd;
-                MemToRegs[tail] <= MemToReg;
-                MemReads[tail] <= MemRead;
-                MemWrites[tail] <= MemWrite;
-                ALUOPs[tail] <= ALUOP;
                
-                ALUSrc2s[tail] <= ALUSrc2;
-                funct3s[tail] <= funct3;
-                immediates[tail] <= immediate;
-                operand1s[tail] <= operand1;
-                operand2s[tail] <= operand2;
-                valid_entries1[tail] <= valid[0];
-                valid_entries2[tail] <= 1; 
-                tail <= (tail + 1) % 64;
-                 RS_ALU_on[tail] <=0;
-              end else if (operand1 == DIV_result_dest) begin  // 嶺뚮ㅏ援앲?????젆湲룹쾸? 嶺뚳퐣瑗??踰? ?獄????젆????꼨??諭???뇡?, div??踰? ?뇦猿됲???沅??? 嶺뚮ㅏ援앲?????젆???踰? operand ??닱??닑?遊븅썒?슣?닔?爰??紐?? ??쑏熬곥룊爰???뇡???굢? 
-                                                              // ?驪?????몥??逾???諭쒏뤆?? ??뇡????뭵??六? ???빢?筌????뜮癒㏓뭄???堉?.
-                 inst_nums[tail] <= RS_alu_inst_num;
-           
-                Rds[tail] <= Rd;
-                MemToRegs[tail] <= MemToReg;
-                MemReads[tail] <= MemRead;
-                MemWrites[tail] <= MemWrite;
-                ALUOPs[tail] <= ALUOP;
-               
-                ALUSrc2s[tail] <= ALUSrc2;
-                funct3s[tail] <= funct3;
-                immediates[tail] <= immediate;
-                operand1s[tail] <= operand1;
-                operand2s[tail] <= operand2;
-                valid_entries1[tail] <= 1;
-                valid_entries2[tail] <= valid[1];
-                tail <= (tail + 1) % 64;
-                 RS_ALU_on[tail] <=0;
-              end else if (operand2 == DIV_result_dest) begin  
-                inst_nums[tail] <= RS_alu_inst_num;
-           
-                Rds[tail] <= Rd;
-                MemToRegs[tail] <= MemToReg;
-                MemReads[tail] <= MemRead;
-                MemWrites[tail] <= MemWrite;
-                ALUOPs[tail] <= ALUOP;
-           
-                ALUSrc2s[tail] <= ALUSrc2;
-                funct3s[tail] <= funct3;
-                immediates[tail] <= immediate;
-                operand1s[tail] <= operand1;
-                operand2s[tail] <= operand2;
-                valid_entries1[tail] <= valid[0];
-                valid_entries2[tail] <= 1; 
-                tail <= (tail + 1) % 64;
-                 RS_ALU_on[tail] <=0;
-             end else if ( operand1 == EX_MEM_Physical_Address && EX_MEM_MemRead ==1) begin     
-                                                                // 嶺뚮ㅏ援앲?????젆湲룹쾸? 嶺뚳퐣瑗??踰? ?獄????젆????꼨??諭???뇡?, load??踰? ?뇦猿됲???沅??? 嶺뚮ㅏ援앲?????젆???踰? operand ??닱??닑?遊븅썒?슣?닔?爰??紐?? ??쑏熬곥룊爰???뇡???굢? 
-                                                              // ?驪?????몥??逾???諭쒏뤆?? ??뇡????뭵??六? ???빢?筌????뜮癒㏓뭄???堉?.
-                inst_nums[tail] <= RS_alu_inst_num;
-                
-                Rds[tail] <= Rd;
-                MemToRegs[tail] <= MemToReg;
-                MemReads[tail] <= MemRead;
-                MemWrites[tail] <= MemWrite;
-                ALUOPs[tail] <= ALUOP;
-              
-                ALUSrc2s[tail] <= ALUSrc2;
-                funct3s[tail] <= funct3;
-                immediates[tail] <= immediate;
-                operand1s[tail] <= operand1;
-                operand2s[tail] <= operand2;
-                valid_entries1[tail] <= 1;
-                valid_entries2[tail] <= valid[1] ; 
-                tail <= (tail + 1) % 64;
-                 RS_ALU_on[tail] <=0;
-              end else if ( operand2 == EX_MEM_Physical_Address && EX_MEM_MemRead ==1) begin
-                inst_nums[tail] <= RS_alu_inst_num;
-              
-                Rds[tail] <= Rd;
-                MemToRegs[tail] <= MemToReg;
-                MemReads[tail] <= MemRead;
-                MemWrites[tail] <= MemWrite;
-                ALUOPs[tail] <= ALUOP;
-            
-                ALUSrc2s[tail] <= ALUSrc2;
-                funct3s[tail] <= funct3;
-                immediates[tail] <= immediate;
-                operand1s[tail] <= operand1;
-                operand2s[tail] <= operand2;
-                valid_entries1[tail] <= valid[0];
-                valid_entries2[tail] <= 1 ; 
-                tail <= (tail + 1) % 64;
-                 RS_ALU_on[tail] <=0;
-              end else if(operand1 == BR_Phy) begin
-                inst_nums[tail] <= RS_alu_inst_num;
-           
-                Rds[tail] <= Rd;
-                MemToRegs[tail] <= MemToReg;
-                MemReads[tail] <= MemRead;
-                MemWrites[tail] <= MemWrite;
-                ALUOPs[tail] <= ALUOP;
-               
-                ALUSrc2s[tail] <= ALUSrc2;
-                funct3s[tail] <= funct3;
-                immediates[tail] <= immediate;
-                operand1s[tail] <= operand1;
-                operand2s[tail] <= operand2;
-                valid_entries1[tail] <= 1;
-                valid_entries2[tail] <= valid[1];
-                tail <= (tail + 1) % 64;
-                 RS_ALU_on[tail] <=0;
-              end else if(operand2 == BR_Phy) begin
-                inst_nums[tail] <= RS_alu_inst_num;
-          
-                Rds[tail] <= Rd;
-                MemToRegs[tail] <= MemToReg;
-                MemReads[tail] <= MemRead;
-                MemWrites[tail] <= MemWrite;
-                ALUOPs[tail] <= ALUOP;
-           
-                ALUSrc2s[tail] <= ALUSrc2;
-                funct3s[tail] <= funct3;
-                immediates[tail] <= immediate;
-                operand1s[tail] <= operand1;
-                operand2s[tail] <= operand2;
-                valid_entries1[tail] <= valid[0];
-                valid_entries2[tail] <= 1;
-                tail <= (tail + 1) % 64;
-                 RS_ALU_on[tail] <=0;  
-               
-              end else if(operand1 == P_Phy) begin
-                inst_nums[tail] <= RS_alu_inst_num;
-            
-                Rds[tail] <= Rd;
-                MemToRegs[tail] <= MemToReg;
-                MemReads[tail] <= MemRead;
-                MemWrites[tail] <= MemWrite;
-                ALUOPs[tail] <= ALUOP;
-             
-                ALUSrc2s[tail] <= ALUSrc2;
-                funct3s[tail] <= funct3;
-                immediates[tail] <= immediate;
-                operand1s[tail] <= operand1;
-                operand2s[tail] <= operand2;
-                valid_entries1[tail] <= 1;
-                valid_entries2[tail] <= valid[1];
-                tail <= (tail + 1) % 64;
-                 RS_ALU_on[tail] <=0;
-               
-              end else if(operand2 == P_Phy) begin
-                inst_nums[tail] <= RS_alu_inst_num;
-         
-                Rds[tail] <= Rd;
-                MemToRegs[tail] <= MemToReg;
-                MemReads[tail] <= MemRead;
-                MemWrites[tail] <= MemWrite;
-                ALUOPs[tail] <= ALUOP;
-          
-                ALUSrc2s[tail] <= ALUSrc2;
-                funct3s[tail] <= funct3;
-                immediates[tail] <= immediate;
-                operand1s[tail] <= operand1;
-                operand2s[tail] <= operand2;
-                valid_entries1[tail] <= valid[0];
-                valid_entries2[tail] <= 1;
-                tail <= (tail + 1) % 64;
-                 RS_ALU_on[tail] <=0;       
             end else begin
                 inst_nums[tail] <= RS_alu_inst_num;
              
@@ -328,6 +167,28 @@
                 tail <= (tail + 1) % 64;
                  RS_ALU_on[tail] <=0;
              end 
+
+            if (operand1_conflict && operand2_conflict) begin 
+                inst_nums[tail] <= RS_alu_inst_num;
+             
+                Rds[tail] <= Rd;
+                MemToRegs[tail] <= MemToReg;
+                MemReads[tail] <= MemRead;
+                MemWrites[tail] <= MemWrite;
+                ALUOPs[tail] <= ALUOP;
+           
+                ALUSrc2s[tail] <= ALUSrc2;
+                funct3s[tail] <= funct3;
+                immediates[tail] <= immediate;
+                operand1s[tail] <= operand1;
+                operand2s[tail] <= operand2;
+                valid_entries1[tail] <= 1;
+                valid_entries2[tail] <= 1; 
+                tail <= (tail + 1) % 64;  
+                 RS_ALU_on[tail] <=0; 
+               
+            end
+
              end
             
 
@@ -398,6 +259,17 @@
           end
          end
          
+         if (CSR_done) begin                
+          for (n = 0; n < 64; n = n + 1) begin
+           if (!valid_entries1[n] && operand1s[n] == CSR_phy) begin
+            valid_entries1[n] <= 1;
+           end
+           if (!valid_entries2[n] && operand2s[n] == CSR_phy) begin
+             valid_entries2[n] <= 1;
+           end
+          end
+         end
+
          end
  
       if (RS_ALU_on[head]) begin
