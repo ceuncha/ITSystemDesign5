@@ -48,7 +48,8 @@ module ROB(
     output reg [31:0] out_Addr,
     output reg out_MemWrite,
     output reg exception_sig,
-    output reg mret_sig
+    output reg mret_sig,
+    output reg exception_cause
 );
 
 // ROB memory
