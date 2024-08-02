@@ -32,6 +32,7 @@ module RS_Branch (                                             //紐낅졊?뼱 f
     
     input wire exception_sig,
     input wire mret_sig,
+    
     output reg RS_BR_Branch,
     output reg RS_BR_Jump,
     output reg RS_BR_Hit,
