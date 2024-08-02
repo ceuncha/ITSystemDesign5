@@ -46,15 +46,15 @@ module CSR (
 
   //csr과 관련된 명령어를 받으면 CSR레지스터의 epc와 cause를 읽는 코드 (read)
   always @(*) begin
-    if(ID_CSR_Address == address[0]) begin
-       csr_out = CSR_WRITE;
-    end
-    if(ID_CSR_Address == address[1]) begin
-      csr_out = CSR_CAUSE;
-    end
-    if(ID_CSR_Address == address[2]) begin
-      csr_out = CSR_EPC;
-    end
+      if(ID_CSR_Address == address[0]) begin
+        csr_out = CSR_WRITE;
+      end else if(ID_CSR_Address == address[1]) begin
+        csr_out = CSR_CAUSE;
+      end else if(ID_CSR_Address == address[2]) begin
+        csr_out = CSR_EPC;
+      end else begin
+        csr_out = 0;
+      end
     epc <= CSR_EPC;
     cause <= CSR_CAUSE;
   end
