@@ -420,7 +420,9 @@ BB u_BB(
     .head_num(restore_page),           // Output RegWrite signal to indicate a register write operation
     .Paste_RAT(restore_on),
     .RS_EX_Branch(RS_BR_Branch), 
-    .RS_EX_Jump(RS_BR_Jump)
+    .RS_EX_Jump(RS_BR_Jump),
+    .exception_sig(exception_sig),
+    .mret_sig(mret_sig)
 );
     
 (* keep_hierarchy = "yes" *)
@@ -469,7 +471,9 @@ RAT u_RAT(
     .phy_addr_out2(Phy_addr_OP2),   // ?삤?띁?옖?뱶 2 臾쇰━ 二쇱냼 異쒕젰
     .rd_phy_out(Rd_phy),
 
-    .free_phy_addr_out(original_phy_addr) // ?봽由щ━?뒪?듃濡? 鍮꾩뼱?엳?뒗 二쇱냼 ?쟾?넚
+    .free_phy_addr_out(original_phy_addr), // ?봽由щ━?뒪?듃濡? 鍮꾩뼱?엳?뒗 二쇱냼 ?쟾?넚
+    .exception_sig(exception_sig),
+    .mret_sig(mret_sig)
 );
 
 
@@ -525,7 +529,9 @@ physical_register_file u_physical_register_file(
     .Operand1_data_branch(Operand1_BR),
     .Operand2_data_branch(Operand2_BR),
     .Operand1_data_LS(Operand1_LS),
-    .Operand2_data_LS(Operand2_LS)
+    .Operand2_data_LS(Operand2_LS),
+    .exception(exception_sig),
+    .mret_sig(mret_sig)
 );
 
 
@@ -752,7 +758,9 @@ RS_CSR u_RS_CSR(
 .immediate_BR(immediate_BR),
      .PC_BR(PC_BR),
      .Operand1_BR_phy(Operand1_BR_phy),
-     .Operand2_BR_phy(Operand2_BR_phy)
+     .Operand2_BR_phy(Operand2_BR_phy),
+     .exception_sig(exception_sig),
+    .mret_sig(mret_sig)
 );
     (* keep_hierarchy = "yes" *)
     Pass_buffer pass_buffer(
@@ -802,7 +810,9 @@ RS_CSR u_RS_CSR(
         .Branch_result_valid(RS_BR_Jump),
         .BR_Phy(BR_Phy),
         .P_Phy(P_Phy),
-        .result_out(result_out_alu)
+            .result_out(result_out_alu),
+            .exception_sig(exception_sig),
+    .mret_sig(mret_sig)
     );
     
       (* keep_hierarchy = "yes" *)
@@ -836,33 +846,10 @@ RS_CSR u_RS_CSR(
         .BR_Phy(BR_Phy),
         .P_Done(P_Done),
         .P_Phy(P_Phy),
-        .result_out(result_out_ls)
+            .result_out(result_out_ls),
+            .exception_sig(exception_sig),
+    .mret_sig(mret_sig)
     );
-(* keep_hierarchy = "yes" *)
-LS_que LS_que (
-     .clk(clk),
-     .reset(rst),
-     .LS_Memwrite(LS_MemWrite),
-     .LS_MemRead(LS_MemRead),
-     .LS_inst_num(LS_inst_num),
-     .Load_Phy(Load_Phy),
-     .func3_LS(func3_LS),
-     .LS_Result(LS_Result),
-     .Operand2_LS(Operand2_LS),
-     .LS_on(LS_on),
-     .LS_que_MemWrite(LS_que_MemWrite),
-     .LS_que_MemRead(LS_que_MemRead),
-     .LS_que_inst_num(LS_que_inst_num),
-     .LS_que_phy(LS_que_phy),
-     .LS_que_func3(LS_que_func3),
-     .LS_que_Address(LS_que_Address),
-     .LS_que_WriteData(LS_que_WriteData),
-     .LS_que_exception(LS_que_exception)
-     );
-
-
-
-
 
 
 
@@ -890,6 +877,8 @@ LS_que LS_que (
         .BR_Phy(BR_Phy),
         .P_Done(P_Done),
         .P_Phy(P_Phy),
+        .exception_sig(exception_sig),
+        .mret_sig(mret_sig),
         .result_out(result_out_mul)
     );
  
@@ -907,6 +896,8 @@ LS_que LS_que (
                    .MUL_result_valid(MUL_Done),.DIV_result_dest(DIV_Phy),.DIV_result_valid(DIV_Done),
                    .Branch_result_valid(RS_BR_Jump),.BR_Phy(BR_Phy),.P_Done(P_Done),
                     .P_Phy(P_Phy),
+                   .exception_sig(exception_sig),
+                   .mret_sig(mret_sig),
                    .result_out(result_out_div));
 
 
