@@ -22,6 +22,8 @@ module RS_Mul (
     input wire [7:0] CSR_phy,
     input wire CSR_done,
 
+    input wire exception_sig,
+    input wire mret_sig,
     output reg [56:0] result_out
 );
 
@@ -66,7 +68,7 @@ module RS_Mul (
 
 
      always @(posedge clk ) begin
-        if (reset) begin
+         if (reset | exception_sig | mret_sig) begin
             head <= 0;
             tail <= 0;
             for (i = 0; i < 64; i = i + 1) begin
