@@ -949,28 +949,45 @@ RS_CSR u_RS_CSR(
  (* keep_hierarchy = "yes" *)
     MUX_2input MUX_LS (.a(Operand2_LS),.b(immediate_LS),.sel(RS_LS_Src2),.y(LS_B)); 
 
-    (* keep_hierarchy = "yes" *)
-    DataMemory datamem (
-        .clk(clk),
-        .reset(rst),
-        .LS_MemRead(LS_que_MemRead),
-        .LS_MemWrite(LS_que_MemWrite),
-        .LS_inst_num(LS_que_inst_num),
-        .funct3_LS(LS_que_func3),
-        .LS_Result(LS_que_Address),
-        .Operand2_LS(LS_que_WriteData),
-        .Load_phy_in(LS_que_phy),
-        .Load_phy_out(Load_phy_out),
-        .Load_Done(Load_Done),
-        .Load_Data(Load_Data),
-        .Load_inst_num(Load_inst_num)
-    );
 
 
   
 
     // WbMux instantiation
+     (* keep_hierarchy = "yes" *)
+    store_buffer store_buffer (
+        .clk(clk),
+        .reset(reset),
+        .exception(exception_sig),
+        .memwrite(LS_Memwrite),
+        .funct3(func3_LS),
+        .memread(LS_MemRead),
+        .load_phy(Load_Phy),
+ 
+        .inst_num(LS_inst_num),
+        .mem_addr(LS_Result),
+        .mem_data(Operand2_LS),
+        .memwrite_rob(ROB_MemWrite),
+        .mem_addr_rob(ROB_memaddress),
+        .inst_num_rob(ROB_instnum),
 
+        .load_data(Sb_data_out),
+        .load_phy_out(Load_phy_out),
+        .inst_num_out(Load_inst_num),
+        .load_valid(Load_data_sel),
+        .funct3_out(sb_funct3_out),
+        .load_done_out(Load_Done),
+        .exception_flag(exception_sb)
+    );
+
+
+     (* keep_hierarchy = "yes" *)
+    Mem_data_selector Mem_data_selector(
+        .load_data_sel(Load_data_sel),
+        .store_buffer_data(Sb_data_out),
+        .memory_data(Data_memory_out),
+        .load_data(Load_Data)
+    );
 
     
 
@@ -1032,6 +1049,20 @@ RS_CSR u_RS_CSR(
         .mret_sig(mret_sig),
         .exception_cause(ROB_cause),
         .ROB_funct3(ROB_funct3)
+    );
+
+        (* keep_hierarchy = "yes" *)
+    DataMemory DataMemory(
+        .ROB_MemWrite(ROB_MemWrite),
+        .ROB_memadress(ROB_memaddress),
+        .ROB_funct3(ROB_funct3),
+        .clk(clk),
+        .reset(reset),
+        .func3_LS(func3_LS),
+        .LS_result(LS_Result),
+        .LS_MemRead(LS_MemRead),
+        .Data_memory_out(Data_Memory_out)
+
     );
 
 (* keep_hierarchy = "yes" *)
