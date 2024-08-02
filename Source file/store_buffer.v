@@ -56,6 +56,8 @@ module store_buffer(
 
         end else begin
             load_done_out <= 0;
+            load_phy_out <= load_phy;
+            inst_num_out <= inst_num;
             
              for (i = 0; i < SIZE; i = i + 1) begin
                if((buffer_mem_addr[i] == mem_addr_rob)&&(buffer_inst_num[i]==inst_num_rob)) begin
@@ -138,9 +140,8 @@ module store_buffer(
      
             end else if (memread) begin
                 load_valid <= 3'b000;
-                load_done_out <= 0;
-                load_phy_out <= load_phy;
-                inst_num_out <= inst_num;
+                load_done_out <= 1'b1;
+
                 for (i = 0; i < SIZE; i = i + 1) begin
                     if (buffer_mem_addr[i] == mem_addr) begin
                         if(buffer_inst_num[i] > inst_num) begin
