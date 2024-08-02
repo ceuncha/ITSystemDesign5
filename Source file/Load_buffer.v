@@ -11,7 +11,7 @@ module Load_buffer(
     input [31:0] store_address,
     input [31:0] store_inst_num,
 
-    output reg load_exception,
+    output reg Load_exception,
 
     input [31:0] mem_addr_rob,
     input [31:0] inst_num_rob
@@ -84,10 +84,10 @@ module Load_buffer(
             for (i = 0; i < SIZE; i = i + 1) begin
                     if (buffer_mem_addr[i] == store_address) begin
                         if (buffer_inst_num[i] > store_inst_num) begin
-                            load_exception <= 1'b1;  
+                            Load_exception <= 1'b1;  
                             
                         end else begin
-                          load_exception <= 0;
+                          Load_exception <= 0;
                         end
                     end
                 end
