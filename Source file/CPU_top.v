@@ -1001,8 +1001,18 @@ LS_que LS_que (
         .out_MemWrite(ROB_MemWrite),
         .exception_sig(exception_sig),
         .mret_sig(mret_sig),
+        .exception_cause(ROB_cause)
     );
 
+(* keep_hierarchy = "yes" *)
+IVT u_IVT(
+       .rob_cause(ROB_cause)
+
+       .handler_address(EHR_Address)
+       .e_cause(ROB_cause)
+);
+
+    
     // logical_address_register instantiation
 
     (* keep_hierarchy = "yes" *)
