@@ -1,17 +1,15 @@
 module Load_buffer(
     input clk,
     input reset,
-    input exception,
+    input exception_sig,
     input memwrite,
     input memread,
 
-    input [31:0] load_inst_num,
-    input [31:0] load_address,
-    
-    input [31:0] store_address,
-    input [31:0] store_inst_num,
+    input inst_num,
+    input address,
 
     output reg Load_exception,
+    output reg address_exception,
 
     input [31:0] mem_addr_rob,
     input [31:0] inst_num_rob
@@ -30,7 +28,7 @@ module Load_buffer(
     // Reset logic
     always @(posedge clk) begin
 
-        if (reset || exception) begin
+        if (reset || exception_sig) begin
             for (i = 0; i < SIZE; i = i + 1) begin
                 buffer_inst_num[i] <= 0;
                 buffer_mem_addr[i] <= 0;
@@ -39,9 +37,16 @@ module Load_buffer(
             end
             current_block <= 0;
             next_block <= 1;
+            Load_exception <= 0;
+            address_exception <=0;
 
         end else begin
-            
+             if (address > 1024) begin
+             address_exception <=1'b1;
+             end
+             else begin
+             address_exception <=0;
+             end
              for (i = 0; i < SIZE; i = i + 1) begin
                if((buffer_mem_addr[i] == mem_addr_rob)&&(buffer_inst_num[i]==inst_num_rob)) begin
                     entry_val[i] <= 0;
@@ -56,8 +61,8 @@ module Load_buffer(
              end
             
             if (memread) begin
-                buffer_mem_addr[current_block] <= load_address;  
-                buffer_inst_num[current_block] <= load_inst_num; 
+                buffer_mem_addr[current_block] <= address;  
+                buffer_inst_num[current_block] <= inst_num; 
                 entry_val[current_block] <= 1'b1;
 
 
@@ -67,8 +72,8 @@ module Load_buffer(
 
             // Check for existing entry with the same address
                 for (i = 0; i < SIZE; i = i + 1) begin
-                    if (buffer_mem_addr[i] == load_address) begin
-                        if (buffer_inst_num[i] < load_inst_num) begin
+                    if (buffer_mem_addr[i] == address) begin
+                        if (buffer_inst_num[i] < inst_num) begin
                             buffer_mem_addr[i] <= 0;  
                             entry_val[i] <= 1'b0;
                         end else begin
@@ -82,8 +87,8 @@ module Load_buffer(
      
             end else if (memwrite) begin
             for (i = 0; i < SIZE; i = i + 1) begin
-                    if (buffer_mem_addr[i] == store_address) begin
-                        if (buffer_inst_num[i] > store_inst_num) begin
+                    if (buffer_mem_addr[i] == address) begin
+                        if (buffer_inst_num[i] > inst_num) begin
                             Load_exception <= 1'b1;  
                             
                         end else begin
