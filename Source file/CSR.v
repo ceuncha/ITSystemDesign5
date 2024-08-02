@@ -6,8 +6,6 @@ module CSR (
   input wire [4:0] exception_cause,
   input wire [11:0] ID_CSR_Address,
 
-  input wire mret,
-  
   input wire CSR_done,
   input wire [31:0] CSR_Result,
   input wire [11:0] RS_CSR_Address,
@@ -57,9 +55,8 @@ module CSR (
     if(ID_CSR_Address == address[2]) begin
       csr_out = CSR_EPC;
     end
-    if(mret == 1'b1) begin
-      epc <= CSR_EPC;
-    end
+    epc <= CSR_EPC;
+    cause <= CSR_CAUSE;
   end
   
   endmodule
