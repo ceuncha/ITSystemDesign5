@@ -68,6 +68,15 @@ module divider (
             done_reg[0] <= 1'd1;
             divide_zero_reg [0]<= 1'b0;
         end
+        else if (divide_zero) begin
+            temp_dividend[0] <= 0;
+            divisor[0] <= 0;
+            Physical_address_reg[0] <= 0;
+            PC_reg[0] <= PC_in;
+            divider_op_reg[0] <= 0;
+            done_reg[0] <= 1'b1;
+            divide_zero_reg [0]<= 1'b1;
+        end
         else begin
             temp_dividend[0] <= 0;
             divisor[0] <= 0;
@@ -75,7 +84,7 @@ module divider (
             PC_reg[0] <= 0;
             divider_op_reg[0] <= 0;
             done_reg[0] <= 0;
-            divide_zero_reg [0]<= 1'b1;
+            divide_zero_reg [0]<= 1'b0;
     end
 end
     // 32 스테이지 생성
