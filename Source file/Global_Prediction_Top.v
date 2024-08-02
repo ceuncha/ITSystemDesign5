@@ -121,7 +121,7 @@ Program_Counter pc_inst (
 (* keep = "true" *)assign PC_final_next = or_gate_out ? PC_Branch : Mux_2_out;
 
  (* keep = "true" *)assign PC_real_final = (mret_sig == 1'b0 && exception_sig == 1'b0) ? PC_final_next :
-                                           (mret_sig == 1'b1 && exception_sig == 1'b0) ? CSR_EPC :
-                                           (mret_sig == 1'b0 && exception_sig == 1'b1) ? EHR_address :
+     (mret_sig == 1'b1 && exception_sig == 1'b0) ? CSR_epc :
+     (mret_sig == 1'b0 && exception_sig == 1'b1) ? EHR_Address :
                                             32'b0; // 기본값으로 0을 할당 (다른 모든 경우)
 endmodule
