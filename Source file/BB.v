@@ -7,6 +7,8 @@ module BB(
     input wire [31:0] PC,                // Current PC value (expanded to 32 bits)
     input wire RS_EX_Branch,            //
     input wire RS_EX_Jump,
+    input wire exception_sig,
+    input wire mret_sig,
     output reg [4:0] tail_num,           // Output value
     output reg Copy_RAT,                 // Output register destination extracted from instr[11:7]
     output reg [4:0] head_num,           // Output RegWrite signal to indicate a register write operation
@@ -36,7 +38,7 @@ endtask
 
 // BB control logic
 always @(posedge clk) begin
-    if (rst) begin          
+    if (rst|exception_sig|mret_sig) begin          
         reset_bb_entries();
     end else begin
         // Check for jump or branch opcode
