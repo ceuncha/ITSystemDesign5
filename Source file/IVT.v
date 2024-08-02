@@ -1,8 +1,5 @@
 module IVT(
-    input clk,
     input rob_cause,
-
-
     output reg [15:0] handler_address,  // 예외 핸들러 주소
     output reg [1:0] e_cause
 );
