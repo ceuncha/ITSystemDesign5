@@ -1038,7 +1038,8 @@ LS_que LS_que (
         .out_MemWrite(ROB_MemWrite),
         .exception_sig(exception_sig),
         .mret_sig(mret_sig),
-        .exception_cause(ROB_cause)
+        .exception_cause(ROB_cause),
+        .ROB_funct3(ROB_funct3)
     );
 
 (* keep_hierarchy = "yes" *)
