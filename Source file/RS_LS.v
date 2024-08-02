@@ -29,6 +29,7 @@
   input wire P_Done,
   input wire [7:0] P_Phy,
   input wire exception_sig,
+  input wire mret_sig,
   
   output reg [99:0] result_out
     
@@ -59,7 +60,7 @@
    (* keep = "true" *) reg RS_ALU_on[0:63];
 
     always @(posedge clk) begin    //?逾???봾????六???源덂슖?? ?猷???쐝?뵳????꼨 ??六???끃裕뉐ㅇ?
-        if (reset|exception_sig) begin
+        if (reset|exception_sig|mret_sig) begin
             tail <= 0;
             head <=0;
             for (i = 0; i < 64; i = i + 1) begin
