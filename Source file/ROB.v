@@ -49,12 +49,11 @@ module ROB(
     output reg [31:0] out_Addr,
     output reg out_MemWrite,
     output reg exception_sig,
-    output reg mret_sig,
-    output reg [31:0] out_inst_num
+    output reg mret_sig
 );
 
 // ROB memory
-    reg [133:0] rob_entry [0:63];            // ROB entry: new_bit(1), ready(1), reg_write(1), value(32), instr(32), PC(32)
+    reg [135:0] rob_entry [0:63];            // ROB entry: new_bit(1), ready(1), reg_write(1), value(32), instr(32), PC(32)
     reg [31:0] Store_Addrs [0:63];
     reg [5:0] head;                        // Head pointer (5 bits for 32 entries)
     reg [5:0] tail;                        // Tail pointer (5 bits for 32 entries)
@@ -82,7 +81,7 @@ always @(posedge clk) begin
             // Update the branch entry with PC_Return value
             for (i = 0; i < 64; i = i + 1) begin
                 if (rob_entry[i][31:0] == branch_index) begin
-                    rob_entry[i][133:0] <= {rob_entry[i][133],rob_entry[i][132:101],rob_entry[i][100], rob_entry[i][99], rob_entry[i][98], 1'b1, rob_entry[i][96], PC_Return, rob_entry[i][63:32], rob_entry[i][31:0]};
+                    rob_entry[i][135:0] <= {rob_entry[i][135:134], rob_entry[i][133],rob_entry[i][132:101],rob_entry[i][100], rob_entry[i][99], rob_entry[i][98], 1'b1, rob_entry[i][96], PC_Return, rob_entry[i][63:32], rob_entry[i][31:0]};
                     tail <= (i + 1) % 64; // Move tail to the entry right after the branch entry
                     rob_entry[(i+1)%64][98:0] <= 0; // Flush under tail entry
                     rob_entry[(i+2)%64][98:0] <= 0; // Fulsh under tail entry
@@ -92,14 +91,14 @@ always @(posedge clk) begin
         end else if (IF_ID_instOut != 32'b0) begin  // Only increment tail if the instruction is not invalid (i.e., not a bubble)
             if (ID_exception == 1'b0) begin
                 if (mret_inst == 1'b1) begin
-                    rob_entry[tail] <= {mret_inst, IF_ID_PC, MemWrite, 1'b0, 1'b1, 1'b1, reg_write, 32'b0, IF_ID_instOut, PC}; // Store input data in the ROB entry with value set to 32'b0 and new_bit set to 1 [99]는 exceptionflag
+                    rob_entry[tail] <= {2'b00,mret_inst, IF_ID_PC, MemWrite, 1'b0, 1'b1, 1'b1, reg_write, 32'b0, IF_ID_instOut, PC}; // Store input data in the ROB entry with value set to 32'b0 and new_bit set to 1 [99]는 exceptionflag
                     tail <= (tail + 1) % 64;                // Circular buffer handling
                 end else begin
-                    rob_entry[tail] <= {mret_inst, IF_ID_PC, MemWrite, 1'b0, 1'b1, 1'b0, reg_write, 32'b0, IF_ID_instOut, PC}; // Store input data in the ROB entry with value set to 32'b0 and new_bit set to 1 [99]는 exceptionflag
+                    rob_entry[tail] <= {2'b00,mret_inst, IF_ID_PC, MemWrite, 1'b0, 1'b1, 1'b0, reg_write, 32'b0, IF_ID_instOut, PC}; // Store input data in the ROB entry with value set to 32'b0 and new_bit set to 1 [99]는 exceptionflag
                     tail <= (tail + 1) % 64;                // Circular buffer handling
                 end
             end else begin
-                rob_entry[tail] <= {mret_inst, IF_ID_PC, MemWrite, 1'b1, 1'b1, 1'b0, reg_write, 32'b0, IF_ID_instOut, PC}; // Store input data in the ROB entry with value set to 32'b0 and new_bit set to 1 [99]는 exceptionflag
+                rob_entry[tail] <= {2'b00,mret_inst, IF_ID_PC, MemWrite, 1'b1, 1'b1, 1'b1, reg_write, 32'b0, IF_ID_instOut, PC}; // Store input data in the ROB entry with value set to 32'b0 and new_bit set to 1 [99]는 exceptionflag
                 tail <= (tail + 1) % 64;                // Circular buffer handling
             end
         end
@@ -110,16 +109,16 @@ always @(posedge clk) begin
             for (i = 0; i < 64; i = i + 1) begin
                 if (rob_entry[i][98]) begin // Check if the new bit is set to 1
                     if ( alu_exec_done &&rob_entry[i][31:0] == alu_exec_PC) begin
-                        rob_entry[i][133:0] <= {rob_entry[i][133], rob_entry[i][132:101], rob_entry[i][100], rob_entry[i][99], rob_entry[i][98], 1'b1, rob_entry[i][96], alu_exec_value, rob_entry[i][63:32], rob_entry[i][31:0]}; // Update value and maintain new_bit, reg_write, instr, PC
+                        rob_entry[i][135:0] <= {2'b00, rob_entry[i][133], rob_entry[i][132:101], rob_entry[i][100], rob_entry[i][99], rob_entry[i][98], 1'b1, rob_entry[i][96], alu_exec_value, rob_entry[i][63:32], rob_entry[i][31:0]}; // Update value and maintain new_bit, reg_write, instr, PC
                     end
                     if ( mul_exec_done && rob_entry[i][31:0] == mul_exec_PC) begin
-                        rob_entry[i][133:0] <= {rob_entry[i][133], rob_entry[i][132:101], rob_entry[i][100], rob_entry[i][99], rob_entry[i][98], 1'b1, rob_entry[i][96], mul_exec_value, rob_entry[i][63:32], rob_entry[i][31:0]}; // Update value and maintain new_bit, reg_write, instr, PC       
+                        rob_entry[i][135:0] <= {2'b00, rob_entry[i][133], rob_entry[i][132:101], rob_entry[i][100], rob_entry[i][99], rob_entry[i][98], 1'b1, rob_entry[i][96], mul_exec_value, rob_entry[i][63:32], rob_entry[i][31:0]}; // Update value and maintain new_bit, reg_write, instr, PC       
                     end
                     if ( div_exec_done &&rob_entry[i][31:0] == div_exec_PC) begin
-                        if (LS_exception == 1'b1) begin
-                            rob_entry[i][133:0] <= {rob_entry[i][133], rob_entry[i][132:101], rob_entry[i][100], 1'b1, rob_entry[i][98], 1'b1, rob_entry[i][96], div_exec_value, rob_entry[i][63:32], rob_entry[i][31:0]}; // Update value and maintain new_bit, reg_write, instr, PC  
+                        if (div_exception == 1'b1) begin
+                            rob_entry[i][133:0] <= {2'b01, rob_entry[i][133], rob_entry[i][132:101], rob_entry[i][100], 1'b1, rob_entry[i][98], 1'b1, rob_entry[i][96], div_exec_value, rob_entry[i][63:32], rob_entry[i][31:0]}; // Update value and maintain new_bit, reg_write, instr, PC  
                         end else begin
-                            rob_entry[i][133:0] <= {rob_entry[i][133], rob_entry[i][132:101], rob_entry[i][100], rob_entry[i][99], rob_entry[i][98], 1'b1, rob_entry[i][96], div_exec_value, rob_entry[i][63:32], rob_entry[i][31:0]}; // Update value and maintain new_bit, reg_write, instr, PC     
+                            rob_entry[i][133:0] <= {2'b00,rob_entry[i][133], rob_entry[i][132:101], rob_entry[i][100], rob_entry[i][99], rob_entry[i][98], 1'b1, rob_entry[i][96], div_exec_value, rob_entry[i][63:32], rob_entry[i][31:0]}; // Update value and maintain new_bit, reg_write, instr, PC     
                         end
                     end
                     if ( BR_Done&& rob_entry[i][31:0] == branch_index) begin
@@ -130,8 +129,12 @@ always @(posedge clk) begin
                     end
                     if ( Load_Done&& rob_entry[i][31:0] == Load_inst_num) begin
                         if (LS_exception == 1'b1) begin
-                            rob_entry[i][133:0] <= {rob_entry[i][133], rob_entry[i][132:101], rob_entry[i][100], 1'b1, rob_entry[i][98], 1'b1, rob_entry[i][96], Load_Data, rob_entry[i][63:32], rob_entry[i][31:0]}; // Update value and maintain new_bit, reg_write, instr, PC
+                            rob_entry[i][133:0] <= {2'b10, rob_entry[i][133], rob_entry[i][132:101], rob_entry[i][100], 1'b1, rob_entry[i][98], 1'b1, rob_entry[i][96], Load_Data, rob_entry[i][63:32], rob_entry[i][31:0]}; // Update value and maintain new_bit, reg_write, instr, PC
                             Store_Addrs[i][31:0] <= Store_Addr;
+                        end else if (Address_exception == 1'b1)begin
+                            rob_entry[i][133:0] <= {2'b11, rob_entry[i][133], rob_entry[i][132:101], rob_entry[i][100], 1'b1, rob_entry[i][98], 1'b1, rob_entry[i][96], Load_Data, rob_entry[i][63:32], rob_entry[i][31:0]}; // Update value and maintain new_bit, reg_write, instr, PC
+                            Store_Addrs[i][31:0] <= Store_Addr;
+                        end
                         end else begin
                             rob_entry[i][133:0] <= {rob_entry[i][133], rob_entry[i][132:101], rob_entry[i][100], rob_entry[i][99], rob_entry[i][98], 1'b1, rob_entry[i][96], Load_Data, rob_entry[i][63:32], rob_entry[i][31:0]}; // Update value and maintain new_bit, reg_write, instr, PC
                             Store_Addrs[i][31:0] <= Store_Addr;
@@ -162,7 +165,7 @@ always @(posedge clk) begin
                 end else begin
                     exception_sig <= 1'b1;
                     mret_sig <= 1'b0;
-                    out_inst_num <= rob_entry[head][31:0];
+                    exception_cause <= rob_entry[head][135:134];
                     EPC <= rob_entry[head][132:101];
                     head <= 0;
                     tail <= 0;
