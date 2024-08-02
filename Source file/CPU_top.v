@@ -1011,6 +1011,24 @@ IVT u_IVT(
        .handler_address(EHR_Address)
 );
 
+    (* keep_hierarchy = "yes" *)
+CSR u_CSR(
+        .clk(clk),
+        .reset(rst),
+        .exception_sig(exception_sig),
+        .exception_pc(ROB_exception_pc),
+        .exception_cause(ROB_cause),
+        .ID_CSR_Address(ID_CSR_Address),
+
+        .CSR_Done(CSR_Done),
+        .CSR_Result(CSR_Result),
+        .RS_CSR_Address(RS_CSR_Address),
+
+        .epc(CSR_epc),
+        .cause(CSR_cause),
+        .csr_out(CSR_out),
+);
+
     
     // logical_address_register instantiation
 
