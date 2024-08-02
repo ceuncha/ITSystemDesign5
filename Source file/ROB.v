@@ -1,7 +1,6 @@
 module ROB(
     input wire clk,                      // Clock signal
     input wire rst,                      // Reset signal
-    input wire ROB_Flush,                // ROB Flush signal
     input wire [31:0] IF_ID_instOut,     // Input instruction (expanded to 32 bits)
     input wire reg_write,                // Register write enable signal from the decode stage
     input wire [31:0] PC,                // Current PC value (expanded to 32 bits)
