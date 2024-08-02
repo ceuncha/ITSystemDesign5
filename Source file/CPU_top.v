@@ -676,7 +676,40 @@ control_unit_top u_control_unit_top(
 
         
     );
+(* keep_hierarchy = "yes" *)
+RS_CSR u_RS_CSR(
+    .clk(clk),
+    .rst(rst),
+    .start(csr_on),
+    .RS_alu_inst_num(CSR_instnum),
+    .Rd(CSR_rd_phy),
+    .ALUOP(CSR_aluop),
 
+    .csr_data(CSR_data),
+    .EX_MEM_Physical_Address(Load_phy_out),
+    .operand1(CSR_operand1),
+    .operand2(CSR_operand2),
+    .valid(CSR_valid),
+    .ALU_result_dest(ALU_Phy),
+    .ALU_result_valid(ALU_Done),
+    .MUL_result_dest(MUL_Phy),
+    .MUL_result_valid(MUL_Done),
+    .DIV_result_dest(DIV_Phy),
+    .DIV_result_valid(DIV_Done),
+    .Branch_result_valid(RS_BR_Jump),
+    .BR_Phy(BR_Phy),
+    .EX_MemRead(Load_Done),
+    .P_Done(P_Done),
+    .P_Phy(P_Phy),
+    .immediate(CSR_immediate),
+    .CSR_addr(CSR_addr),
+    .ALUSrcs2(CSR_ALUSrc2),
+
+    .CSR_phy(CSR_Phy),
+    .CSR_done(CSR_Done),
+
+    .result_out(result_out_CSR)
+);
 
 (* keep_hierarchy = "yes" *)
  RS_Branch RS_Branch(
