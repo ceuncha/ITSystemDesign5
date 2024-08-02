@@ -1012,6 +1012,10 @@ LS_que LS_que (
         .Reg_write(out_reg_write),
         .logical_address(out_dest),
         .write_data(out_value),
+        .exception_sig(exception_sig),
+        .mret_sig(mret_sig),
+
+        .mret_restore(mret_restore),
         .x0(x0),
         .x1(x1),
         .x2(x2),
