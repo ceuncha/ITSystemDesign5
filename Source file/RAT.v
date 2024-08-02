@@ -13,6 +13,9 @@ module RAT (
     input wire if_id_flush, 
 
     input wire [6:0] opcode,
+    
+    input wire exception_sig,
+    input wire mret_sig,
 
     output reg [7:0] phy_addr_out1,   
     output reg [7:0] phy_addr_out2,   
@@ -45,7 +48,7 @@ module RAT (
     integer k;
 
     always @(posedge clk) begin     // ?猷�?�꺖?�벥 ?湲�?�넺 rat?�벥 ?�삂?猷�
-        if (reset) begin
+        if (reset|exception_sig|mret_sig) begin
             for (k = 0; k < 32; k = k + 1) begin
                 phy_addr_table[k] <= k;
             end
