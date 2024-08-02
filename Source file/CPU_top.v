@@ -29,7 +29,6 @@ module CPU_top(
 (* keep = "true" *)wire [31:0] IF_ID_PC;
 (* keep = "true" *)wire [31:0] IF_ID_inst_num;
 (* keep = "true" *)wire IF_ID_Flush;
-(* keep = "true" *)wire ROB_Flush;
     // parse instOut
 (* keep = "true" *)wire [6:0] funct7 = IF_ID_instOut[31:25];
 (* keep = "true" *)wire [2:0] funct3 = IF_ID_instOut[14:12];
@@ -435,7 +434,6 @@ ifid_pipeline_register u_ifid_pipeline_register(
     .inst_num(inst_num),
     .IF_ID_inst_num(IF_ID_inst_num),
     .IF_ID_PC(IF_ID_PC),
-    .ROB_Flush(ROB_Flush)
 );
 
 
@@ -955,33 +953,54 @@ LS_que LS_que (
     ROB rob (
         .clk(clk),
         .rst(rst),
-        .ROB_Flush(ROB_Flush),
         .IF_ID_instOut(IF_ID_instOut),
         .reg_write(RegWrite),
+        .PC(IF_ID_inst_num),
+        .ID_exception(ID_exception),
+        .MemWrite(MemWrite),
+        .IF_ID_PC(IF_ID_PC),
+        .mret_inst(mret),
+
         .alu_exec_done(ALU_Done),
         .alu_exec_value(ALU_Data),
         .alu_exec_PC(RS_EX_inst_num),
+
         .mul_exec_done(MUL_Done),
         .mul_exec_value(MUL_Data),
         .mul_exec_PC(RS_EX_inst_num_Mul_out),
+
+        .div_exception(div_exception),
         .div_exec_done(DIV_Done),
         .div_exec_value(DIV_Data),
         .div_exec_PC(RS_EX_Div_inst_num_out),
+
         .PcSrc(Predict_Result),
         .PC_Return(PC_Return),
         .branch_index(Branch_index),
-        .PC(IF_ID_inst_num),
+        .BR_Done(BR_Done),
+
         .P_Done(P_Done),
         .P_Data(P_Data),
         .P_inst_num(P_inst_num),
+
+        .LS_exception(LS_exception),
         .Load_Done(Load_Done),
+        .Store_Addr(Store_Address),
         .Load_Data(Load_Data),
         .Load_inst_num(Load_inst_num),
+
+
+        .CSR_Done(CSR_Done),
+        .CSR_Data(CSR_Data),
+
+        .EPC(ROB_exception_pc),
         .out_value(out_value),
         .out_dest(out_dest),
-        .BR_Done(BR_Done),
-        .out_reg_write(out_reg_write)
-
+        .out_reg_write(out_reg_write),
+        .out_Addr(ROB_memaddress),
+        .out_MemWrite(ROB_MemWrite),
+        .exception_sig(exception_sig),
+        .mret_sig(mret_sig),
     );
 
     // logical_address_register instantiation
