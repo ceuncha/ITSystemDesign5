@@ -89,7 +89,7 @@ module RAT (
                         shadow_write_enable[save_page] <= 1;
                     end
 
-                    if (opcode == 7'b1100111 || opcode == 7'b0000011 || opcode == 7'b0010011) begin
+                    if (opcode == 7'b1100111 || opcode == 7'b0000011 || opcode == 7'b0010011 || opcode == 7'b1110011) begin
                         phy_addr_out1 <= phy_addr_table[logical_addr1];
                         phy_addr_out2 <= 8'b11111110;
                     end else if (opcode == 7'b0110111 || opcode == 7'b0010111 || opcode == 7'b1101111) begin
