@@ -20,6 +20,8 @@ module RS_Div (
     input wire [7:0] BR_Phy,
     input wire P_Done,
     input wire [7:0] P_Phy,
+    input wire CSR_Done,
+    input wire [7:0] CSR_Phy,
     input wire exception_sig,
     input wire mret_sig,
     output reg [60:0] result_out
@@ -42,7 +44,25 @@ module RS_Div (
     integer l;
     integer m;
     integer n;
+        integer o;
     reg RS_DIV_on[0:63];
+   (* keep = "true" *)wire operand1_ALU_conflict = (operand1 == ALU_result_dest);
+  (* keep = "true" *)wire operand1_MUL_conflict = (operand1 == MUL_result_dest);
+  (* keep = "true" *)wire operand1_DIV_conflict = (operand1 == DIV_result_dest);
+  (* keep = "true" *)wire operand1_MEM_conflict = (operand1 == EX_MEM_Physical_Address && EX_MEM_MemRead == 1);
+  (* keep = "true" *)wire operand1_BR_conflict = (operand1 == BR_Phy);
+  (* keep = "true" *)wire operand1_P_conflict = (operand1 == P_Phy);
+  (* keep = "true" *)wire operand1_CSR_conflict = (operand1 == CSR_Phy);
+  (* keep = "true" *)wire operand1_conflict = operand1_ALU_conflict || operand1_MUL_conflict || operand1_DIV_conflict || operand1_MEM_conflict || operand1_BR_conflict || operand1_P_conflict || operand1_CSR_conflict;
+
+   (* keep = "true" *)wire operand2_ALU_conflict = (operand2 == ALU_result_dest);
+  (* keep = "true" *)wire operand2_MUL_conflict = (operand2 == MUL_result_dest);
+  (* keep = "true" *)wire operand2_DIV_conflict = (operand2 == DIV_result_dest);
+  (* keep = "true" *)wire operand2_MEM_conflict = (operand2 == EX_MEM_Physical_Address && EX_MEM_MemRead == 1);
+   (* keep = "true" *)wire operand2_BR_conflict = (operand2 == BR_Phy);
+   (* keep = "true" *)wire operand2_P_conflict = (operand2 == P_Phy);
+  (* keep = "true" *)wire operand2_CSR_conflict = (operand2 == CSR_Phy);
+  (* keep = "true" *)wire operand2_conflict = operand2_ALU_conflict || operand2_MUL_conflict || operand2_DIV_conflict || operand12_MEM_conflict || operand2_BR_conflict || operand2_P_conflict || operand2_CSR_conflict;
 
    always @(posedge clk) begin
    
@@ -60,7 +80,7 @@ module RS_Div (
                 RS_DIV_on[i] <= 0;
             end
         end else if (RS_div_start) begin
-            if (RS_div_operand1 == ALU_result_dest) begin  // ALU??굢???땻? operand1??踰? ??굢??亦????逾? ?椰???亦????諭???뇡?
+            if ((operand1_conflict == 1'b1) && (operand1_conflict == 1'b0)) begin  // ALU??굢???땻? operand1??踰? ??굢??亦????逾? ?椰???亦????諭???뇡?
                 PCs[tail] <= RS_div_PC;
                 Rds[tail] <= RS_div_Rd;
                 ALUOPs[tail] <= RS_div_ALUOP;
@@ -70,7 +90,7 @@ module RS_Div (
                 valid_entries2[tail] <= RS_div_valid[1];
                 tail <= (tail + 1) % 64;
                 RS_DIV_on[tail] <= 0;
-            end else if (RS_div_operand2 == ALU_result_dest) begin  // ALU??굢???땻? operand2??踰? ??굢??亦????逾? ?椰???亦????諭???뇡?
+            end else if ((operand1_conflict == 1'b0) && (operand1_conflict == 1'b1)) begin  // ALU??굢???땻? operand2??踰? ??굢??亦????逾? ?椰???亦????諭???뇡?
                 PCs[tail] <= RS_div_PC;
                 Rds[tail] <= RS_div_Rd;
                 ALUOPs[tail] <= RS_div_ALUOP;
@@ -80,107 +100,16 @@ module RS_Div (
                 valid_entries2[tail] <= 1; 
                 tail <= (tail + 1) % 64;   
                 RS_DIV_on[tail] <= 0;
-             end else if (RS_div_operand1 == MUL_result_dest) begin  // MUL??굢???땻? operand1??踰? ??굢??亦????逾? ?椰???亦????諭???뇡?
+            end else if ((operand1_conflict == 1'b1) && (operand1_conflict == 1'b1)) begin  // MUL??굢???땻? operand1??踰? ??굢??亦????逾? ?椰???亦????諭???뇡?
                 PCs[tail] <= RS_div_PC;
                 Rds[tail] <= RS_div_Rd;
                 ALUOPs[tail] <= RS_div_ALUOP;
                 operand1s[tail] <= RS_div_operand1;
                 operand2s[tail] <= RS_div_operand2;
                 valid_entries1[tail] <= 1;
-                valid_entries2[tail] <= RS_div_valid[1];
+                valid_entries2[tail] <= 1;
                 tail <= (tail + 1) % 64;
                  RS_DIV_on[tail] <= 0;
-             end else if (RS_div_operand2 == MUL_result_dest) begin  // MUL??굢???땻? operand2??踰? ??굢??亦????逾? ?椰???亦????諭???뇡?
-                PCs[tail] <= RS_div_PC;
-                Rds[tail] <= RS_div_Rd;
-                ALUOPs[tail] <= RS_div_ALUOP;
-                operand1s[tail] <= RS_div_operand1;
-                operand2s[tail] <= RS_div_operand2;
-                valid_entries1[tail] <= RS_div_valid[0];
-                valid_entries2[tail] <= 1; 
-                tail <= (tail + 1) % 64;
-                 RS_DIV_on[tail] <= 0;
-              end else if (RS_div_operand1 == DIV_result_dest) begin  // DIV??굢???땻? operand1??踰? ??굢??亦????逾? ?椰???亦????諭???뇡?
-                PCs[tail] <= RS_div_PC;
-                Rds[tail] <= RS_div_Rd;
-                ALUOPs[tail] <= RS_div_ALUOP;
-                operand1s[tail] <= RS_div_operand1;
-                operand2s[tail] <= RS_div_operand2;
-                valid_entries1[tail] <= 1;
-                valid_entries2[tail] <= RS_div_valid[1];
-                tail <= (tail + 1) % 64;
-                RS_DIV_on[tail] <= 0;
-              end else if (RS_div_operand2 == DIV_result_dest) begin  // MUL??굢???땻? operand2??踰? ??굢??亦????逾? ?椰???亦????諭???뇡?
-                PCs[tail] <= RS_div_PC;
-                Rds[tail] <= RS_div_Rd;
-                ALUOPs[tail] <= RS_div_ALUOP;
-                operand1s[tail] <= RS_div_operand1;
-                operand2s[tail] <= RS_div_operand2;
-                valid_entries1[tail] <= RS_div_valid[0];
-                valid_entries2[tail] <= 1; 
-                tail <= (tail + 1) % 64;
-                RS_DIV_on[tail] <= 0;
-             end else if ( RS_div_operand1 == EX_MEM_Physical_Address && EX_MEM_MemRead ==1) begin
-                PCs[tail] <= RS_div_PC;
-                Rds[tail] <= RS_div_Rd;
-                ALUOPs[tail] <= RS_div_ALUOP;
-                operand1s[tail] <= RS_div_operand1;
-                operand2s[tail] <= RS_div_operand2;
-                valid_entries1[tail] <= 1;
-                valid_entries2[tail] <= RS_div_valid[1] ; 
-                tail <= (tail + 1) % 64;
-                RS_DIV_on[tail] <= 0;
-              end else if ( RS_div_operand2 == EX_MEM_Physical_Address && EX_MEM_MemRead ==1) begin
-                PCs[tail] <= RS_div_PC;
-                Rds[tail] <= RS_div_Rd;
-                ALUOPs[tail] <= RS_div_ALUOP;
-                operand1s[tail] <= RS_div_operand1;
-                operand2s[tail] <= RS_div_operand2;
-                valid_entries1[tail] <= RS_div_valid[0];
-                valid_entries2[tail] <= 1 ; 
-                tail <= (tail + 1) % 64;
-                RS_DIV_on[tail] <= 0;
-                  
-              end else if (RS_div_operand1 == BR_Phy) begin  // DIV??굢???땻? operand1??踰? ??굢??亦????逾? ?椰???亦????諭???뇡?
-                PCs[tail] <= RS_div_PC;
-                Rds[tail] <= RS_div_Rd;
-                ALUOPs[tail] <= RS_div_ALUOP;
-                operand1s[tail] <= RS_div_operand1;
-                operand2s[tail] <= RS_div_operand2;
-                valid_entries1[tail] <= 1;
-                valid_entries2[tail] <= RS_div_valid[1];
-                tail <= (tail + 1) % 64;
-                RS_DIV_on[tail] <= 0;
-              end else if (RS_div_operand2 == BR_Phy) begin  // MUL??굢???땻? operand2??踰? ??굢??亦????逾? ?椰???亦????諭???뇡?
-                PCs[tail] <= RS_div_PC;
-                Rds[tail] <= RS_div_Rd;
-                ALUOPs[tail] <= RS_div_ALUOP;
-                operand1s[tail] <= RS_div_operand1;
-                operand2s[tail] <= RS_div_operand2;
-                valid_entries1[tail] <= RS_div_valid[0];
-                valid_entries2[tail] <= 1; 
-                tail <= (tail + 1) % 64;
-                RS_DIV_on[tail] <= 0;
-              end else if (RS_div_operand1 == P_Phy) begin  // DIV??굢???땻? operand1??踰? ??굢??亦????逾? ?椰???亦????諭???뇡?
-                PCs[tail] <= RS_div_PC;
-                Rds[tail] <= RS_div_Rd;
-                ALUOPs[tail] <= RS_div_ALUOP;
-                operand1s[tail] <= RS_div_operand1;
-                operand2s[tail] <= RS_div_operand2;
-                valid_entries1[tail] <= 1;
-                valid_entries2[tail] <= RS_div_valid[1];
-                tail <= (tail + 1) % 64;
-                RS_DIV_on[tail] <= 0;
-              end else if (RS_div_operand2 == P_Phy) begin  // MUL??굢???땻? operand2??踰? ??굢??亦????逾? ?椰???亦????諭???뇡?
-                PCs[tail] <= RS_div_PC;
-                Rds[tail] <= RS_div_Rd;
-                ALUOPs[tail] <= RS_div_ALUOP;
-                operand1s[tail] <= RS_div_operand1;
-                operand2s[tail] <= RS_div_operand2;
-                valid_entries1[tail] <= RS_div_valid[0];
-                valid_entries2[tail] <= 1; 
-                tail <= (tail + 1) % 64;
-                RS_DIV_on[tail] <= 0;
             end else begin
                 PCs[tail] <= RS_div_PC;
                 Rds[tail] <= RS_div_Rd;
@@ -255,7 +184,17 @@ module RS_Div (
                     end
                 end     
             end
-         
+         if (CSR_Done) begin                 //alu?쓽 寃곌낵媛? ?뱾?뼱?솕?쓣?븣, 湲곗〈?뿉 RS?뿉 ?뱾?뼱?엳?뜕 紐낅졊?뼱?뱾怨? 臾쇰━二쇱냼瑜? 鍮꾧탳?븯?뿬
+                                                        //?븘?슂?븳 媛믩뱾?쓣 ?뾽?뜲?씠?듃 ?떆耳쒖??떎.
+          for (o = 0; o < 64; o = o + 1) begin
+                 if (!valid_entries1[o] && operand1s[o] == CSR_Phy) begin
+                        valid_entries1[o] <= 1;
+                    end
+                 if (!valid_entries2[o] && operand2s[o] == CSR_Phy) begin
+                        valid_entries2[o] <= 1;
+                    end
+                end
+            end
       
 
 if (RS_DIV_on[head]) begin
