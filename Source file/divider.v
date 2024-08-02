@@ -7,7 +7,7 @@ module divider (
     input wire [7:0] Physical_address_in, 
     input wire [31:0] PC_in,
     input wire [3:0] divider_op_in,
-    output wire divide_zero,
+    output reg divide_zero_exception,
     output reg [31:0] Result,
     output reg done,
     output reg [7:0] Physical_address_out,
@@ -21,6 +21,7 @@ module divider (
     reg [31:0] PC_reg[0:31];
     reg [3:0] divider_op_reg[0:31];
     reg done_reg[0:31];
+    reg divide_zero_reg[0:31];
     reg [63:0] temp_dividend_cal0;
     reg [63:0] temp_dividend_cal1;
     reg [63:0] temp_dividend_cal2;
@@ -53,9 +54,9 @@ module divider (
     reg [63:0] temp_dividend_cal29;
     reg [63:0] temp_dividend_cal30;
     reg [63:0] temp_dividend_cal31;
-
+    wire divide_zero;
     
-  assign divide_zero= (A!=0) && (B==0);
+  assign divide_zero_= (A!=0) && (B==0);
     // 초기화 및 시작
     always @(posedge clk ) begin
        if (start&!divide_zero) begin
@@ -65,6 +66,7 @@ module divider (
             PC_reg[0] <= PC_in;
             divider_op_reg[0] <= divider_op_in;
             done_reg[0] <= 1'd1;
+            divide_zero_reg [0]<= 1'b0;
         end
         else begin
             temp_dividend[0] <= 0;
@@ -73,6 +75,7 @@ module divider (
             PC_reg[0] <= 0;
             divider_op_reg[0] <= 0;
             done_reg[0] <= 0;
+            divide_zero_reg [0]<= 1'b1;
     end
 end
     // 32 스테이지 생성
@@ -154,6 +157,7 @@ end
                     PC_reg[i+1] <= PC_reg[i];
                     divider_op_reg [i+1] <= divider_op_reg [i];
                     done_reg[i+1] <= done_reg[i];
+                    divide_zero_reg[i+1] <= divide_zero_reg[i];
                 end
             end
         end
@@ -399,13 +403,15 @@ end
                 Result = temp_dividend_cal31[31:0];
                 Physical_address_out = Physical_address_reg[31];
                 PC_out = PC_reg[31];
-                done = done_reg[31];
+                done = done_reg[31]; 
+                divide_zero_exception = divide_zero_reg[31];              
                 end
                 else begin
                 Result = temp_dividend_cal31[63:32];
                 Physical_address_out = Physical_address_reg[31];
                 PC_out = PC_reg[31];
                 done = done_reg[31];
+                divide_zero_exception = divide_zero_reg[31];  
                 end
                 end
                 
