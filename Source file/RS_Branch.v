@@ -19,6 +19,7 @@ module RS_Branch (                                             //紐낅졊?뼱 f
     input wire [7:0] MUL_result_dest,
     input wire MUL_result_valid,
     input wire [7:0] DIV_result_dest,
+    
     input wire DIV_result_valid,
     input wire RS_BR_IF_ID_taken,
     input wire RS_BR_IF_ID_hit,
@@ -30,8 +31,12 @@ module RS_Branch (                                             //紐낅졊?뼱 f
     input wire [7:0] P_Phy,
     input wire P_Done,
     
+    input wire [7:0] CSR_Phy,
+    input wire CSR_Done,
+    
     input wire exception_sig,
     input wire mret_sig,
+    
     output reg RS_BR_Branch,
     output reg RS_BR_Jump,
     output reg RS_BR_Hit,
@@ -69,7 +74,26 @@ module RS_Branch (                                             //紐낅졊?뼱 f
     integer l;
     integer m;
     integer n;
-    
+    integer o;
+
+    wire operand1_ALU_conflict = (operand1 == ALU_result_dest);
+    wire operand1_MUL_conflict = (operand1 == MUL_result_dest);
+    wire operand1_DIV_conflict = (operand1 == DIV_result_dest);
+    wire operand1_MEM_conflict = (operand1 == EX_MEM_Physical_Address && EX_MEM_MemRead == 1);
+    wire operand1_BR_conflict = (operand1 == BR_Phy);
+    wire operand1_P_conflict = (operand1 == P_Phy);
+    wire operand1_CSR_conflict = (operand1 == CSR_Phy);
+    wire operand1_conflict = operand1_ALU_conflict || operand1_MUL_conflict || operand1_DIV_conflict || operand1_MEM_conflict || operand1_BR_conflict || operand1_P_conflict || operand1_CSR_conflict;
+
+    wire operand2_ALU_conflict = (operand2 == ALU_result_dest);
+    wire operand2_MUL_conflict = (operand2 == MUL_result_dest);
+    wire operand2_DIV_conflict = (operand2 == DIV_result_dest);
+    wire operand2_MEM_conflict = (operand2 == EX_MEM_Physical_Address && EX_MEM_MemRead == 1);
+    wire operand2_BR_conflict = (operand2 == BR_Phy);
+    wire operand2_P_conflict = (operand2 == P_Phy);
+    wire operand2_CSR_conflict = (operand2 == CSR_Phy);
+    wire operand2_conflict = operand2_ALU_conflict || operand2_MUL_conflict || operand2_DIV_conflict || operand2_MEM_conflict || operand2_BR_conflict || operand2_P_conflict || operand2_CSR_conflict;
+
     always @(posedge clk) begin    //由ъ뀑?떊?샇濡? 珥덇린?솕 ?떆耳쒖쨲
         if (reset|exception_sig|mret_sig) begin
             tail <= 0;
@@ -130,7 +154,7 @@ module RS_Branch (                                             //紐낅졊?뼱 f
             Operand2_BR_phy<=0;
             end
         end else if (start) begin
-            if (operand1 == ALU_result_dest) begin  // 紐낅졊?뼱媛? 泥섏쓬 ?뱾?뼱?솕?쓣?븣, alu?쓽 寃곌낵?? 紐낅졊?뼱?쓽 operand 臾쇰━二쇱냼瑜? 鍮꾧탳?븯?뿬 
+            if ((operand1_conflict == 1'b1) && (operand1_conflict == 1'b0)) begin  // 紐낅졊?뼱媛? 泥섏쓬 ?뱾?뼱?솕?쓣?븣, alu?쓽 寃곌낵?? 紐낅졊?뼱?쓽 operand 臾쇰━二쇱냼瑜? 鍮꾧탳?븯?뿬 
                                                     // ?뾽?뜲?씠?듃媛? ?븘?슂?떆 ?닔?뻾?빐以??떎.
                 inst_nums[tail] <= RS_BR_inst_num;
                 PCs[tail] <= PC;
@@ -146,7 +170,7 @@ module RS_Branch (                                             //紐낅졊?뼱 f
                 valid_entries1[tail] <= 1;
                 valid_entries2[tail] <= valid[1];
                 tail <= (tail + 1) % 64;
-            end else if (operand2 == ALU_result_dest) begin 
+            end else if ((operand1_conflict == 1'b0) && (operand1_conflict == 1'b1)) begin 
                 inst_nums[tail] <= RS_BR_inst_num;
                 PCs[tail] <= PC;
                 Rds[tail] <= Rd;
@@ -162,8 +186,7 @@ module RS_Branch (                                             //紐낅졊?뼱 f
                 valid_entries2[tail] <= 1; 
                 takens[i] <= RS_BR_IF_ID_taken;
                 tail <= (tail + 1) % 64;  
-             end else if (operand1 == MUL_result_dest) begin  // 紐낅졊?뼱媛? 泥섏쓬 ?뱾?뼱?솕?쓣?븣, mul?쓽 寃곌낵?? 紐낅졊?뼱?쓽 operand 臾쇰━二쇱냼瑜? 鍮꾧탳?븯?뿬 
-                                                              // ?뾽?뜲?씠?듃媛? ?븘?슂?떆 ?닔?뻾?빐以??떎.
+            end else if ((operand1_conflict == 1'b1) && (operand1_conflict == 1'b1)) begin 
                 inst_nums[tail] <= RS_BR_inst_num;
                 PCs[tail] <= PC;
                 Rds[tail] <= Rd;
@@ -173,151 +196,12 @@ module RS_Branch (                                             //紐낅졊?뼱 f
                 immediates[tail] <= immediate;
                 operand1s[tail] <= operand1;
                 operand2s[tail] <= operand2;
-                 takens[tail] <= RS_BR_IF_ID_taken;
-                 hits[tail] <= RS_BR_IF_ID_hit;
+                takens[tail] <= RS_BR_IF_ID_taken;
+                hits[tail] <= RS_BR_IF_ID_hit;
                 valid_entries1[tail] <= 1;
-                valid_entries2[tail] <= valid[1];
-                tail <= (tail + 1) % 64;
-             end else if (operand2 == MUL_result_dest) begin  
-                 inst_nums[tail] <= RS_BR_inst_num;
-                PCs[tail] <= PC;
-                Rds[tail] <= Rd;
-                Jumps[tail] <= Jump;
-                Branchs[tail] <= Branch;
-                funct3s[tail] <= funct3;
-                immediates[tail] <= immediate;
-                operand1s[tail] <= operand1;
-                operand2s[tail] <= operand2;
-                 takens[tail] <= RS_BR_IF_ID_taken;
-                 hits[tail] <= RS_BR_IF_ID_hit;
-                valid_entries1[tail] <= valid[0];
                 valid_entries2[tail] <= 1; 
-                tail <= (tail + 1) % 64;
-              end else if (operand1 == DIV_result_dest) begin  // 紐낅졊?뼱媛? 泥섏쓬 ?뱾?뼱?솕?쓣?븣, div?쓽 寃곌낵?? 紐낅졊?뼱?쓽 operand 臾쇰━二쇱냼瑜? 鍮꾧탳?븯?뿬 
-                                                              // ?뾽?뜲?씠?듃媛? ?븘?슂?떆 ?닔?뻾?빐以??떎.
-                  inst_nums[tail] <= RS_BR_inst_num;
-                PCs[tail] <= PC;
-                Rds[tail] <= Rd;
-                Jumps[tail] <= Jump;
-                Branchs[tail] <= Branch;
-                funct3s[tail] <= funct3;
-                immediates[tail] <= immediate;
-                operand1s[tail] <= operand1;
-                operand2s[tail] <= operand2;
-                  takens[tail] <= RS_BR_IF_ID_taken;
-                  hits[tail] <= RS_BR_IF_ID_hit;
-                valid_entries1[tail] <= 1;
-                valid_entries2[tail] <= valid[1];
-                tail <= (tail + 1) % 64;
-              end else if (operand2 == DIV_result_dest) begin  
-                  inst_nums[tail] <= RS_BR_inst_num;
-                PCs[tail] <= PC;
-                Rds[tail] <= Rd;
-                Jumps[tail] <= Jump;
-                Branchs[tail] <= Branch;
-                funct3s[tail] <= funct3;
-                immediates[tail] <= immediate;
-                operand1s[tail] <= operand1;
-                operand2s[tail] <= operand2;
-                  takens[tail] <= RS_BR_IF_ID_taken;
-                  hits[tail] <= RS_BR_IF_ID_hit;
-                valid_entries1[tail] <= valid[0];
-                valid_entries2[tail] <= 1; 
-                tail <= (tail + 1) % 64;
-             end else if ( operand1 == EX_MEM_Physical_Address && EX_MEM_MemRead ==1) begin     
-                                                                // 紐낅졊?뼱媛? 泥섏쓬 ?뱾?뼱?솕?쓣?븣, load?쓽 寃곌낵?? 紐낅졊?뼱?쓽 operand 臾쇰━二쇱냼瑜? 鍮꾧탳?븯?뿬 
-                                                              // ?뾽?뜲?씠?듃媛? ?븘?슂?떆 ?닔?뻾?빐以??떎.
-                 inst_nums[tail] <= RS_BR_inst_num;
-                PCs[tail] <= PC;
-                Rds[tail] <= Rd;
-                Jumps[tail] <= Jump;
-                Branchs[tail] <= Branch;
-                funct3s[tail] <= funct3;
-                immediates[tail] <= immediate;
-                operand1s[tail] <= operand1;
-                operand2s[tail] <= operand2;
-                 takens[tail] <= RS_BR_IF_ID_taken;
-                 hits[tail] <= RS_BR_IF_ID_hit;
-                valid_entries1[tail] <= 1;
-                valid_entries2[tail] <= valid[1] ; 
-                tail <= (tail + 1) % 64;
-              end else if ( operand2 == EX_MEM_Physical_Address && EX_MEM_MemRead ==1) begin
-                  inst_nums[tail] <= RS_BR_inst_num;
-                PCs[tail] <= PC;
-                Rds[tail] <= Rd;
-                Jumps[tail] <= Jump;
-                Branchs[tail] <= Branch;
-                funct3s[tail] <= funct3;
-                immediates[tail] <= immediate;
-                operand1s[tail] <= operand1;
-                operand2s[tail] <= operand2;
-                  takens[tail] <= RS_BR_IF_ID_taken;
-                  hits[tail] <= RS_BR_IF_ID_hit;
-                valid_entries1[tail] <= valid[0];
-                valid_entries2[tail] <= 1 ; 
-                tail <= (tail + 1) % 64;
-                  
-                end else if ( operand1 == BR_Phy) begin     
-                 inst_nums[tail] <= RS_BR_inst_num;
-                PCs[tail] <= PC;
-                Rds[tail] <= Rd;
-                Jumps[tail] <= Jump;
-                Branchs[tail] <= Branch;
-                funct3s[tail] <= funct3;
-                immediates[tail] <= immediate;
-                operand1s[tail] <= operand1;
-                operand2s[tail] <= operand2;
-                 takens[tail] <= RS_BR_IF_ID_taken;
-                 hits[tail] <= RS_BR_IF_ID_hit;
-                valid_entries1[tail] <= 1;
-                valid_entries2[tail] <= valid[1] ; 
-                tail <= (tail + 1) % 64;
-              end else if ( operand2 == BR_Phy) begin
-                  inst_nums[tail] <= RS_BR_inst_num;
-                PCs[tail] <= PC;
-                Rds[tail] <= Rd;
-                Jumps[tail] <= Jump;
-                Branchs[tail] <= Branch;
-                funct3s[tail] <= funct3;
-                immediates[tail] <= immediate;
-                operand1s[tail] <= operand1;
-                operand2s[tail] <= operand2;
-                  takens[tail] <= RS_BR_IF_ID_taken;
-                  hits[tail] <= RS_BR_IF_ID_hit;
-                valid_entries1[tail] <= valid[0];
-                valid_entries2[tail] <= 1 ; 
-                tail <= (tail + 1) % 64;
-                  
-              end else if ( operand1 == P_Phy) begin     
-                 inst_nums[tail] <= RS_BR_inst_num;
-                PCs[tail] <= PC;
-                Rds[tail] <= Rd;
-                Jumps[tail] <= Jump;
-                Branchs[tail] <= Branch;
-                funct3s[tail] <= funct3;
-                immediates[tail] <= immediate;
-                operand1s[tail] <= operand1;
-                operand2s[tail] <= operand2;
-                 takens[tail] <= RS_BR_IF_ID_taken;
-                 hits[tail] <= RS_BR_IF_ID_hit;
-                valid_entries1[tail] <= 1;
-                valid_entries2[tail] <= valid[1] ; 
-                tail <= (tail + 1) % 64;
-              end else if ( operand2 == P_Phy) begin
-                  inst_nums[tail] <= RS_BR_inst_num;
-                PCs[tail] <= PC;
-                Rds[tail] <= Rd;
-                Jumps[tail] <= Jump;
-                Branchs[tail] <= Branch;
-                funct3s[tail] <= funct3;
-                immediates[tail] <= immediate;
-                operand1s[tail] <= operand1;
-                operand2s[tail] <= operand2;
-                  takens[tail] <= RS_BR_IF_ID_taken;
-                  hits[tail] <= RS_BR_IF_ID_hit;
-                valid_entries1[tail] <= valid[0];
-                valid_entries2[tail] <= 1 ; 
-                tail <= (tail + 1) % 64;
+                takens[i] <= RS_BR_IF_ID_taken;
+                tail <= (tail + 1) % 64;  
             end else begin
                 inst_nums[tail] <= RS_BR_inst_num;
                 PCs[tail] <= PC;
@@ -404,7 +288,18 @@ module RS_Branch (                                             //紐낅졊?뼱 f
                     end
                 end
             end
-
+        
+            if (CSR_Done) begin                 //alu?쓽 寃곌낵媛? ?뱾?뼱?솕?쓣?븣, 湲곗〈?뿉 RS?뿉 ?뱾?뼱?엳?뜕 紐낅졊?뼱?뱾怨? 臾쇰━二쇱냼瑜? 鍮꾧탳?븯?뿬
+                                                        //?븘?슂?븳 媛믩뱾?쓣 ?뾽?뜲?씠?듃 ?떆耳쒖??떎.
+                for (o = 0; o < 64; o = o + 1) begin
+                    if (!valid_entries1[o] && operand1s[o] == CSR_Phy) begin
+                        valid_entries1[o] <= 1;
+                    end
+                    if (!valid_entries2[o] && operand2s[o] == CSR_Phy) begin
+                        valid_entries2[o] <= 1;
+                    end
+                end
+            end
         
         if (valid_entries1[head] && valid_entries2[head]) begin       // Check if the entry is ready
             RS_BR_Branch <= Branchs [head];
