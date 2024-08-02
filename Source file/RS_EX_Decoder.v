@@ -134,7 +134,7 @@ module RS_EX_decoder(
     output reg CSR_instnum,
     output reg [31:0] CSR_immediate,
     output reg CSR_ALUSrc2,
-    output reg [11:0] CSR_data
+    output reg [11:0] CSR_addr
 
 );
 
