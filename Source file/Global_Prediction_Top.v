@@ -8,8 +8,8 @@ module global_prediction_top (
     input wire ID_EX_Jump,
     input wire ID_EX_hit,
     input wire real_taken,
-    input wire CSR_EPC,
-    input wire EHR_address,
+    input wire CSR_epc,
+    input wire EHR_Address,
     input wire mret_sig,
     input wire exception_sig,
     output wire [31:0] PC, // Corrected the bit width
