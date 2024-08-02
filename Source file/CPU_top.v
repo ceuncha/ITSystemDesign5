@@ -707,7 +707,7 @@ RS_CSR u_RS_CSR(
 
     .CSR_phy(CSR_Phy),
     .CSR_done(CSR_Done),
-
+    .exception_sig(exception_sig),
     .result_out(result_out_CSR)
 );
 
