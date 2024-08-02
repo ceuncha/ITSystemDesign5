@@ -1006,10 +1006,9 @@ LS_que LS_que (
 
 (* keep_hierarchy = "yes" *)
 IVT u_IVT(
-       .rob_cause(ROB_cause)
+    .rob_cause(ROB_cause),
 
        .handler_address(EHR_Address)
-       .e_cause(ROB_cause)
 );
 
     
