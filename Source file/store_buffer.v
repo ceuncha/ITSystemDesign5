@@ -4,7 +4,7 @@ module store_buffer(
     input exception,
     input memwrite,
     input memread,
-    input load_done,
+
 
     input [2:0] funct3,
     input [7:0] load_phy,
