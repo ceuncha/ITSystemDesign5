@@ -38,6 +38,7 @@ module physical_register_file (
     input [7:0] Operand2_phy_LS,
 
     input exception, // 추가된 exception 신호
+    input mret_sig,
     input [31:0] x0, x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11, x12, x13, x14, x15,
     input [31:0] x16, x17, x18, x19, x20, x21, x22, x23, x24, x25, x26, x27, x28, x29, x30, x31,
 
@@ -82,7 +83,7 @@ always @(posedge clk) begin
             registers[i] <= 32'h00000000;
            valid[i] <= 1'b1; 
         end
-     end else if (exception) begin
+   end else if (exception|mret_sig) begin
         // exception 신호가 들어오면 논리 레지스터의 데이터를 물리 레지스터로 복사
         registers[0] <= x0;
         registers[1] <= x1;
