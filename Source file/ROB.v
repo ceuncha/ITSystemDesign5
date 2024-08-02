@@ -18,7 +18,7 @@ module ROB(
     input wire [31:0] mul_exec_value,    // Multiplier executed value
     input wire [31:0] mul_exec_PC,       // Multiplier execution index
 
-    input wire div_excpetion,
+    input wire div_exception,
     input wire div_exec_done,            // Divider execution completion signal
     input wire [31:0] div_exec_value,    // Divider executed value
     input wire [31:0] div_exec_PC,       // Divider execution index
