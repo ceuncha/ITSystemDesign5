@@ -63,7 +63,7 @@ module ROB(
 task reset_rob_entries;
     begin
         for (i = 0; i < 64; i = i + 1) begin
-            rob_entry[i] <= 134'b0;     // Reset ROB entry with all fields set to 0
+            rob_entry[i] <= 136'b0;     // Reset ROB entry with all fields set to 0
             Store_Addrs[i] <= 32'b0;
         end
     end
