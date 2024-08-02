@@ -31,7 +31,7 @@ module RS_Branch (                                             //紐낅졊?뼱 f
     input wire P_Done,
     
     input wire exception_sig,
-    
+    input wire mret_sig,
     output reg RS_BR_Branch,
     output reg RS_BR_Jump,
     output reg RS_BR_Hit,
@@ -71,7 +71,7 @@ module RS_Branch (                                             //紐낅졊?뼱 f
     integer n;
     
     always @(posedge clk) begin    //由ъ뀑?떊?샇濡? 珥덇린?솕 ?떆耳쒖쨲
-        if (reset|exception_sig) begin
+        if (reset|exception_sig|mret_sig) begin
             tail <= 0;
             head <=0;
             for (i = 0; i < 64; i = i + 1) begin
