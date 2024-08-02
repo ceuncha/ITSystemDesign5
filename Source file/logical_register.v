@@ -6,9 +6,11 @@ module logical_address_register (
     input [31:0] write_data,      // MEM 단계에서 쓸 데이터
     input exception_sig,          // 예외 발생 신호
     input mret_sig,               // mret 신호
+    output mret_restore,
     output [31:0] x0, x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11, x12, x13, x14, x15,
     output [31:0] x16, x17, x18, x19, x20, x21, x22, x23, x24, x25, x26, x27, x28, x29, x30, x31
 );
+    reg mret_reg,
     reg [31:0] logical_registers [0:31];   // 논리 주소 저장 레지스터
     reg [31:0] backup_logical_registers [0:31]; // 백업 레지스터
     integer i;
@@ -19,21 +21,26 @@ module logical_address_register (
             for (i = 0; i < 32; i = i + 1) begin
                 logical_registers[i] <= i; // 초기값을 인덱스로 설정
             end
+            mret_reg <= mret_sig
         end else if (exception_sig) begin
             for (i = 0; i < 32; i = i + 1) begin
                 backup_logical_registers[i] <= logical_registers[i]; // 레지스터 백업
             end
+            mret_reg <= mret_sig;
         end else if (mret_sig) begin
             for (i = 0; i < 32; i = i + 1) begin
                 logical_registers[i] <= backup_logical_registers[i]; // 레지스터 복구
             end
+            mret_reg <= mret_sig;
         end else if (Reg_write) begin
             if (logical_address != 5'b0) begin
                 logical_registers[logical_address] <= write_data;
             end
+            mret_reg <= mret_sig
         end
     end
-
+    
+    assign mret_restore <= mret_reg;
     // 모든 레지스터 값을 출력하는 부분
     assign x0 <= logical_registers[0];
     assign x1 <= logical_registers[1];
@@ -67,5 +74,6 @@ module logical_address_register (
     assign x29 <= logical_registers[29];
     assign x30 <= logical_registers[30];
     assign x31 <= logical_registers[31];
-
+    
+    
 endmodule
