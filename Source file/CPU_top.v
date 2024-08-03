@@ -1134,7 +1134,7 @@ CSR_ALU u_CSR_ALU(
         .MemWrite(MemWrite),
         .IF_ID_PC(IF_ID_PC),
         .mret_inst(mret),
-
+	    .Addres_exception(exception_address),
         .alu_exec_done(ALU_Done),
         .alu_exec_value(ALU_Data),
         .alu_exec_PC(RS_EX_inst_num),
@@ -1143,7 +1143,7 @@ CSR_ALU u_CSR_ALU(
         .mul_exec_value(MUL_Data),
         .mul_exec_PC(RS_EX_inst_num_Mul_out),
 
-        .div_exception(div_exception),
+	    .div_exception(div_0_exception),
         .div_exec_done(DIV_Done),
         .div_exec_value(DIV_Data),
         .div_exec_PC(RS_EX_Div_inst_num_out),
@@ -1157,13 +1157,13 @@ CSR_ALU u_CSR_ALU(
         .P_Data(P_Data),
         .P_inst_num(P_inst_num),
 
-        .LS_exception(LS_exception),
+	    .LS_exception(exception_memforward),
         .Load_Done(Load_Done),
         .Store_Addr(Store_Address),
         .Load_Data(Load_Data),
         .Load_inst_num(Load_inst_num),
 
-
+	    .CSR_inst_num(CSR_inst_num),
         .CSR_Done(CSR_Done),
         .CSR_Data(CSR_Data),
 
