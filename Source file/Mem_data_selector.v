@@ -1,4 +1,4 @@
-module mem_data_selector(
+module Mem_data_selector(
     input [2:0] load_data_sel,
     input [31:0] store_buffer_data,
     input [31:0] memory_data,
