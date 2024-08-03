@@ -1,7 +1,7 @@
 module Mem_data_selector(
-    input [2:0] load_data_sel,
-    input [31:0] store_buffer_data,
-    input [31:0] memory_data,
+    input wire [2:0] load_data_sel,
+    input wire [31:0] store_buffer_data,
+    input wire [31:0] memory_data,
     output reg [31:0] load_data
     
 );
