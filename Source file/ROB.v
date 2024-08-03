@@ -52,7 +52,8 @@ module ROB(
     output reg exception_sig,
     output reg mret_sig,
     output reg exception_cause,
-    output reg ROB_funct3
+    output reg ROB_funct3,
+    output reg out_inst_num
 );
 
 // ROB memory
@@ -161,6 +162,7 @@ always @(posedge clk) begin
                         out_reg_write <= rob_entry[head][96];   // Output RegWrite status
                         out_Addr <= Store_Addrs[head][31:0];
                         out_MemWrite <= rob_entry[head][100];
+                        out_inst_num <= rob_entry[head][31:0];
                         exception_sig <= 1'b0;
                         mret_sig <= 1'b0;
                         rob_entry[head] <= 0;            // Clear the ready flag after consuming the entry
@@ -183,6 +185,7 @@ always @(posedge clk) begin
                     out_reg_write <= 0;   // Output RegWrite status
                     out_Addr <= 32'd0;
                     out_MemWrite <= 0;
+                    out_inst_num <=0;
                     ROB_funct3 <= 0;
                     exception_sig <= 0;
                     mret_sig <= 0;
