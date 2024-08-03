@@ -688,9 +688,21 @@ control_unit_top u_control_unit_top(
         .pass_immediate(pass_immediate),
         .pass_inst_num(pass_inst_num)
         
+        .CSR_data(CSR_data),
+        .csr_on(csr_on),
+        .CSR_operand1(CSR_operand1),
+        .CSR_aluop(CSR_aluop),
+        .CSR_rd_phy(CSR_rd_phy),
+        .CSR_valid(CSR_valid),
+        .CSR_instnum(CSR_instnum),
+        .CSR_immediate(CSR_immediate),
+        .CSR_ALUSrc2(CSR_ALUSrc2),
+        .CSR_addr(CSR_addr)
 
+       
         
     );
+    
 (* keep_hierarchy = "yes" *)
 RS_CSR u_RS_CSR(
     .clk(clk),
