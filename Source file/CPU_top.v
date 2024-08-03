@@ -122,6 +122,17 @@ module CPU_top(
     (* keep = "true" *)wire [31:0] LS_inst_num_out;
     (* keep = "true" *)wire [2:0] LS_func3_out;
 
+	(* keep = "true" *) wire [31:0] CSR_data;
+       (* keep = "true" *) wire csr_on;
+       (* keep = "true" *) wire [7:0] CSR_operand1;
+       (* keep = "true" *) wire [3:0] CSR_aluop;
+       (* keep = "true" *) wire [7:0] CSR_rd_phy;
+       (* keep = "true" *) wire [1:0] CSR_valid;
+       (* keep = "true" *) wire [31:0] CSR_instnum;
+       (* keep = "true" *) wire [31:0] CSR_immediate;
+       (* keep = "true" *) wire CSR_ALUSrc2;
+       (* keep = "true" *) wire [11:0] CSR_addr;
+
   
   /// RS_BR
  (* keep = "true" *) wire RS_br_Jump;
@@ -319,6 +330,20 @@ module CPU_top(
 assign LS_Result = Operand1_LS + LS_B;
 (* keep = "true" *)wire [31:0] Load_inst_num;
 
+//store buffer wire
+(* keep = "true" *) wire [31:0] Sb_data_out;
+(* keep = "true" *) wire [7:0] Load_phy_out;
+(* keep = "true" *) wire [31:0] Load_inst_num;
+(* keep = "true" *) wire [2:0] Load_data_sel;
+(* keep = "true" *) wire exception_sb;
+
+
+	//data memory wire
+
+(* keep = "true" *) wire [31:0] Data_Memory_out;
+	
+
+	
     ////////////////ex_mem wire
     //////////
 
