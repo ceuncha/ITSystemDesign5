@@ -379,7 +379,34 @@ assign LS_Result = Operand1_LS + LS_B;
    (* keep = "true" *)wire [31:0] RS_EX_PC_Div_out;
 
    (* keep = "true" *)wire [31:0] RS_EX_Div_inst_num_out;
+	
+// IF_ID
+(* keep = "true" *) wire [11:0] ID_CSR_Address = IF_ID_instOut[31:20];
+//IVT ouput
+ (* keep = "true" *) wire [31:0] EHR_Address;
 
+//CSR output
+
+ (* keep = "true" *) wire [31:0] CSR_epc;
+(* keep = "true" *) wire [31:0] CSR_cause;
+(* keep = "true" *) wire [31:0] CSR_out;
+
+//control output
+(* keep = "true" *) wire mret;
+
+//logical address ouput
+(* keep = "true" *) wire mret_restore;
+
+//ROB output
+
+(* keep = "true" *) wire [31:0] ROB_instnum;
+(* keep = "true" *) wire [2:0] ROB_funct3;
+(* keep = "true" *) wire [31:0] ROB_memaddress;
+(* keep = "true" *) wire  ROB_MemWrite;
+(* keep = "true" *) wire [31:0] ROB_exception_pc;
+(* keep = "true" *) wire [1:0] ROB_cause;
+(* keep = "true" *) wire mret_sig;
+(* keep = "true" *) wire exception_sig;
 
        //dd////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
