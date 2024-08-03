@@ -16,12 +16,12 @@ module CSR (
 );
   reg [11:0] address [0:2];
   reg [31:0] CSR_EPC;
-  reg [1:0] CSR_CAUSE;
+  reg [4:0] CSR_CAUSE;
   reg [31:0] CSR_WRITE;
   
   //exception_sig를 받으면 CSR레지스터에 epc와 cause를 저장 하는 코드 (write)
   always @(posedge clk) begin
-    if (rst) begin
+    if (reset) begin
       CSR_EPC <= 0;
       CSR_CAUSE <= 0;
       address[0][11:0] <= 12'b000000000000; //CSR_WRITE
@@ -29,7 +29,7 @@ module CSR (
       address[2][11:0] <= 12'b000000000010; //CSR_EPC
     end else if (exception_sig) begin
       CSR_EPC <= exception_pc;
-      CSR_CAUSE <= excpetion_cause;
+      CSR_CAUSE <= exception_cause;
     end
     if (CSR_done) begin
       if(RS_CSR_Address == address[0]) begin
