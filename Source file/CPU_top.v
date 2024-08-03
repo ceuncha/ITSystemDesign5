@@ -1025,7 +1025,7 @@ CSR_ALU u_CSR_ALU(
         .load_phy_out(Load_phy_out),
         .inst_num_out(Load_inst_num),
         .load_valid(Load_data_sel),
-        .funct3_out(sb_funct3_out),
+       
         .load_done_out(Load_Done),
         .exception_flag(exception_sb)
     );
