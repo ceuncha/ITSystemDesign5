@@ -1079,7 +1079,8 @@ CSR_ALU u_CSR_ALU(
         .exception_sig(exception_sig),
         .mret_sig(mret_sig),
         .exception_cause(ROB_cause),
-        .ROB_funct3(ROB_funct3)
+        .ROB_funct3(ROB_funct3),
+        .out_inst_num(ROB_instnum)
     );
 
         (* keep_hierarchy = "yes" *)
