@@ -41,7 +41,7 @@ module Load_buffer(
             address_exception <=0;
 
         end else begin
-             if (address > 1024) begin
+            if (address > 2048) begin
              address_exception <=1'b1;
              end
              else begin
