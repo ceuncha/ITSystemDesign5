@@ -5,11 +5,12 @@ module DataMemory(
     input wire clk,
     input wire reset,
     input wire [2:0] func3_LS,
+    input wire [31:0] out_value,
 
     input wire [31:0] LS_result,
     input wire LS_MemRead,
 
-    output reg [31:0] Data_memory_out,
+    output reg [31:0] Data_memory_out
 );
 integer i;
 reg [31:0] memory [0:2047];
