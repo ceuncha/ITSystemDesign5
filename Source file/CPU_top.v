@@ -191,14 +191,14 @@ module CPU_top(
             // rs_alu_wire
 
 (* keep = "true" *)wire [129:0] result_out_csr;
-(* keep = "true" *)wire [31:0] CSR_imm = result_out_csr[0:31];
-(* keep = "true" *)wire [11:0] RS_CSR_Address = result_out_csr[32:43];
-(* keep = "true" *)wire [31:0] CSR_Data = result_out_csr [44:75];
+(* keep = "true" *)wire [31:0] CSR_imm = result_out_csr[31:0];
+(* keep = "true" *)wire [11:0] RS_CSR_Address = result_out_csr[43:32];
+(* keep = "true" *)wire [31:0] CSR_Data = result_out_csr [75:44];
 (* keep = "true" *)wire CSR_src2 = result_out_csr [76];
-(* keep = "true" *)wire [3:0] CSR_op = result_out_csr [77:80];
-(* keep = "true" *)wire [7:0] CSR_Phy = result_out_csr [81:88];
-(* keep = "true" *)wire [31:0] CSR_inst_num = result_out_csr [89:120];
-(* keep = "true" *)wire [7:0] CSR_operand_phy = result_out_csr [121:128];
+(* keep = "true" *)wire [3:0] CSR_op = result_out_csr [80:77];
+(* keep = "true" *)wire [7:0] CSR_Phy = result_out_csr [88:81];
+(* keep = "true" *)wire [31:0] CSR_inst_num = result_out_csr [120:89];
+(* keep = "true" *)wire [7:0] CSR_operand_phy = result_out_csr [128:121];
 (* keep = "true" *)wire CSR_Done = result_out_csr [129];
 
 (* keep = "true" *)wire [31:0] CSR_B;
@@ -778,7 +778,7 @@ control_unit_top u_control_unit_top(
 (* keep_hierarchy = "yes" *)
 RS_CSR u_RS_CSR(
     .clk(clk),
-    .rst(reset),
+    .reset(rst),
     .start(csr_on),
     .RS_alu_inst_num(CSR_instnum),
     .Rd(CSR_rd_phy),
@@ -807,7 +807,6 @@ RS_CSR u_RS_CSR(
 
     .CSR_phy(CSR_Phy),
     .CSR_done(CSR_Done),
-    .mret_sig(mret_sig),
     .result_out(result_out_csr)
 );
  (* keep_hierarchy = "yes" *)
@@ -856,8 +855,8 @@ MUX_2input u_CSR_mux(
 .RS_BR_funct3(RS_BR_funct3),
 .immediate_BR(immediate_BR),
      .PC_BR(PC_BR),
-     .CSR_done(CSR_Done),
-.CSR_phy(CSR_Phy),
+     .CSR_Done(CSR_Done),
+.CSR_Phy(CSR_Phy),
      .Operand1_BR_phy(Operand1_BR_phy),
      .Operand2_BR_phy(Operand2_BR_phy),
      .exception_sig(exception_sig),
@@ -913,8 +912,8 @@ MUX_2input u_CSR_mux(
         .Branch_result_valid(RS_BR_Jump),
         .BR_Phy(BR_Phy),
         .P_Phy(P_Phy),
-        .CSR_done(CSR_Done),
-        .CSR_phy(CSR_Phy),
+        .CSR_Done(CSR_Done),
+        .CSR_Phy(CSR_Phy),
          .result_out(result_out_alu)
 
     );
@@ -1003,8 +1002,8 @@ MUX_2input u_CSR_mux(
                    .ALU_result_dest(ALU_Phy),.ALU_result_valid(ALU_Done),.MUL_result_dest(MUL_Phy),
                    .MUL_result_valid(MUL_Done),.DIV_result_dest(DIV_Phy),.DIV_result_valid(DIV_Done),
                    .Branch_result_valid(RS_BR_Jump),.BR_Phy(BR_Phy),.P_Done(P_Done),
-                    .P_Phy(P_Phy),.CSR_done(CSR_Done),
-                     .CSR_phy(CSR_Phy),
+                    .P_Phy(P_Phy),.CSR_Done(CSR_Done),
+                     .CSR_Phy(CSR_Phy),
                    .exception_sig(exception_sig),
                    .mret_sig(mret_sig),
                    .result_out(result_out_div));
@@ -1211,7 +1210,7 @@ CSR u_CSR(
         .exception_cause(ROB_cause),
         .ID_CSR_Address(ID_CSR_Address),
 
-        .CSR_Done(CSR_Done),
+        .CSR_done(CSR_Done),
         .CSR_Result(CSR_Result),
         .RS_CSR_Address(RS_CSR_Address),
 
