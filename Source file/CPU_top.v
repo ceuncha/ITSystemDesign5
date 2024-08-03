@@ -401,7 +401,7 @@ assign LS_Result = Operand1_LS + LS_B;
 //CSR output
 
  (* keep = "true" *) wire [31:0] CSR_epc;
-(* keep = "true" *) wire [31:0] CSR_cause;
+(* keep = "true" *) wire [1:0] CSR_cause;
 (* keep = "true" *) wire [31:0] CSR_out;
 
 //control output
@@ -433,6 +433,8 @@ assign LS_Result = Operand1_LS + LS_B;
 
     (* keep = "true" *) wire [31:0] Branch_index;
     (* keep = "true" *) wire real_taken;
+    (* keep = "true" *)wire [31:0] Store_Address;
+
 ///////////////////////////IF_ID////////////////////////////////////////////////
 (* keep_hierarchy = "yes" *)
 global_prediction_top u_global_prediction_top(
@@ -594,7 +596,7 @@ physical_register_file u_physical_register_file(
     .Operand2_phy_branch(Operand2_BR_phy),
     .Operand1_phy_LS(Operand1_LS_phy),
     .Operand2_phy_LS(Operand2_LS_phy),
-    .Operand1_phy_CSR(Operand1_phy_CSR),
+    .Operand1_phy_CSR(CSR_operand_phy),
 
     .Operand1_data_ALU(Operand1_ALU),
     .Operand2_data_ALU(Operand2_ALU),
@@ -644,7 +646,8 @@ control_unit_top u_control_unit_top(
     .ALUSrc(ALUSrc),
     .RWsel(RWsel),
     .Branch(Branch),
-    .Jump(Jump)
+    .Jump(Jump),
+    .mret(mret)
 );
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //RS_EX_decoder top Line
@@ -1113,7 +1116,7 @@ CSR_ALU u_CSR_ALU(
     Mem_data_selector Mem_data_selector(
         .load_data_sel(Load_data_sel),
         .store_buffer_data(Sb_data_out),
-        .memory_data(Data_memory_out),
+        .memory_data(Data_Memory_out),
         .load_data(Load_Data)
     );
 
@@ -1186,7 +1189,7 @@ CSR_ALU u_CSR_ALU(
         .ROB_memadress(ROB_memaddress),
         .ROB_funct3(ROB_funct3),
         .clk(clk),
-        .reset(reset),
+        .reset(rst),
         .func3_LS(func3_LS),
         .LS_result(LS_Result),
         .LS_MemRead(LS_MemRead),
