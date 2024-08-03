@@ -127,7 +127,7 @@ module RS_EX_decoder(
     output reg csr_on, 
     output reg [31:0] CSR_data,
     output reg [7:0] CSR_operand1,
-    output reg [7:0] CSR_operand2,
+ 
     output reg [3:0] CSR_aluop,
     output reg [7:0] CSR_rd_phy,
     output reg [1:0] CSR_valid,
@@ -387,7 +387,7 @@ always @(*) begin
                     CSR_rd_phy = rd_phy_reg;
                     csr_on = 1;
                     CSR_operand1 = Operand1_phy;
-                    CSR_operand2 = Operand2_phy;
+                   
                     CSR_valid = valid;
                     CSR_immediate = immediate;     
                     CSR_aluop = ALUOP;   
