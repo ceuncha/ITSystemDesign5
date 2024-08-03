@@ -52,8 +52,8 @@ module ROB(
     output reg exception_sig,
     output reg mret_sig,
     output reg exception_cause,
-    output reg ROB_funct3,
-    output reg out_inst_num
+    output reg [2:0] ROB_funct3,
+    output reg [31:0] out_inst_num
 );
 
 // ROB memory
