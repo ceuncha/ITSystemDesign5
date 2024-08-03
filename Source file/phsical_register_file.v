@@ -39,6 +39,7 @@ module physical_register_file (
     input [7:0] Operand2_phy_branch,
     input [7:0] Operand1_phy_LS,
     input [7:0] Operand2_phy_LS,
+    input [7:0] Operand2_phy_CSR,
 
     input exception, // 추가된 exception 신호
     input mret_sig,
@@ -55,7 +56,7 @@ module physical_register_file (
     output reg [31:0] Operand2_data_branch,
     output reg [31:0] Operand1_data_LS,
     output reg [31:0] Operand2_data_LS,
-    
+    output reg [31:0] Operand1_data_CSR,
 
     output reg [31:0] Operand1_data,
     output reg [31:0] Operand2_data,
@@ -201,7 +202,8 @@ always @(*) begin
      //LS
         Operand1_data_LS = registers[Operand1_phy_LS];
         Operand2_data_LS = registers[Operand2_phy_LS];
-
+    //CSR
+        Operand1_data_CSR = registers[Operand1_phy_CSR];
 end   
 
 
