@@ -2,6 +2,7 @@ module Load_buffer(
     input clk,
     input reset,
     input exception_sig,
+    input mret_sig,
     input memwrite,
     input memread,
 
@@ -28,7 +29,7 @@ module Load_buffer(
     // Reset logic
     always @(posedge clk) begin
 
-        if (reset || exception_sig) begin
+        if (reset || exception_sig || mret_sig) begin
             for (i = 0; i < SIZE; i = i + 1) begin
                 buffer_inst_num[i] <= 0;
                 buffer_mem_addr[i] <= 0;
@@ -41,7 +42,7 @@ module Load_buffer(
             address_exception <=0;
 
         end else begin
-            if (address > 2048) begin
+             if (address > 2048) begin
              address_exception <=1'b1;
              end
              else begin
