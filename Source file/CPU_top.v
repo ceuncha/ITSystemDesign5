@@ -944,6 +944,13 @@ RS_CSR u_RS_CSR(
                      .PC_in(RS_EX_Div_inst_num),.Result(DIV_Data),.divider_op_in(divider_op),.done(DIV_Done),
                      .Physical_address_out(DIV_Phy),.PC_out(RS_EX_Div_inst_num_out));
 
+(* keep_hierarchy = "yes" *)
+CSR_ALU u_CSR_ALU(
+        .A(CSR_Data),
+        .B(CSR_B),
+        .CSR_ALUop(CSR_op),
+        .Result(CSR_Result)
+);
 
 ////////////////////EX_MEM
 
