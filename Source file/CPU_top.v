@@ -1075,8 +1075,8 @@ CSR_ALU u_CSR_ALU(
   .memread(LS_MemRead),
   .inst_num(LS_inst_num),
   .address(LS_Result),
-  .mem_addr_rob(Rob_mem_address),
-  .inst_num_rob(Rob_instnum),
+	  .mem_addr_rob(ROB_memaddress),
+	  .inst_num_rob(ROB_instnum),
   .Load_exception(exception_ld),
   .address_exception(exception_address)
   );
