@@ -307,8 +307,8 @@ module CPU_top(
 (* keep = "true" *) wire [31:0] LS_que_WriteData;
 (* keep = "true" *) wire LS_que_exception;
 
-(* keep = "true" *) wire Load_exception;
-(* keep = "true" *) wire address_exception;
+(* keep = "true" *) wire exception_ld;
+(* keep = "true" *) wire exception_address;
 
 //datamemory
 (* keep = "true" *)wire [31:0] Operand1_LS;
@@ -981,8 +981,8 @@ CSR_ALU u_CSR_ALU(
   .address(LS_Result),
   .mem_addr_rob(Rob_mem_address),
   .inst_num_rob(Rob_instnum),
-  .Load_exception(Load_exception),
-  .address_exception(address_exception)
+  .Load_exception(exception_ld),
+  .address_exception(exception_address)
   );
     // WbMux instantiation
      (* keep_hierarchy = "yes" *)
@@ -1079,8 +1079,7 @@ CSR_ALU u_CSR_ALU(
         .exception_sig(exception_sig),
         .mret_sig(mret_sig),
         .exception_cause(ROB_cause),
-        .ROB_funct3(ROB_funct3),
-        .out_inst_num(ROB_instnum)
+        .ROB_funct3(ROB_funct3)
     );
 
         (* keep_hierarchy = "yes" *)
