@@ -407,6 +407,8 @@ assign LS_Result = Operand1_LS + LS_B;
 (* keep = "true" *) wire [1:0] ROB_cause;
 (* keep = "true" *) wire mret_sig;
 (* keep = "true" *) wire exception_sig;
+//
+	(* keep = "true" *) wire [31:0] Operand1_CSR;
 
        //dd////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -793,7 +795,7 @@ RS_CSR u_RS_CSR(
 );
  (* keep_hierarchy = "yes" *)
 MUX_2input u_CSR_mux(
-	.a(CSR_operand1_data),
+	.a(Operand1_CSR),
 	.b(CSR_imm),
 	.sel(CSR_src2),
 	.y(CSR_B)
