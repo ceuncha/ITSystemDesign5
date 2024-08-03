@@ -1080,14 +1080,14 @@ CSR_ALU u_CSR_ALU(
   .Load_exception(exception_ld),
   .address_exception(exception_address)
   );
-    // WbMux instantiation
+      // WbMux instantiation
      (* keep_hierarchy = "yes" *)
     store_buffer store_buffer (
         .clk(clk),
-        .reset(reset),
+        .reset(rst),
         .exception(exception_sig),
 	    .mret_sig(mret_sig),
-        .memwrite(LS_Memwrite),
+        .memwrite(LS_MemWrite),
         .funct3(func3_LS),
         .memread(LS_MemRead),
         .load_phy(Load_Phy),
@@ -1134,7 +1134,7 @@ CSR_ALU u_CSR_ALU(
         .MemWrite(MemWrite),
         .IF_ID_PC(IF_ID_PC),
         .mret_inst(mret),
-	    .Addres_exception(exception_address),
+	    .Address_exception(exception_address),
         .alu_exec_done(ALU_Done),
         .alu_exec_value(ALU_Data),
         .alu_exec_PC(RS_EX_inst_num),
