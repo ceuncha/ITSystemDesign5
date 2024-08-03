@@ -778,7 +778,7 @@ control_unit_top u_control_unit_top(
 (* keep_hierarchy = "yes" *)
 RS_CSR u_RS_CSR(
     .clk(clk),
-    .rst(rst),
+    .rst(reset),
     .start(csr_on),
     .RS_alu_inst_num(CSR_instnum),
     .Rd(CSR_rd_phy),
