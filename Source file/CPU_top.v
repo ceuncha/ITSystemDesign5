@@ -197,7 +197,7 @@ module CPU_top(
 (* keep = "true" *)wire CSR_src2 = result_out_csr [76];
 (* keep = "true" *)wire [3:0] CSR_op = result_out_csr [77:80];
 (* keep = "true" *)wire [7:0] CSR_Phy = result_out_csr [81:88];
-(* keep = "true" *)wire [31:0] CSR_imm = result_out_csr [89:120];
+(* keep = "true" *)wire [31:0] CSR_inst_num = result_out_csr [89:120];
 (* keep = "true" *)wire [7:0] CSR_operand_phy = result_out_csr [121:128];
 (* keep = "true" *)wire CSR_Done = result_out_csr [129];
 
