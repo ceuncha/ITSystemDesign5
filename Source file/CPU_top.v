@@ -78,6 +78,7 @@ module CPU_top(
 //Branch unit to BB
 (* keep = "true" *)wire [31:0] branch_index;
 //forwarding wb
+	
 
 /////////////////////RS_EX_decoder wires
     
@@ -409,7 +410,7 @@ assign LS_Result = Operand1_LS + LS_B;
 (* keep = "true" *) wire exception_sig;
 //
 	(* keep = "true" *) wire [31:0] Operand1_CSR;
-
+	
        //dd////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
    
@@ -581,7 +582,7 @@ physical_register_file u_physical_register_file(
     .Operand2_phy_branch(Operand2_BR_phy),
     .Operand1_phy_LS(Operand1_LS_phy),
     .Operand2_phy_LS(Operand2_LS_phy),
-
+    .Operand1_phy_CSR(Operand1_phy_CSR),
 
     .Operand1_data_ALU(Operand1_ALU),
     .Operand2_data_ALU(Operand2_ALU),
@@ -592,9 +593,14 @@ physical_register_file u_physical_register_file(
     .Operand1_data_branch(Operand1_BR),
     .Operand2_data_branch(Operand2_BR),
     .Operand1_data_LS(Operand1_LS),
-    .Operand2_data_LS(Operand2_LS),
+	.Operand2_data_LS(Operand2_LS),
+	.Operand1_data_CSR(Operand1_CSR),
     .exception(exception_sig),
-    .mret_sig(mret_sig)
+	.mret_sig(mret_sig),
+	        .x0(x0), .x1(x1), .x2(x2), .x3(x3), .x4(x4), .x5(x5), .x6(x6), .x7(x7),
+        .x8(x8), .x9(x9), .x10(x10), .x11(x11), .x12(x12), .x13(x13), .x14(x14), .x15(x15),
+        .x16(x16), .x17(x17), .x18(x18), .x19(x19), .x20(x20), .x21(x21), .x22(x22), .x23(x23),
+        .x24(x24), .x25(x25), .x26(x26), .x27(x27), .x28(x28), .x29(x29), .x30(x30), .x31(x31)
 );
 
 
