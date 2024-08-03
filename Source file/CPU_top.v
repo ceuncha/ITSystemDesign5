@@ -219,7 +219,7 @@ module CPU_top(
 
   
   
-(* keep = "true" *) wire [126:0] result_out_alu;  // result_out_alu의 비트 수를 127로 변경
+(* keep = "true" *) wire [126:0] result_out_alu;  // result_out_alu�쓽 鍮꾪듃 �닔瑜� 127濡� 蹂�寃�
 (* keep = "true" *) wire RS_alu_IF_ID_taken;
 (* keep = "true" *) wire RS_alu_IF_ID_hit;
 
@@ -341,14 +341,14 @@ module CPU_top(
 (* keep = "true" *)wire [31:0] LS_B;
 (* keep = "true" *)wire [31:0] LS_Result;
 assign LS_Result = Operand1_LS + LS_B;
-
+(* keep = "true" *)wire [31:0] Load_inst_num;
 
 //store buffer wire
 (* keep = "true" *) wire [31:0] Sb_data_out;
 (* keep = "true" *) wire [7:0] Load_phy_out;
 (* keep = "true" *) wire [31:0] Load_inst_num;
 (* keep = "true" *) wire [2:0] Load_data_sel;
-
+(* keep = "true" *) wire exception_sb;
 
 
 	//data memory wire
@@ -378,7 +378,7 @@ assign LS_Result = Operand1_LS + LS_B;
   
 
  
-  
+  (* keep = "true" *) wire[7:0] Load_phy_out;
   
  
    (* keep = "true" *)wire [31:0] RS_EX_PC_Mul_in;
@@ -515,9 +515,9 @@ ifid_pipeline_register u_ifid_pipeline_register(
 
 (* keep_hierarchy = "yes" *)
 sign_extend u_sign_extend(
-    .inst(instOut),  // ?쟾泥? 紐낅졊?뼱 ?엯?젰
-    .clk(clk),          // ?겢?씫 ?떊?샇 ?엯?젰
-    .Imm(imm32)  // ?떊?샇 ?솗?옣?맂 利됱떆媛? 異쒕젰
+    .inst(instOut),  // ?�읈筌�? 筌뤿굝議�?堉� ?�뿯?�젾
+    .clk(clk),          // ?寃�?�뵭 ?�뻿?�깈 ?�뿯?�젾
+    .Imm(imm32)  // ?�뻿?�깈 ?�넇?�삢?留� 筌앸맩�뻻揶�? �빊�뮆�젾
 );
 
 
@@ -527,21 +527,21 @@ RAT u_RAT(
     .reset(rst),
 
     .if_id_flush(Predict_Result),
-    .save_state(save_on),    // ?궗蹂? ?젅吏??뒪?꽣?뿉 ?긽?깭 ???옣 ?떊?샇
-    .restore_state(restore_on), // ?궗蹂? ?젅吏??뒪?꽣?뿉?꽌 ?긽?깭 蹂듭썝 ?떊?샇
-    .save_page(save_page),     // ?긽?깭 ???옣?슜 ?궗蹂? ?젅吏??뒪?꽣 ?럹?씠吏? ?꽑?깮 ?떊?샇
-    .restore_page(restore_page),  // ?긽?깭 蹂듭썝 ?떊?샇
-    .logical_addr1(Rs1), // ?삤?띁?옖?뱶 1 ?끉由? 二쇱냼
-    .logical_addr2(Rs2), // ?삤?띁?옖?뱶 2 ?끉由? 二쇱냼
-    .rd_logical_addr(Rd), // ?벐湲? ?옉?뾽?쓣 ?븯?뒗 ?끉由? 二쇱냼 (Rd)
-    .free_phy_addr(chuchu_addr),   // ?봽由щ━?뒪?듃濡쒕??꽣 諛쏆? 鍮꾩뼱?엳?뒗 臾쇰━ 二쇱냼
+    .save_state(save_on),    // ?沅쀨퉪? ?�쟿筌�??�뮞?苑�?肉� ?湲�?源� ???�삢 ?�뻿?�깈
+    .restore_state(restore_on), // ?沅쀨퉪? ?�쟿筌�??�뮞?苑�?肉�?苑� ?湲�?源� 癰귣벊�뜚 ?�뻿?�깈
+    .save_page(save_page),     // ?湲�?源� ???�삢?�뒠 ?沅쀨퉪? ?�쟿筌�??�뮞?苑� ?�읂?�뵠筌�? ?苑�?源� ?�뻿?�깈
+    .restore_page(restore_page),  // ?湲�?源� 癰귣벊�뜚 ?�뻿?�깈
+    .logical_addr1(Rs1), // ?�궎?�쓠?�삏?諭� 1 ?�걠�뵳? 雅뚯눘�꺖
+    .logical_addr2(Rs2), // ?�궎?�쓠?�삏?諭� 2 ?�걠�뵳? 雅뚯눘�꺖
+    .rd_logical_addr(Rd), // ?踰먩묾? ?�삂?毓�?�뱽 ?釉�?�뮉 ?�걠�뵳? 雅뚯눘�꺖 (Rd)
+    .free_phy_addr(chuchu_addr),   // ?遊썹뵳�됤봺?�뮞?�뱜嚥≪뮆??苑� 獄쏆룇? �뜮袁⑸선?�뿳?�뮉 �눧�눖�봺 雅뚯눘�꺖
     .opcode(instOut_opcode),
 
-    .phy_addr_out1(Phy_addr_OP1),   // ?삤?띁?옖?뱶 1 臾쇰━ 二쇱냼 異쒕젰
-    .phy_addr_out2(Phy_addr_OP2),   // ?삤?띁?옖?뱶 2 臾쇰━ 二쇱냼 異쒕젰
+    .phy_addr_out1(Phy_addr_OP1),   // ?�궎?�쓠?�삏?諭� 1 �눧�눖�봺 雅뚯눘�꺖 �빊�뮆�젾
+    .phy_addr_out2(Phy_addr_OP2),   // ?�궎?�쓠?�삏?諭� 2 �눧�눖�봺 雅뚯눘�꺖 �빊�뮆�젾
     .rd_phy_out(Rd_phy),
 
-    .free_phy_addr_out(original_phy_addr), // ?봽由щ━?뒪?듃濡? 鍮꾩뼱?엳?뒗 二쇱냼 ?쟾?넚
+    .free_phy_addr_out(original_phy_addr), // ?遊썹뵳�됤봺?�뮞?�뱜嚥�? �뜮袁⑸선?�뿳?�뮉 雅뚯눘�꺖 ?�읈?�꽊
     .exception_sig(exception_sig),
     .mret_sig(mret_sig)
 );
@@ -553,7 +553,7 @@ physical_register_file u_physical_register_file(
     .reset(rst),
     .Operand1_phy(Phy_addr_OP1),
     .Operand2_phy(Phy_addr_OP2),
-    .Rd_phy(Rd_phy), // 紐낅졊?뼱?쓽 Rd 二쇱냼
+    .Rd_phy(Rd_phy), // 筌뤿굝議�?堉�?�벥 Rd 雅뚯눘�꺖
 
     .ALU_add_Write(ALU_Done),
     .ALU_load_Write(Load_Done),
@@ -621,10 +621,10 @@ physical_register_file u_physical_register_file(
 chuchu u_chuchu(
     .clk(clk),
     .reset(rst),
-    .save_state(save_on),          // ?긽?깭 ???옣 ?떊?샇
-    .restore_state(restore_on),       // ?긽?깭 蹂듭썝 ?떊?샇
-    .save_page(save_page),     // ?긽?깭 ???옣 ?럹?씠吏? ?꽑?깮 ?떊?샇
-    .restore_page(restore_page),  // ?긽?깭 蹂듭썝 ?럹?씠吏? ?꽑?깮 ?떊?샇
+    .save_state(save_on),          // ?湲�?源� ???�삢 ?�뻿?�깈
+    .restore_state(restore_on),       // ?湲�?源� 癰귣벊�뜚 ?�뻿?�깈
+    .save_page(save_page),     // ?湲�?源� ???�삢 ?�읂?�뵠筌�? ?苑�?源� ?�뻿?�깈
+    .restore_page(restore_page),  // ?湲�?源� 癰귣벊�뜚 ?�읂?�뵠筌�? ?苑�?源� ?�뻿?�깈
     .rat_data(original_phy_addr),
     .chuchu_out(chuchu_addr)
 );
@@ -803,7 +803,7 @@ RS_CSR u_RS_CSR(
     .P_Phy(P_Phy),
     .immediate(CSR_immediate),
     .CSR_addr(CSR_addr),
-    .ALUSrcs2(CSR_ALUSrc2),
+    .ALUSrc2(CSR_ALUSrc2),
 
     .CSR_phy(CSR_Phy),
     .CSR_done(CSR_Done),
