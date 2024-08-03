@@ -789,7 +789,6 @@ RS_CSR u_RS_CSR(
 
     .CSR_phy(CSR_Phy),
     .CSR_done(CSR_Done),
-    .exception_sig(exception_sig),
     .mret_sig(mret_sig),
     .result_out(result_out_CSR)
 );
@@ -804,8 +803,6 @@ MUX_2input u_CSR_mux(
  RS_Branch RS_Branch(
 .clk(clk),
 .reset(rst),
-.mret_sig(mret_sig),
-.exception_sig(exception_sig),
 .start(RS_br_start),
 .RS_BR_inst_num(RS_br_inst_num),
 .PC(RS_br_PC),
@@ -897,8 +894,7 @@ MUX_2input u_CSR_mux(
         .BR_Phy(BR_Phy),
         .P_Phy(P_Phy),
          .result_out(result_out_alu),
-         .exception_sig(exception_sig),
-          .mret_sig(mret_sig)
+
     );
     
       (* keep_hierarchy = "yes" *)
@@ -933,8 +929,8 @@ MUX_2input u_CSR_mux(
         .P_Done(P_Done),
         .P_Phy(P_Phy),
         .result_out(result_out_ls),
-        .exception_sig(exception_sig)
-  
+		.exception_sig(exception_sig),
+		.mret_sig(mret_sig)
     );
 
 
