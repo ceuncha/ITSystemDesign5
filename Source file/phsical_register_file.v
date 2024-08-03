@@ -27,7 +27,7 @@ module physical_register_file (
     input [7:0] ALU_div_phy,
     input [7:0] BR_phy,
     input [7:0] Pass_done_phy,
-    
+    input [7:0] CSR_done_phy,
     
     input [7:0] Operand1_phy_ALU,
     input [7:0] Operand2_phy_ALU,
