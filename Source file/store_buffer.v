@@ -4,7 +4,7 @@ module store_buffer(
     input exception,
     input memwrite,
     input memread,
-
+    input mret_sig,
 
     input [2:0] funct3,
     input [7:0] load_phy,
@@ -40,7 +40,7 @@ module store_buffer(
     // Reset logic
     always @(posedge clk) begin
 
-        if (reset || exception) begin
+        if (reset || exception || mret_sig) begin
             for (i = 0; i < SIZE; i = i + 1) begin
                 buffer_inst_num[i] <= 0;
                 buffer_mem_addr[i] <= 0;
