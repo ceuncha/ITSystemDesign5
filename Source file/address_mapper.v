@@ -74,11 +74,11 @@ always @(*) begin
                 case(funct3)
                     3'b001: mapped_address = 6'd30; // csrrw
                     3'b011: mapped_address = 6'd31; // csrc
-                    3'b010: mapped_address = 6'd32 //csrs
-                    3'b101: mapped_address = 6'd33 //csrrwi
-                    3'b110: mapped_address = 6'd34 //csrsi
-                    3'b111: mapped_address = 6'd35 //csrci
-                    3'b000: mapped_address = 6'd36 //mret
+                    3'b010: mapped_address = 6'd32;//csrs
+                    3'b101: mapped_address = 6'd33; //csrrwi
+                    3'b110: mapped_address = 6'd34; //csrsi
+                    3'b111: mapped_address = 6'd35; //csrci
+                    3'b000: mapped_address = 6'd36; //mret
                     default: mapped_address = 6'd63;
                 endcase
             end
