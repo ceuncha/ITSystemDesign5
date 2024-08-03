@@ -9,7 +9,7 @@
     input wire [31:0] csr_data,
     input wire [7:0] EX_MEM_Physical_Address,
     input wire [7:0] operand1,
-    input wire [7:0] operand2,
+   
     input wire [1:0] valid,
     input wire [7:0] ALU_result_dest,
     input wire ALU_result_valid,
