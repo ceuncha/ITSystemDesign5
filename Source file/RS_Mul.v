@@ -2,6 +2,8 @@ module RS_Mul (
     input wire clk,
     input wire reset,
     input wire RS_mul_start,
+    input wire [7:0]operand1,
+    input wire [7:0]operand2,
     input wire [31:0] RS_mul_PC,
     input wire [7:0] RS_mul_Rd,
     input wire EX_MEM_MemRead,
