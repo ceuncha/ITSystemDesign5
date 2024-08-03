@@ -798,7 +798,7 @@ RS_CSR u_RS_CSR(
     .DIV_result_valid(DIV_Done),
     .Branch_result_valid(RS_BR_Jump),
     .BR_Phy(BR_Phy),
-    .EX_MemRead(Load_Done),
+    .EX_MEM_MemRead(Load_Done),
     .P_Done(P_Done),
     .P_Phy(P_Phy),
     .immediate(CSR_immediate),
