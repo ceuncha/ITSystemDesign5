@@ -341,14 +341,14 @@ module CPU_top(
 (* keep = "true" *)wire [31:0] LS_B;
 (* keep = "true" *)wire [31:0] LS_Result;
 assign LS_Result = Operand1_LS + LS_B;
-(* keep = "true" *)wire [31:0] Load_inst_num;
+
 
 //store buffer wire
 (* keep = "true" *) wire [31:0] Sb_data_out;
 (* keep = "true" *) wire [7:0] Load_phy_out;
 (* keep = "true" *) wire [31:0] Load_inst_num;
 (* keep = "true" *) wire [2:0] Load_data_sel;
-(* keep = "true" *) wire exception_sb;
+
 
 
 	//data memory wire
@@ -378,7 +378,7 @@ assign LS_Result = Operand1_LS + LS_B;
   
 
  
-  (* keep = "true" *) wire[7:0] Load_phy_out;
+  
   
  
    (* keep = "true" *)wire [31:0] RS_EX_PC_Mul_in;
