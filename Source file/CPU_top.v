@@ -307,6 +307,8 @@ module CPU_top(
 (* keep = "true" *) wire [31:0] LS_que_WriteData;
 (* keep = "true" *) wire LS_que_exception;
 
+(* keep = "true" *) wire Load_exception;
+(* keep = "true" *) wire address_exception;
 
 //datamemory
 (* keep = "true" *)wire [31:0] Operand1_LS;
@@ -382,7 +384,7 @@ global_prediction_top u_global_prediction_top(
     .PC(PC),
     .Wrong(Wrong),
     .hit(hit),    
-    .PC_taken(PC_taken),
+    .PC_taken(PC_taken)
 );
 
 (* keep_hierarchy = "yes" *)
@@ -439,7 +441,7 @@ ifid_pipeline_register u_ifid_pipeline_register(
     .IF_ID_instOut(IF_ID_instOut),  
     .inst_num(inst_num),
     .IF_ID_inst_num(IF_ID_inst_num),
-    .IF_ID_PC(IF_ID_PC),
+    .IF_ID_PC(IF_ID_PC)
 );
 
 
@@ -696,7 +698,8 @@ RS_CSR u_RS_CSR(
     .RS_alu_inst_num(CSR_instnum),
     .Rd(CSR_rd_phy),
     .ALUOP(CSR_aluop),
-
+    .mret_sig(mret_sig),
+    .exception_sig(exception_sig),
     .csr_data(CSR_data),
     .EX_MEM_Physical_Address(Load_phy_out),
     .operand1(CSR_operand1),
@@ -728,6 +731,8 @@ RS_CSR u_RS_CSR(
  RS_Branch RS_Branch(
 .clk(clk),
 .reset(rst),
+.mret_sig(mret_sig),
+.exception_sig(exception_sig),
 .start(RS_br_start),
 .RS_BR_inst_num(RS_br_inst_num),
 .PC(RS_br_PC),
@@ -795,6 +800,8 @@ RS_CSR u_RS_CSR(
         .PC(RS_alu_PC),
         .Rd(RS_alu_Rd),
         .RS_alu_inst_num(RS_alu_inst_num),
+        .mret_sig(mret_sig),
+        .exception_sig(exception_sig),
  
         .ALUOP(RS_alu_ALUOP),
         .ALUSrc1(RS_alu_ALUSrc1),
@@ -816,9 +823,9 @@ RS_CSR u_RS_CSR(
         .Branch_result_valid(RS_BR_Jump),
         .BR_Phy(BR_Phy),
         .P_Phy(P_Phy),
-            .result_out(result_out_alu),
-            .exception_sig(exception_sig),
-    .mret_sig(mret_sig)
+         .result_out(result_out_alu),
+         .exception_sig(exception_sig),
+          .mret_sig(mret_sig)
     );
     
       (* keep_hierarchy = "yes" *)
@@ -852,9 +859,9 @@ RS_CSR u_RS_CSR(
         .BR_Phy(BR_Phy),
         .P_Done(P_Done),
         .P_Phy(P_Phy),
-            .result_out(result_out_ls),
-            .exception_sig(exception_sig),
-    .mret_sig(mret_sig)
+        .result_out(result_out_ls),
+        .exception_sig(exception_sig)
+  
     );
 
 
@@ -963,9 +970,20 @@ CSR_ALU u_CSR_ALU(
     MUX_2input MUX_LS (.a(Operand2_LS),.b(immediate_LS),.sel(RS_LS_Src2),.y(LS_B)); 
 
 
-
-  
-
+ (* keep_hierarchy = "yes" *)
+  Load_buffer Load_buffer (
+  .clk(clk),
+  .reset(reset),
+  .exception_sig(exception_sig),
+  .memwrite(LS_Memwrite),
+  .memread(LS_MemRead),
+  .inst_num(LS_inst_num),
+  .address(LS_Result),
+  .mem_addr_rob(Rob_mem_address),
+  .inst_num_rob(Rob_instnum),
+  .Load_exception(Load_exception),
+  .address_exception(address_exception)
+  );
     // WbMux instantiation
      (* keep_hierarchy = "yes" *)
     store_buffer store_buffer (
@@ -1100,7 +1118,7 @@ CSR u_CSR(
 
         .epc(CSR_epc),
         .cause(CSR_cause),
-        .csr_out(CSR_out),
+        .csr_out(CSR_out)
 );
 
     
