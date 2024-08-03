@@ -1068,10 +1068,10 @@ CSR_ALU u_CSR_ALU(
  (* keep_hierarchy = "yes" *)
   Load_buffer Load_buffer (
   .clk(clk),
-  .reset(reset),
+  .reset(rst),
   .exception_sig(exception_sig),
 	  .mret_sig(mret_sig),
-  .memwrite(LS_Memwrite),
+  .memwrite(LS_MemWrite),
   .memread(LS_MemRead),
   .inst_num(LS_inst_num),
   .address(LS_Result),
