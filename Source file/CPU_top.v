@@ -374,7 +374,6 @@ assign LS_Result = Operand1_LS + LS_B;
    (* keep = "true" *)wire [31:0] ALUResult;
 
 
-   (* keep = "true" *)wire ALU_done;
   
 
  
@@ -663,6 +662,10 @@ control_unit_top u_control_unit_top(
         .in_func3(funct3),
         .in_funct7(funct7),
         .in_pc(IF_ID_PC),
+        
+        .csr_data_in(CSR_out),
+        .csr_addr_in(ID_CSR_Address),
+        
         .inst_num(IF_ID_inst_num),
         .MemToReg(MemToReg),
         .MemRead(MemRead),
