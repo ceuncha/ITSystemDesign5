@@ -51,7 +51,7 @@ module ROB(
     output reg out_MemWrite,
     output reg exception_sig,
     output reg mret_sig,
-    output reg exception_cause,
+    output reg [1:0] exception_cause,
     output reg [2:0] ROB_funct3,
     output reg [31:0] out_inst_num
 );
