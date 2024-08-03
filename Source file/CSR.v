@@ -16,10 +16,10 @@ module CSR (
 );
   reg [11:0] address [0:2];
   reg [31:0] CSR_EPC;
-  reg [4:0] CSR_CAUSE;
+  reg [1:0] CSR_CAUSE;
   reg [31:0] CSR_WRITE;
   
-  //exception_sig를 받으면 CSR레지스터에 epc와 cause를 저장 하는 코드 (write)
+  //exception_sig瑜� 諛쏆쑝硫� CSR�젅吏��뒪�꽣�뿉 epc�� cause瑜� ���옣 �븯�뒗 肄붾뱶 (write)
   always @(posedge clk) begin
     if (reset) begin
       CSR_EPC <= 0;
@@ -35,16 +35,16 @@ module CSR (
       if(RS_CSR_Address == address[0]) begin
         CSR_WRITE <= CSR_Result; 
       end
-      if(RS_CSR_Address == address[1]) begin //exception 원인 레지스터는 특정목적외에는 접근하지말것*
+      if(RS_CSR_Address == address[1]) begin //exception �썝�씤 �젅吏��뒪�꽣�뒗 �듅�젙紐⑹쟻�쇅�뿉�뒗 �젒洹쇳븯吏�留먭쾬*
         CSR_CAUSE <= CSR_Result; 
       end
-      if(RS_CSR_Address == address[2]) begin //exception 발생 주소 레지스터는 특정목적외에는 접근하지말것*
+      if(RS_CSR_Address == address[2]) begin //exception 諛쒖깮 二쇱냼 �젅吏��뒪�꽣�뒗 �듅�젙紐⑹쟻�쇅�뿉�뒗 �젒洹쇳븯吏�留먭쾬*
         CSR_EPC <= CSR_Result;
       end
     end
   end
 
-  //csr과 관련된 명령어를 받으면 CSR레지스터의 epc와 cause를 읽는 코드 (read)
+  //csr怨� 愿��젴�맂 紐낅졊�뼱瑜� 諛쏆쑝硫� CSR�젅吏��뒪�꽣�쓽 epc�� cause瑜� �씫�뒗 肄붾뱶 (read)
   always @(*) begin
       if(ID_CSR_Address == address[0]) begin
         csr_out = CSR_WRITE;
