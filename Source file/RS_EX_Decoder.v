@@ -215,7 +215,7 @@ always @(*) begin
 
         CSR_data =0;
         CSR_operand1 = 0;
-        CSR_operand2 = 0;
+  
         CSR_aluop = 0;
         CSR_rd_phy = 0;
         CSR_valid = 0;
