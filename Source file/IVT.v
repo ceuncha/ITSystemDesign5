@@ -1,6 +1,6 @@
 module IVT(
     input rob_cause,
-    output reg [15:0] handler_address,  // 예외 핸들러 주소
+    output reg [15:0] handler_address  // 예외 핸들러 주소
 );
 
 always @(*) begin
@@ -15,4 +15,5 @@ always @(*) begin
     end else begin
         handler_address <=16'h0000;
     end
-end
+    end
+endmodule
