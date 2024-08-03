@@ -17,7 +17,7 @@ module store_buffer(
     output reg [7:0] load_phy_out,
     output reg [31:0] inst_num_out,
     output reg [2:0] load_valid,
-    output reg [2:0] funct3_out,
+
     output reg load_done_out,
     output reg exception_flag,
 
