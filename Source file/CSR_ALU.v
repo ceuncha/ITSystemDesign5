@@ -13,8 +13,9 @@ always @(*) begin
         4'b0000: begin  //AND NOT
           Result = ~(A & B); // 
             end
-        4'b0001: begin  OR
-            Result = A | B; 
+        4'b0001: begin  // OR
+            Result = A | B;
+            end 
         default: Result = 32'b0; // Default: Output 0
     endcase
 
