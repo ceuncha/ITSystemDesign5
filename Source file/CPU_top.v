@@ -704,7 +704,7 @@ RS_CSR u_RS_CSR(
     .csr_data(CSR_data),
     .EX_MEM_Physical_Address(Load_phy_out),
     .operand1(CSR_operand1),
-    .operand2(CSR_operand2),
+  
     .valid(CSR_valid),
     .ALU_result_dest(ALU_Phy),
     .ALU_result_valid(ALU_Done),
