@@ -309,7 +309,8 @@ module CPU_top(
 
 (* keep = "true" *) wire exception_ld;
 (* keep = "true" *) wire exception_address;
-
+(* keep = "true" *) wire exception_sb;
+(* keep = "true" *) wire exception_memforward = exception_ld | exception_sb;
 //datamemory
 (* keep = "true" *)wire [31:0] Operand1_LS;
 (* keep = "true" *)wire [31:0] Operand2_LS;
@@ -703,7 +704,7 @@ RS_CSR u_RS_CSR(
     .csr_data(CSR_data),
     .EX_MEM_Physical_Address(Load_phy_out),
     .operand1(CSR_operand1),
-
+    .operand2(CSR_operand2),
     .valid(CSR_valid),
     .ALU_result_dest(ALU_Phy),
     .ALU_result_valid(ALU_Done),
@@ -1079,7 +1080,8 @@ CSR_ALU u_CSR_ALU(
         .exception_sig(exception_sig),
         .mret_sig(mret_sig),
         .exception_cause(ROB_cause),
-        .ROB_funct3(ROB_funct3)
+        .ROB_funct3(ROB_funct3),
+        .out_inst_num(ROB_instnum)
     );
 
         (* keep_hierarchy = "yes" *)
