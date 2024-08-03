@@ -8,7 +8,9 @@ module ROB(
     input wire MemWrite,
     input wire [31:0] IF_ID_PC,
     input wire mret_inst,
-
+    input wire ID_exception,
+    input wire Address_exception,
+    input wire [31:0] CSR_inst_num,
     
     input wire alu_exec_done,            // ALU execution completion signal
     input wire [31:0] alu_exec_value,    // ALU executed value
@@ -187,7 +189,7 @@ always @(posedge clk) begin
             end
         
     end
-end
+
 
 
 
