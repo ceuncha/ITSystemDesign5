@@ -739,7 +739,13 @@ RS_CSR u_RS_CSR(
     .mret_sig(mret_sig),
     .result_out(result_out_CSR)
 );
-
+ (* keep_hierarchy = "yes" *)
+MUX_2input u_CSR_mux(
+	.a(CSR_operand1_data),
+	.b(CSR_imm),
+	.sel(CSR_src2),
+	.y(CSR_B)
+);
 (* keep_hierarchy = "yes" *)
  RS_Branch RS_Branch(
 .clk(clk),
