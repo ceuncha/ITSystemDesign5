@@ -102,7 +102,7 @@ always @(posedge clk) begin
                 end
             end else begin
                 rob_entry[tail] <= {2'b00,mret_inst, IF_ID_PC, MemWrite, 1'b1, 1'b1, 1'b1, reg_write, 32'b0, IF_ID_instOut, PC}; // Store input data in the ROB entry with value set to 32'b0 and new_bit set to 1 [99]는 exceptionflag
-                tail <= (tail + 1) % 64;                // Circular buffer handling 
+                tail <= (tail + 1) % 64;                // Circular buffer handling
             end
         end
 
@@ -129,6 +129,7 @@ always @(posedge clk) begin
                     end
                     if ( P_Done&& rob_entry[i][31:0] == P_inst_num) begin
                         rob_entry[i][135:0] <= {2'b00,rob_entry[i][133], rob_entry[i][132:101], rob_entry[i][100], rob_entry[i][99], rob_entry[i][98], 1'b1, rob_entry[i][96], P_Data, rob_entry[i][63:32], rob_entry[i][31:0]}; // Update value and maintain new_bit, reg_write, instr, PC
+                        rob_entry[i][95:64] <= P_Data;
                     end
                     if ( Load_Done&& rob_entry[i][31:0] == Load_inst_num) begin
                         if (LS_exception == 1'b1) begin
@@ -137,7 +138,7 @@ always @(posedge clk) begin
                         end else if (Address_exception == 1'b1)begin
                             rob_entry[i][135:0] <= {2'b11, rob_entry[i][133], rob_entry[i][132:101], rob_entry[i][100], 1'b1, rob_entry[i][98], 1'b1, rob_entry[i][96], Load_Data, rob_entry[i][63:32], rob_entry[i][31:0]}; // Update value and maintain new_bit, reg_write, instr, PC
                             Store_Addrs[i][31:0] <= Store_Addr;
-                        end
+               
                         end else begin
                             rob_entry[i][135:0] <= {2'b00, rob_entry[i][133], rob_entry[i][132:101], rob_entry[i][100], rob_entry[i][99], rob_entry[i][98], 1'b1, rob_entry[i][96], Load_Data, rob_entry[i][63:32], rob_entry[i][31:0]}; // Update value and maintain new_bit, reg_write, instr, PC
                             Store_Addrs[i][31:0] <= Store_Addr;
@@ -189,11 +190,10 @@ always @(posedge clk) begin
                     exception_sig <= 0;
                     mret_sig <= 0;
             end
-        
-    end
+     end
 
 
 
-
+end
 
 endmodule
