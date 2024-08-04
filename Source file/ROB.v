@@ -79,37 +79,7 @@ always @(posedge clk) begin
         tail <= 0;
         reset_rob_entries();
     end else begin
-        
-        if (PcSrc) begin
-            // Update the branch entry with PC_Return value
-            for (i = 0; i < 64; i = i + 1) begin
-                if (rob_entry[i][31:0] == branch_index) begin
-                    rob_entry[i][135:0] <= {rob_entry[i][135:134], rob_entry[i][133],rob_entry[i][132:101],rob_entry[i][100], rob_entry[i][99], rob_entry[i][98], 1'b1, rob_entry[i][96], PC_Return, rob_entry[i][63:32], rob_entry[i][31:0]};
-                    tail <= (i + 1) % 64; // Move tail to the entry right after the branch entry
-                    rob_entry[(i+1)%64][98:0] <= 0; // Flush under tail entry
-                    rob_entry[(i+2)%64][98:0] <= 0; // Fulsh under tail entry
-  
-                end
-            end
-        end else if (IF_ID_instOut != 32'b0) begin  // Only increment tail if the instruction is not invalid (i.e., not a bubble)
-            if (ID_exception == 1'b0) begin
-                if (mret_inst == 1'b1) begin
-                    rob_entry[tail] <= {2'b00,mret_inst, IF_ID_PC, MemWrite, 1'b0, 1'b1, 1'b1, reg_write, 32'b0, IF_ID_instOut, PC}; // Store input data in the ROB entry with value set to 32'b0 and new_bit set to 1 [99]는 exceptionflag
-                    tail <= (tail + 1) % 64;                // Circular buffer handling
-                end else begin
-                    rob_entry[tail] <= {2'b00,mret_inst, IF_ID_PC, MemWrite, 1'b0, 1'b1, 1'b0, reg_write, 32'b0, IF_ID_instOut, PC}; // Store input data in the ROB entry with value set to 32'b0 and new_bit set to 1 [99]는 exceptionflag
-                    tail <= (tail + 1) % 64;                // Circular buffer handling
-                end
-            end else begin
-                rob_entry[tail] <= {2'b00,mret_inst, IF_ID_PC, MemWrite, 1'b1, 1'b1, 1'b1, reg_write, 32'b0, IF_ID_instOut, PC}; // Store input data in the ROB entry with value set to 32'b0 and new_bit set to 1 [99]는 exceptionflag
-                tail <= (tail + 1) % 64;                // Circular buffer handling
-            end
-        end
-
-        
-        // Update the value and set ready flag upon execution completion
-        
-            for (i = 0; i < 64; i = i + 1) begin
+         for (i = 0; i < 64; i = i + 1) begin
                 if (rob_entry[i][98]) begin // Check if the new bit is set to 1
                     if ( alu_exec_done &&rob_entry[i][31:0] == alu_exec_PC) begin
                         rob_entry[i][135:0] <= {2'b00, rob_entry[i][133], rob_entry[i][132:101], rob_entry[i][100], rob_entry[i][99], rob_entry[i][98], 1'b1, rob_entry[i][96], alu_exec_value, rob_entry[i][63:32], rob_entry[i][31:0]}; // Update value and maintain new_bit, reg_write, instr, PC
@@ -149,6 +119,36 @@ always @(posedge clk) begin
                     end
                 end
             end
+        if (PcSrc) begin
+            // Update the branch entry with PC_Return value
+            for (i = 0; i < 64; i = i + 1) begin
+                if (rob_entry[i][31:0] == branch_index) begin
+                    rob_entry[i][135:0] <= {rob_entry[i][135:134], rob_entry[i][133],rob_entry[i][132:101],rob_entry[i][100], rob_entry[i][99], rob_entry[i][98], 1'b1, rob_entry[i][96], PC_Return, rob_entry[i][63:32], rob_entry[i][31:0]};
+                    tail <= (i + 1) % 64; // Move tail to the entry right after the branch entry
+                    rob_entry[(i+1)%64][98:0] <= 0; // Flush under tail entry
+                    rob_entry[(i+2)%64][98:0] <= 0; // Fulsh under tail entry
+  
+                end
+            end
+        end else if (IF_ID_instOut != 32'b0) begin  // Only increment tail if the instruction is not invalid (i.e., not a bubble)
+            if (ID_exception == 1'b0) begin
+                if (mret_inst == 1'b1) begin
+                    rob_entry[tail] <= {2'b00,mret_inst, IF_ID_PC, MemWrite, 1'b0, 1'b1, 1'b1, reg_write, 32'b0, IF_ID_instOut, PC}; // Store input data in the ROB entry with value set to 32'b0 and new_bit set to 1 [99]는 exceptionflag
+                    tail <= (tail + 1) % 64;                // Circular buffer handling
+                end else begin
+                    rob_entry[tail] <= {2'b00,mret_inst, IF_ID_PC, MemWrite, 1'b0, 1'b1, 1'b0, reg_write, 32'b0, IF_ID_instOut, PC}; // Store input data in the ROB entry with value set to 32'b0 and new_bit set to 1 [99]는 exceptionflag
+                    tail <= (tail + 1) % 64;                // Circular buffer handling
+                end
+            end else begin
+                rob_entry[tail] <= {2'b00,mret_inst, IF_ID_PC, MemWrite, 1'b1, 1'b1, 1'b1, reg_write, 32'b0, IF_ID_instOut, PC}; // Store input data in the ROB entry with value set to 32'b0 and new_bit set to 1 [99]는 exceptionflag
+                tail <= (tail + 1) % 64;                // Circular buffer handling
+            end
+        end
+
+        
+        // Update the value and set ready flag upon execution completion
+        
+           
         
             if (rob_entry[head][97]) begin       // Check if the entry is ready
                 if (rob_entry[head][99] == 1'b0) begin
