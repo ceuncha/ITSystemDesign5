@@ -36,7 +36,7 @@ module RS_Div (
     reg [7:0] operand2s [0:63];
     reg [63:0] valid_entries1;  // operand1????? valid???눀??꺋壤???
     reg [63:0] valid_entries2; // operand2?琉??? valid???눀??꺋壤???
-    reg [60:0] result [0:63];
+
     reg [5:0] tail;
     reg [6:0] head;
     integer i;
