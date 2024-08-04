@@ -4,7 +4,6 @@ module ROB(
     input wire [31:0] IF_ID_instOut,     // Input instruction (expanded to 32 bits)
     input wire reg_write,                // Register write enable signal from the decode stage
     input wire [31:0] PC,                // Current PC value (expanded to 32 bits)
-    input wire ID_excpetion,
     input wire MemWrite,
     input wire [31:0] IF_ID_PC,
     input wire mret_inst,
@@ -103,7 +102,7 @@ always @(posedge clk) begin
                 end
             end else begin
                 rob_entry[tail] <= {2'b00,mret_inst, IF_ID_PC, MemWrite, 1'b1, 1'b1, 1'b1, reg_write, 32'b0, IF_ID_instOut, PC}; // Store input data in the ROB entry with value set to 32'b0 and new_bit set to 1 [99]는 exceptionflag
-                tail <= (tail + 1) % 64;                // Circular buffer handling
+                tail <= (tail + 1) % 64;                // Circular buffer handling 
             end
         end
 
