@@ -47,6 +47,7 @@ module store_buffer(
                 buffer_mem_addr[i] <= 0;
                 buffer_mem_data[i] <= 0;
                 entry_val[i] <= 0;
+                funct3s [i] <= 0;
             end
             current_block <= 0;
             next_block <= 1;
@@ -55,6 +56,7 @@ module store_buffer(
             load_phy_out <= 0;
             load_done_out <= 0;
             store_address_out <= 0;
+            exception_flag <= 0;
 
         end else begin
             load_done_out <= 0;
