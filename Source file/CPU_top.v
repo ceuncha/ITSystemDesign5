@@ -356,7 +356,7 @@ assign LS_Result = Operand1_LS + LS_B;
 
 (* keep = "true" *) wire [31:0] Data_Memory_out;
 	
-
+(* keep = "true" *) wire div_0_exception;
 	
     ////////////////ex_mem wire
     //////////
@@ -1048,7 +1048,7 @@ MUX_2input u_CSR_mux(
     (* keep_hierarchy = "yes" *)
     divider divider (.clk(clk),.reset(rst),.start(Div_start_in),.A(Operand1_Div),.B(Operand2_Div),
                      .Physical_address_in(RS_EX_Div_Physical_address_in),
-                     .PC_in(RS_EX_Div_inst_num),.Result(DIV_Data),.divider_op_in(divider_op),.done(DIV_Done),
+                     .PC_in(RS_EX_Div_inst_num),.Result(DIV_Data),.divider_op_in(divider_op),.divide_zero_exception(div_0_exception),.done(DIV_Done),
                      .Physical_address_out(DIV_Phy),.PC_out(RS_EX_Div_inst_num_out));
 
 (* keep_hierarchy = "yes" *)
