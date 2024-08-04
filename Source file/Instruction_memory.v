@@ -11,7 +11,7 @@ integer i;
 
 always @(posedge reset) begin
 
-              for (i = 52; i < 1024; i = i + 1) begin
+    for (i = 0; i < 1024; i = i + 1) begin
 
             memory[i] <= 8'b0;
 
