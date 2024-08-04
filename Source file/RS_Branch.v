@@ -1,4 +1,4 @@
-module RS_Branch (                                             //紐낅졊?뼱 forwarding, 以?鍮꾨맂 紐낅졊?뼱遺??꽣 ?궡蹂대궡二쇰뒗 ?뿭?븷?뱾?쓣 ?닔?뻾.
+module RS_Branch (                                             //筌뤿굝議�?堉� forwarding, 餓�?�뜮袁⑤쭆 筌뤿굝議�?堉깁겫??苑� ?沅↑퉪��沅▽틠�눖�뮉 ?肉�?釉�?諭�?�뱽 ?�땾?六�.
     input wire clk,
     input wire reset,
     input wire start,
@@ -62,8 +62,8 @@ module RS_Branch (                                             //紐낅졊?뼱 f
     reg [7:0] operand2s [0:63];
     reg [31:0] operand1_datas [0:63];  // operand1 data
     reg [31:0] operand2_datas [0:63]; // operand2 data
-    reg [63:0] valid_entries1;  // operand1??뵠 valid?釉놂쭪?
-    reg [63:0] valid_entries2; // operand2揶?? valid?釉놂쭪?
+    reg [63:0] valid_entries1;  // operand1??逾� valid?�뇡�냲彛�?
+    reg [63:0] valid_entries2; // operand2�뤆?? valid?�뇡�냲彛�?
     reg [63:0] takens;
     reg [63:0] hits;
     reg [6:0] tail;
@@ -76,25 +76,25 @@ module RS_Branch (                                             //紐낅졊?뼱 f
     integer n;
     integer o;
 
-    wire operand1_ALU_conflict = (operand1 == ALU_result_dest);
-    wire operand1_MUL_conflict = (operand1 == MUL_result_dest);
-    wire operand1_DIV_conflict = (operand1 == DIV_result_dest);
-    wire operand1_MEM_conflict = (operand1 == EX_MEM_Physical_Address && EX_MEM_MemRead == 1);
-    wire operand1_BR_conflict = (operand1 == BR_Phy);
-    wire operand1_P_conflict = (operand1 == P_Phy);
-    wire operand1_CSR_conflict = (operand1 == CSR_Phy);
-    wire operand1_conflict = operand1_ALU_conflict || operand1_MUL_conflict || operand1_DIV_conflict || operand1_MEM_conflict || operand1_BR_conflict || operand1_P_conflict || operand1_CSR_conflict;
+  (* keep = "true" *)wire operand1_ALU_conflict = ((operand1 == ALU_result_dest)&&ALU_result_valid);
+  (* keep = "true" *)wire operand1_MUL_conflict = ((operand1 == MUL_result_dest)&&MUL_result_valid);
+  (* keep = "true" *)wire operand1_DIV_conflict = ((operand1 == DIV_result_dest)&&DIV_result_valid);
+  (* keep = "true" *)wire operand1_MEM_conflict = ((operand1 == EX_MEM_Physical_Address && EX_MEM_MemRead == 1));
+  (* keep = "true" *)wire operand1_BR_conflict = ((operand1 == BR_Phy)&&BR_Done);
+  (* keep = "true" *)wire operand1_P_conflict = ((operand1 == P_Phy)&&P_Done);
+  (* keep = "true" *)wire operand1_CSR_conflict = ((operand1 == CSR_Phy)&&CSR_Done);
+  (* keep = "true" *)wire operand1_conflict = operand1_ALU_conflict || operand1_MUL_conflict || operand1_DIV_conflict || operand1_MEM_conflict || operand1_BR_conflict || operand1_P_conflict || operand1_CSR_conflict;
 
-    wire operand2_ALU_conflict = (operand2 == ALU_result_dest);
-    wire operand2_MUL_conflict = (operand2 == MUL_result_dest);
-    wire operand2_DIV_conflict = (operand2 == DIV_result_dest);
-    wire operand2_MEM_conflict = (operand2 == EX_MEM_Physical_Address && EX_MEM_MemRead == 1);
-    wire operand2_BR_conflict = (operand2 == BR_Phy);
-    wire operand2_P_conflict = (operand2 == P_Phy);
-    wire operand2_CSR_conflict = (operand2 == CSR_Phy);
-    wire operand2_conflict = operand2_ALU_conflict || operand2_MUL_conflict || operand2_DIV_conflict || operand2_MEM_conflict || operand2_BR_conflict || operand2_P_conflict || operand2_CSR_conflict;
+   (* keep = "true" *)wire operand2_ALU_conflict = ((operand2 == ALU_result_dest)&&ALU_result_valid);
+  (* keep = "true" *)wire operand2_MUL_conflict = ((operand2 == MUL_result_dest)&&MUL_result_valid);
+  (* keep = "true" *)wire operand2_DIV_conflict = ((operand2 == DIV_result_dest)&&DIV_result_valid);
+  (* keep = "true" *)wire operand2_MEM_conflict = (operand2 == EX_MEM_Physical_Address && EX_MEM_MemRead == 1);
+   (* keep = "true" *)wire operand2_BR_conflict = ((operand2 == BR_Phy)&&BR_Done);
+   (* keep = "true" *)wire operand2_P_conflict = ((operand2 == P_Phy)&&P_Done);
+  (* keep = "true" *)wire operand2_CSR_conflict = ((operand2 == CSR_Phy)&&CSR_Done);
+  (* keep = "true" *)wire operand2_conflict = operand2_ALU_conflict || operand2_MUL_conflict || operand2_DIV_conflict || operand2_MEM_conflict || operand2_BR_conflict || operand2_P_conflict || operand2_CSR_conflict;
 
-    always @(posedge clk) begin    //由ъ뀑?떊?샇濡? 珥덇린?솕 ?떆耳쒖쨲
+    always @(posedge clk) begin    //�뵳�딅��?�뻿?�깈嚥�? �룯�뜃由�?�넅 ?�뻻�녹뮇夷�
         if (reset|exception_sig|mret_sig) begin
             tail <= 0;
             head <=0;
@@ -154,8 +154,8 @@ module RS_Branch (                                             //紐낅졊?뼱 f
             Operand2_BR_phy<=0;
             end
         end else if (start) begin
-            if ((operand1_conflict == 1'b1) && (operand1_conflict == 1'b0)) begin  // 紐낅졊?뼱媛? 泥섏쓬 ?뱾?뼱?솕?쓣?븣, alu?쓽 寃곌낵?? 紐낅졊?뼱?쓽 operand 臾쇰━二쇱냼瑜? 鍮꾧탳?븯?뿬 
-                                                    // ?뾽?뜲?씠?듃媛? ?븘?슂?떆 ?닔?뻾?빐以??떎.
+            if ((operand1_conflict == 1'b1) && (operand1_conflict == 1'b0)) begin  // 筌뤿굝議�?堉긷첎? 筌ｌ꼷�벉 ?諭�?堉�?�넅?�뱽?釉�, alu?�벥 野껉퀗�궢?? 筌뤿굝議�?堉�?�벥 operand �눧�눖�봺雅뚯눘�꺖�몴? �뜮袁㏉꺍?釉�?肉� 
+                                                    // ?毓�?�쑓?�뵠?�뱜揶�? ?釉�?�뒄?�뻻 ?�땾?六�?鍮먧빳??�뼄.
                 inst_nums[tail] <= RS_BR_inst_num;
                 PCs[tail] <= PC;
                 Rds[tail] <= Rd;
@@ -221,8 +221,8 @@ module RS_Branch (                                             //紐낅졊?뼱 f
              end
             
            
-            if (ALU_result_valid) begin                 //alu?쓽 寃곌낵媛? ?뱾?뼱?솕?쓣?븣, 湲곗〈?뿉 RS?뿉 ?뱾?뼱?엳?뜕 紐낅졊?뼱?뱾怨? 臾쇰━二쇱냼瑜? 鍮꾧탳?븯?뿬
-                                                        //?븘?슂?븳 媛믩뱾?쓣 ?뾽?뜲?씠?듃 ?떆耳쒖??떎.
+            if (ALU_result_valid) begin                 //alu?�벥 野껉퀗�궢揶�? ?諭�?堉�?�넅?�뱽?釉�, 疫꿸퀣��?肉� RS?肉� ?諭�?堉�?�뿳?�쐲 筌뤿굝議�?堉�?諭얏��? �눧�눖�봺雅뚯눘�꺖�몴? �뜮袁㏉꺍?釉�?肉�
+                                                        //?釉�?�뒄?釉� 揶쏅�⑸굶?�뱽 ?毓�?�쑓?�뵠?�뱜 ?�뻻�녹뮇??�뼄.
                 for (i = 0; i < 64; i = i + 1) begin
                     if (!valid_entries1[i] && operand1s[i] == ALU_result_dest) begin
                         valid_entries1[i] <= 1;
@@ -232,8 +232,8 @@ module RS_Branch (                                             //紐낅졊?뼱 f
                     end
                 end
             end
-            if (MUL_result_valid) begin                     //mul?쓽 寃곌낵媛? ?뱾?뼱?솕?쓣?븣, 湲곗〈?뿉 RS?뿉 ?뱾?뼱?엳?뜕 紐낅졊?뼱?뱾怨? 臾쇰━二쇱냼瑜? 鍮꾧탳?븯?뿬
-                                                        //?븘?슂?븳 媛믩뱾?쓣 ?뾽?뜲?씠?듃 ?떆耳쒖??떎.
+            if (MUL_result_valid) begin                     //mul?�벥 野껉퀗�궢揶�? ?諭�?堉�?�넅?�뱽?釉�, 疫꿸퀣��?肉� RS?肉� ?諭�?堉�?�뿳?�쐲 筌뤿굝議�?堉�?諭얏��? �눧�눖�봺雅뚯눘�꺖�몴? �뜮袁㏉꺍?釉�?肉�
+                                                        //?釉�?�뒄?釉� 揶쏅�⑸굶?�뱽 ?毓�?�쑓?�뵠?�뱜 ?�뻻�녹뮇??�뼄.
                 for (j = 0; j < 64; j = j + 1) begin
                     if (!valid_entries1[j] && operand1s[j] == MUL_result_dest) begin
                         valid_entries1[j] <= 1;
@@ -243,8 +243,8 @@ module RS_Branch (                                             //紐낅졊?뼱 f
                     end
                 end
             end
-            if (DIV_result_valid) begin         //div?쓽 寃곌낵媛? ?뱾?뼱?솕?쓣?븣, 湲곗〈?뿉 RS?뿉 ?뱾?뼱?엳?뜕 紐낅졊?뼱?뱾怨? 臾쇰━二쇱냼瑜? 鍮꾧탳?븯?뿬
-                                                        //?븘?슂?븳 媛믩뱾?쓣 ?뾽?뜲?씠?듃 ?떆耳쒖??떎.
+            if (DIV_result_valid) begin         //div?�벥 野껉퀗�궢揶�? ?諭�?堉�?�넅?�뱽?釉�, 疫꿸퀣��?肉� RS?肉� ?諭�?堉�?�뿳?�쐲 筌뤿굝議�?堉�?諭얏��? �눧�눖�봺雅뚯눘�꺖�몴? �뜮袁㏉꺍?釉�?肉�
+                                                        //?釉�?�뒄?釉� 揶쏅�⑸굶?�뱽 ?毓�?�쑓?�뵠?�뱜 ?�뻻�녹뮇??�뼄.
                 for (k = 0; k < 64; k = k + 1) begin
                     if (!valid_entries1[k] && operand1s[k] == DIV_result_dest) begin
                         valid_entries1[k] <= 1;
@@ -254,8 +254,8 @@ module RS_Branch (                                             //紐낅졊?뼱 f
                     end
                 end
             end
-           if (EX_MEM_MemRead) begin                //load?쓽 寃곌낵媛? ?뱾?뼱?솕?쓣?븣, 湲곗〈?뿉 RS?뿉 ?뱾?뼱?엳?뜕 紐낅졊?뼱?뱾怨? 臾쇰━二쇱냼瑜? 鍮꾧탳?븯?뿬
-                                                        //?븘?슂?븳 媛믩뱾?쓣 ?뾽?뜲?씠?듃 ?떆耳쒖??떎.
+           if (EX_MEM_MemRead) begin                //load?�벥 野껉퀗�궢揶�? ?諭�?堉�?�넅?�뱽?釉�, 疫꿸퀣��?肉� RS?肉� ?諭�?堉�?�뿳?�쐲 筌뤿굝議�?堉�?諭얏��? �눧�눖�봺雅뚯눘�꺖�몴? �뜮袁㏉꺍?釉�?肉�
+                                                        //?釉�?�뒄?釉� 揶쏅�⑸굶?�뱽 ?毓�?�쑓?�뵠?�뱜 ?�뻻�녹뮇??�뼄.
            for (l = 0; l < 64; l = l + 1) begin
                     if (!valid_entries1[l] && operand1s[l] == EX_MEM_Physical_Address) begin
                         valid_entries1[l] <= 1;
@@ -265,8 +265,8 @@ module RS_Branch (                                             //紐낅졊?뼱 f
                     end
                 end     
             end
-           if (BR_Done) begin                //load?쓽 寃곌낵媛? ?뱾?뼱?솕?쓣?븣, 湲곗〈?뿉 RS?뿉 ?뱾?뼱?엳?뜕 紐낅졊?뼱?뱾怨? 臾쇰━二쇱냼瑜? 鍮꾧탳?븯?뿬
-                                                        //?븘?슂?븳 媛믩뱾?쓣 ?뾽?뜲?씠?듃 ?떆耳쒖??떎.
+           if (BR_Done) begin                //load?�벥 野껉퀗�궢揶�? ?諭�?堉�?�넅?�뱽?釉�, 疫꿸퀣��?肉� RS?肉� ?諭�?堉�?�뿳?�쐲 筌뤿굝議�?堉�?諭얏��? �눧�눖�봺雅뚯눘�꺖�몴? �뜮袁㏉꺍?釉�?肉�
+                                                        //?釉�?�뒄?釉� 揶쏅�⑸굶?�뱽 ?毓�?�쑓?�뵠?�뱜 ?�뻻�녹뮇??�뼄.
            for (m = 0; m < 64; m = m + 1) begin
                     if (!valid_entries1[m] && operand1s[m] == BR_Phy) begin
                         valid_entries1[m] <= 1;
@@ -277,8 +277,8 @@ module RS_Branch (                                             //紐낅졊?뼱 f
                 end     
             end
 
-            if (P_Done) begin                 //alu?쓽 寃곌낵媛? ?뱾?뼱?솕?쓣?븣, 湲곗〈?뿉 RS?뿉 ?뱾?뼱?엳?뜕 紐낅졊?뼱?뱾怨? 臾쇰━二쇱냼瑜? 鍮꾧탳?븯?뿬
-                                                        //?븘?슂?븳 媛믩뱾?쓣 ?뾽?뜲?씠?듃 ?떆耳쒖??떎.
+            if (P_Done) begin                 //alu?�벥 野껉퀗�궢揶�? ?諭�?堉�?�넅?�뱽?釉�, 疫꿸퀣��?肉� RS?肉� ?諭�?堉�?�뿳?�쐲 筌뤿굝議�?堉�?諭얏��? �눧�눖�봺雅뚯눘�꺖�몴? �뜮袁㏉꺍?釉�?肉�
+                                                        //?釉�?�뒄?釉� 揶쏅�⑸굶?�뱽 ?毓�?�쑓?�뵠?�뱜 ?�뻻�녹뮇??�뼄.
                 for (n = 0; n < 64; n = n + 1) begin
                     if (!valid_entries1[n] && operand1s[n] == P_Phy) begin
                         valid_entries1[n] <= 1;
@@ -289,8 +289,8 @@ module RS_Branch (                                             //紐낅졊?뼱 f
                 end
             end
         
-            if (CSR_Done) begin                 //alu?쓽 寃곌낵媛? ?뱾?뼱?솕?쓣?븣, 湲곗〈?뿉 RS?뿉 ?뱾?뼱?엳?뜕 紐낅졊?뼱?뱾怨? 臾쇰━二쇱냼瑜? 鍮꾧탳?븯?뿬
-                                                        //?븘?슂?븳 媛믩뱾?쓣 ?뾽?뜲?씠?듃 ?떆耳쒖??떎.
+            if (CSR_Done) begin                 //alu?�벥 野껉퀗�궢揶�? ?諭�?堉�?�넅?�뱽?釉�, 疫꿸퀣��?肉� RS?肉� ?諭�?堉�?�뿳?�쐲 筌뤿굝議�?堉�?諭얏��? �눧�눖�봺雅뚯눘�꺖�몴? �뜮袁㏉꺍?釉�?肉�
+                                                        //?釉�?�뒄?釉� 揶쏅�⑸굶?�뱽 ?毓�?�쑓?�뵠?�뱜 ?�뻻�녹뮇??�뼄.
                 for (o = 0; o < 64; o = o + 1) begin
                     if (!valid_entries1[o] && operand1s[o] == CSR_Phy) begin
                         valid_entries1[o] <= 1;
