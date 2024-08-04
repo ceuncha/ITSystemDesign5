@@ -10,7 +10,8 @@ module control_rom(
     output RWsel,
     output Branch,
     output Jump, // �빊遺쏙옙占쎈쭆 Jump 占쎈뻿占쎌깈
-    output mret
+    output mret,
+    output ID_exception
 );
 
 reg [12:0] ROM [0:63]; // ROM 占쎄쾿疫꿸퀡占쏙옙 13�뜮袁る뱜嚥∽옙 筌앹빓占�
@@ -80,5 +81,10 @@ reg [12:0] ROM [0:63]; // ROM 占쎄쾿疫꿸퀡占쏙옙 13�뜮袁る뱜嚥�
 
 //1_0_0_0_0_0011_10_0_0_0 mret
 end
-
+    always @(*) begin
+        if( mapped_address == 6d'63)
+            ID_exception = 1;
+        end else begin
+            ID_exception = 0;
+    end
 endmodule
