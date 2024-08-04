@@ -59,7 +59,7 @@
    (* keep = "true" *) reg [6:0] tail;
    (* keep = "true" *) reg [6:0] head;
 
-  (* keep = "true" *) integer i, j, k, l, m, n;
+  (* keep = "true" *) integer i, j, k, l, m, n,o;
    (* keep = "true" *) reg RS_ALU_on[0:63];
 
 
@@ -259,12 +259,12 @@
          end
          
          if (CSR_done) begin                
-          for (n = 0; n < 64; n = n + 1) begin
-           if (!valid_entries1[n] && operand1s[n] == CSR_phy) begin
-            valid_entries1[n] <= 1;
+          for (o = 0; o < 64; o = o + 1) begin
+           if (!valid_entries1[o] && operand1s[o] == CSR_phy) begin
+            valid_entries1[o] <= 1;
            end
-           if (!valid_entries2[n] && operand2s[n] == CSR_phy) begin
-             valid_entries2[n] <= 1;
+           if (!valid_entries2[o] && operand2s[o] == CSR_phy) begin
+            valid_entries2[o] <= 1;
            end
           end
          end
