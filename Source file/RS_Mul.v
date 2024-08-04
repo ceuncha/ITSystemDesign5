@@ -80,6 +80,7 @@ module RS_Mul (
                 RS_MUL_on[i] <=0;
             end
         end else begin 
+            if (RS_mul_start) begin
               if (operand1_conflict && operand2_conflict) begin  // ALU??援?????빝? operand2??甕?? ??援???雅???????? ?濾????雅?????獄?????눀?
                 PCs[tail] <= RS_mul_PC;
                 Rds[tail] <= RS_mul_Rd;
@@ -120,7 +121,7 @@ module RS_Mul (
                 RS_MUL_on[tail] <=0; 
              end 
 
-
+            end
 
              
             if (ALU_result_valid) begin
