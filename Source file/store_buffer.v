@@ -54,12 +54,13 @@ module store_buffer(
             load_valid <= 0;
             load_phy_out <= 0;
             load_done_out <= 0;
+            store_address_out <= 0;
 
         end else begin
             load_done_out <= 0;
             load_phy_out <= load_phy;
             inst_num_out <= inst_num;
-            
+            store_address_out <= 0;
              for (i = 0; i < SIZE; i = i + 1) begin
                if((buffer_mem_addr[i] == mem_addr_rob)&&(buffer_inst_num[i]==inst_num_rob)) begin
                     entry_val[i] <= 0;
