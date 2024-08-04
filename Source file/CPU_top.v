@@ -435,6 +435,7 @@ assign LS_Result = Operand1_LS + LS_B;
 
     (* keep = "true" *) wire [31:0] Branch_index;
     (* keep = "true" *) wire real_taken;
+    assign div_0_exception = 0;
 ///////////////////////////IF_ID////////////////////////////////////////////////
 (* keep_hierarchy = "yes" *)
 global_prediction_top u_global_prediction_top(
