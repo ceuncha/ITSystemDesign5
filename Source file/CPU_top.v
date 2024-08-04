@@ -1191,7 +1191,7 @@ CSR_ALU u_CSR_ALU(
         .ROB_memadress(ROB_memaddress),
         .ROB_funct3(ROB_funct3),
         .clk(clk),
-        .reset(reset),
+        .reset(rst),
         .func3_LS(func3_LS),
         .LS_result(LS_Result),
         .LS_MemRead(LS_MemRead),
