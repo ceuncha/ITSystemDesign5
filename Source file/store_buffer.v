@@ -101,17 +101,17 @@ module store_buffer(
                             entry_val[i] <= 1'b0;
                             if(funct3s[i] == 3'b010) begin
                                 if(funct3 == 3'b000) begin
-                                buffer_mem_addr[current_block] <= {buffer_mem_data[i][31:8], mem_data[7:0]};
+                                buffer_mem_data[current_block] <= {buffer_mem_data[i][31:8], mem_data[7:0]};
                                 funct3s[current_block] <= 3'b010;
                                 end
                                 else if(funct3 == 3'b001) begin
-                                buffer_mem_addr[current_block] <= {buffer_mem_data[i][31:16], mem_data[15:0]};
+                                buffer_mem_data[current_block] <= {buffer_mem_data[i][31:16], mem_data[15:0]};
                                 funct3s[current_block] <= 3'b010;
                                 end
                             end
                         else if (funct3s[i] == 3'b001) begin
                              if(funct3 == 3'b000) begin
-                                buffer_mem_addr[current_block] <= {buffer_mem_data[i][31:8], mem_data[7:0]};
+                                buffer_mem_data[current_block] <= {buffer_mem_data[i][31:8], mem_data[7:0]};
                             end
                         end
                         end else begin
@@ -119,17 +119,17 @@ module store_buffer(
                             entry_val[current_block] <= 1'b0;
                             if(funct3 == 3'b010) begin
                                 if(funct3s[i] == 3'b000) begin
-                                buffer_mem_addr[i] <= {mem_data[31:8], buffer_mem_data[i][7:0]};
+                                buffer_mem_data[i] <= {mem_data[31:8], buffer_mem_data[i][7:0]};
                                 funct3s[i] <= 3'b010;
                                 end
                                 else if(funct3s[i] == 3'b001) begin
-                                buffer_mem_addr[i] <= {mem_data[31:16], buffer_mem_data[i][15:0]};
+                                buffer_mem_data[i] <= {mem_data[31:16], buffer_mem_data[i][15:0]};
                                 funct3s[current_block] <= 3'b010;
                                 end
                             
                             end else if (funct3 == 3'b001) begin
                                 if(funct3s[i] == 3'b000) begin
-                                    buffer_mem_addr[i] <= {mem_data[31:8], buffer_mem_data[i][7:0]};
+                                    buffer_mem_data[i] <= {mem_data[31:8], buffer_mem_data[i][7:0]};
                                 end
                             end
                         end
