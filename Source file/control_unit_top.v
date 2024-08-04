@@ -12,7 +12,8 @@ module control_unit_top(
     output RWsel,
     output Branch,
     output Jump,
-    output mret
+    output mret,
+    output ID_exception
 );
 
 wire [5:0] mapped_address;
@@ -39,7 +40,8 @@ control_rom ctrl_rom (
     .RWsel(RWsel),
     .Branch(Branch),
     .Jump(Jump),
-    .mret(mret)
+    .mret(mret),
+    .ID_exception(ID_exception)
 );
 
 endmodule
