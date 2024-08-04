@@ -36,7 +36,7 @@ module RS_Mul (
    (* keep = "true" *) reg [7:0] operand2s [0:63];
    (* keep = "true" *) reg [63:0] valid_entries1;  // operand1????? valid???눀??꺋壤???
    (* keep = "true" *) reg [63:0] valid_entries2; // operand2?琉??? valid???눀??꺋壤???
-   (* keep = "true" *) reg [56:0] result [0:63];
+
    (* keep = "true" *) reg [5:0] tail;
    (* keep = "true" *) integer i;
    (* keep = "true" *) integer j;
