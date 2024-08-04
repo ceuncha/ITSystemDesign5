@@ -348,7 +348,7 @@ assign LS_Result = Operand1_LS + LS_B;
 (* keep = "true" *) wire [7:0] Load_phy_out;
 
 (* keep = "true" *) wire [2:0] Load_data_sel;
-
+(* keep = "true" *) wire [31:0] Store_Address;
 
 
 	//data memory wire
@@ -374,6 +374,7 @@ assign LS_Result = Operand1_LS + LS_B;
    (* keep = "true" *)wire [31:0] ALUResult;
 
 
+   (* keep = "true" *)wire ALU_done;
   
 
  
@@ -400,7 +401,7 @@ assign LS_Result = Operand1_LS + LS_B;
 //CSR output
 
  (* keep = "true" *) wire [31:0] CSR_epc;
-(* keep = "true" *) wire [1:0] CSR_cause;
+(* keep = "true" *) wire [31:0] CSR_cause;
 (* keep = "true" *) wire [31:0] CSR_out;
 
 //control output
@@ -419,6 +420,7 @@ assign LS_Result = Operand1_LS + LS_B;
 (* keep = "true" *) wire [1:0] ROB_cause;
 (* keep = "true" *) wire mret_sig;
 (* keep = "true" *) wire exception_sig;
+
 //
 	(* keep = "true" *) wire [31:0] Operand1_CSR;
 	
@@ -432,8 +434,6 @@ assign LS_Result = Operand1_LS + LS_B;
 
     (* keep = "true" *) wire [31:0] Branch_index;
     (* keep = "true" *) wire real_taken;
-    (* keep = "true" *)wire [31:0] Store_Address;
-
 ///////////////////////////IF_ID////////////////////////////////////////////////
 (* keep_hierarchy = "yes" *)
 global_prediction_top u_global_prediction_top(
@@ -595,7 +595,7 @@ physical_register_file u_physical_register_file(
     .Operand2_phy_branch(Operand2_BR_phy),
     .Operand1_phy_LS(Operand1_LS_phy),
     .Operand2_phy_LS(Operand2_LS_phy),
-    .Operand1_phy_CSR(CSR_operand_phy),
+    .Operand1_phy_CSR(Operand1_phy_CSR),
 
     .Operand1_data_ALU(Operand1_ALU),
     .Operand2_data_ALU(Operand2_ALU),
@@ -645,8 +645,7 @@ control_unit_top u_control_unit_top(
     .ALUSrc(ALUSrc),
     .RWsel(RWsel),
     .Branch(Branch),
-    .Jump(Jump),
-    .mret(mret)
+    .Jump(Jump)
 );
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //RS_EX_decoder top Line
@@ -662,10 +661,6 @@ control_unit_top u_control_unit_top(
         .in_func3(funct3),
         .in_funct7(funct7),
         .in_pc(IF_ID_PC),
-        
-        .csr_data_in(CSR_out),
-        .csr_addr_in(ID_CSR_Address),
-        
         .inst_num(IF_ID_inst_num),
         .MemToReg(MemToReg),
         .MemRead(MemRead),
@@ -1109,6 +1104,7 @@ CSR_ALU u_CSR_ALU(
         .load_phy_out(Load_phy_out),
         .inst_num_out(Load_inst_num),
         .load_valid(Load_data_sel),
+       .store_address_out(Store_Address),
        
         .load_done_out(Load_Done),
         .exception_flag(exception_sb)
@@ -1119,7 +1115,7 @@ CSR_ALU u_CSR_ALU(
     Mem_data_selector Mem_data_selector(
         .load_data_sel(Load_data_sel),
         .store_buffer_data(Sb_data_out),
-        .memory_data(Data_Memory_out),
+        .memory_data(Data_memory_out),
         .load_data(Load_Data)
     );
 
@@ -1191,9 +1187,8 @@ CSR_ALU u_CSR_ALU(
         .ROB_MemWrite(ROB_MemWrite),
         .ROB_memadress(ROB_memaddress),
         .ROB_funct3(ROB_funct3),
-        .out_value(out_value),
         .clk(clk),
-        .reset(rst),
+        .reset(reset),
         .func3_LS(func3_LS),
         .LS_result(LS_Result),
         .LS_MemRead(LS_MemRead),
