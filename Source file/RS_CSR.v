@@ -56,7 +56,7 @@
   (* keep = "true" *) reg [3:0] current_block;
   (* keep = "true" *) reg [3:0] next_block;
 
-   (* keep = "true" *) integer i, j, k, l, m, n;
+  (* keep = "true" *) integer i, j, k, l, m, n,o;
   (* keep = "true" *) reg RS_ALU_on [0:SIZE-1];
 
 
@@ -179,9 +179,9 @@
                 end
             end
             if(CSR_done) begin
-                for (n = 0; n < SIZE; n = n + 1) begin
-                    if (!valid_entries1[n] && operand1s[n] == CSR_phy) begin
-                        valid_entries1[n] <= 1;
+             for (o = 0; o < SIZE; o = o + 1) begin
+              if (!valid_entries1[o] && operand1s[o] == CSR_phy) begin
+               valid_entries1[o] <= 1;
                     end
 
                 end
