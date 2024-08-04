@@ -177,11 +177,11 @@ module RS_Div (
             
              if (P_Done) begin
            for (n = 0; n < 64; n = n + 1) begin
-                    if (!valid_entries1[l] && operand1s[l] == P_Phy) begin
-                        valid_entries1[l] <= 1;
+                    if (!valid_entries1[n] && operand1s[n] == P_Phy) begin
+                        valid_entries1[n] <= 1;
                     end
-                    if (!valid_entries2[l] && operand2s[l] == P_Phy) begin
-                        valid_entries2[l] <= 1;
+                    if (!valid_entries2[n] && operand2s[n] == P_Phy) begin
+                        valid_entries2[n] <= 1;
                     end
                 end     
             end
