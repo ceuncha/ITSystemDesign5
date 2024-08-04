@@ -20,6 +20,7 @@ module store_buffer(
 
     output reg load_done_out,
     output reg exception_flag,
+    output reg [31:0] store_address_out
 
     input memwrite_rob,
     input [31:0] mem_addr_rob,
@@ -78,7 +79,7 @@ module store_buffer(
                 entry_val[current_block] <= 1'b1;
                 inst_num_out <= inst_num;
                 load_phy_out <= 8'd160;
-
+                store_address_out <= mem_addr;
 
                 if (funct3 == 3'b000) begin
                     buffer_mem_data[current_block] <= mem_data[7:0]; // SB
