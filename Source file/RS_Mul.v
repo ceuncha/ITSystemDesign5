@@ -2,8 +2,7 @@ module RS_Mul (
     input wire clk,
     input wire reset,
     input wire RS_mul_start,
-    input wire [7:0]operand1,
-    input wire [7:0]operand2,
+
     input wire [31:0] RS_mul_PC,
     input wire [7:0] RS_mul_Rd,
     input wire EX_MEM_MemRead,
@@ -35,8 +34,8 @@ module RS_Mul (
    (* keep = "true" *) reg [3:0] ALUOPs [0:63];
    (* keep = "true" *) reg [7:0] operand1s [0:63];
    (* keep = "true" *) reg [7:0] operand2s [0:63];
-   (* keep = "true" *) reg [63:0] valid_entries1;  // operand1??��? valid??�눀?�꺋壤�??
-   (* keep = "true" *) reg [63:0] valid_entries2; // operand2?琉�?? valid??�눀?�꺋壤�??
+   (* keep = "true" *) reg [63:0] valid_entries1;  // operand1????? valid???눀??꺋壤???
+   (* keep = "true" *) reg [63:0] valid_entries2; // operand2?琉??? valid???눀??꺋壤???
    (* keep = "true" *) reg [56:0] result [0:63];
    (* keep = "true" *) reg [5:0] tail;
    (* keep = "true" *) integer i;
@@ -48,22 +47,22 @@ module RS_Mul (
    (* keep = "true" *) reg [6:0] head;
    (* keep = "true" *) reg RS_MUL_on[0:63];
 
-(* keep = "true" *)wire operand1_ALU_conflict = ((operand1 == ALU_result_dest)&&ALU_result_valid);
-  (* keep = "true" *)wire operand1_MUL_conflict = ((operand1 == MUL_result_dest)&&MUL_result_valid);
-  (* keep = "true" *)wire operand1_DIV_conflict = ((operand1 == DIV_result_dest)&&DIV_result_valid);
-  (* keep = "true" *)wire operand1_MEM_conflict = ((operand1 == EX_MEM_Physical_Address && EX_MEM_MemRead == 1));
-  (* keep = "true" *)wire operand1_BR_conflict = ((operand1 == BR_Phy)&&Branch_result_valid);
-  (* keep = "true" *)wire operand1_P_conflict = ((operand1 == P_Phy)&&P_Done);
-  (* keep = "true" *)wire operand1_CSR_conflict = ((operand1 == CSR_phy)&&CSR_done);
+(* keep = "true" *)wire operand1_ALU_conflict = ((RS_mul_operand1 == ALU_result_dest)&&ALU_result_valid);
+  (* keep = "true" *)wire operand1_MUL_conflict = ((RS_mul_operand1 == MUL_result_dest)&&MUL_result_valid);
+  (* keep = "true" *)wire operand1_DIV_conflict = ((RS_mul_operand1 == DIV_result_dest)&&DIV_result_valid);
+  (* keep = "true" *)wire operand1_MEM_conflict = ((RS_mul_operand1 == EX_MEM_Physical_Address && EX_MEM_MemRead == 1));
+  (* keep = "true" *)wire operand1_BR_conflict = ((RS_mul_operand1 == BR_Phy)&&Branch_result_valid);
+  (* keep = "true" *)wire operand1_P_conflict = ((RS_mul_operand1 == P_Phy)&&P_Done);
+  (* keep = "true" *)wire operand1_CSR_conflict = ((RS_mul_operand1 == CSR_phy)&&CSR_done);
   (* keep = "true" *)wire operand1_conflict = operand1_ALU_conflict || operand1_MUL_conflict || operand1_DIV_conflict || operand1_MEM_conflict || operand1_BR_conflict || operand1_P_conflict || operand1_CSR_conflict;
 
-   (* keep = "true" *)wire operand2_ALU_conflict = ((operand2 == ALU_result_dest)&&ALU_result_valid);
-  (* keep = "true" *)wire operand2_MUL_conflict = ((operand2 == MUL_result_dest)&&MUL_result_valid);
-  (* keep = "true" *)wire operand2_DIV_conflict = ((operand2 == DIV_result_dest)&&DIV_result_valid);
-  (* keep = "true" *)wire operand2_MEM_conflict = (operand2 == EX_MEM_Physical_Address && EX_MEM_MemRead == 1);
-   (* keep = "true" *)wire operand2_BR_conflict = ((operand2 == BR_Phy)&&Branch_result_valid);
-   (* keep = "true" *)wire operand2_P_conflict = ((operand2 == P_Phy)&&P_Done);
-  (* keep = "true" *)wire operand2_CSR_conflict = ((operand2 == CSR_phy)&&CSR_done);
+   (* keep = "true" *)wire operand2_ALU_conflict = ((RS_mul_operand2 == ALU_result_dest)&&ALU_result_valid);
+  (* keep = "true" *)wire operand2_MUL_conflict = ((RS_mul_operand2 == MUL_result_dest)&&MUL_result_valid);
+  (* keep = "true" *)wire operand2_DIV_conflict = ((RS_mul_operand2 == DIV_result_dest)&&DIV_result_valid);
+  (* keep = "true" *)wire operand2_MEM_conflict = (RS_mul_operand2 == EX_MEM_Physical_Address && EX_MEM_MemRead == 1);
+   (* keep = "true" *)wire operand2_BR_conflict = ((RS_mul_operand2 == BR_Phy)&&Branch_result_valid);
+   (* keep = "true" *)wire operand2_P_conflict = ((RS_mul_operand2 == P_Phy)&&P_Done);
+  (* keep = "true" *)wire operand2_CSR_conflict = ((RS_mul_operand2 == CSR_phy)&&CSR_done);
   (* keep = "true" *)wire operand2_conflict = operand2_ALU_conflict || operand2_MUL_conflict || operand2_DIV_conflict || operand2_MEM_conflict || operand2_BR_conflict || operand2_P_conflict || operand2_CSR_conflict;
 
 
@@ -76,13 +75,13 @@ module RS_Mul (
                 Rds[i] <= 0;
                 operand1s[i] <= 0;
                 operand2s[i] <= 0;
-                valid_entries1[i] <= 1'b0; // ?��???遊�?? ??筌�? ?�뙴???�맃?逾녑칰�눘苡멩쾬�꼨援�筌뤿뱶�뒙?? ?�녃域뱄퐢苡�??�맱
-                valid_entries2[i] <= 1'b0; // ?��???遊�?? ??筌�? ?�뙴???�맃?逾녑칰�눘苡멩쾬�꼨援�筌뤿뱶�뒙?? ?�녃域뱄퐢苡�??�맱
+                valid_entries1[i] <= 1'b0; // ??????遊??? ??筌?? ??뙴????맃?逾녑칰?눘苡멩쾬?꼨援?筌뤿뱶?뒙?? ??녃域뱄퐢苡????맱
+                valid_entries2[i] <= 1'b0; // ??????遊??? ??筌?? ??뙴????맃?逾녑칰?눘苡멩쾬?꼨援?筌뤿뱶?뒙?? ??녃域뱄퐢苡????맱
                 RS_MUL_on[i] <=0;
             end
         end else begin 
        
-            if (operand1_conflict) begin  // ALU??援�???�빝? operand1??甕�? ??援�??雅�????��? ?濾�???雅�????獄�???�눀?
+            if (operand1_conflict) begin  // ALU??援?????빝? operand1??甕?? ??援???雅???????? ?濾????雅?????獄?????눀?
                 PCs[tail] <= RS_mul_PC;
                 Rds[tail] <= RS_mul_Rd;
                 operand1s[tail] <= RS_mul_operand1;
@@ -91,7 +90,7 @@ module RS_Mul (
                 valid_entries2[tail] <= RS_mul_valid[1];
                 tail <= (tail + 1) % 64;
                  RS_MUL_on[tail] <=0;
-            end else if (operand2_conflict) begin  // ALU??援�???�빝? operand2??甕�? ??援�??雅�????��? ?濾�???雅�????獄�???�눀?
+            end else if (operand2_conflict) begin  // ALU??援?????빝? operand2??甕?? ??援???雅???????? ?濾????雅?????獄?????눀?
                 PCs[tail] <= RS_mul_PC;
                 Rds[tail] <= RS_mul_Rd;
                 operand1s[tail] <= RS_mul_operand1;
@@ -112,7 +111,7 @@ module RS_Mul (
                 RS_MUL_on[tail] <=0; 
              end 
 
-            if (operand1_conflict && operand2_conflict) begin  // ALU??援�???�빝? operand2??甕�? ??援�??雅�????��? ?濾�???雅�????獄�???�눀?
+            if (operand1_conflict && operand2_conflict) begin  // ALU??援?????빝? operand2??甕?? ??援???雅???????? ?濾????雅?????獄?????눀?
                 PCs[tail] <= RS_mul_PC;
                 Rds[tail] <= RS_mul_Rd;
                 operand1s[tail] <= RS_mul_operand1;
@@ -165,8 +164,8 @@ module RS_Mul (
                     end
                 end     
             end
-          if (Branch_result_valid) begin                //Branch?�벥 野껉퀗�궢揶�? ?諭�?堉�?�넅?�뱽?釉�, 疫꿸퀣��?肉� RS?肉� ?諭�?堉�?�뿳?�쐲 筌뤿굝議�?堉�?諭얏��? �눧�눖�봺雅뚯눘�꺖�몴? �뜮袁㏉꺍?釉�?肉�
-                                                        //?釉�?�뒄?釉� 揶쏅�⑸굶?�뱽 ?毓�?�쑓?�뵠?�뱜 ?�뻻�녹뮇??�뼄.
+          if (Branch_result_valid) begin                //Branch??벥 野껉퀗?궢揶?? ?諭??堉???넅??뱽?釉?, 疫꿸퀣???肉? RS?肉? ?諭??堉???뿳??쐲 筌뤿굝議??堉??諭얏??? ?눧?눖?봺雅뚯눘?꺖?몴? ?뜮袁㏉꺍?釉??肉?
+                                                        //?釉???뒄?釉? 揶쏅?⑸굶??뱽 ?毓???쑓??뵠??뱜 ??뻻?녹뮇???뼄.
            for (m = 0; m < 64; m = m + 1) begin
                     if (!valid_entries1[m] && operand1s[m] == BR_Phy) begin
                         valid_entries1[m] <= 1;
