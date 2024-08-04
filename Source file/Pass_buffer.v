@@ -55,8 +55,11 @@
                 operand1s <= operand1;
                 operand2s <= operand2;
                 dones<=1'b1;
-             end 
+             end else begin
+             dones<=1'b0;
+             
              end
              end
+    end
         assign result_out={operand2s ,operand1s,inst_nums, dones, PCs, Rds, ALUOPs, ALUSrc1s, ALUSrc2s, immediates};
  endmodule
