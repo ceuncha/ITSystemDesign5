@@ -43,7 +43,7 @@ module RS_Mul (
    (* keep = "true" *) integer k;
    (* keep = "true" *) integer l;
    (* keep = "true" *) integer m;
-   (* keep = "true" *) integer n;
+   (* keep = "true" *) integer n, o;
    (* keep = "true" *) reg [6:0] head;
    (* keep = "true" *) reg RS_MUL_on[0:63];
 
@@ -178,23 +178,23 @@ module RS_Mul (
             
             if (P_Done) begin
            for (n = 0; n < 64; n = n + 1) begin
-                    if (!valid_entries1[l] && operand1s[l] == P_Phy) begin
-                        valid_entries1[l] <= 1;
+                    if (!valid_entries1[n] && operand1s[n] == P_Phy) begin
+                        valid_entries1[n] <= 1;
                     end
-                    if (!valid_entries2[l] && operand2s[l] == P_Phy) begin
-                        valid_entries2[l] <= 1;
+                    if (!valid_entries2[n] && operand2s[n] == P_Phy) begin
+                        valid_entries2[n] <= 1;
                     end
                 end     
             end
 
 
             if (CSR_done) begin
-           for (n = 0; n < 64; n = n + 1) begin
-                    if (!valid_entries1[l] && operand1s[l] == CSR_phy) begin
-                        valid_entries1[l] <= 1;
+           for (o = o; o < 64; o = o + 1) begin
+                    if (!valid_entries1[o] && operand1s[o] == CSR_phy) begin
+                        valid_entries1[o] <= 1;
                     end
-                    if (!valid_entries2[l] && operand2s[l] == CSR_phy) begin
-                        valid_entries2[l] <= 1;
+                    if (!valid_entries2[o] && operand2s[o] == CSR_phy) begin
+                        valid_entries2[o] <= 1;
                     end
                 end     
             end
