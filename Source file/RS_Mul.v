@@ -80,8 +80,17 @@ module RS_Mul (
                 RS_MUL_on[i] <=0;
             end
         end else begin 
-       
-            if (operand1_conflict) begin  // ALU??援?????빝? operand1??甕?? ??援???雅???????? ?濾????雅?????獄?????눀?
+              if (operand1_conflict && operand2_conflict) begin  // ALU??援?????빝? operand2??甕?? ??援???雅???????? ?濾????雅?????獄?????눀?
+                PCs[tail] <= RS_mul_PC;
+                Rds[tail] <= RS_mul_Rd;
+                operand1s[tail] <= RS_mul_operand1;
+                operand2s[tail] <= RS_mul_operand2;
+                valid_entries1[tail] <= 1;
+                valid_entries2[tail] <= 1; 
+                tail <= (tail + 1) % 64;  
+                RS_MUL_on[tail] <=0; 
+             
+            end else if (operand1_conflict) begin  // ALU??援?????빝? operand1??甕?? ??援???雅???????? ?濾????雅?????獄?????눀?
                 PCs[tail] <= RS_mul_PC;
                 Rds[tail] <= RS_mul_Rd;
                 operand1s[tail] <= RS_mul_operand1;
@@ -111,17 +120,7 @@ module RS_Mul (
                 RS_MUL_on[tail] <=0; 
              end 
 
-            if (operand1_conflict && operand2_conflict) begin  // ALU??援?????빝? operand2??甕?? ??援???雅???????? ?濾????雅?????獄?????눀?
-                PCs[tail] <= RS_mul_PC;
-                Rds[tail] <= RS_mul_Rd;
-                operand1s[tail] <= RS_mul_operand1;
-                operand2s[tail] <= RS_mul_operand2;
-                valid_entries1[tail] <= 1;
-                valid_entries2[tail] <= 1; 
-                tail <= (tail + 1) % 64;  
-                RS_MUL_on[tail] <=0; 
-             
-            end
+
 
              
             if (ALU_result_valid) begin
