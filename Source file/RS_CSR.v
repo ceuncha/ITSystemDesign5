@@ -27,7 +27,7 @@
     input wire ALUSrc2,
 
     input wire [7:0] CSR_phy,
-    input wire CSR_done,
+    input wire [7:0] CSR_done,
   input wire exception_sig,
  input wire mret_sig,
   output reg [129:0] result_out
@@ -60,16 +60,14 @@
   (* keep = "true" *) reg RS_ALU_on [0:SIZE-1];
 
 
-    wire operand1_ALU_conflict = (operand1 == ALU_result_dest);
-    wire operand1_MUL_conflict = (operand1 == MUL_result_dest);
-    wire operand1_DIV_conflict = (operand1 == DIV_result_dest);
-    wire operand1_MEM_conflict = (operand1 == EX_MEM_Physical_Address && EX_MEM_MemRead == 1);
-    wire operand1_BR_conflict = (operand1 == BR_Phy);
-    wire operand1_P_conflict = (operand1 == P_Phy);
-    wire operand1_CSR_conflict = (operand1 == CSR_phy);
-    
-    wire operand1_conflict = operand1_ALU_conflict || operand1_MUL_conflict || operand1_DIV_conflict || operand1_MEM_conflict || operand1_BR_conflict || operand1_P_conflict || operand1_CSR_conflict;
-
+    (* keep = "true" *)wire operand1_ALU_conflict = ((operand1 == ALU_result_dest)&&ALU_result_valid);
+  (* keep = "true" *)wire operand1_MUL_conflict = ((operand1 == MUL_result_dest)&&MUL_result_valid);
+  (* keep = "true" *)wire operand1_DIV_conflict = ((operand1 == DIV_result_dest)&&DIV_result_valid);
+  (* keep = "true" *)wire operand1_MEM_conflict = ((operand1 == EX_MEM_Physical_Address && EX_MEM_MemRead == 1));
+  (* keep = "true" *)wire operand1_BR_conflict = ((operand1 == BR_Phy)&&Branch_result_valid);
+  (* keep = "true" *)wire operand1_P_conflict = ((operand1 == P_Phy)&&P_Done);
+  (* keep = "true" *)wire operand1_CSR_conflict = ((operand1 == CSR_phy)&&CSR_done);
+  (* keep = "true" *)wire operand1_conflict = operand1_ALU_conflict || operand1_MUL_conflict || operand1_DIV_conflict || operand1_MEM_conflict || operand1_BR_conflict || operand1_P_conflict || operand1_CSR_conflict;
 
     always @(posedge clk) begin    
      if (reset | exception_sig | mret_sig) begin
