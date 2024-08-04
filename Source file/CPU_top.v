@@ -1194,6 +1194,7 @@ CSR_ALU u_CSR_ALU(
         .reset(rst),
         .func3_LS(func3_LS),
         .LS_result(LS_Result),
+        .out_value(out_value),
         .LS_MemRead(LS_MemRead),
         .Data_memory_out(Data_Memory_out)
 
