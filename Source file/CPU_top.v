@@ -1118,7 +1118,7 @@ CSR_ALU u_CSR_ALU(
     Mem_data_selector Mem_data_selector(
         .load_data_sel(Load_data_sel),
         .store_buffer_data(Sb_data_out),
-        .memory_data(Data_memory_out),
+        .memory_data(Data_Memory_out),
         .load_data(Load_Data)
     );
 
