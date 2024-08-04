@@ -12,6 +12,7 @@ module CPU_top(
 (* keep = "true" *)wire ID_EX_hit;
 (* keep = "true" *)wire taken;
 (* keep = "true" *)wire PC_taken;
+	(* keep = "true" *)wire ID_exception;
 
 //////////IF_ID_Wire    
 (* keep = "true" *)wire [31:0] PC, PC_Branch;   
@@ -645,7 +646,9 @@ control_unit_top u_control_unit_top(
     .ALUSrc(ALUSrc),
     .RWsel(RWsel),
     .Branch(Branch),
-    .Jump(Jump)
+	.Jump(Jump),
+	.mret(mret),
+	.ID_exception(ID_exception)
 );
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //RS_EX_decoder top Line
