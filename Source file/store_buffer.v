@@ -20,7 +20,7 @@ module store_buffer(
 
     output reg load_done_out,
     output reg exception_flag,
-    output reg [31:0] store_address_out
+    output reg [31:0] store_address_out,
 
     input memwrite_rob,
     input [31:0] mem_addr_rob,
