@@ -56,7 +56,7 @@ module divider (
     reg [63:0] temp_dividend_cal31;
     wire divide_zero;
     
-  assign divide_zero_= (A!=0) && (B==0);
+  assign divide_zero= (A!=0) && (B==0);
     // 초기화 및 시작
     always @(posedge clk ) begin
        if (start&!divide_zero) begin
