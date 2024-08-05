@@ -29,13 +29,13 @@ module RS_Mul (
 );
     parameter SIZE = 16;
     // Internal storage for reservation station entries
-   (* keep = "true" *) reg [31:0] PCs [0:63];
-   (* keep = "true" *) reg [7:0] Rds [0:63];
-   (* keep = "true" *) reg [3:0] ALUOPs [0:63];
-   (* keep = "true" *) reg [7:0] operand1s [0:63];
-   (* keep = "true" *) reg [7:0] operand2s [0:63];
-   (* keep = "true" *) reg [63:0] valid_entries1;  
-   (* keep = "true" *) reg [63:0] valid_entries2; 
+    (* keep = "true" *) reg [31:0] PCs [0:SIZE-1];
+   (* keep = "true" *) reg [7:0] Rds [0:SIZE-1];
+   (* keep = "true" *) reg [3:0] ALUOPs [0:SIZE-1];
+   (* keep = "true" *) reg [7:0] operand1s [0:SIZE-1];
+   (* keep = "true" *) reg [7:0] operand2s [0:SIZE-1];
+   (* keep = "true" *) reg [SIZE-1:0] valid_entries1;  
+   (* keep = "true" *) reg [SIZE-1:0] valid_entries2; 
 
    (* keep = "true" *) reg [3:0] next_block;
    (* keep = "true" *) integer i;
@@ -45,7 +45,7 @@ module RS_Mul (
    (* keep = "true" *) integer m;
    (* keep = "true" *) integer n, o;
    (* keep = "true" *) reg [3:0] current_block;
-   (* keep = "true" *) reg RS_MUL_on[0:63];
+   (* keep = "true" *) reg RS_MUL_on[0:SIZE-1];
 
 (* keep = "true" *)wire operand1_ALU_conflict = ((RS_mul_operand1 == ALU_result_dest)&&ALU_result_valid);
   (* keep = "true" *)wire operand1_MUL_conflict = ((RS_mul_operand1 == MUL_result_dest)&&MUL_result_valid);
