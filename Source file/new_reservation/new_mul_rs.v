@@ -37,7 +37,7 @@ module RS_Mul (
    (* keep = "true" *) reg [SIZE-1:0] valid_entries1;  
    (* keep = "true" *) reg [SIZE-1:0] valid_entries2; 
 
-   (* keep = "true" *) reg [3:0] next_block;
+
    (* keep = "true" *) integer i;
    (* keep = "true" *) integer j;
    (* keep = "true" *) integer k;
@@ -45,6 +45,8 @@ module RS_Mul (
    (* keep = "true" *) integer m;
    (* keep = "true" *) integer n, o;
    (* keep = "true" *) reg [3:0] current_block;
+      (* keep = "true" *) reg [3:0] next_block;
+    (* keep = "true" *) reg [3:0] out_block;
    (* keep = "true" *) reg RS_MUL_on[0:SIZE-1];
 
 (* keep = "true" *)wire operand1_ALU_conflict = ((RS_mul_operand1 == ALU_result_dest)&&ALU_result_valid);
@@ -78,8 +80,14 @@ module RS_Mul (
                 RS_MUL_on[i] <=0;
                 current_block <= 0;
                 next_block <= 1;
+                out_block <= SIZE - 1;
             end
         end else begin 
+                    operand1s[out_block] <= 0;
+                    operand2s[out_block] <= 0;
+                    valid_entries1[out_block] <= 0;
+                    valid_entries2[out_block] <= 0;
+                    RS_MUL_on[out_block] <= 0;
             if (RS_mul_start) begin
               if (operand1_conflict && operand2_conflict) begin 
                 PCs[current_block] <= RS_mul_PC;
@@ -116,9 +124,11 @@ module RS_Mul (
                 RS_MUL_on[current_block] <=1; 
              end 
              for (i = SIZE-1; i >= 0; i = i - 1) begin
-                    if(!RS_MUL_on[i] && (i != current_block)) begin
+                if(!RS_MUL_on[i]) begin
+                    if((i != current_block)&&(i != next_block)&&(i != out_block)) begin
                         next_block <= i;
                     end
+                end
             end
                 current_block <= next_block;
             end
@@ -206,11 +216,7 @@ module RS_Mul (
              for (i = SIZE-1; i >= 0; i = i - 1) begin
                 if (valid_entries1[i] == 1 && valid_entries2[i] == 1) begin
                     result_out <= {1'b1, PCs[i], Rds[i], operand1s[i], operand2s[i]};
-                    operand1s[i] <= 0;
-                    operand2s[i] <= 0;
-                    valid_entries1[i] <= 0;
-                    valid_entries2[i] <= 0;
-                    RS_MUL_on[i] <= 0;
+                    out_block <= i;
                 end
             end
 
