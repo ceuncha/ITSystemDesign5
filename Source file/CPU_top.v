@@ -580,7 +580,7 @@ physical_register_file u_physical_register_file(
     .ALU_div_phy(DIV_Phy),
     .BR_phy(BR_Phy),
     .Pass_done_phy(P_Phy),
-    .CSR_done_phy(CSR_Phy),
+    .CSR_done_phy(CSR_operand_phy),
     
     .Operand1_data(RData1),
     .Operand2_data(RData2),
