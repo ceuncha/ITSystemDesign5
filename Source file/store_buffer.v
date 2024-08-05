@@ -64,13 +64,13 @@ module store_buffer(
             inst_num_out <= inst_num;
             store_address_out <= 0;
             if(memwrite_rob) begin
-             for (i = 0; i < SIZE; i = i + 1) begin
-               if(buffer_inst_num[i]==inst_num_rob) begin
-                    entry_val[i] <= 0;
-                    buffer_inst_num[i] <= 0;
-                    buffer_mem_addr[i] <= 0;
-               end
-             end
+                for (i = 0; i < SIZE; i = i + 1) begin
+                    if(buffer_inst_num[i]==inst_num_rob) begin
+                            entry_val[i] <= 0;
+                            buffer_inst_num[i] <= 0;
+                            buffer_mem_addr[i] <= 0;
+                    end
+                end
             end
             
 
@@ -146,7 +146,7 @@ module store_buffer(
                         end
                     end
                 end
-
+            current_block <= next_block;
         
      
             end else if (memread) begin
@@ -179,7 +179,7 @@ module store_buffer(
                     end
                 end
             end
-            current_block <= next_block;
+            
         end   
 
     end
