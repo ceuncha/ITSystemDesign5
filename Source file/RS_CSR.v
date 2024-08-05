@@ -55,7 +55,7 @@
 
   (* keep = "true" *) reg [3:0] current_block;
   (* keep = "true" *) reg [3:0] next_block;
-
+  (* keep = "true" *) reg [3:0] out_block;
   (* keep = "true" *) integer i, j, k, l, m, n,o;
   (* keep = "true" *) reg RS_ALU_on [0:SIZE-1];
 
@@ -73,6 +73,7 @@
      if (reset | exception_sig | mret_sig) begin
             current_block <= 0;
             next_block <= 1;
+            out_block <= SIZE - 1;
          for (i = 0; i < SIZE; i = i + 1) begin
                 inst_nums[i] <=0;
 
@@ -87,6 +88,9 @@
                 ALUSrc2s[i] <= 0; 
             end
         end else begin
+                operand1s[out_block] <= 0;
+                valid_entries1[out_block] <= 0;
+                RS_ALU_on[out_block] <= 0;
             if (start) begin
                 if (operand1_conflict) begin
                                                    
@@ -122,7 +126,7 @@
                 end 
              
              for (i = SIZE-1; i >= 0; i = i - 1) begin
-                    if(!RS_ALU_on[i] && (i != current_block)) begin
+                    if(!RS_ALU_on[i] && (i != current_block)&&(i != next_block)&&(i != out_block)) begin
                         next_block <= i;
                     end
                 end
@@ -195,10 +199,7 @@
          for (i = SIZE-1; i >= 0; i = i - 1) begin
                 if (valid_entries1[i] == 1) begin
                 result_out <= {1'b1, operand1s[i], inst_nums[i], Rds[i], ALUOPs[i], ALUSrc2s[i], csr_datas[i], csr_addrs[i], immediates[i]};
-
-                operand1s[i] <= 0;
-                valid_entries1[i] <= 0;
-                RS_ALU_on[i] <= 0;
+                out_block <= i;
                 end
             end
 
