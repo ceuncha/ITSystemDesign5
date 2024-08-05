@@ -29,7 +29,7 @@ module CSR (
       address[2][11:0] <= 12'b000000000010; //CSR_EPC
     end else if (exception_sig) begin
       CSR_EPC <= exception_pc;
-      CSR_CAUSE <= {29'b0,exception_cause};
+      CSR_CAUSE <= {30'b0,exception_cause};
     end
     if (CSR_done) begin
       if(RS_CSR_Address == address[0]) begin
