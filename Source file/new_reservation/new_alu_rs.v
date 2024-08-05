@@ -94,7 +94,7 @@
                 valid_entries1[i] <= 1'b0; 
                 valid_entries2[i] <= 1'b0; 
                 RS_ALU_on[i] <=0; 
-                current_block <= 0;
+                                current_block <= 0;
                 next_block <= 1;
             end
         end else begin
@@ -162,7 +162,7 @@
                 operand2s[current_block] <= operand2;
                 valid_entries1[current_block] <= valid[0];
                 valid_entries2[current_block] <= valid[1]; 
-                 RS_ALU_on[current_block] <=0;
+                 RS_ALU_on[current_block] <=1;
              end 
                 for (i = SIZE-1; i >= 0; i = i - 1) begin
                     if(!RS_ALU_on[i] && (i != current_block)) begin
