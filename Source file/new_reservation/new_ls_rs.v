@@ -41,29 +41,29 @@
  parameter SIZE = 32;
     
     // Internal storage for reservation station entries
-   (* keep = "true" *) reg [31:0] inst_nums[0:63];
+  (* keep = "true" *) reg [31:0] inst_nums[0:SIZE-1];
   
-    (* keep = "true" *) reg [7:0] Rds [0:63];
-   (* keep = "true" *) reg [63:0] MemToRegs;
-   (* keep = "true" *) reg [63:0] MemReads;
-   (* keep = "true" *) reg [63:0] MemWrites;
-   (* keep = "true" *) reg [3:0] ALUOPs [0:63];
+    (* keep = "true" *) reg [7:0] Rds [0:SIZE-1];
+   (* keep = "true" *) reg [SIZE-1:0] MemToRegs;
+   (* keep = "true" *) reg [SIZE-1:0] MemReads;
+   (* keep = "true" *) reg [SIZE-1:0] MemWrites;
+   (* keep = "true" *) reg [3:0] ALUOPs [0:SIZE-1];
 
-   (* keep = "true" *) reg [63:0] ALUSrc2s;
-   (* keep = "true" *) reg [2:0] funct3s [0:63];
-   (* keep = "true" *) reg [31:0] immediates [0:63];
-   (* keep = "true" *) reg [7:0] operand1s [0:63];
-   (* keep = "true" *) reg [7:0] operand2s [0:63];
+   (* keep = "true" *) reg [SIZE-1:0] ALUSrc2s;
+   (* keep = "true" *) reg [2:0] funct3s [0:SIZE-1];
+   (* keep = "true" *) reg [31:0] immediates [0:SIZE-1];
+   (* keep = "true" *) reg [7:0] operand1s [0:SIZE-1];
+   (* keep = "true" *) reg [7:0] operand2s [0:SIZE-1];
 
-   (* keep = "true" *) reg [63:0] valid_entries1;  
-   (* keep = "true" *) reg [63:0] valid_entries2; 
+  (* keep = "true" *) reg valid_entries1 [0:SIZE-1];  
+  (* keep = "true" *) reg valid_entries2 [0:SIZE-1]; 
 
    (* keep = "true" *) reg [4:0] current_block;
    (* keep = "true" *) reg [4:0] next_block;
     (* keep = "true" *) reg [4:0] out_block;
 
   (* keep = "true" *) integer i, j, k, l, m, n,o;
-   (* keep = "true" *) reg RS_LS_on[0:SIZE-1];
+  (* keep = "true" *) reg RS_LS_on [0:SIZE-1];
 
 
 (* keep = "true" *)wire operand1_ALU_conflict = ((operand1 == ALU_result_dest)&&ALU_result_valid);
@@ -189,7 +189,7 @@
              end 
 
                 for (i = SIZE-1; i >= 0; i = i - 1) begin
-                    if(!RS_MUL_on[i]) begin
+                 if(!RS_LS_on[i]) begin
                         if((i != current_block)&&(i != next_block)&&(i != out_block)) begin
                             next_block <= i;
                         end
