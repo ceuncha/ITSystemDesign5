@@ -77,6 +77,8 @@ always @(posedge clk) begin
     if (rst) begin
         head <= 0;
         tail <= 0;
+        exception_sig <= 0;
+        mret_sig <= 0;
         reset_rob_entries();
     end else begin
          for (i = 0; i < 64; i = i + 1) begin
@@ -125,8 +127,8 @@ always @(posedge clk) begin
                 if (rob_entry[i][31:0] == branch_index) begin
                     rob_entry[i][135:0] <= {rob_entry[i][135:134], rob_entry[i][133],rob_entry[i][132:101],rob_entry[i][100], rob_entry[i][99], rob_entry[i][98], 1'b1, rob_entry[i][96], PC_Return, rob_entry[i][63:32], rob_entry[i][31:0]};
                     tail <= (i + 1) % 64; // Move tail to the entry right after the branch entry
-                    rob_entry[(i+1)%64][98:0] <= 0; // Flush under tail entry
-                    rob_entry[(i+2)%64][98:0] <= 0; // Fulsh under tail entry
+                    rob_entry[(i+1)%64][135:0] <= 0; // Flush under tail entry
+                    rob_entry[(i+2)%64][135:0] <= 0; // Fulsh under tail entry
   
                 end
             end
