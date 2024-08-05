@@ -56,7 +56,7 @@
   (* keep = "true" *) reg [4:0] next_block;
 
   (* keep = "true" *) integer i, j, k, l, m, n,o;
-   (* keep = "true" *)reg RS_ALU_on[0:63];
+  (* keep = "true" *)reg RS_ALU_on[0:SIZE-1];
    (* keep = "true" *)wire operand1_ALU_conflict = ((operand1 == ALU_result_dest)&&ALU_result_valid);
   (* keep = "true" *)wire operand1_MUL_conflict = ((operand1 == MUL_result_dest)&&MUL_result_valid);
   (* keep = "true" *)wire operand1_DIV_conflict = ((operand1 == DIV_result_dest)&&DIV_result_valid);
