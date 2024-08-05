@@ -774,7 +774,10 @@ control_unit_top u_control_unit_top(
         .CSR_instnum(CSR_instnum),
         .CSR_immediate(CSR_immediate),
         .CSR_ALUSrc2(CSR_ALUSrc2),
-        .CSR_addr(CSR_addr)
+        .CSR_addr(CSR_addr),
+
+        .csr_data_in(CSR_out),
+        .csr_addr_in(IF_ID_instOut)
 
        
         
