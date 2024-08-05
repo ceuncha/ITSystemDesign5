@@ -175,6 +175,7 @@
                     if(!RS_ALU_on[i] && (i != current_block)&& (i != out_block)&&(i!=next_block)) begin
                         next_block <= i;
                     end
+
                 end
                 current_block <= next_block;
              end
