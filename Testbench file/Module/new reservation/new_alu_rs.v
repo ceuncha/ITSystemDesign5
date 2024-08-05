@@ -52,8 +52,8 @@
    (* keep = "true" *) reg [63:0] valid_entries1; 
    (* keep = "true" *) reg [63:0] valid_entries2; 
 
-   (* keep = "true" *) reg [5:0] current_block;
-   (* keep = "true" *) reg [5:0] next_block;
+  (* keep = "true" *) reg [4:0] current_block;
+  (* keep = "true" *) reg [4:0] next_block;
 
   (* keep = "true" *) integer i, j, k, l, m, n,o;
    (* keep = "true" *)reg RS_ALU_on[0:63];
