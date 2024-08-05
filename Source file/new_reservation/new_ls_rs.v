@@ -58,8 +58,9 @@
    (* keep = "true" *) reg [63:0] valid_entries1;  
    (* keep = "true" *) reg [63:0] valid_entries2; 
 
-   (* keep = "true" *) reg [5:0] current_block;
-   (* keep = "true" *) reg [5:0] next_block;
+   (* keep = "true" *) reg [4:0] current_block;
+   (* keep = "true" *) reg [4:0] next_block;
+    (* keep = "true" *) reg [4:0] out_block;
 
   (* keep = "true" *) integer i, j, k, l, m, n,o;
    (* keep = "true" *) reg RS_LS_on[0:SIZE-1];
@@ -105,11 +106,17 @@
                 RS_LS_on[i] <=0; 
                 current_block <= 0;
                 next_block <= 1;
+                out_block <= SIZE -1;
             end
         end else begin
         if (start) begin
 
-            
+                    operand1s[out_block] <= 0;
+                    operand2s[out_block] <= 0;
+                    valid_entries1[out_block] <= 0;
+                    valid_entries2[out_block] <= 0;
+                    RS_LS_on[out_block] <= 0;
+
             if (operand1_conflict && operand2_conflict) begin  
                 inst_nums[current_block] <= RS_alu_inst_num;
                
@@ -182,8 +189,10 @@
              end 
 
                 for (i = SIZE-1; i >= 0; i = i - 1) begin
-                    if(!RS_LS_on[i] && (i != current_block)) begin
-                        next_block <= i;
+                    if(!RS_MUL_on[i]) begin
+                        if((i != current_block)&&(i != next_block)&&(i != out_block)) begin
+                            next_block <= i;
+                        end
                     end
                 end
                 current_block <= next_block;
@@ -270,11 +279,7 @@
             for (i = SIZE-1; i >= 0; i = i - 1) begin
                 if (valid_entries1[i] == 1 && valid_entries2[i] == 1) begin
                     result_out <= {operand2s[i], operand1s[i], inst_nums[i], 1'b1, Rds[i], MemToRegs[i], MemReads[i], MemWrites[i], ALUOPs[i], ALUSrc2s[i], funct3s[i], immediates[i]};
-                    operand1s[i] <= 0;
-                    operand2s[i] <= 0;
-                    valid_entries1[i] <= 0;
-                    valid_entries2[i] <= 0;
-                    RS_LS_on[i] <= 0;
+                    out_block <= i;
                 end
             end
 
