@@ -3,7 +3,7 @@ module CSR (
   input wire reset,
   input wire exception_sig,
   input wire [31:0] exception_pc,
-  input wire [4:0] exception_cause,
+  input wire [1:0] exception_cause,
   input wire [11:0] ID_CSR_Address,
 
   input wire CSR_done,
@@ -11,12 +11,12 @@ module CSR (
   input wire [11:0] RS_CSR_Address,
   
   output reg [31:0] epc,
-  output reg [1:0] cause,
+  output reg [31:0] cause,
   output reg [31:0] csr_out
 );
   reg [11:0] address [0:2];
   reg [31:0] CSR_EPC;
-  reg [1:0] CSR_CAUSE;
+  reg [31:0] CSR_CAUSE;
   reg [31:0] CSR_WRITE;
   
   //exception_sig瑜� 諛쏆쑝硫� CSR�젅吏��뒪�꽣�뿉 epc�� cause瑜� ���옣 �븯�뒗 肄붾뱶 (write)
@@ -29,7 +29,7 @@ module CSR (
       address[2][11:0] <= 12'b000000000010; //CSR_EPC
     end else if (exception_sig) begin
       CSR_EPC <= exception_pc;
-      CSR_CAUSE <= exception_cause;
+      CSR_CAUSE <= {29'b0,exception_cause};
     end
     if (CSR_done) begin
       if(RS_CSR_Address == address[0]) begin
