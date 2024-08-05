@@ -40,7 +40,7 @@ module ROB(
     input wire [31:0] Load_inst_num,
 
     input wire CSR_Done,
-    input wire CSR_Data,
+    input wire [31:0] CSR_Data,
     
     output reg [31:0] EPC,
     output reg [31:0] out_value,         // Output value
