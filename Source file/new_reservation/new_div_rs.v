@@ -29,13 +29,13 @@ module RS_Div (
 );
     parameter SIZE = 16;
     // Internal storage for reservation station entries
-    reg [31:0] PCs [0:63];
-    reg [7:0] Rds [0:63];
-    reg [3:0] ALUOPs [0:63];
-    reg [7:0] operand1s [0:63];
-    reg [7:0] operand2s [0:63];
-    reg [63:0] valid_entries1;  
-    reg [63:0] valid_entries2; 
+    reg [31:0] PCs [0:SIZE-1];
+    reg [7:0] Rds [0:SIZE-1];
+    reg [3:0] ALUOPs [0:SIZE-1];
+    reg [7:0] operand1s [0:SIZE-1];
+    reg [7:0] operand2s [0:SIZE-1];
+    reg [SIZE-1:0] valid_entries1;  
+    reg [SIZE-1:0] valid_entries2; 
 
     reg [3:0] current_block;
     reg [3:0] next_block;
@@ -45,8 +45,8 @@ module RS_Div (
     integer l;
     integer m;
     integer n;
-        integer o;
-    reg RS_DIV_on[0:63];
+    integer o;
+    reg RS_DIV_on[0:SIZE-1];
     
   (* keep = "true" *)wire operand1_ALU_conflict = ((RS_div_operand1 == ALU_result_dest)&&ALU_result_valid);
   (* keep = "true" *)wire operand1_MUL_conflict = ((RS_div_operand1 == MUL_result_dest)&&MUL_result_valid);
