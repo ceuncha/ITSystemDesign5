@@ -103,6 +103,8 @@
                 valid_entries1[i] <= 1'b0; 
                 valid_entries2[i] <= 1'b0; 
                 RS_LS_on[i] <=0; 
+                current_block <= 0;
+                next_block <= 1;
             end
         end else begin
         if (start) begin
