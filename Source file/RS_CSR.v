@@ -27,7 +27,7 @@
     input wire ALUSrc2,
 
     input wire [7:0] CSR_phy,
-    input wire [7:0] CSR_done,
+    input wire CSR_done,
   input wire exception_sig,
  input wire mret_sig,
   output reg [129:0] result_out
