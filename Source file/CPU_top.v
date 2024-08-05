@@ -4,6 +4,7 @@ module CPU_top(
     output [31:0] x0, x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11, x12, x13, x14, x15,
     output [31:0] x16, x17, x18, x19, x20, x21, x22, x23, x24, x25, x26, x27, x28, x29, x30, x31
 );
+(* keep = "true" *)wire ROB_Flush;
 
 //program counter
 (* keep = "true" *)wire first_and_Pcsrc;
@@ -508,11 +509,13 @@ ifid_pipeline_register u_ifid_pipeline_register(
     .hit(hit),
     .IF_ID_taken(IF_ID_taken),
     .IF_ID_hit(IF_ID_hit),
+    .exception_sig(exception_sig),
     .Predict_Result(Predict_Result),
     .IF_ID_instOut(IF_ID_instOut),  
     .inst_num(inst_num),
     .IF_ID_inst_num(IF_ID_inst_num),
-    .IF_ID_PC(IF_ID_PC)
+    .IF_ID_PC(IF_ID_PC),
+    .ROB_Flush(ROB_Flush)
 );
 
 
@@ -1144,6 +1147,8 @@ CSR_ALU u_CSR_ALU(
         .IF_ID_PC(IF_ID_PC),
         .mret_inst(mret),
 	    .Address_exception(exception_address),
+	     .ROB_Flush(ROB_Flush),
+	    
         .alu_exec_done(ALU_Done),
         .alu_exec_value(ALU_Data),
         .alu_exec_PC(RS_EX_inst_num),
