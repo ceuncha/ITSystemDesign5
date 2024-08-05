@@ -1,5 +1,5 @@
 module IVT(
-    input rob_cause,
+    input [1:0] rob_cause,
     output reg [31:0] handler_address  // 예외 핸들러 주소
 );
 
