@@ -77,7 +77,7 @@ module store_buffer(
 
             
             if (memwrite) begin
-                
+
                 for (i = SIZE-1; i >= 0; i = i - 1) begin
                     if(!entry_val[i] && (i != current_block)&&(i != next_block)) begin
                             next_block <= i;
@@ -155,12 +155,12 @@ module store_buffer(
 
                 for (i = 0; i < SIZE; i = i + 1) begin
                     if (buffer_mem_addr[i] == mem_addr) begin
-                        if(buffer_inst_num[i] > inst_num) begin
-                            exception_flag <= 1'b1;
-                        end
+
                         load_data <= buffer_mem_data[i];
                         load_valid <= 3'b111;
-                        if (funct3 == 3'b000) begin 
+                        if(buffer_inst_num[i] > inst_num) begin
+                            load_valid <= 3'b000;
+                        end else if (funct3 == 3'b000) begin 
                             load_data <= {{24{buffer_mem_data[i][7]}}, buffer_mem_data[i][7:0]}; // LB
                         end else if (funct3 == 3'b001) begin //LH
                             load_data <= {{16{buffer_mem_data[i][15]}}, buffer_mem_data[i][15:0]}; // LH
