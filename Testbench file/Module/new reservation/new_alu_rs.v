@@ -80,7 +80,7 @@
      if (reset|exception_sig|mret_sig) begin
             tail <= 0;
             head <=0;
-            for (i = 0; i < 64; i = i + 1) begin
+      for (i = 0; i < SIZE; i = i + 1) begin
                 inst_nums[i] <=0;
                 PCs[i] <= 0;
                 Rds[i] <= 0;
