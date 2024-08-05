@@ -765,7 +765,7 @@ control_unit_top u_control_unit_top(
         .pass_immediate(pass_immediate),
         .pass_inst_num(pass_inst_num),
         
-        .CSR_data(CSR_data),
+        .CSR_data(CSR_Data),
         .csr_on(csr_on),
         .CSR_operand1(CSR_operand1),
         .CSR_aluop(CSR_aluop),
@@ -793,7 +793,7 @@ RS_CSR u_RS_CSR(
     .ALUOP(CSR_aluop),
     .mret_sig(mret_sig),
     .exception_sig(exception_sig),
-    .csr_data(CSR_data),
+    .csr_data(CSR_Data),
     .EX_MEM_Physical_Address(Load_phy_out),
     .operand1(CSR_operand1),
   
