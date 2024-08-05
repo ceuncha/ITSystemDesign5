@@ -124,7 +124,7 @@ module CPU_top(
     (* keep = "true" *)wire [31:0] LS_inst_num_out;
     (* keep = "true" *)wire [2:0] LS_func3_out;
 
-	(* keep = "true" *) wire [31:0] CSR_data;
+	(* keep = "true" *) wire [31:0] CSR_Data_in;
        (* keep = "true" *) wire csr_on;
        (* keep = "true" *) wire [7:0] CSR_operand1;
        (* keep = "true" *) wire [3:0] CSR_aluop;
@@ -765,7 +765,7 @@ control_unit_top u_control_unit_top(
         .pass_immediate(pass_immediate),
         .pass_inst_num(pass_inst_num),
         
-        .CSR_data(CSR_Data),
+        .CSR_data(CSR_Data_in),
         .csr_on(csr_on),
         .CSR_operand1(CSR_operand1),
         .CSR_aluop(CSR_aluop),
@@ -793,7 +793,7 @@ RS_CSR u_RS_CSR(
     .ALUOP(CSR_aluop),
     .mret_sig(mret_sig),
     .exception_sig(exception_sig),
-    .csr_data(CSR_Data),
+    .csr_data(CSR_Data_in),
     .EX_MEM_Physical_Address(Load_phy_out),
     .operand1(CSR_operand1),
   
