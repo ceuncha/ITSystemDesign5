@@ -63,20 +63,27 @@ module store_buffer(
             load_phy_out <= load_phy;
             inst_num_out <= inst_num;
             store_address_out <= 0;
+            if(memwrite_rob) begin
              for (i = 0; i < SIZE; i = i + 1) begin
-               if((buffer_mem_addr[i] == mem_addr_rob)&&(buffer_inst_num[i]==inst_num_rob)) begin
+               if(buffer_inst_num[i]==inst_num_rob) begin
                     entry_val[i] <= 0;
+                    buffer_inst_num[i] <= 0;
+                    buffer_mem_addr[i] <= 0;
                end
              end
+            end
+            
+
 
             
-            for (i = SIZE-1; i >= 0; i = i - 1) begin
-               if(!entry_val[i] && (i != current_block)) begin
-                    next_block <= i;
-               end
-             end
-            
             if (memwrite) begin
+                
+                for (i = SIZE-1; i >= 0; i = i - 1) begin
+                    if(!entry_val[i] && (i != current_block)&&(i != next_block)) begin
+                            next_block <= i;
+                    end
+                end
+
                 buffer_mem_addr[current_block] <= mem_addr;  
                 buffer_inst_num[current_block] <= inst_num; 
                 entry_val[current_block] <= 1'b1;
