@@ -54,9 +54,10 @@
 
   (* keep = "true" *) reg [4:0] current_block;
   (* keep = "true" *) reg [4:0] next_block;
+    (* keep = "true" *) reg [4:0] out_block;
 
   (* keep = "true" *) integer i, j, k, l, m, n,o;
-  (* keep = "true" *)reg RS_ALU_on[0:SIZE-1];
+   (* keep = "true" *)reg RS_ALU_on[0:SIZE-1];
    (* keep = "true" *)wire operand1_ALU_conflict = ((operand1 == ALU_result_dest)&&ALU_result_valid);
   (* keep = "true" *)wire operand1_MUL_conflict = ((operand1 == MUL_result_dest)&&MUL_result_valid);
   (* keep = "true" *)wire operand1_DIV_conflict = ((operand1 == DIV_result_dest)&&DIV_result_valid);
@@ -96,8 +97,14 @@
                 RS_ALU_on[i] <=0; 
                                 current_block <= 0;
                 next_block <= 1;
+                out_block <= SIZE -1;
             end
         end else begin
+                    operand1s[out_block] <= 0;
+                    operand2s[out_block] <= 0;
+                    valid_entries1[out_block] <= 0;
+                    valid_entries2[out_block] <= 0;
+                    RS_ALU_on[out_block] <= 0;
         if (start) begin
 
             
@@ -165,7 +172,7 @@
                  RS_ALU_on[current_block] <=1;
              end 
                 for (i = SIZE-1; i >= 0; i = i - 1) begin
-                    if(!RS_ALU_on[i] && (i != current_block)) begin
+                    if(!RS_ALU_on[i] && (i != current_block)&& (i != out_block)&&(i!=next_block)) begin
                         next_block <= i;
                     end
                 end
@@ -253,12 +260,7 @@
              for (i = SIZE-1; i >= 0; i = i - 1) begin
                 if (valid_entries1[i] == 1 && valid_entries2[i] == 1) begin
                     result_out <= {operand2s[i], operand1s[i], inst_nums[i], 1'b1, PCs[i], Rds[i], ALUOPs[i], ALUSrc1s[i], ALUSrc2s[i], immediates[i]};
-
-                    operand1s[i] <= 0;
-                    operand2s[i] <= 0;
-                    valid_entries1[i] <= 0;
-                    valid_entries2[i] <= 0;
-                    RS_ALU_on[i] <= 0;
+                    out_block <= i;
                 end
             end
 
