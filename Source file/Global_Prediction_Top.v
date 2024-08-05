@@ -9,7 +9,7 @@ module global_prediction_top (
     input wire ID_EX_hit,
     input wire real_taken,
     input wire CSR_epc,
-    input wire EHR_Address,
+    input wire [31:0] EHR_Address,
     input wire mret_sig,
     input wire exception_sig,
     output wire [31:0] PC, // Corrected the bit width
@@ -96,7 +96,7 @@ Program_Counter pc_inst (
     .reset(reset),
     .taken(taken),
     .PC_taken(PC_taken),
-    .PC_final_next(PC_final_next),
+    .PC_final_next(PC_real_final),
     .PC(PC)
 );
 
@@ -123,5 +123,5 @@ Program_Counter pc_inst (
  (* keep = "true" *)assign PC_real_final = (mret_sig == 1'b0 && exception_sig == 1'b0) ? PC_final_next :
      (mret_sig == 1'b1 && exception_sig == 1'b0) ? CSR_epc :
      (mret_sig == 1'b0 && exception_sig == 1'b1) ? EHR_Address :
-                                            32'b0; // 기본값으로 0을 할당 (다른 모든 경우)
+                                            32'b0; // 湲곕낯媛믪쑝濡� 0�쓣 �븷�떦 (�떎瑜� 紐⑤뱺 寃쎌슦)
 endmodule
