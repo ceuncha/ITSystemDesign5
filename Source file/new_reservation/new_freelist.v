@@ -34,7 +34,7 @@ always @(posedge clk) begin
             prev2_block <= SIZE-1;
             current_block <= 1;
             next_block <= 2;
-            inst_num[i] <= 8'hffffffff;
+            inst_num[i] <= 32'hffffffff;
             freelist_on[i] <= 1;
             rob_prev_regwrite <= 0;
             commit_block <= 0;
@@ -49,8 +49,9 @@ always @(posedge clk) begin
         freelist_array[prev2_block] <= rat_data;
         if(!no_reg_write) begin
             freelist_on[prev2_block] <= 0;
+            inst_num[prev2_block] <= inst_num_in;
         end
-        inst_num[prev2_block] <= inst_num_in;
+        
         rob_prev_regwrite <= rob_regwrite;
 
         for (i = SIZE-1; i >= 0; i = i - 1) begin
