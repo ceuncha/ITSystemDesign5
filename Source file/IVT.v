@@ -5,13 +5,13 @@ module IVT(
 
 always @(*) begin
     if (rob_cause== 2'b00) begin
-        handler_address <= 32'h02BC; // Illegal Instruction: 700踰덉?
+        handler_address <= 32'd700; // Illegal Instruction: 700踰덉?
     end else if (rob_cause == 2'b01) begin
-        handler_address <= 32'h030C; // DIV 0: 780踰덉?
+        handler_address <= 32'd740; // DIV 0: 780踰덉?
     end else if (rob_cause == 2'b10) begin
-        handler_address <= 32'h02E4; // LS: 740踰덉?
+        handler_address <= 32'd780; // LS: 740踰덉?
     end else if (rob_cause == 2'b11) begin
-        handler_address <= 32'h0334; // Address: 820踰덉?
+        handler_address <= 32'd820; // Address: 820踰덉?
     end
     end
 endmodule
