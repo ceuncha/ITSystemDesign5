@@ -31,11 +31,7 @@ reg [31:0] memory [0:2047];
             default: ; // No operation (NOP) for other funct3 values, explicitly defined
         endcase
     end
-  end
-
-
-   always @(*) begin
-// Default value for RData, ensures it is always assigned
+    // Default value for RData, ensures it is always assigned
     Data_memory_out = 32'd0; // if MemRead is false
     if (LS_MemRead) begin
         case (func3_LS)
@@ -47,6 +43,11 @@ reg [31:0] memory [0:2047];
             default: Data_memory_out = 32'd0; // Default value assignment to handle cases when MemRead is false
         endcase
     end
+  end
+
+
+   always @(*) begin
+
     
     if (ROB_MemRead ) begin  // 08.07 new update
     case (ROB_funct3)
