@@ -1150,6 +1150,7 @@ CSR_ALU u_CSR_ALU(
         .mret_inst(mret),
 	    .Address_exception(exception_address),
 	     .ROB_Flush(ROB_Flush),
+	     .exception_datamem(exception_datamem),
 	    
         .alu_exec_done(ALU_Done),
         .alu_exec_value(ALU_Data),
