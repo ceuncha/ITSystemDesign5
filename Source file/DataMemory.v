@@ -6,7 +6,6 @@ module DataMemory(
     input wire reset,
     input wire [2:0] func3_LS,
     input wire [31:0] out_value,
-
     input wire [31:0] LS_result,
     input wire LS_MemRead,
     
@@ -22,6 +21,7 @@ reg [31:0] memory [0:2047];
        for (i = 0; i < 2047; i = i + 1) begin
             memory[i] <= i+3;
         end
+        exception_datamem <= 0;
     end
     if (ROB_MemWrite) begin
         case (ROB_funct3)
