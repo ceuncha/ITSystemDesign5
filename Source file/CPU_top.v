@@ -335,8 +335,7 @@ module CPU_top(
 
 (* keep = "true" *) wire exception_ld;
 (* keep = "true" *) wire exception_address;
-(* keep = "true" *) wire exception_sb;
-(* keep = "true" *) wire exception_memforward = exception_ld | exception_sb;
+(* keep = "true" *) wire exception_memforward = exception_ld ;
 //datamemory
 (* keep = "true" *)wire [31:0] Operand1_LS;
 (* keep = "true" *)wire [31:0] Operand2_LS;
@@ -422,7 +421,9 @@ assign LS_Result = Operand1_LS + LS_B;
 (* keep = "true" *) wire [1:0] ROB_cause;
 (* keep = "true" *) wire mret_sig;
 (* keep = "true" *) wire exception_sig;
-
+(* keep = "true" *) wire exception_datamem;
+(* keep = "true" *) wire exception_rob;
+ assign exception_sig= exception_datamem | exception_rob;
 //
 	(* keep = "true" *) wire [31:0] Operand1_CSR;
 	
@@ -1116,8 +1117,8 @@ CSR_ALU u_CSR_ALU(
         .load_valid(Load_data_sel),
        .store_address_out(Store_Address),
        
-        .load_done_out(Load_Done),
-        .exception_flag(exception_sb)
+        .load_done_out(Load_Done)
+   
     );
 
 
@@ -1187,7 +1188,7 @@ CSR_ALU u_CSR_ALU(
         .out_reg_write(out_reg_write),
         .out_Addr(ROB_memaddress),
         .out_MemWrite(ROB_MemWrite),
-        .exception_sig(exception_sig),
+        .exception_sig(exception_rob),
         .mret_sig(mret_sig),
         .exception_cause(ROB_cause),
         .ROB_funct3(ROB_funct3),
@@ -1205,6 +1206,7 @@ CSR_ALU u_CSR_ALU(
         .LS_result(LS_Result),
         .out_value(out_value),
         .LS_MemRead(LS_MemRead),
+        .exception_datamem(exception_datamem),
         .Data_memory_out(Data_Memory_out)
 
     );
