@@ -51,11 +51,11 @@ reg [31:0] memory [0:2047];
     
     if (ROB_MemRead ) begin  // 08.07 new update
     case (ROB_funct3)
-            3'b000: load_data = {{24{memory[LS_result][31]}}, memory[LS_result][7:0]}; // LB
-            3'b001: load_data = {{16{memory[LS_result][31]}}, memory[LS_result][15:0]}; // LH
-            3'b010: load_data = memory[LS_result]; // LW
-            3'b100: load_data = {{24{1'b0}}, memory[LS_result][7:0]}; // LBU
-            3'b101: load_data = {{16{1'b0}}, memory[LS_result][15:0]}; // LHU
+            3'b000: load_data = {{24{memory[ROB_memadress][31]}}, memory[ROB_memadress][7:0]}; // LB
+            3'b001: load_data = {{16{memory[ROB_memadress][31]}}, memory[ROB_memadress][15:0]}; // LH
+            3'b010: load_data = memory[ROB_memadress]; // LW
+            3'b100: load_data = {{24{1'b0}}, memory[ROB_memadress][7:0]}; // LBU
+            3'b101: load_data = {{16{1'b0}}, memory[ROB_memadress][15:0]}; // LHU
             default: load_data = 32'd0; // Default value assignment to handle cases when MemRead is false
         endcase
         if (load_data != out_value) begin
