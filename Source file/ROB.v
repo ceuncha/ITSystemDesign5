@@ -34,6 +34,7 @@ module ROB(
     input wire [31:0] P_Data,
     input wire [31:0] P_inst_num,
 
+    input wire LS_exception,
     input wire Load_Done,
     input wire MemRead,
     input wire [31:0] Store_Addr,
@@ -81,6 +82,7 @@ always @(posedge clk) begin
         tail <= 0;
         exception_sig <= 0;
         mret_sig <= 0;
+        ROB_MemRead <=0;
         reset_rob_entries();
     end else begin
          for (i = 0; i < 64; i = i + 1) begin
@@ -105,9 +107,13 @@ always @(posedge clk) begin
                         rob_entry[i][136:0] <= {rob_entry[i][136], 2'b00,rob_entry[i][133], rob_entry[i][132:101], rob_entry[i][100], rob_entry[i][99], rob_entry[i][98], 1'b1, rob_entry[i][96], P_Data, rob_entry[i][63:32], rob_entry[i][31:0]}; // Update value and maintain new_bit, reg_write, instr, PC
                     end
                     if ( Load_Done&& rob_entry[i][31:0] == Load_inst_num) begin
-                        if (Address_exception == 1'b1)begin
+                        if (LS_exception == 1'b1) begin
+                            rob_entry[i][136:0] <= {rob_entry[i][136], 2'b10, rob_entry[i][133], rob_entry[i][132:101], rob_entry[i][100], 1'b1, rob_entry[i][98], 1'b1, rob_entry[i][96], Load_Data, rob_entry[i][63:32], rob_entry[i][31:0]}; // Update value and maintain new_bit, reg_write, instr, PC
+                            Store_Addrs[i][31:0] <= Store_Addr;
+                        end else if (Address_exception == 1'b1)begin
                             rob_entry[i][136:0] <= {rob_entry[i][136], 2'b11, rob_entry[i][133], rob_entry[i][132:101], rob_entry[i][100], 1'b1, rob_entry[i][98], 1'b1, rob_entry[i][96], Load_Data, rob_entry[i][63:32], rob_entry[i][31:0]}; // Update value and maintain new_bit, reg_write, instr, PC
                             Store_Addrs[i][31:0] <= Store_Addr;
+               
                         end else begin
                             rob_entry[i][136:0] <= {rob_entry[i][136], 2'b00, rob_entry[i][133], rob_entry[i][132:101], rob_entry[i][100], rob_entry[i][99], rob_entry[i][98], 1'b1, rob_entry[i][96], Load_Data, rob_entry[i][63:32], rob_entry[i][31:0]}; // Update value and maintain new_bit, reg_write, instr, PC
                             Store_Addrs[i][31:0] <= Store_Addr;
@@ -165,6 +171,7 @@ always @(posedge clk) begin
                         out_MemWrite <= rob_entry[head][100];
                         ROB_MemRead <= rob_entry [head] [136];
                         out_inst_num <= rob_entry[head][31:0];
+                        EPC <= rob_entry[head][132:101];
                         exception_sig <= 1'b0;
                         mret_sig <= 1'b0;
                         rob_entry[head] <= 0;            // Clear the ready flag after consuming the entry
