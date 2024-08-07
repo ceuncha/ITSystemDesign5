@@ -1084,18 +1084,12 @@ CSR_ALU u_CSR_ALU(
 
 
  (* keep_hierarchy = "yes" *)
-  Load_buffer Load_buffer (
+  exception_address_unit exception_address_unit (
   .clk(clk),
   .reset(rst),
   .exception_sig(exception_sig),
 	  .mret_sig(mret_sig),
-  .memwrite(LS_MemWrite),
-  .memread(LS_MemRead),
-  .inst_num(LS_inst_num),
   .address(LS_Result),
-	  .mem_addr_rob(ROB_memaddress),
-	  .inst_num_rob(ROB_instnum),
-  .Load_exception(exception_ld),
   .address_exception(exception_address)
   );
       // WbMux instantiation
