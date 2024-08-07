@@ -39,6 +39,13 @@ module multiplier (
             Physical_address_reg <= Physical_address_in;
             PC_reg <= PC_in;
         end
+        else begin
+            A_reg <= 0;
+            B_reg <= 0;
+            done_reg <= 0;
+            Physical_address_reg <= 0;
+            PC_reg <= 0;
+            end
     end
 
     // 遺?遺? 怨? ?깮?꽦
