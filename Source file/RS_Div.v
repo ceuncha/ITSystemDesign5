@@ -214,7 +214,7 @@ module RS_Div (
 
 
              for (i = SIZE-1; i >= 0; i = i - 1) begin
-                if (valid_entries1[i] == 1 && valid_entries2[i] == 1) begin
+                 if ((valid_entries1[i] == 1 && valid_entries2[i] == 1)&&(i != out_block)) begin
                     result_out <= {1'b1, PCs[i], Rds[i], ALUOPs[i],  operand1s[i], operand2s[i]};
                     out_block <= i;
                 end
