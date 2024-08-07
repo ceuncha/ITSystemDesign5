@@ -6,9 +6,10 @@ module cause_mux(
 
     always @ (*) begin
       if (exception_datamem) begin
-        Real_cause <= ROB_cause;
-      end else begin
         Real_cause <= 2'b10;
-    end
-    end
+      end else begin
+        Real_cause <= ROB_cause;
+        end
+        end
+
 endmodule
