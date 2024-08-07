@@ -5,6 +5,7 @@ module CPU_top(
     output [31:0] x16, x17, x18, x19, x20, x21, x22, x23, x24, x25, x26, x27, x28, x29, x30, x31
 );
 (* keep = "true" *)wire ROB_Flush;
+	(* keep = "true" *)wire ROB_MemRead;
 
 //program counter
 (* keep = "true" *)wire first_and_Pcsrc;
@@ -1145,6 +1146,7 @@ CSR_ALU u_CSR_ALU(
         .PC(IF_ID_inst_num),
         .ID_exception(ID_exception),
         .MemWrite(MemWrite),
+	    .MemRead(MemRead),
         .IF_ID_PC(IF_ID_PC),
         .mret_inst(mret),
 	    .Address_exception(exception_address),
@@ -1192,7 +1194,8 @@ CSR_ALU u_CSR_ALU(
         .mret_sig(mret_sig),
         .exception_cause(ROB_cause),
         .ROB_funct3(ROB_funct3),
-        .out_inst_num(ROB_instnum)
+	    .out_inst_num(ROB_instnum),
+	    .ROB_MemRead(ROB_MemRead)
     );
 
         (* keep_hierarchy = "yes" *)
