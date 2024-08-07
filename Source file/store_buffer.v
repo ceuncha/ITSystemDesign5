@@ -77,7 +77,7 @@ module store_buffer(
 
             
             if (memwrite) begin
-
+                load_done_out <= 1;
                 for (i = SIZE-1; i >= 0; i = i - 1) begin
                     if(!entry_val[i] && (i != current_block)&&(i != next_block)) begin
                             next_block <= i;
