@@ -10,5 +10,5 @@ module cause_mux(
       end else begin
         Real_cause <= 2'b10;
     end
-
+    end
 endmodule
