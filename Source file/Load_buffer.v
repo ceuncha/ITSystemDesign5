@@ -6,8 +6,8 @@ module Load_buffer(
     input memwrite,
     input memread,
 
-    input inst_num,
-    input address,
+    input [31:0] inst_num,
+    input [31:0] address,
 
     output reg Load_exception,
     output reg address_exception,
