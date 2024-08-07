@@ -1210,8 +1210,8 @@ CSR_ALU u_CSR_ALU(
         .out_value(out_value),
         .LS_MemRead(LS_MemRead),
         .exception_datamem(exception_datamem),
-        .Data_memory_out(Data_Memory_out)
-
+        .Data_memory_out(Data_Memory_out),
+        .ROB_MemRead(ROB_MemRead)
     );
 
 (* keep_hierarchy = "yes" *)
