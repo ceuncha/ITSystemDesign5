@@ -782,7 +782,7 @@ control_unit_top u_control_unit_top(
         .CSR_addr(CSR_addr),
 
         .csr_data_in(CSR_out),
-        .csr_addr_in(IF_ID_instOut)
+        .csr_addr_in(ID_CSR_Address)
 
        
         
