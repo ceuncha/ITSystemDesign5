@@ -1,7 +1,7 @@
 module exception_address_unit(
     input clk,
     input reset,
-    input excetpion_sig,
+    input exception_sig,
     input mret_sig,
     input [31:0] address,
 
@@ -22,5 +22,5 @@ module exception_address_unit(
              end
              
         end
-
+    end
 endmodule
