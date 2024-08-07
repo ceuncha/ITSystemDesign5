@@ -197,7 +197,7 @@
 
 
          for (i = SIZE-1; i >= 0; i = i - 1) begin
-                if (valid_entries1[i] == 1) begin
+          if (valid_entries1[i] == 1 && (i != out_block)) begin
                 result_out <= {1'b1, operand1s[i], inst_nums[i], Rds[i], ALUOPs[i], ALUSrc2s[i], csr_datas[i], csr_addrs[i], immediates[i]};
                 out_block <= i;
                 end
