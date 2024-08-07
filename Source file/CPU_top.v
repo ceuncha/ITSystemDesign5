@@ -6,7 +6,7 @@ module CPU_top(
 );
 (* keep = "true" *)wire ROB_Flush;
 	(* keep = "true" *)wire ROB_MemRead;
-	(* keep = "true" *)wire Real_cause;
+	(* keep = "true" *)wire [1:0] Real_cause;
 
 //program counter
 (* keep = "true" *)wire first_and_Pcsrc;
