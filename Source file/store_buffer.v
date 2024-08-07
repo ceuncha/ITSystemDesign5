@@ -152,7 +152,7 @@ module store_buffer(
             end else if (memread) begin
                 load_valid <= 3'b000;
                 load_done_out <= 1'b1;
-
+                store_address_out <= mem_addr;
                 for (i = 0; i < SIZE; i = i + 1) begin
                     if (buffer_mem_addr[i] == mem_addr) begin
 
