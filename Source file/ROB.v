@@ -11,6 +11,7 @@ module ROB(
     input wire Address_exception,
     input wire [31:0] CSR_inst_num,
     input wire ROB_Flush,
+    input wire exception_datamem,
     
     input wire alu_exec_done,            // ALU execution completion signal
     input wire [31:0] alu_exec_value,    // ALU executed value
@@ -77,11 +78,13 @@ endtask
 
 // ROB control logic
 always @(posedge clk) begin
-    if (rst | ROB_Flush) begin
+    if (rst | ROB_Flush | exception_datamem) begin
         head <= 0;
         tail <= 0;
         exception_sig <= 0;
         mret_sig <= 0;
+        out_reg_write <= 0;
+        out_MemWrite <= 0;
         ROB_MemRead <=0;
         reset_rob_entries();
     end else begin
