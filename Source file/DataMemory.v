@@ -9,9 +9,12 @@ module DataMemory(
 
     input wire [31:0] LS_result,
     input wire LS_MemRead,
-
+    
+    input wire ROB_MemRead,  // 08.07 new update
+    output reg exception_datamem,
     output reg [31:0] Data_memory_out
 );
+reg [31:0]load_data;   //08.07 new update
 integer i;
 reg [31:0] memory [0:2047];
     always @(posedge clk) begin                       //由ъ뀑?떆?뿉 媛? 踰덉??닔?쓽 ?뜲?씠?꽣?뒗 踰덉??닔+3?쑝濡? ?븳?떎,
@@ -28,23 +31,39 @@ reg [31:0] memory [0:2047];
             default: ; // No operation (NOP) for other funct3 values, explicitly defined
         endcase
     end
-    else if (!ROB_MemWrite) ; // If EX_MEM_MemWrite is false, no changes are made to memory - it retains its previous state
+  end
 
 
-
+   always @(*) begin
 // Default value for RData, ensures it is always assigned
-    Data_memory_out <= 32'd0; // if MemRead is false
+    Data_memory_out = 32'd0; // if MemRead is false
     if (LS_MemRead) begin
         case (func3_LS)
-            3'b000: Data_memory_out <= {{24{memory[LS_result][31]}}, memory[LS_result][7:0]}; // LB
-            3'b001: Data_memory_out <= {{16{memory[LS_result][31]}}, memory[LS_result][15:0]}; // LH
-            3'b010: Data_memory_out <= memory[LS_result]; // LW
-            3'b100: Data_memory_out <= {{24{1'b0}}, memory[LS_result][7:0]}; // LBU
-            3'b101: Data_memory_out <= {{16{1'b0}}, memory[LS_result][15:0]}; // LHU
-            default: Data_memory_out <= 32'd0; // Default value assignment to handle cases when MemRead is false
+            3'b000: Data_memory_out = {{24{memory[LS_result][31]}}, memory[LS_result][7:0]}; // LB
+            3'b001: Data_memory_out = {{16{memory[LS_result][31]}}, memory[LS_result][15:0]}; // LH
+            3'b010: Data_memory_out = memory[LS_result]; // LW
+            3'b100: Data_memory_out = {{24{1'b0}}, memory[LS_result][7:0]}; // LBU
+            3'b101: Data_memory_out = {{16{1'b0}}, memory[LS_result][15:0]}; // LHU
+            default: Data_memory_out = 32'd0; // Default value assignment to handle cases when MemRead is false
         endcase
     end
-end
-
+    
+    if (ROB_MemRead ) begin  // 08.07 new update
+    case (ROB_funct3)
+            3'b000: load_data = {{24{memory[LS_result][31]}}, memory[LS_result][7:0]}; // LB
+            3'b001: load_data = {{16{memory[LS_result][31]}}, memory[LS_result][15:0]}; // LH
+            3'b010: load_data = memory[LS_result]; // LW
+            3'b100: load_data = {{24{1'b0}}, memory[LS_result][7:0]}; // LBU
+            3'b101: load_data = {{16{1'b0}}, memory[LS_result][15:0]}; // LHU
+            default: load_data = 32'd0; // Default value assignment to handle cases when MemRead is false
+        endcase
+        if (load_data != out_value) begin
+        exception_datamem = 1;
+        end
+        else begin
+        exception_datamem=0;
+        end
+      end  
+    end
 
 endmodule
