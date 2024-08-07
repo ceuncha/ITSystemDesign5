@@ -6,6 +6,7 @@ module CPU_top(
 );
 (* keep = "true" *)wire ROB_Flush;
 	(* keep = "true" *)wire ROB_MemRead;
+	(* keep = "true" *)wire Real_Cause;
 
 //program counter
 (* keep = "true" *)wire first_and_Pcsrc;
@@ -1216,7 +1217,7 @@ CSR_ALU u_CSR_ALU(
 
 (* keep_hierarchy = "yes" *)
 IVT u_IVT(
-    .rob_cause(ROB_cause),
+	.rob_cause(Real_cause),
 
        .handler_address(EHR_Address)
 );
@@ -1227,7 +1228,7 @@ CSR u_CSR(
         .reset(rst),
         .exception_sig(exception_sig),
         .exception_pc(ROB_exception_pc),
-        .exception_cause(ROB_cause),
+	.exception_cause(Real_cause),
         .ID_CSR_Address(ID_CSR_Address),
 
         .CSR_done(CSR_Done),
