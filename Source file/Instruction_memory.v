@@ -90,11 +90,11 @@ always @(posedge reset) begin
 
 {memory[708], memory[709], memory[710], memory[711]} <= 32'b00110101110000000000111001100111;
 
-{memory[740], memory[741], memory[742], memory[743]} <= 32'b00000000001000000001111101110011;
+{memory[780], memory[781], memory[782], memory[783]} <= 32'b00000000001000000001111101110011;
 
-{memory[744], memory[745], memory[746], memory[747]} <= 32'b00000000000100000001111011110011;
+{memory[784], memory[785], memory[786], memory[787]} <= 32'b00000000000100000001111011110011;
 
-{memory[748], memory[749], memory[750], memory[751]} <= 32'b00110000001000000000000001110011;
+{memory[788], memory[789], memory[790], memory[791]} <= 32'b00110000001000000000000001110011;
 
 
     end
