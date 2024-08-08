@@ -17,7 +17,7 @@ module ifid_pipeline_register (
     output reg IF_ID_hit
 );
     always @(posedge clk) begin
-        if (reset) begin
+        if (reset|Predict_Result) begin
             // ??억옙?占쎈늅?? ??筌묕옙??繹먮뛽琉??? ??占쎄퐥?占쎈빝???占쎄섀?占쎈뎨?뇡?빘異?? ??뙴占??占쎌맃占쎈뎨???占쎄섀
             IF_ID_instOut <= 32'b0;
             IF_ID_inst_num <= 32'b0;
