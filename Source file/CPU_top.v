@@ -1043,7 +1043,7 @@ MUX_2input u_CSR_mux(
     ALU ALU(.A(ALU_A),.B(ALU_B),.ALUop(ALUop),.Result(ALU_Data));
     (* keep_hierarchy = "yes" *)
      BranchUnit branchUnit(.RS_BR_Jump(RS_BR_Jump),.RS_BR_Branch(RS_BR_Branch),.RS_BR_funct3(RS_BR_funct3),.RS_BR_taken(RS_BR_taken),.Predict_Result(Predict_Result),
-                         .immediate_BR(immediate_BR),.PC_BR(PC_BR),.ALUNegative(negative),
+                         .immediate_BR(immediate_BR),.PC_BR(PC_BR),.ALUNegative(negative),.operand2(Operand2_BR),
                          .ALUZero(zero),.ALUOverflow(overflow),.ALUCarry(carry),.PC_Branch(PC_Branch),
                          .branch_index(Branch_index),.PCSrc(PCSrc), .RS_BR_inst_num(RS_BR_inst_num_output),.PC_Return(PC_Return));
 
