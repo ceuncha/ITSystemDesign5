@@ -8,6 +8,7 @@ module ifid_pipeline_register (
     input taken,
     input hit,
     input exception_sig,
+    input mret_sig,
     output reg IF_ID_taken,
     output reg [31:0] IF_ID_instOut,  
     output reg [31:0] IF_ID_inst_num,
@@ -24,7 +25,7 @@ module ifid_pipeline_register (
             ROB_Flush <= 1'b0;
             IF_ID_taken<= 1'b0;
             IF_ID_hit <= 1'b0;
-        end else if (exception_sig) begin
+        end else if (exception_sig | mret_sig) begin
             IF_ID_instOut <= 32'b0;
             IF_ID_inst_num <= 32'b0;
             IF_ID_PC <= 32'b0;
