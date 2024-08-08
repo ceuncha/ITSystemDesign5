@@ -43,7 +43,8 @@ module RS_Mul (
    (* keep = "true" *) integer k;
    (* keep = "true" *) integer l;
    (* keep = "true" *) integer m;
-   (* keep = "true" *) integer n, o;
+   (* keep = "true" *) integer n;
+      (* keep = "true" *) integer o;
    (* keep = "true" *) reg [3:0] current_block;
       (* keep = "true" *) reg [3:0] next_block;
     (* keep = "true" *) reg [3:0] out_block;
@@ -198,7 +199,7 @@ module RS_Mul (
 
 
             if (CSR_done) begin
-           for (o = o; o < SIZE; o = o + 1) begin
+           for (o = 0; o < SIZE; o = o + 1) begin
                     if (!valid_entries1[o] && operand1s[o] == CSR_phy) begin
                         valid_entries1[o] <= 1;
                     end
