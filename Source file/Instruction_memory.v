@@ -54,11 +54,11 @@ always @(posedge reset) begin
 //0. addi x1, x0, 10
 {memory[0], memory[1], memory[2], memory[3]} <= 32'b00000000101000000000000010010011;
 
-//1. mul x2, x1, x5 
-{memory[4], memory[5], memory[6], memory[7]} <= 32'b00000010010100001000000100110011;
+//1. div x15, x18, x6 
+{memory[4], memory[5], memory[6], memory[7]} <= 32'b00000010011010010100011110110011;
 
-//2. addi x1,x0,1
-{memory[8], memory[9], memory[10], memory[11]} <= 32'b00000000000100000000000010010011;
+//2. div x25,x24,x15
+{memory[8], memory[9], memory[10], memory[11]} <= 32'b00000010111111000100110010110011;
 
 //3. SW x6, 95(x5)
 {memory[12], memory[13], memory[14], memory[15]} <= 32'b00000100011000101010111110100011;
