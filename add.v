@@ -24,7 +24,7 @@ always @(posedge reset) begin
 // MUL x1, x1, x2
 {memory[8], memory[9], memory[10], memory[11]} <= 32'b0000001_00010_00001_000_00001_0110011;
 // DIV x1, x1, x3
-{memory[12], memory[13], memory[14], memory[15]} <= 32'b00000010001100001100000010110011;
+{memory[12], memory[13], memory[14], memory[15]} <= 32'b00000010000000001100000010110011;
 // ADDI x2, x2, -1
 {memory[16], memory[17], memory[18], memory[19]} <= 32'b111111111111_00010_000_00010_0010011;
 // ADDI x3, x3, 1
@@ -33,7 +33,6 @@ always @(posedge reset) begin
 {memory[24], memory[25], memory[26], memory[27]} <= 32'b01111101000000111000010100010011;
 // lw x5, 2000(x10)
 {memory[28], memory[29], memory[30], memory[31]} <= 32'b01111101000001010010001010000011;
-
 
 {memory[700], memory[701], memory[702], memory[703]} <= 32'b00000000001000000001111101110011;
 
