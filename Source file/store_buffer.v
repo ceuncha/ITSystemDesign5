@@ -91,7 +91,7 @@ module store_buffer(
                 inst_num_out <= inst_num;
                 load_phy_out <= 8'd160;
                 store_address_out <= mem_addr;
-
+                load_data <= mem_data;
                 if (funct3 == 3'b000) begin
                     buffer_mem_data[current_block] <= mem_data[7:0]; // SB
                     funct3s[current_block]<= 3'b000;
