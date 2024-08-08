@@ -71,7 +71,7 @@ module divider (
         else if (divide_zero) begin
             temp_dividend[0] <= 0;
             divisor[0] <= 0;
-            Physical_address_reg[0] <= 0;
+            Physical_address_reg[0] <= Physical_address_in;
             PC_reg[0] <= PC_in;
             divider_op_reg[0] <= 0;
             done_reg[0] <= 1'b1;
@@ -128,7 +128,8 @@ end
                     Physical_address_reg[i+1] <= 8'd0;
                     PC_reg[i+1] <= 32'd0;
                     divider_op_reg [i+1] <=1'd0; 
-                    done_reg[i+1] <= 1'd0;                   
+                    done_reg[i+1] <= 1'd0;
+                    divide_zero_reg[i+1] <= 1'b0;                   
                 end else begin
                      temp_dividend[1] <= {temp_dividend_cal0[62:0], 1'b0};
                      temp_dividend[2] <= {temp_dividend_cal1[62:0], 1'b0};
