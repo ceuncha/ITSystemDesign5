@@ -14,7 +14,7 @@ module control_rom(
     output reg ID_exception
 );
 
-reg [12:0] ROM [0:63]; // ROM 占쎄쾿疫꿸퀡占쏙옙 13�뜮袁る뱜嚥∽옙 筌앹빓占�
+    reg [13:0] ROM [0:63]; // ROM 占쎄쾿疫꿸퀡占쏙옙 13�뜮袁る뱜嚥∽옙 筌앹빓占�
 
     assign {mret, RegWrite, MemToReg, MemRead, MemWrite, ALUOp, ALUSrc, RWsel, Branch, Jump} = ROM[mapped_address];
 
