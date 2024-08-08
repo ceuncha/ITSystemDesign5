@@ -11,6 +11,8 @@ module BranchUnit(
     input wire ALUZero,     // Zero flag from ALU
     input wire ALUOverflow, // Overflow flag from ALU
     input wire ALUCarry,    // Carry flag from ALU
+    
+    input wire [31:0] operand2,
 
     output reg [31:0] PC_Branch,
     output reg [31:0] branch_index,
@@ -24,10 +26,15 @@ always @(*) begin
         PC_Branch = 0;  
 
         if(RS_BR_Jump) begin
+          if(RS_BR_funct3==3'b000) begin
+          PC_Branch = immediate_BR+operand2;
+          PCSrc=1;
+          end
+          else begin
             PC_Branch = immediate_BR + PC_BR; 
             PCSrc = 1; 
-  
-           
+            end
+            
         end
         else if(RS_BR_Branch) begin
             case(RS_BR_funct3)
