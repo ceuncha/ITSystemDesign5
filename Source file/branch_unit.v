@@ -24,7 +24,7 @@ always @(*) begin
         PC_Branch = 0;  
 
         if(RS_BR_Jump) begin
-            PC_Branch = immediate_BR + PC_BR; 
+            PC_Branch = immediate_BR + PC_Return; 
             PCSrc = 1; 
   
            
@@ -41,7 +41,7 @@ always @(*) begin
             default: PCSrc = 0; 
             endcase
             if(PCSrc) begin
-                PC_Branch = immediate_BR + PC_BR; 
+                PC_Branch = immediate_BR + PC_Return; 
 
                 
             end
