@@ -513,6 +513,7 @@ ifid_pipeline_register u_ifid_pipeline_register(
     .IF_ID_taken(IF_ID_taken),
     .IF_ID_hit(IF_ID_hit),
     .exception_sig(exception_sig),
+    .mret_sig(mret_sig),
     .Predict_Result(Predict_Result),
     .IF_ID_instOut(IF_ID_instOut),  
     .inst_num(inst_num),
