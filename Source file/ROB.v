@@ -165,6 +165,7 @@ always @(posedge clk) begin
                         out_reg_write <= 0;
                         ROB_MemRead <= 0;
                         out_MemWrite <= 0;
+                        reset_rob_entries();
                     end else begin
                         out_value <= rob_entry[head][95:64];     // Output value
                         out_dest <= rob_entry[head][43:39];      // Extract out_dest from instr[11:7]
