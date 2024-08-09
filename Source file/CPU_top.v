@@ -326,7 +326,20 @@ module CPU_top(
 (* keep = "true" *) wire [2:0] func3_LS = result_out_ls[34:32];
 (* keep = "true" *) wire [31:0] immediate_LS = result_out_ls[31:0];
 
-(* keep = "true" *) wire LS_que_MemWrite;
+(* keep = "true" *) wire ROB_MemWrite_buff;
+(* keep = "true" *) wire LS_MemWrite_buff;
+(* keep = "true" *) wire LS_MemRead_buff;
+(* keep = "true" *) wire [2:0] func3_LS_buff;
+(* keep = "true" *) wire [31:0] LS_Result_buff;
+(* keep = "true" *) wire [7:0] Load_Phy_buff;
+(* keep = "true" *) wire [31:0] LS_inst_num_buff;
+(* keep = "true" *) wire [31:0] Operand2_LS_buff;
+(* keep = "true" *) wire [31:0] ROB_memaddress_buff;
+(* keep = "true" *) wire [31:0] ROB_instnum_buff;
+
+
+
+
 (* keep = "true" *) wire LS_que_MemRead;
 (* keep = "true" *) wire [31:0] LS_que_inst_num;
 (* keep = "true" *) wire [7:0] LS_que_phy;
@@ -1083,14 +1096,43 @@ CSR_ALU u_CSR_ALU(
  (* keep_hierarchy = "yes" *)
     MUX_2input MUX_LS (.a(Operand2_LS),.b(immediate_LS),.sel(RS_LS_Src2),.y(LS_B)); 
 
-
+ (* keep_hierarchy = "yes" *) 
+ mem_buffer mem_buffer(
+    .clk(clk),
+    .reset(rst),
+    .LS_MemWrite(LS_MemWrite),
+    .LS_MemRead(LS_MemRead),
+    .func3_LS(func3_LS),
+    .Load_Phy(Load_Phy),
+    .LS_inst_num(LS_inst_num),
+    .Operand2_LS(Operand2_LS),
+    .LS_Result(LS_Result),
+    .mem_addr_rob(ROB_memaddress),
+    .inst_num_rob(ROB_instnum),
+    .memwrite_rob(ROB_MemWrite),
+    .LS_MemWrite_buff(LS_MemWrite_buff),
+    .LS_MemRead_buff(LS_MemRead_buff),
+    .func3_LS_buff(func3_LS_buff),
+    .LS_Result_buff(LS_Result_buff),
+    .Load_Phy_buff(Load_Phy_buff),
+    .LS_inst_num_buff(LS_inst_num_buff),
+    .Operand2_LS_buff(Operand2_LS_buff),
+    .memwrite_rob_buff(ROB_MemWrite_buff),
+    .mem_addr_rob_buff(ROB_memaddress_buff),
+    .inst_num_rob_buff(ROB_instnum_buff)
+ );
+ 
+ 
+ 
+ 
+ 
  (* keep_hierarchy = "yes" *)
   exception_address_unit exception_address_unit (
   .clk(clk),
   .reset(rst),
-  .exception_sig(exception_sig),
-	  .mret_sig(mret_sig),
-  .address(LS_Result),
+
+    .mret_sig(mret_sig),
+  .address(LS_Result_buff),
   .address_exception(exception_address)
   );
       // WbMux instantiation
@@ -1098,19 +1140,19 @@ CSR_ALU u_CSR_ALU(
     store_buffer store_buffer (
         .clk(clk),
         .reset(rst),
-        .exception(exception_sig),
+  
 	    .mret_sig(mret_sig),
-        .memwrite(LS_MemWrite),
-        .funct3(func3_LS),
-        .memread(LS_MemRead),
-        .load_phy(Load_Phy),
+        .memwrite(LS_MemWrite_buff),
+        .funct3(func3_LS_buff),
+        .memread(LS_MemRead_buff),
+        .load_phy(Load_Phy_buff),
  
-        .inst_num(LS_inst_num),
-        .mem_addr(LS_Result),
-        .mem_data(Operand2_LS),
-        .memwrite_rob(ROB_MemWrite),
-        .mem_addr_rob(ROB_memaddress),
-        .inst_num_rob(ROB_instnum),
+        .inst_num(LS_inst_num_buff),
+        .mem_addr(LS_Result_buff),
+        .mem_data(Operand2_LS_buff),
+        .memwrite_rob(ROB_MemWrite_buff),
+        .mem_addr_rob(ROB_memaddress_buff),
+        .inst_num_rob(ROB_instnum_buff),
 
         .load_data(Sb_data_out),
         .load_phy_out(Load_phy_out),
@@ -1206,10 +1248,10 @@ CSR_ALU u_CSR_ALU(
         .ROB_funct3(ROB_funct3),
         .clk(clk),
         .reset(rst),
-        .func3_LS(func3_LS),
-        .LS_result(LS_Result),
+        .func3_LS(func3_LS_buff),
+        .LS_result(LS_Result_buff),
         .out_value(out_value),
-        .LS_MemRead(LS_MemRead),
+        .LS_MemRead(LS_MemRead_buff),
         .exception_datamem(exception_datamem),
         .Data_memory_out(Data_Memory_out),
         .ROB_MemRead(ROB_MemRead)
