@@ -56,7 +56,7 @@
   (* keep = "true" *) reg [3:0] current_block;
   (* keep = "true" *) reg [3:0] next_block;
   (* keep = "true" *) reg [3:0] out_block;
-  (* keep = "true" *) integer i, j, k, l, m, n,o;
+  (* keep = "true" *) integer i, j, k, l, m, n,o,p,q;
   (* keep = "true" *) reg RS_ALU_on [0:SIZE-1];
 
 
@@ -125,9 +125,9 @@
                     RS_ALU_on[current_block] <=0;
                 end 
              
-             for (i = SIZE-1; i >= 0; i = i - 1) begin
-                    if(!RS_ALU_on[i] && (i != current_block)&&(i != next_block)&&(i != out_block)) begin
-                        next_block <= i;
+             for (p = SIZE-1; p >= 0; p = p - 1) begin
+              if(!RS_ALU_on[p] && (p != current_block)&&(p != next_block)&&(p != out_block)) begin
+                        next_block <= p;
                     end
                 end
                 current_block <= next_block;
@@ -196,10 +196,10 @@
             result_out <= 0;
 
 
-         for (i = SIZE-1; i >= 0; i = i - 1) begin
-          if (valid_entries1[i] == 1 && (i != out_block)) begin
-                result_out <= {1'b1, operand1s[i], inst_nums[i], Rds[i], ALUOPs[i], ALUSrc2s[i], csr_datas[i], csr_addrs[i], immediates[i]};
-                out_block <= i;
+         for (q = SIZE-1; q >= 0; q = q - 1) begin
+          if (valid_entries1[q] == 1 && (q != out_block)) begin
+           result_out <= {1'b1, operand1s[q], inst_nums[q], Rds[q], ALUOPs[q], ALUSrc2s[q], csr_datas[q], csr_addrs[q], immediates[q]};
+                out_block <= q;
                 end
             end
 
