@@ -16,12 +16,12 @@ module DataMemory(
 reg [31:0]load_data;   //08.07 new update
 integer i;
 reg [31:0] memory [0:2047];
-    always @(posedge clk) begin                       //由ъ뀑?떆?뿉 媛? 踰덉??닔?쓽 ?뜲?씠?꽣?뒗 踰덉??닔+3?쑝濡? ?븳?떎,
+    always @(posedge clk) begin                       
    if (reset) begin
        for (i = 0; i < 2047; i = i + 1) begin
             memory[i] <= i+3;
         end
-        exception_datamem <= 0;
+
     end
     if (ROB_MemWrite) begin
         case (ROB_funct3)
@@ -47,7 +47,7 @@ reg [31:0] memory [0:2047];
 
 
    always @(*) begin
-
+    exception_datamem=0;
     
     if (ROB_MemRead ) begin  // 08.07 new update
     case (ROB_funct3)
