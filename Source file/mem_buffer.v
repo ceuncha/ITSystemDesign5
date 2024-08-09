@@ -1,4 +1,6 @@
 module mem_buffer(
+    input wire clk,
+    input wire reset,
     input wire LS_MemWrite,
     input wire LS_MemRead,
 
@@ -25,6 +27,20 @@ module mem_buffer(
 
 
 always @(posedge clk) begin
+    if(reset) begin
+        
+    LS_MemWrite_buff <= 0;
+    LS_MemRead_buff <= 0;
+    func3_LS_buff <= 0;
+    LS_Result_buff <= 0;
+    Load_Phy_buff <= 0;
+    LS_inst_num_buff <= 0;
+    Operand2_LS_buff <= 0;
+    mem_addr_rob_buff <= 0;
+    inst_num_rob_buff <= 0;
+        
+    end else begin
+    
     LS_MemWrite_buff <= LS_MemWrite;
     LS_MemRead_buff <= LS_MemRead;
     func3_LS_buff <= func3_LS;
@@ -34,6 +50,7 @@ always @(posedge clk) begin
     Operand2_LS_buff <= Operand2_LS;
     mem_addr_rob_buff <= mem_addr_rob;
     inst_num_rob_buff <= inst_num_rob;
-end
+        
+    end
 
 endmodule
