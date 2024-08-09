@@ -46,7 +46,7 @@ module RS_Div (
        (* keep = "true" *)integer l;
        (* keep = "true" *)integer m;
        (* keep = "true" *)integer n;
-      (* keep = "true" *) integer o;
+      (* keep = "true" *) integer o, p, q;
       (* keep = "true" *) reg RS_DIV_on[0:SIZE-1];
     
   (* keep = "true" *)wire operand1_ALU_conflict = ((RS_div_operand1 == ALU_result_dest)&&ALU_result_valid);
@@ -128,10 +128,10 @@ module RS_Div (
                 RS_DIV_on[current_block] <= 1;
              end 
 
-                for (i = SIZE-1; i >= 0; i = i - 1) begin
-                    if(!RS_DIV_on[i]) begin
-                        if((i != current_block)&&(i != next_block)&&(i != out_block)) begin
-                            next_block <= i;
+                for (p = SIZE-1; p >= 0; p = p - 1) begin
+                    if(!RS_DIV_on[p]) begin
+                        if((p != current_block)&&(p != next_block)&&(p != out_block)) begin
+                            next_block <= p;
                         end
                     end
                 end
@@ -213,10 +213,10 @@ module RS_Div (
         result_out <= 0;
 
 
-             for (i = SIZE-1; i >= 0; i = i - 1) begin
-                 if ((valid_entries1[i] == 1 && valid_entries2[i] == 1)&&(i != out_block)) begin
-                    result_out <= {1'b1, PCs[i], Rds[i], ALUOPs[i],  operand1s[i], operand2s[i]};
-                    out_block <= i;
+             for (q = SIZE-1; q >= 0; q = q - 1) begin
+                 if ((valid_entries1[q] == 1 && valid_entries2[q] == 1)&&(q != out_block)) begin
+                    result_out <= {1'b1, PCs[q], Rds[q], ALUOPs[q],  operand1s[q], operand2s[q]};
+                    out_block <= q;
                 end
             end
         end
