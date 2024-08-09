@@ -43,8 +43,7 @@ module RS_Mul (
    (* keep = "true" *) integer k;
    (* keep = "true" *) integer l;
    (* keep = "true" *) integer m;
-   (* keep = "true" *) integer n;
-      (* keep = "true" *) integer o;
+   (* keep = "true" *) integer n, o,p,q;
    (* keep = "true" *) reg [3:0] current_block;
       (* keep = "true" *) reg [3:0] next_block;
     (* keep = "true" *) reg [3:0] out_block;
@@ -136,12 +135,12 @@ module RS_Mul (
 
              
             if (ALU_result_valid) begin
-                for (i = 0; i < SIZE; i = i + 1) begin
-                    if (!valid_entries1[i] && operand1s[i] == ALU_result_dest) begin
-                        valid_entries1[i] <= 1;
+                for (p = 0; p < SIZE; p = p + 1) begin
+                    if (!valid_entries1[p] && operand1s[p] == ALU_result_dest) begin
+                        valid_entries1[p] <= 1;
                     end
-                    if (!valid_entries2[i] && operand2s[i] == ALU_result_dest) begin
-                        valid_entries2[i] <= 1;
+                    if (!valid_entries2[p] && operand2s[p] == ALU_result_dest) begin
+                        valid_entries2[p] <= 1;
                     end
                 end
             end
@@ -199,7 +198,7 @@ module RS_Mul (
 
 
             if (CSR_done) begin
-           for (o = 0; o < SIZE; o = o + 1) begin
+           for (o=0 ; o < SIZE; o = o + 1) begin
                     if (!valid_entries1[o] && operand1s[o] == CSR_phy) begin
                         valid_entries1[o] <= 1;
                     end
@@ -214,10 +213,10 @@ module RS_Mul (
             result_out <= 0;
 
 
-             for (i = SIZE-1; i >= 0; i = i - 1) begin
-                 if ((valid_entries1[i] == 1 && valid_entries2[i] == 1)&&(i != out_block)) begin
-                    result_out <= {1'b1, PCs[i], Rds[i], operand1s[i], operand2s[i]};
-                    out_block <= i;
+             for (q = SIZE-1; q >= 0; q = q - 1) begin
+                 if ((valid_entries1[q] == 1 && valid_entries2[q] == 1)&&(q != out_block)) begin
+                    result_out <= {1'b1, PCs[q], Rds[q], operand1s[q], operand2s[q]};
+                    out_block <= q;
                 end
             end
 
