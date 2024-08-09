@@ -62,7 +62,7 @@
    (* keep = "true" *) reg [4:0] next_block;
     (* keep = "true" *) reg [4:0] out_block;
 
-  (* keep = "true" *) integer i, j, k, l, m, n,o;
+  (* keep = "true" *) integer i, j, k, l, m, n, o, p, q;
   (* keep = "true" *) reg RS_LS_on [0:SIZE-1];
 
 
@@ -188,10 +188,10 @@
                 RS_LS_on[current_block] <=1;
              end 
 
-                for (i = SIZE-1; i >= 0; i = i - 1) begin
-                 if(!RS_LS_on[i]) begin
-                        if((i != current_block)&&(i != next_block)&&(i != out_block)) begin
-                            next_block <= i;
+                for (p = SIZE-1; p >= 0; p = p - 1) begin
+                 if(!RS_LS_on[p]) begin
+                        if((p != current_block)&&(p != next_block)&&(p != out_block)) begin
+                            next_block <= p;
                         end
                     end
                 end
@@ -276,10 +276,10 @@
          
 
            result_out <= 0;
-            for (i = SIZE-1; i >= 0; i = i - 1) begin
-                if ((valid_entries1[i] == 1 && valid_entries2[i] == 1)&&(i != out_block)) begin
-                    result_out <= {operand2s[i], operand1s[i], inst_nums[i], 1'b1, Rds[i], MemToRegs[i], MemReads[i], MemWrites[i], ALUOPs[i], ALUSrc2s[i], funct3s[i], immediates[i]};
-                    out_block <= i;
+            for (q = SIZE-1; q >= 0; q = q - 1) begin
+                if ((valid_entries1[q] == 1 && valid_entries2[q] == 1)&&(q != out_block)) begin
+                    result_out <= {operand2s[q], operand1s[q], inst_nums[q], 1'b1, Rds[q], MemToRegs[q], MemReads[q], MemWrites[q], ALUOPs[q], ALUSrc2s[q], funct3s[q], immediates[q]};
+                    out_block <= q;
                 end
             end
 
