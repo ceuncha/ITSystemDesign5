@@ -42,22 +42,22 @@
     (* keep = "true" *) reg [7:0] Rds [0:SIZE-1];
 
    (* keep = "true" *) reg [3:0] ALUOPs [0:SIZE-1];
-   (* keep = "true" *) reg [SIZE-1:0] ALUSrc1s;
-   (* keep = "true" *) reg [SIZE-1:0] ALUSrc2s;
+  (* keep = "true" *) reg ALUSrc1s [0:SIZE-1];
+  (* keep = "true" *) reg ALUSrc2s [0:SIZE-1];
 
    (* keep = "true" *) reg [31:0] immediates [0:SIZE-1];
    (* keep = "true" *) reg [7:0] operand1s [0:SIZE-1];
    (* keep = "true" *) reg [7:0] operand2s [0:SIZE-1];
 
-   (* keep = "true" *) reg [SIZE-1:0] valid_entries1; 
-   (* keep = "true" *) reg [SIZE-1:0] valid_entries2; 
+  (* keep = "true" *) reg valid_entries1 [0:SIZE-1]; 
+  (* keep = "true" *) reg valid_entries2 [0:SIZE-1];
 
   (* keep = "true" *) reg [4:0] current_block;
   (* keep = "true" *) reg [4:0] next_block;
     (* keep = "true" *) reg [4:0] out_block;
 
   (* keep = "true" *) integer i, j, k, l, m, n,o,p,q;
-   (* keep = "true" *)reg RS_ALU_on[0:SIZE-1];
+  (* keep = "true" *)reg RS_ALU_on [0:SIZE-1];
    (* keep = "true" *)wire operand1_ALU_conflict = ((operand1 == ALU_result_dest)&&ALU_result_valid);
   (* keep = "true" *)wire operand1_MUL_conflict = ((operand1 == MUL_result_dest)&&MUL_result_valid);
   (* keep = "true" *)wire operand1_DIV_conflict = ((operand1 == DIV_result_dest)&&DIV_result_valid);
