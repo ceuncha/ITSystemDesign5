@@ -56,7 +56,7 @@
   (* keep = "true" *) reg [4:0] next_block;
     (* keep = "true" *) reg [4:0] out_block;
 
-  (* keep = "true" *) integer i, j, k, l, m, n,o;
+  (* keep = "true" *) integer i, j, k, l, m, n,o,p,q;
    (* keep = "true" *)reg RS_ALU_on[0:SIZE-1];
    (* keep = "true" *)wire operand1_ALU_conflict = ((operand1 == ALU_result_dest)&&ALU_result_valid);
   (* keep = "true" *)wire operand1_MUL_conflict = ((operand1 == MUL_result_dest)&&MUL_result_valid);
@@ -183,12 +183,12 @@
 
            
             if (ALU_result_valid) begin              
-                for (i = 0; i < SIZE; i = i + 1) begin
-                    if (!valid_entries1[i] && operand1s[i] == ALU_result_dest) begin
-                        valid_entries1[i] <= 1;
+                for (p = 0; p < SIZE; p = p + 1) begin
+                    if (!valid_entries1[p] && operand1s[p] == ALU_result_dest) begin
+                        valid_entries1[p] <= 1;
                     end
-                    if (!valid_entries2[i] && operand2s[i] == ALU_result_dest) begin
-                        valid_entries2[i] <= 1;
+                    if (!valid_entries2[p] && operand2s[p] == ALU_result_dest) begin
+                        valid_entries2[p] <= 1;
                     end
                 end
             end
@@ -258,10 +258,10 @@
  
     result_out <= 0;
 
-             for (i = SIZE-1; i >= 0; i = i - 1) begin
-              if ((valid_entries1[i] == 1 && valid_entries2[i] == 1)&&(i != out_block)) begin
-                    result_out <= {operand2s[i], operand1s[i], inst_nums[i], 1'b1, PCs[i], Rds[i], ALUOPs[i], ALUSrc1s[i], ALUSrc2s[i], immediates[i]};
-                    out_block <= i;
+             for (q = SIZE-1; q >= 0; q = q - 1) begin
+              if ((valid_entries1[q] == 1 && valid_entries2[q] == 1)&&(q != out_block)) begin
+                    result_out <= {operand2s[q], operand1s[q], inst_nums[q], 1'b1, PCs[q], Rds[q], ALUOPs[q], ALUSrc1s[q], ALUSrc2s[q], immediates[q]};
+                    out_block <= q;
                 end
             end
 
