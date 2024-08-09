@@ -8,6 +8,7 @@ module mem_buffer(
     input wire [31:0] LS_Result, //mem addr
     input wire [7:0] Load_Phy,  
     input wire [31:0] LS_inst_num,  
+    input wire memwrite_rob,
     
     input wire [31:0] Operand2_LS,  //Write_data
     input wire [31:0] mem_addr_rob, //mem addr from rob
@@ -21,7 +22,7 @@ module mem_buffer(
     output reg [31:0] LS_inst_num_buff,  
     output reg [31:0] Operand2_LS_buff,  //Write_data
 
-    output reg memwrite_rob,    
+    output reg memwrite_rob_buff,    
     output reg [31:0] mem_addr_rob_buff, //mem addr from rob
     output reg [31:0] inst_num_rob_buff //inst num from rob
 );
