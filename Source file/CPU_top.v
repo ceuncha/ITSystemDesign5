@@ -184,8 +184,6 @@ module CPU_top(
 	(* keep = "true" *) wire [7:0] b_BR_Phy;
 	(* keep = "true" *) wire [31:0] b_RS_BR_inst_num_output;
 	(* keep = "true" *) wire [31:0] b_immediate_BR;
-	(* keep = "true" *) wire [7:0] b_Operand1_BR_phy;
-	(* keep = "true" *) wire [7:0] b_Operand2_BR_phy;
         (* keep = "true" *)wire [31:0] b_Operand2_BR;
 	(* keep = "true" *) wire [2:0] b_RS_BR_funct3;
 	(* keep = "true" *)wire [31:0]b_PC_Return;
@@ -1080,6 +1078,41 @@ MUX_2input u_CSR_mux(
     MUX_2input MUX_pass_B (.a(P_Operand2),.b(P_immediate),.sel(P_Src2),.y(P_ALU_B)); 
   (* keep_hierarchy = "yes" *)
     ALU ALU(.A(ALU_A),.B(ALU_B),.ALUop(ALUop),.Result(ALU_Data));
+	(* keep_hierarchy = "yes" *)
+buff2 u_buff2(
+    .clk(clk),
+    .reset(rst),
+	.RS_BR_Branch(RS_BR_Branch),
+	.RS_BR_Jump(RS_BR_Jump),
+	.RS_BR_taken(RS_BR_taken),
+	.RS_BR_hit(RS_BR_hit),
+	.BR_Phy(BR_Phy),
+	.RS_BR_inst_num_output(RS_BR_inst_num_output),
+	.immediate_BR(immediate_BR),
+	.Operand2_BR(Opearnd2_BR),
+	.RS_BR_funct3(RS_BR_funct3),
+	.negative(negative),
+	.zero(zero),
+	.overflow(overflow),
+	.carry(carry),
+	.PC_Return(PC_Return),
+	
+	.b_RS_BR_Branch(b_RS_BR_Branch),
+	.b_RS_BR_Jump(b_RS_BR_Jump),
+	.b_RS_BR_taken(b_RS_BR_taken),
+	.b_RS_BR_hit(b_RS_BR_hit),
+	.b_BR_Phy(b_BR_Phy),
+	.b_RS_BR_inst_num_output(b_RS_BR_inst_num_output),
+	.b_immediate_BR(b_immediate_BR),
+	.b_Operand2_BR(b_Opearnd2_BR),
+	.b_RS_BR_funct3(b_RS_BR_funct3),
+	.b_negative(b_negative),
+	.b_zero(b_zero),
+	.b_overflow(b_overflow),
+	.b_carry(b_carry),
+	.b_PC_Return(b_PC_Return),
+);
+
     (* keep_hierarchy = "yes" *)
 	BranchUnit branchUnit(.RS_BR_Jump(b_RS_BR_Jump),.RS_BR_Branch(b_RS_BR_Branch),.RS_BR_funct3(b_RS_BR_funct3),.RS_BR_taken(b_RS_BR_taken),.Predict_Result(Predict_Result),
 			      .immediate_BR(b_immediate_BR),.PC_BR(b_PC_BR),.ALUNegative(b_negative),.operand2(b_Operand2_BR),
