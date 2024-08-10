@@ -124,7 +124,7 @@ module shadow_RAT_register(
     output reg [7:0] data_out,
     input wire write_enable
 );
-    reg [7:0] registers [0:31];  
+    (* keep = "true" *) reg [7:0] registers [0:31];  
     integer l;
 
     always @(posedge write_enable) begin
