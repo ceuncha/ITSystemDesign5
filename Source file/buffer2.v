@@ -17,7 +17,7 @@ module mem_buffer(
     input wire zero,
     input wire overflow,
     input wire carry, 
-  
+    input wire PC_Return,
     output reg b_RS_BR_Branch,
     output reg b_RS_BR_Jump,
     output reg b_RS_BR_taken,
@@ -34,6 +34,8 @@ module mem_buffer(
     output reg b_zero,
     output reg b_overflow,
     output reg b_carry, 
+        output reg b_PC_Return,
+
 );
 
 
@@ -71,6 +73,7 @@ always @(posedge clk) begin
     b_overflow <= overflow;
     b_carry <= carry;
         b_Operand2_BR <= Operand2_BR;
+        b_PC_Return <= PC_Return;
     end
     end
 endmodule
