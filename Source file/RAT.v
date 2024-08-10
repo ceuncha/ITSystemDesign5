@@ -23,14 +23,14 @@ module RAT (
     output reg [7:0] free_phy_addr_out 
 );
 
-    reg [7:0] phy_addr_table [0:31]; 
+    (* keep = "true" *) reg [7:0] phy_addr_table [0:31]; 
 
-    wire [7:0] shadow_data_out [0:31][0:31];
-    reg [7:0] shadow_data_in [0:31][0:31];
-    reg shadow_write_enable [0:31];
-    reg [4:0] shadow_addr;
+   (* keep = "true" *)  wire [7:0] shadow_data_out [0:31][0:31];
+   (* keep = "true" *) reg [7:0] shadow_data_in [0:31][0:31];
+    (* keep = "true" *) reg shadow_write_enable [0:31];
+   (* keep = "true" *) reg [4:0] shadow_addr;
 
-    genvar i, j;
+   (* keep = "true" *) genvar i, j;
     generate                                                               
         for (i = 0; i < 32; i = i + 1) begin : shadow_RAT_reg_array
             for (j = 0; j < 32; j = j + 1) begin : shadow_RAT_regs
@@ -47,7 +47,7 @@ module RAT (
 
     integer k;
 
-    always @(posedge clk) begin     // ?猷�?�꺖?�벥 ?湲�?�넺 rat?�벥 ?�삂?猷�
+    always @(posedge clk) begin     // ?�뙴占�?占쎄틬?占쎈꺄 ?疫뀐옙?占쎈꽯 rat?占쎈꺄 ?占쎌굚?�뙴占�
         if (reset|exception_sig|mret_sig) begin
             for (k = 0; k < 32; k = k + 1) begin
                 phy_addr_table[k] <= k;
