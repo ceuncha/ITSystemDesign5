@@ -1,4 +1,4 @@
-module mem_buffer(
+module buffer2(
     input wire clk,
     input wire reset,
     input wire RS_BR_Branch,
@@ -8,7 +8,6 @@ module mem_buffer(
     input wire [7:0] BR_Phy,  
     input wire [31:0] RS_BR_inst_num_output, 
     input wire [31:0] immediate_BR,
-    input wire [31:0] PC_BR,  //
     input wire [7:0] Operand1_BR_phy,
     input wire [7:0] Operand2_BR_phy,
     input wire [31:0] Operand2_BR,
@@ -25,7 +24,6 @@ module mem_buffer(
   output reg [7:0] b_BR_Phy,  
   output reg [31:0] b_RS_BR_inst_num_output, 
   output reg [31:0] b_immediate_BR,
-  output reg [31:0] b_PC_BR,  //
   output reg [7:0] b_Operand1_BR_phy,
   output reg [7:0] b_Operand2_BR_phy,
     output reg [2:0] b_RS_BR_funct3,
@@ -51,11 +49,13 @@ always @(posedge clk) begin
     b_PC_BR <= 0;
     b_Operand1_BR_phy <= 0;
     b_Operand2_BR_phy <= 0;
-
+    b_RS_BR_funct3 <= 0;
     b_negative <= 0;
     b_zero <= 0;
     b_overflow <= 0;
     b_carry <= 0;
+    b_Operand2_BR <= 0;
+    b_PC_Return <= 0;
     end else begin
     b_RS_BR_Branch <=RS_BR_Branch;
     b_RS_BR_Jump <= RS_BR_Jump;
