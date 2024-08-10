@@ -111,21 +111,6 @@ module store_buffer(
                             buffer_inst_num[i] <= 0;
                             buffer_mem_addr[i] <= 0;  
                             entry_val[i] <= 1'b0;
-                            if(funct3s[i] == 3'b010) begin
-                                if(funct3 == 3'b000) begin
-                                buffer_mem_data[current_block] <= {buffer_mem_data[i][31:8], mem_data[7:0]};
-                                funct3s[current_block] <= 3'b010;
-                                end
-                                else if(funct3 == 3'b001) begin
-                                buffer_mem_data[current_block] <= {buffer_mem_data[i][31:16], mem_data[15:0]};
-                                funct3s[current_block] <= 3'b010;
-                                end
-                            end
-                        else if (funct3s[i] == 3'b001) begin
-                             if(funct3 == 3'b000) begin
-                                buffer_mem_data[current_block] <= {buffer_mem_data[i][31:8], mem_data[7:0]};
-                            end
-                        end
                        
                     end
                 end
@@ -145,17 +130,11 @@ module store_buffer(
                             load_data <= {{24{buffer_mem_data[i][7]}}, buffer_mem_data[i][7:0]}; // LB
                         end else if (funct3 == 3'b001) begin //LH
                             load_data <= {{16{buffer_mem_data[i][15]}}, buffer_mem_data[i][15:0]}; // LH
-                            if(funct3s[i] == 3'b000) begin //하위 8바이트만 맞음
-                                load_valid <= 3'b001;
-                            end
+
 
                         end else if (funct3 == 3'b010) begin //하위 16바이트만 맞음
                             load_data <= buffer_mem_data[i]; // LW
-                                if(funct3s[i] == 3'b000) begin
-                                    load_valid <= 3'b010;
-                                end else if(funct3s[i] == 3'b001) begin
-                                    load_valid <= 3'b011;
-                            end
+     
                         end
                     end
                 end
