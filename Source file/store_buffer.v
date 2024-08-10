@@ -141,9 +141,7 @@ module store_buffer(
 
                         load_data <= buffer_mem_data[i];
                         load_valid <= 3'b111;
-                        if(buffer_inst_num[i] > inst_num) begin
-                            load_valid <= 3'b000;
-                        end else if (funct3 == 3'b000) begin 
+                        if (funct3 == 3'b000) begin 
                             load_data <= {{24{buffer_mem_data[i][7]}}, buffer_mem_data[i][7:0]}; // LB
                         end else if (funct3 == 3'b001) begin //LH
                             load_data <= {{16{buffer_mem_data[i][15]}}, buffer_mem_data[i][15:0]}; // LH
