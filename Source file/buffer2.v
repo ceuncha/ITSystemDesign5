@@ -1,1 +1,73 @@
+module mem_buffer(
+    input wire clk,
+    input wire reset,
+    input wire RS_BR_Branch,
+    input wire RS_BR_Jump,
+    input wire RS_BR_taken,
+    input wire RS_BR_hit, 
+    input wire [7:0] BR_Phy,  
+    input wire [31:0] RS_BR_inst_num_output, 
+    input wire [31:0] immediate_BR,
+    input wire [31:0] PC_BR,  //
+    input wire [7:0] Operand1_BR_phy,
+    input wire [7:0] Operand2_BR_phy
 
+    input wire negative,
+    input wire zero,
+    input wire overflow,
+    input wire carry, 
+  
+    output wire b_RS_BR_Branch,
+    output wire b_RS_BR_Jump,
+    output wire b_RS_BR_taken,
+    output wire b_RS_BR_hit, 
+  output wire [7:0] b_BR_Phy,  
+  output wire [31:0] b_RS_BR_inst_num_output, 
+  output wire [31:0] b_immediate_BR,
+  output wire [31:0] b_PC_BR,  //
+  output wire [7:0] b_Operand1_BR_phy,
+  output wire [7:0] b_Operand2_BR_phy,
+
+    output wire b_negative,
+    output wire b_zero,
+    output wire b_overflow,
+    output wire b_carry, 
+);
+
+
+always @(posedge clk) begin
+    if (reset) begin
+    b_RS_BR_Branch <= 0;
+    b_RS_BR_Jump <= 0;
+    b_RS_BR_taken <= 0;
+    b_RS_BR_hit <= 0;
+    b_BR_Phy <= 0;
+    b_RS_BR_inst_num_output <= 0;
+    b_immediate_BR <= 0;
+    b_PC_BR <= 0;
+    b_Operand1_BR_phy <= 0;
+    b_Operand2_BR_phy <= 0;
+
+    b_negative <= 0;
+    b_zero <= 0;
+    b_overflow <= 0;
+    b_carry <= 0;
+    end else begin
+    b_RS_BR_Branch <=RS_BR_Branch;
+    b_RS_BR_Jump <= RS_BR_Jump;
+    b_RS_BR_taken <= RS_BR_taken;
+    b_RS_BR_hit <= RS_BR_hit;
+    b_BR_Phy <= BR_Phy;
+    b_RS_BR_inst_num_output <= RS_BR_inst_num_output;
+    b_immediate_BR <= immediate_BR;
+    b_PC_BR <= PC_BR;
+    b_Operand1_BR_phy <= Operand1_BR_phy;
+    b_Operand2_BR_phy <= Operand2_BR_phy;
+
+    b_negative <= negative;
+    b_zero <= zero;
+    b_overflow <= overflow;
+    b_carry <= carry;
+    end
+    end
+endmodule
