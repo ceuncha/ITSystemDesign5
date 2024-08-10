@@ -10,28 +10,29 @@ module mem_buffer(
     input wire [31:0] immediate_BR,
     input wire [31:0] PC_BR,  //
     input wire [7:0] Operand1_BR_phy,
-    input wire [7:0] Operand2_BR_phy
-
+    input wire [7:0] Operand2_BR_phy,
+    input wire [2:0] RS_BR_funct3,
     input wire negative,
     input wire zero,
     input wire overflow,
     input wire carry, 
   
-    output wire b_RS_BR_Branch,
-    output wire b_RS_BR_Jump,
-    output wire b_RS_BR_taken,
-    output wire b_RS_BR_hit, 
-  output wire [7:0] b_BR_Phy,  
-  output wire [31:0] b_RS_BR_inst_num_output, 
-  output wire [31:0] b_immediate_BR,
-  output wire [31:0] b_PC_BR,  //
-  output wire [7:0] b_Operand1_BR_phy,
-  output wire [7:0] b_Operand2_BR_phy,
+    output reg b_RS_BR_Branch,
+    output reg b_RS_BR_Jump,
+    output reg b_RS_BR_taken,
+    output reg b_RS_BR_hit, 
+  output reg [7:0] b_BR_Phy,  
+  output reg [31:0] b_RS_BR_inst_num_output, 
+  output reg [31:0] b_immediate_BR,
+  output reg [31:0] b_PC_BR,  //
+  output reg [7:0] b_Operand1_BR_phy,
+  output reg [7:0] b_Operand2_BR_phy,
+    output reg [2:0] b_RS_BR_funct3,
 
-    output wire b_negative,
-    output wire b_zero,
-    output wire b_overflow,
-    output wire b_carry, 
+    output reg b_negative,
+    output reg b_zero,
+    output reg b_overflow,
+    output reg b_carry, 
 );
 
 
@@ -63,7 +64,7 @@ always @(posedge clk) begin
     b_PC_BR <= PC_BR;
     b_Operand1_BR_phy <= Operand1_BR_phy;
     b_Operand2_BR_phy <= Operand2_BR_phy;
-
+    b_RS_BR_funct3 <= RS_BR_funct3;
     b_negative <= negative;
     b_zero <= zero;
     b_overflow <= overflow;
