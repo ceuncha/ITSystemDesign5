@@ -11,6 +11,7 @@ module mem_buffer(
     input wire [31:0] PC_BR,  //
     input wire [7:0] Operand1_BR_phy,
     input wire [7:0] Operand2_BR_phy,
+    input wire [31:0] Operand2_BR,
     input wire [2:0] RS_BR_funct3,
     input wire negative,
     input wire zero,
@@ -28,7 +29,7 @@ module mem_buffer(
   output reg [7:0] b_Operand1_BR_phy,
   output reg [7:0] b_Operand2_BR_phy,
     output reg [2:0] b_RS_BR_funct3,
-
+    output reg [31:0] b_Operand2_BR,
     output reg b_negative,
     output reg b_zero,
     output reg b_overflow,
@@ -69,6 +70,7 @@ always @(posedge clk) begin
     b_zero <= zero;
     b_overflow <= overflow;
     b_carry <= carry;
+        b_Operand2_BR <= Operand2_BR;
     end
     end
 endmodule
