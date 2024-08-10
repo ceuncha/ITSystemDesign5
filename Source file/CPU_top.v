@@ -167,7 +167,7 @@ module CPU_top(
 
 
   (* keep = "true" *)wire [31:0] PC_BR;
-
+  (* keep = "true" *)wire [31:0] b_PC_BR;
 (* keep = "true" *)wire [31:0]PC_Return;
 
     (* keep = "true" *) wire [7:0] Operand1_BR_phy;
@@ -192,7 +192,6 @@ module CPU_top(
 	(* keep = "true" *) wire b_overflow;
 	(* keep = "true" *) wire b_carry;
 	
-  (* keep = "true" *)wire [31:0] PC_BR;
 	(* keep = "true" *) wire BR_Done;
   assign BR_Done= b_RS_BR_Branch|b_RS_BR_Jump;
 
@@ -408,7 +407,6 @@ assign LS_Result = Operand1_LS + LS_B;
  
   
    
-   (* keep = "true" *)wire negaive,overflow,zero,carry;
    (* keep = "true" *)wire [31:0] ALU_A;
    (* keep = "true" *)wire [31:0] ALU_B;
    (* keep = "true" *)wire [31:0] ALUResult;
@@ -1096,7 +1094,7 @@ buff2 u_buff2(
 	.overflow(overflow),
 	.carry(carry),
 	.PC_Return(PC_Return),
-	
+	.PC_BR(PC_BR),
 	.b_RS_BR_Branch(b_RS_BR_Branch),
 	.b_RS_BR_Jump(b_RS_BR_Jump),
 	.b_RS_BR_taken(b_RS_BR_taken),
@@ -1111,6 +1109,8 @@ buff2 u_buff2(
 	.b_overflow(b_overflow),
 	.b_carry(b_carry),
 	.b_PC_Return(b_PC_Return),
+		.b_PC_BR(b_PC_BR)
+
 );
 
     (* keep_hierarchy = "yes" *)
