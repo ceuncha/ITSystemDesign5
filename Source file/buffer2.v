@@ -31,7 +31,7 @@ module buff2(
     output reg b_zero,
     output reg b_overflow,
     output reg b_carry, 
-        output reg b_PC_Return,
+        output reg b_PC_Return
 
 );
 
