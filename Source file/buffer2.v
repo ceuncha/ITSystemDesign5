@@ -1,4 +1,4 @@
-module buffer2(
+module buff2(
     input wire clk,
     input wire reset,
     input wire RS_BR_Branch,
