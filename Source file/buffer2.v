@@ -1,6 +1,8 @@
 module buff2(
     input wire clk,
     input wire reset,
+    input wire exception_sig,
+    input wire mret_sig,
     input wire RS_BR_Branch,
     input wire RS_BR_Jump,
     input wire RS_BR_taken,
@@ -37,7 +39,7 @@ module buff2(
 
 
 always @(posedge clk) begin
-    if (reset) begin
+    if (reset | exception_sig | mret_sig) begin
     b_RS_BR_Branch <= 0;
     b_RS_BR_Jump <= 0;
     b_RS_BR_taken <= 0;
