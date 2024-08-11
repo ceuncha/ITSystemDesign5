@@ -15,8 +15,8 @@ module buff2(
     input wire zero,
     input wire overflow,
     input wire carry, 
-    input wire PC_Return,
-    input wire PC_BR,
+    input wire [31:0] PC_Return,
+    input wire [31:0] PC_BR,
     
     output reg b_RS_BR_Branch,
     output reg b_RS_BR_Jump,
@@ -31,8 +31,8 @@ module buff2(
     output reg b_zero,
     output reg b_overflow,
     output reg b_carry, 
-    output reg b_PC_Return,
-    output reg b_PC_BR
+    output reg [31:0] b_PC_Return,
+    output reg [31:0] b_PC_BR
 );
 
 
