@@ -1080,6 +1080,8 @@ MUX_2input u_CSR_mux(
 buff2 u_buff2(
     .clk(clk),
     .reset(rst),
+.exception_sig(exception_sig),
+.mret_sig(mret_sig),
 	.RS_BR_Branch(RS_BR_Branch),
 	.RS_BR_Jump(RS_BR_Jump),
 	.RS_BR_taken(RS_BR_taken),
