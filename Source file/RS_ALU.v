@@ -109,7 +109,7 @@
 
             
    
-            if ((operand1_conflict == 1'b1) && (operand1_conflict == 1'b0)) begin  
+            if ((operand1_conflict == 1'b1) && (operand2_conflict == 1'b0)) begin  
                 inst_nums[current_block] <= RS_alu_inst_num;
                 PCs[current_block] <= PC;
                 Rds[current_block] <= Rd;
@@ -124,7 +124,7 @@
                 valid_entries1[current_block] <= 1;
                 valid_entries2[current_block] <= valid[1];
                 RS_ALU_on[current_block] <=1'b1;   
-            end else if ((operand1_conflict == 1'b0) && (operand1_conflict == 1'b1)) begin 
+            end else if ((operand1_conflict == 1'b0) && (operand2_conflict == 1'b1)) begin 
                 inst_nums[current_block] <= RS_alu_inst_num;
                 PCs[current_block] <= PC;
                 Rds[current_block] <= Rd;
@@ -140,7 +140,7 @@
                 valid_entries2[current_block] <= 1;   
                  RS_ALU_on[current_block] <=1'b1;   
              
-            end else if((operand1_conflict == 1'b1) && (operand1_conflict == 1'b1)) begin
+            end else if((operand1_conflict == 1'b1) && (operand2_conflict == 1'b1)) begin
                 inst_nums[current_block] <= RS_alu_inst_num;
                 PCs[current_block] <= PC;
                 Rds[current_block] <= Rd;
