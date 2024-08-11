@@ -49,6 +49,10 @@ always @(posedge reset) begin
 
 //10. ADD x11, x12, x13
 {memory[40], memory[41], memory[42], memory[43]} <= 32'b00000000110101100000010110110011;
+
+
+//BEQ x0, x0, -4
+{memory[52], memory[53], memory[54], memory[55]} <= 32'b11111110000000000000110011100011;
     //case 2
     /*
 //0. addi x1, x0, 10
@@ -105,7 +109,7 @@ always @(posedge reset) begin
 
 {memory[828], memory[829], memory[830], memory[831]} <= 32'b00110101110000000000111001100111;
 
-
+{memory[860], memory[861], memory[862], memory[863]} <= 32'b11111110000000000000110011100011;
 
     end
     always @ (*) begin
