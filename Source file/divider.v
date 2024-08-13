@@ -94,7 +94,7 @@ reg [63:0] temp_dividend_cal30_shift;
     // 초기화 및 시작
     always @(posedge clk ) begin
        if (start&!divide_zero) begin
-            temp_dividend[0] <= {31'b0, A, 1'b0};
+            temp_dividend[0] <= A;
             divisor[0] <= B;
             Physical_address_reg[0] <= Physical_address_in;
             PC_reg[0] <= PC_in;
@@ -217,12 +217,12 @@ temp_dividend[31] <= temp_dividend_cal30_shift;
 
     always @(*) begin
   
-          if (temp_dividend[0][63:32] >= divisor[0]) begin
-            temp_dividend_cal0[63:32] = temp_dividend[0][63:32] - divisor[0];
-            temp_dividend_cal0[31:0] = {temp_dividend[0][31:1], 1'b1};
+          if (temp_dividend[0][62:31] >= divisor[0]) begin
+            temp_dividend_cal0[63:32] = temp_dividend[0][62:31] - divisor[0];
+            temp_dividend_cal0[31:0] = {temp_dividend[0][30:0], 1'b1};
             temp_dividend_cal0_shift= temp_dividend_cal0 <<1;
         end else begin
-            temp_dividend_cal0 = {temp_dividend[0][63:1], 1'b0};
+            temp_dividend_cal0 = {temp_dividend[0][62:0], 1'b0};
             temp_dividend_cal0_shift= temp_dividend_cal0 <<1;
         end
 
