@@ -878,7 +878,7 @@ MUX_2input u_CSR_mux(
 .RS_BR_inst_num(RS_br_inst_num),
 .PC(RS_br_PC),
 .Rd(br_rd_phy_reg),
-.Jump(b_RS_br_Jump),
+.Jump(RS_br_Jump),
 .Branch(RS_br_Branch),
 .funct3(RS_br_func3),
 .immediate(RS_br_immediate),
