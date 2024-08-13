@@ -55,6 +55,7 @@ module divider (
     reg [63:0] temp_dividend_cal30;
     reg [63:0] temp_dividend_cal31;
     wire divide_zero;
+    integer i;
     
   assign divide_zero= (A!=0) && (B==0);
     // 초기화 및 시작
@@ -88,11 +89,12 @@ module divider (
     end
 end
     // 32 스테이지 생성
-    genvar i;
-    generate
-        for (i = 0; i < 31; i = i + 1) begin : stages
+
+
             always @(posedge clk ) begin
+              
                 if (reset) begin
+                for (i = 0; i < 31; i = i + 1) begin
                     temp_dividend[1] <= 64'd0;
     temp_dividend[2] <= 64'd0;
     temp_dividend[3] <= 64'd0;
@@ -130,7 +132,9 @@ end
                     divider_op_reg [i+1] <=1'd0; 
                     done_reg[i+1] <= 1'd0;
                     divide_zero_reg[i+1] <= 1'b0;                   
+                end 
                 end else begin
+                for (i = 0; i < 31; i = i + 1) begin
                      temp_dividend[1] <= {temp_dividend_cal0[62:0], 1'b0};
                      temp_dividend[2] <= {temp_dividend_cal1[62:0], 1'b0};
                      temp_dividend[3] <= {temp_dividend_cal2[62:0], 1'b0};
@@ -171,7 +175,7 @@ end
                 end
             end
         end
-    endgenerate
+
      
 
     
