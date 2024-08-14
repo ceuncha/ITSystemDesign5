@@ -1,0 +1,7 @@
+00 c0 01 13 // ADDI x2, x0, 12
+00 10 01 93 // ADDI x3, x0, 1
+02 20 80 b3 // MUL x1, x1, x2
+02 30 c0 b3 // DIV x1, x1, x3
+ff f1 01 13 // ADDI x2, x2, -1
+00 11 81 93 // ADDI x3, x3, 1
+fe b1 96 e3 // BNE x3, x11, -20
