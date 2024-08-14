@@ -167,13 +167,36 @@ module CPU_top(
 
 
   (* keep = "true" *)wire [31:0] PC_BR;
- (* keep = "true" *) wire BR_Done;
-  assign BR_Done= RS_BR_Branch|RS_BR_Jump;
-
-  (* keep = "true" *)wire [31:0]PC_Return;
+  (* keep = "true" *)wire [31:0] b_PC_BR;
+(* keep = "true" *)wire [31:0]PC_Return;
 
     (* keep = "true" *) wire [7:0] Operand1_BR_phy;
     (* keep = "true" *) wire [7:0] Operand2_BR_phy;
+
+	(* keep = "true" *) wire negative;
+	(* keep = "true" *) wire zero;
+	(* keep = "true" *) wire overflow;
+	(* keep = "true" *) wire carry;
+
+	(* keep = "true" *) wire b_RS_BR_Branch,b_RS_BR_Jump;
+	(* keep = "true" *) wire b_RS_BR_hit;
+	(* keep = "true" *) wire b_RS_BR_taken;
+	(* keep = "true" *) wire [7:0] b_BR_Phy;
+	(* keep = "true" *) wire [31:0] b_RS_BR_inst_num_output;
+	(* keep = "true" *) wire [31:0] b_immediate_BR;
+        (* keep = "true" *)wire [31:0] b_Operand2_BR;
+	(* keep = "true" *) wire [2:0] b_RS_BR_funct3;
+	(* keep = "true" *)wire [31:0]b_PC_Return;
+	(* keep = "true" *) wire b_negative;
+	(* keep = "true" *) wire b_zero;
+	(* keep = "true" *) wire b_overflow;
+	(* keep = "true" *) wire b_carry;
+	
+	(* keep = "true" *) wire BR_Done;
+  assign BR_Done= b_RS_BR_Branch|b_RS_BR_Jump;
+
+
+
     
     (* keep = "true" *)wire [31:0] pass_pc;
     (* keep = "true" *)wire [3:0] pass_ALUOP;
@@ -384,7 +407,6 @@ assign LS_Result = Operand1_LS + LS_B;
  
   
    
-   (* keep = "true" *)wire negaive,overflow,zero,carry;
    (* keep = "true" *)wire [31:0] ALU_A;
    (* keep = "true" *)wire [31:0] ALU_B;
    (* keep = "true" *)wire [31:0] ALUResult;
@@ -458,12 +480,12 @@ assign LS_Result = Operand1_LS + LS_B;
 global_prediction_top u_global_prediction_top(
     .clk(clk),
     .reset(rst),
-    .ID_EX_Branch(RS_BR_Branch),
+	.ID_EX_Branch(b_RS_BR_Branch),
     .Pcsrc(PCSrc),
-    .ID_EX_PC(PC_BR),
+	.ID_EX_PC(b_PC_BR),
     .PC_Branch(PC_Branch),
-    .ID_EX_Jump(RS_BR_Jump),
-    .ID_EX_hit(RS_BR_hit),
+	.ID_EX_Jump(b_RS_BR_Jump),
+	.ID_EX_hit(b_RS_BR_hit),
     .real_taken(real_taken),
     .CSR_epc(CSR_epc),
     .EHR_Address(EHR_Address),
@@ -509,8 +531,8 @@ BB u_BB(
     .Copy_RAT(save_on),                 // Output register destination extracted from instr[11:7]
     .head_num(restore_page),           // Output RegWrite signal to indicate a register write operation
     .Paste_RAT(restore_on),
-    .RS_EX_Branch(RS_BR_Branch), 
-    .RS_EX_Jump(RS_BR_Jump),
+    .RS_EX_Branch(b_RS_BR_Branch), 
+    .RS_EX_Jump(b_RS_BR_Jump),
     .exception_sig(exception_sig),
     .mret_sig(mret_sig)
 );
@@ -586,7 +608,7 @@ physical_register_file u_physical_register_file(
     .ALU_load_Write(Load_Done),
     .ALU_mul_Write(MUL_Done),
     .ALU_div_Write(DIV_Done),
-    .BR_Write(RS_BR_Jump),
+    .BR_Write(b_RS_BR_Jump),
     .Pass_done(P_Done),
     .CSR_done(CSR_Done),
     
@@ -594,7 +616,7 @@ physical_register_file u_physical_register_file(
     .ALU_load_Data(Load_Data),
     .ALU_mul_Data(MUL_Data[31:0]),
     .ALU_div_Data(DIV_Data),
-    .BR_Data(PC_Return),
+	.BR_Data(b_PC_Return),
     .Pass_done_data(P_Data),
     .CSR_done_data(CSR_Data),
     
@@ -602,7 +624,7 @@ physical_register_file u_physical_register_file(
     .ALU_load_phy(Load_phy_out),
     .ALU_mul_phy(MUL_Phy),
     .ALU_div_phy(DIV_Phy),
-    .BR_phy(BR_Phy),
+	.BR_phy(b_BR_Phy),
     .Pass_done_phy(P_Phy),
     .CSR_done_phy(CSR_Phy),
     
@@ -828,8 +850,8 @@ RS_CSR u_RS_CSR(
     .MUL_result_valid(MUL_Done),
     .DIV_result_dest(DIV_Phy),
     .DIV_result_valid(DIV_Done),
-    .Branch_result_valid(RS_BR_Jump),
-    .BR_Phy(BR_Phy),
+    .Branch_result_valid(b_RS_BR_Jump),
+	.BR_Phy(b_BR_Phy),
     .EX_MEM_MemRead(Load_Done),
     .P_Done(P_Done),
     .P_Phy(P_Phy),
@@ -873,8 +895,8 @@ MUX_2input u_CSR_mux(
 .DIV_result_valid(DIV_Done),
 .RS_BR_IF_ID_taken(RS_br_IF_ID_taken),
 .RS_BR_IF_ID_hit(RS_br_IF_ID_hit),
-.BR_Phy(BR_Phy),
-.BR_Done(RS_BR_Jump),
+	 .BR_Phy(b_BR_Phy),
+.BR_Done(b_RS_BR_Jump),
 .Predict_Result(Predict_Result),
      .P_Phy(P_Phy),
      .P_Done(P_Done),
@@ -941,8 +963,8 @@ MUX_2input u_CSR_mux(
         .P_Done(P_Done),
         .DIV_result_dest(DIV_Phy),
         .DIV_result_valid(DIV_Done),
-        .Branch_result_valid(RS_BR_Jump),
-        .BR_Phy(BR_Phy),
+        .Branch_result_valid(b_RS_BR_Jump),
+		.BR_Phy(b_BR_Phy),
         .P_Phy(P_Phy),
         .CSR_Done(CSR_Done),
         .CSR_Phy(CSR_Phy),
@@ -977,8 +999,8 @@ MUX_2input u_CSR_mux(
         .MUL_result_valid(MUL_Done),
         .DIV_result_dest(DIV_Phy),
         .DIV_result_valid(DIV_Done),
-        .Branch_result_valid(RS_BR_Jump),
-        .BR_Phy(BR_Phy),
+        .Branch_result_valid(b_RS_BR_Jump),
+		.BR_Phy(b_BR_Phy),
         .P_Done(P_Done),
         .P_Phy(P_Phy),
         .result_out(result_out_ls),
@@ -1010,8 +1032,8 @@ MUX_2input u_CSR_mux(
         .MUL_result_valid(MUL_Done),
         .DIV_result_dest(DIV_Phy),
         .DIV_result_valid(DIV_Done),
-        .Branch_result_valid(RS_BR_Jump),
-        .BR_Phy(BR_Phy),
+        .Branch_result_valid(b_RS_BR_Jump),
+	    .BR_Phy(b_BR_Phy),
         .P_Done(P_Done),
         .P_Phy(P_Phy),
         .exception_sig(exception_sig),
@@ -1033,7 +1055,7 @@ MUX_2input u_CSR_mux(
                    .RS_div_valid(RS_div_valid),
                    .ALU_result_dest(ALU_Phy),.ALU_result_valid(ALU_Done),.MUL_result_dest(MUL_Phy),
                    .MUL_result_valid(MUL_Done),.DIV_result_dest(DIV_Phy),.DIV_result_valid(DIV_Done),
-                   .Branch_result_valid(RS_BR_Jump),.BR_Phy(BR_Phy),.P_Done(P_Done),
+		   .Branch_result_valid(b_RS_BR_Jump),.BR_Phy(b_BR_Phy),.P_Done(P_Done),
                     .P_Phy(P_Phy),.CSR_Done(CSR_Done),
                      .CSR_Phy(CSR_Phy),
                    .exception_sig(exception_sig),
@@ -1054,11 +1076,50 @@ MUX_2input u_CSR_mux(
     MUX_2input MUX_pass_B (.a(P_Operand2),.b(P_immediate),.sel(P_Src2),.y(P_ALU_B)); 
   (* keep_hierarchy = "yes" *)
     ALU ALU(.A(ALU_A),.B(ALU_B),.ALUop(ALUop),.Result(ALU_Data));
+	(* keep_hierarchy = "yes" *)
+buff2 u_buff2(
+    .clk(clk),
+    .reset(rst),
+.exception_sig(exception_sig),
+.mret_sig(mret_sig),
+	.RS_BR_Branch(RS_BR_Branch),
+	.RS_BR_Jump(RS_BR_Jump),
+	.RS_BR_taken(RS_BR_taken),
+	.RS_BR_hit(RS_BR_hit),
+	.BR_Phy(BR_Phy),
+	.RS_BR_inst_num_output(RS_BR_inst_num_output),
+	.immediate_BR(immediate_BR),
+	.Operand2_BR(Operand2_BR),
+	.RS_BR_funct3(RS_BR_funct3),
+	.negative(negative),
+	.zero(zero),
+	.overflow(overflow),
+	.carry(carry),
+	.PC_Return(PC_Return),
+	.PC_BR(PC_BR),
+	.b_RS_BR_Branch(b_RS_BR_Branch),
+	.b_RS_BR_Jump(b_RS_BR_Jump),
+	.b_RS_BR_taken(b_RS_BR_taken),
+	.b_RS_BR_hit(b_RS_BR_hit),
+	.b_BR_Phy(b_BR_Phy),
+	.b_RS_BR_inst_num_output(b_RS_BR_inst_num_output),
+	.b_immediate_BR(b_immediate_BR),
+	.b_Operand2_BR(b_Operand2_BR),
+	.b_RS_BR_funct3(b_RS_BR_funct3),
+	.b_negative(b_negative),
+	.b_zero(b_zero),
+	.b_overflow(b_overflow),
+	.b_carry(b_carry),
+	.b_PC_Return(b_PC_Return),
+		.b_PC_BR(b_PC_BR)
+
+);
+
     (* keep_hierarchy = "yes" *)
-     BranchUnit branchUnit(.RS_BR_Jump(RS_BR_Jump),.RS_BR_Branch(RS_BR_Branch),.RS_BR_funct3(RS_BR_funct3),.RS_BR_taken(RS_BR_taken),.Predict_Result(Predict_Result),
-                         .immediate_BR(immediate_BR),.PC_BR(PC_BR),.ALUNegative(negative),.operand2(Operand2_BR),
-                         .ALUZero(zero),.ALUOverflow(overflow),.ALUCarry(carry),.PC_Branch(PC_Branch),
-                         .branch_index(Branch_index),.PCSrc(PCSrc), .RS_BR_inst_num(RS_BR_inst_num_output),.PC_Return(PC_Return));
+	BranchUnit branchUnit(.RS_BR_Jump(b_RS_BR_Jump),.RS_BR_Branch(b_RS_BR_Branch),.RS_BR_funct3(b_RS_BR_funct3),.RS_BR_taken(b_RS_BR_taken),.Predict_Result(Predict_Result),
+			      .immediate_BR(b_immediate_BR),.PC_BR(b_PC_BR),.ALUNegative(b_negative),.operand2(b_Operand2_BR),
+			      .ALUZero(b_zero),.ALUOverflow(b_overflow),.ALUCarry(b_carry),.PC_Branch(PC_Branch),
+			      .branch_index(Branch_index),.PCSrc(PCSrc), .RS_BR_inst_num(b_RS_BR_inst_num_output),.PC_Return(b_PC_Return));
 
     (* keep_hierarchy = "yes" *)
    add4 add4 (.in(PC_BR),.out(PC_Return));
@@ -1099,11 +1160,14 @@ CSR_ALU u_CSR_ALU(
 
  
  
+ 
+ 
+ 
  (* keep_hierarchy = "yes" *)
   exception_address_unit exception_address_unit (
   .clk(clk),
   .reset(rst),
-
+   .exception_sig(exception_sig),
     .mret_sig(mret_sig),
   .address(LS_Result),
   .address_exception(exception_address)
@@ -1182,7 +1246,7 @@ CSR_ALU u_CSR_ALU(
         .div_exec_PC(RS_EX_Div_inst_num_out),
 
         .PcSrc(Predict_Result),
-        .PC_Return(PC_Return),
+	    .PC_Return(b_PC_Return),
         .branch_index(Branch_index),
         .BR_Done(BR_Done),
 
