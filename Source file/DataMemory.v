@@ -18,8 +18,8 @@ integer i;
 reg [31:0] memory [0:2047];
     always @(posedge clk) begin                       
    if (reset) begin
-       for (i = 0; i < 2047; i = i + 1) begin
-            memory[i] <= i+3;
+       for (i = 0; i < 2048; i = i + 1) begin
+           memory[i] <= i+3;
         end
 
     end
