@@ -666,6 +666,8 @@ chuchu u_chuchu(
 (* keep_hierarchy = "yes" *)
 control_unit_top u_control_unit_top(
     .rst(rst),
+	.exception(exception_sig),
+	.mret(mret_sig),
     .opcode(opcode),
     .funct3(funct3),
     .funct7(funct7),
