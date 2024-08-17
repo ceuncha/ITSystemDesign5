@@ -1,6 +1,8 @@
 module chuchu (
     input clk,
     input reset,
+    input exception,
+    input mret,
 
     input save_state,        
     input restore_state,      
@@ -35,7 +37,7 @@ module chuchu (
     endgenerate
 
     always @(posedge clk) begin   
-        if (reset) begin
+        if (reset || exception || mret) begin
             for (i = 0; i < 128; i = i + 1) begin
                 chuchu_array[i] <= 32 + i;
             end
