@@ -276,22 +276,7 @@ always @(*) begin
                     out_div_inst_num = inst_num;
                 end else begin
                     // Default R-type to ADD ALU
-                    if(valid == 2'b11) begin
-
-                        pass_pc = in_pc;
-
-                        pass_rd_phy_reg = rd_phy_reg;
-                        pass_rs_on = 1;
-                        pass_Operand1 = Operand1_data;
-                        pass_Operand2 = Operand2_data;
-
-                        pass_immediate = immediate;     
-                        pass_ALUOP = ALUOP;   
-                        pass_ALUSrc1 = ALUSrc1;
-                        pass_ALUSrc2 = ALUSrc2;      
-                        pass_inst_num = inst_num;     
-
-                    end else begin
+                   
 
                     add_alu_pc = in_pc;
 
@@ -306,27 +291,12 @@ always @(*) begin
                     out_add_ALUSrc1 = ALUSrc1;
                     out_add_ALUSrc2 = ALUSrc2;      
                     out_add_inst_num = inst_num;
-                    end
+                    
                 end
             end else begin
                 // Default R-type to ADD ALU
 
-                    if(valid == 2'b11) begin
 
-                        pass_pc = in_pc;
-
-                        pass_rd_phy_reg = rd_phy_reg;
-                        pass_rs_on = 1;
-                        pass_Operand1 = Operand1_data;
-                        pass_Operand2 = Operand2_data;
-
-                        pass_immediate = immediate;     
-                        pass_ALUOP = ALUOP;   
-                        pass_ALUSrc1 = ALUSrc1;
-                        pass_ALUSrc2 = ALUSrc2;      
-                        pass_inst_num = inst_num;     
-
-                    end else begin
 
 
                 add_alu_pc = in_pc;
@@ -342,7 +312,7 @@ always @(*) begin
                 out_add_ALUSrc1 = ALUSrc1;
                 out_add_ALUSrc2 = ALUSrc2;      
                 out_add_inst_num = inst_num;
-                    end
+                    
             end
         end else if (in_opcode == 7'b1101111 || in_opcode == 7'b1100111 || in_opcode == 7'b1100011) begin
             // Branch and Jump instructions
@@ -401,22 +371,6 @@ always @(*) begin
         end else begin
             // Default to ADD ALU
 
-                    if(valid == 2'b11) begin
-
-                        pass_pc = in_pc;
-
-                        pass_rd_phy_reg = rd_phy_reg;
-                        pass_rs_on = 1;
-                        pass_Operand1 = Operand1_data;
-                        pass_Operand2 = Operand2_data;
-
-                        pass_immediate = immediate;     
-                        pass_ALUOP = ALUOP;   
-                        pass_ALUSrc1 = ALUSrc1;
-                        pass_ALUSrc2 = ALUSrc2;      
-                        pass_inst_num = inst_num;     
-
-                    end else begin
 
  
             add_alu_pc = in_pc;
@@ -435,5 +389,5 @@ always @(*) begin
                     end
         end
     end
-end
+
 endmodule
