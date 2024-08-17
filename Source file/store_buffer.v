@@ -107,24 +107,23 @@ module store_buffer(
 
             // Check for existing entry with the same address
                 for (i = 0; i < SIZE; i = i + 1) begin
-                    if (buffer_mem_addr[i] == mem_addr) begin
+                    if (buffer_mem_addr[i] == mem_addr && funct3s[i] == funct3) begin
                             buffer_inst_num[i] <= 0;
                             buffer_mem_addr[i] <= 0;  
                             entry_val[i] <= 1'b0;
+                            funct3s[i] <= 1'b0;
                        
                     end
                 end
             current_block <= next_block;
         
      
-            end else if (memread) begin
+            if (memread) begin
                 load_valid <= 3'b000;
                 load_done_out <= 1'b1;
                 store_address_out <= mem_addr;
                 for (i = 0; i < SIZE; i = i + 1) begin
-                    if (buffer_mem_addr[i] == mem_addr) begin
-
-                        load_data <= buffer_mem_data[i];
+                    if (buffer_mem_addr[i] == mem_addr && funct3s[i] == funct3) begin 
                         load_valid <= 3'b111;
                         if (funct3 == 3'b000) begin 
                             load_data <= {{24{buffer_mem_data[i][7]}}, buffer_mem_data[i][7:0]}; // LB
@@ -134,14 +133,17 @@ module store_buffer(
 
                         end else if (funct3 == 3'b010) begin //하위 16바이트만 맞음
                             load_data <= buffer_mem_data[i]; // LW
-     
-                        end
+                        end else if (funct3 == 3'b100) begin
+                            load_data <= {{24{1'b0}}, buffer_mem_data[i][7:0]}; // LBU
+                        end else if (funct3 == 3'b101) begin
+                            load_data <= {{16{1'b0}}, buffer_mem_data[i][15:0]}; // LHU
+                        end 
                     end
                 end
             end
             
         end   
-
+        end
     end
 
 endmodule
