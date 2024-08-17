@@ -17,6 +17,7 @@ module BranchUnit(
     output reg [31:0] PC_Branch,
     output reg [31:0] branch_index,
     output reg PCSrc,
+    output reg [31:0] PC_Return_out,
 
     output reg Predict_Result
 );
@@ -56,6 +57,11 @@ always @(*) begin
         
         branch_index = RS_BR_inst_num;
         Predict_Result = RS_BR_taken ^ PCSrc;
+        if(RS_BR_taken) begin
+            PC_return_out = PC_Return;
+        end else begin
+            PC_return_out = PC_Branch;
+        end
     end
 
 endmodule
