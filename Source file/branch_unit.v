@@ -58,9 +58,9 @@ always @(*) begin
         branch_index = RS_BR_inst_num;
         Predict_Result = RS_BR_taken ^ PCSrc;
         if(RS_BR_taken) begin
-            PC_return_out = PC_Return;
+           PC_Return_out = PC_Return;
         end else begin
-            PC_return_out = PC_Branch;
+            PC_Return_out = PC_Branch;
         end
     end
 
