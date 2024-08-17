@@ -131,10 +131,8 @@ always @(posedge clk) begin
             // Update the branch entry with PC_Return value
             for (i = 0; i < 64; i = i + 1) begin
                 if (rob_entry[i][31:0] == branch_index) begin
-                    rob_entry[i][136:0] <= {rob_entry[i][136], rob_entry[i][135:134], rob_entry[i][133],rob_entry[i][132:101],rob_entry[i][100], rob_entry[i][99], rob_entry[i][98], 1'b1, rob_entry[i][96], PC_Return, rob_entry[i][63:32], rob_entry[i][31:0]};
-                    tail <= (i + 1) % 64; // Move tail to the entry right after the branch entry
-                    rob_entry[(i+1)%64][136:0] <= 0; // Flush under tail entry
-                    rob_entry[(i+2)%64][136:0] <= 0; // Fulsh under tail entry
+                    rob_entry[i][136:0] <= {rob_entry[i][136], 2'b10, rob_entry[i][133],rob_entry[i][132:101],rob_entry[i][100], 1'b1, rob_entry[i][98], 1'b1, rob_entry[i][96], PC_Return, rob_entry[i][63:32], rob_entry[i][31:0]};
+
   
                 end
             end
