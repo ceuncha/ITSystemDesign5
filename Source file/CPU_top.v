@@ -169,7 +169,7 @@ module CPU_top(
   (* keep = "true" *)wire [31:0] PC_BR;
   (* keep = "true" *)wire [31:0] b_PC_BR;
 (* keep = "true" *)wire [31:0]PC_Return;
-
+(* keep = "true" *)wire [31:0]PC_Return_out;
     (* keep = "true" *) wire [7:0] Operand1_BR_phy;
     (* keep = "true" *) wire [7:0] Operand2_BR_phy;
 
@@ -1119,7 +1119,7 @@ buff2 u_buff2(
 	BranchUnit branchUnit(.RS_BR_Jump(b_RS_BR_Jump),.RS_BR_Branch(b_RS_BR_Branch),.RS_BR_funct3(b_RS_BR_funct3),.RS_BR_taken(b_RS_BR_taken),.Predict_Result(Predict_Result),
 			      .immediate_BR(b_immediate_BR),.PC_BR(b_PC_BR),.ALUNegative(b_negative),.operand2(b_Operand2_BR),
 			      .ALUZero(b_zero),.ALUOverflow(b_overflow),.ALUCarry(b_carry),.PC_Branch(PC_Branch),
-			      .branch_index(Branch_index),.PCSrc(PCSrc), .RS_BR_inst_num(b_RS_BR_inst_num_output),.PC_Return(b_PC_Return));
+			      .branch_index(Branch_index),.PCSrc(PCSrc), .RS_BR_inst_num(b_RS_BR_inst_num_output),.PC_Return(b_PC_Return), .PC_Return_out(PC_Return_out));
 
     (* keep_hierarchy = "yes" *)
    add4 add4 (.in(PC_BR),.out(PC_Return));
@@ -1246,7 +1246,7 @@ CSR_ALU u_CSR_ALU(
         .div_exec_PC(RS_EX_Div_inst_num_out),
 
         .PcSrc(Predict_Result),
-	    .PC_Return(b_PC_Return),
+	    .PC_Return(PC_Return_out),
         .branch_index(Branch_index),
         .BR_Done(BR_Done),
 
