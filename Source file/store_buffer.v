@@ -102,7 +102,7 @@ module store_buffer(
                     buffer_mem_data[current_block] <= mem_data; // SW
                     funct3s[current_block] <= 3'b010;  
                 end
-
+            end
 
 
             // Check for existing entry with the same address
@@ -144,6 +144,6 @@ module store_buffer(
             
         end   
         end
-    end
+
 
 endmodule
