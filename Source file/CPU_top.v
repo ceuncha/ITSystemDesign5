@@ -891,7 +891,7 @@ MUX_2input u_CSR_mux(
 .RS_BR_IF_ID_hit(RS_br_IF_ID_hit),
 	 .BR_Phy(b_BR_Phy),
 .BR_Done(b_RS_BR_Jump),
-.Predict_Result(mret_sig),
+.Predict_Result(Predict_Result),
      .P_Phy(P_Phy),
      .P_Done(P_Done),
 .RS_BR_Branch(RS_BR_Branch),
