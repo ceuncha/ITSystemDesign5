@@ -13,6 +13,11 @@ module ROB(
     input wire ROB_Flush,
     input wire exception_datamem,
     
+     input wire b_RS_BR_Branch,
+      input wire PCSrc,
+      input wire [31:0] b_PC_BR,
+       input wire [31:0] PC_Branch,
+      
     input wire alu_exec_done,            // ALU execution completion signal
     input wire [31:0] alu_exec_value,    // ALU executed value
     input wire [31:0] alu_exec_PC,       // ALU execution index
@@ -56,7 +61,12 @@ module ROB(
     output reg mret_sig,
     output reg [1:0] exception_cause,
     output reg [2:0] ROB_funct3,
-    output reg [31:0] out_inst_num
+    output reg [31:0] out_inst_num,
+    
+         output reg c_RS_BR_Branch,
+      output reg cPCSrc,
+      output reg [31:0] c_PC_BR,
+       output reg [31:0] cPC_Branch
 );
 
 // ROB memory
@@ -64,6 +74,10 @@ module ROB(
     reg [31:0] Store_Addrs [0:63];
     reg [5:0] head;                        // Head pointer (5 bits for 32 entries)
     reg [5:0] tail;                        // Tail pointer (5 bits for 32 entries)
+    reg b_RS_BR_Branchs [0:63];
+    reg [31:0] b_PC_BRs [0:63];
+    reg [31:0] PC_Branchs [0:63];
+    reg PCSrcs [0:63];
     integer i;
 
 // Reset ROB entries
@@ -86,6 +100,10 @@ always @(posedge clk) begin
         out_reg_write <= 0;
         out_MemWrite <= 0;
         ROB_MemRead <=0;
+                                              c_RS_BR_Branch<= 0;
+                     c_PC_BR<= 0;
+                     cPC_Branch<= 0;
+                     cPCSrc<= 0;
         reset_rob_entries();
     end else begin
          for (i = 0; i < 64; i = i + 1) begin
@@ -132,21 +150,23 @@ always @(posedge clk) begin
             for (i = 0; i < 64; i = i + 1) begin
                 if (rob_entry[i][31:0] == branch_index) begin
                     rob_entry[i][136:0] <= {rob_entry[i][136], 2'b10, rob_entry[i][133],rob_entry[i][132:101],rob_entry[i][100], 1'b1, rob_entry[i][98], 1'b1, rob_entry[i][96], PC_Return, rob_entry[i][63:32], rob_entry[i][31:0]};
-
-  
+                     b_RS_BR_Branchs[i]<= b_RS_BR_Branch;
+                     b_PC_BRs[i][31:0]<= b_PC_BR;
+                        PC_Branchs[i][31:0]<= PC_Branch;
+                        PCSrcs[i]<= PCSrc;
                 end
             end
         end else if (IF_ID_instOut != 32'b0) begin  // Only increment tail if the instruction is not invalid (i.e., not a bubble)
             if (ID_exception == 1'b0) begin
                 if (mret_inst == 1'b1) begin
-                    rob_entry[tail] <= {MemRead, 2'b00,mret_inst, IF_ID_PC, MemWrite, 1'b0, 1'b1, 1'b1, reg_write, 32'b0, IF_ID_instOut, PC}; // Store input data in the ROB entry with value set to 32'b0 and new_bit set to 1 [99]�뒗 exceptionflag
+                    rob_entry[tail] <= {MemRead, 2'b00,mret_inst, IF_ID_PC, MemWrite, 1'b0, 1'b1, 1'b1, reg_write, 32'b0, IF_ID_instOut, PC}; // Store input data in the ROB entry with value set to 32'b0 and new_bit set to 1 [99]?뒗 exceptionflag
                     tail <= (tail + 1) % 64;                // Circular buffer handling
                 end else begin
-                    rob_entry[tail] <= {MemRead, 2'b00,mret_inst, IF_ID_PC, MemWrite, 1'b0, 1'b1, 1'b0, reg_write, 32'b0, IF_ID_instOut, PC}; // Store input data in the ROB entry with value set to 32'b0 and new_bit set to 1 [99]�뒗 exceptionflag
+                    rob_entry[tail] <= {MemRead, 2'b00,mret_inst, IF_ID_PC, MemWrite, 1'b0, 1'b1, 1'b0, reg_write, 32'b0, IF_ID_instOut, PC}; // Store input data in the ROB entry with value set to 32'b0 and new_bit set to 1 [99]?뒗 exceptionflag
                     tail <= (tail + 1) % 64;                // Circular buffer handling
                 end
             end else begin
-                rob_entry[tail] <= {MemRead, 2'b00,mret_inst, IF_ID_PC, MemWrite, 1'b1, 1'b1, 1'b1, reg_write, 32'b0, IF_ID_instOut, PC}; // Store input data in the ROB entry with value set to 32'b0 and new_bit set to 1 [99]�뒗 exceptionflag
+                rob_entry[tail] <= {MemRead, 2'b00,mret_inst, IF_ID_PC, MemWrite, 1'b1, 1'b1, 1'b1, reg_write, 32'b0, IF_ID_instOut, PC}; // Store input data in the ROB entry with value set to 32'b0 and new_bit set to 1 [99]?뒗 exceptionflag
                 tail <= (tail + 1) % 64;                // Circular buffer handling
             end
         end
@@ -182,9 +202,13 @@ always @(posedge clk) begin
                     end
                 end else begin
                     exception_sig <= 1'b1;
-                    mret_sig <= 1'b0;
+                    mret_sig <= 1'b1;
                     exception_cause <= rob_entry[head][135:134];
                     EPC <=  rob_entry[head][95:64];
+                     c_RS_BR_Branch<= b_RS_BR_Branchs[head];
+                     c_PC_BR<= b_PC_BRs[head];
+                     cPC_Branch<= PC_Branchs[head];
+                     cPCSrc<= PCSrcs[head];
                     out_reg_write <= 0; 
                     head <= 0;
                     tail <= 0;
@@ -201,6 +225,10 @@ always @(posedge clk) begin
                     exception_sig <= 0;
                     mret_sig <= 0;
                     ROB_MemRead <= 0;
+                                         c_RS_BR_Branch<= 0;
+                     c_PC_BR<= 0;
+                     cPC_Branch<= 0;
+                     cPCSrc<= 0;
             end
      end
 
