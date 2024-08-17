@@ -519,23 +519,7 @@ Instruction_memory u_Instruction_memory(
     .instOut(instOut)
 );
 
-(* keep_hierarchy = "yes" *)
-BB u_BB(
-    .clk(clk),                      // Clock signal
-    .rst(rst),                      // Reset signal
-    .opcode(instOut_opcode),             // Input opcode
-    .PCSrc(Predict_Result),                    // Branch decision signal
-    .branch_PC(Branch_index),         // Branch index in ROB
-    .PC(inst_num),                // Current PC value (expanded to 32 bits)
-    .tail_num(save_page),           // Output value
-    .Copy_RAT(save_on),                 // Output register destination extracted from instr[11:7]
-    .head_num(restore_page),           // Output RegWrite signal to indicate a register write operation
-    .Paste_RAT(restore_on),
-    .RS_EX_Branch(b_RS_BR_Branch), 
-    .RS_EX_Jump(b_RS_BR_Jump),
-    .exception_sig(exception_sig),
-    .mret_sig(mret_sig)
-);
+
     
 (* keep_hierarchy = "yes" *)
 ifid_pipeline_register u_ifid_pipeline_register(
