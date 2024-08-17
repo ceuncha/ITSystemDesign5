@@ -7,7 +7,12 @@ module CPU_top(
 (* keep = "true" *)wire ROB_Flush;
 	(* keep = "true" *)wire ROB_MemRead;
 	(* keep = "true" *)wire [1:0] Real_cause;
-
+	
+         (* keep = "true" *)wire c_RS_BR_Branch;
+      (* keep = "true" *)wire cPCSrc;
+      (* keep = "true" *)wire [31:0] c_PC_BR;
+       (* keep = "true" *)wire [31:0] cPC_Branch;
+       
 //program counter
 (* keep = "true" *)wire first_and_Pcsrc;
 (* keep = "true" *)wire Wrong;
@@ -457,6 +462,10 @@ assign LS_Result = Operand1_LS + LS_B;
 (* keep = "true" *) wire [31:0] ROB_exception_pc;
 (* keep = "true" *) wire [1:0] ROB_cause;
 (* keep = "true" *) wire mret_sig;
+(* keep = "true" *) wire s_exception_sig;
+(* keep = "true" *) wire s_mret_sig;
+ assign s_exception_sig= 0;
+ assign s_mret_sig= 0;
 (* keep = "true" *) wire exception_sig;
 (* keep = "true" *) wire exception_datamem;
 (* keep = "true" *) wire exception_rob;
@@ -480,17 +489,17 @@ assign LS_Result = Operand1_LS + LS_B;
 global_prediction_top u_global_prediction_top(
     .clk(clk),
     .reset(rst),
-	.ID_EX_Branch(b_RS_BR_Branch),
-    .Pcsrc(PCSrc),
-	.ID_EX_PC(b_PC_BR),
-    .PC_Branch(PC_Branch),
+	.ID_EX_Branch(c_RS_BR_Branch),
+    .Pcsrc(cPCSrc),
+	.ID_EX_PC(c_PC_BR),
+    .PC_Branch(cPC_Branch),
 	.ID_EX_Jump(b_RS_BR_Jump),
 	.ID_EX_hit(b_RS_BR_hit),
     .real_taken(real_taken),
     .CSR_epc(CSR_epc),
     .EHR_Address(EHR_Address),
-    .mret_sig(mret_sig),
-    .exception_sig(exception_sig),
+    .mret_sig(s_mret_sig),
+    .exception_sig(s_exception_sig),
     .PC(PC),
     .Wrong(Wrong),
     .hit(hit),    
@@ -533,7 +542,7 @@ ifid_pipeline_register u_ifid_pipeline_register(
     .IF_ID_hit(IF_ID_hit),
     .exception_sig(exception_sig),
     .mret_sig(mret_sig),
-    .Predict_Result(Predict_Result),
+    .Predict_Result(mret_sig),
     .IF_ID_instOut(IF_ID_instOut),  
     .inst_num(inst_num),
     .IF_ID_inst_num(IF_ID_inst_num),
@@ -559,7 +568,7 @@ RAT u_RAT(
     .clk(clk),
     .reset(rst),
 
-    .if_id_flush(Predict_Result),
+    .if_id_flush(mret_sig),
     .save_state(save_on),    // ?沅쀨퉪? ??쟿筌????뮞?苑??肉? ?湲??源? ????삢 ??뻿??깈
     .restore_state(restore_on), // ?沅쀨퉪? ??쟿筌????뮞?苑??肉??苑? ?湲??源? 癰귣벊?뜚 ??뻿??깈
     .save_page(save_page),     // ?湲??源? ????삢??뒠 ?沅쀨퉪? ??쟿筌????뮞?苑? ??읂??뵠筌?? ?苑??源? ??뻿??깈
@@ -659,15 +668,14 @@ chuchu u_chuchu(
     .save_page(save_page),     // ?湲??源? ????삢 ??읂??뵠筌?? ?苑??源? ??뻿??깈
     .restore_page(restore_page),  // ?湲??源? 癰귣벊?뜚 ??읂??뵠筌?? ?苑??源? ??뻿??깈
     .rat_data(original_phy_addr),
-    .chuchu_out(chuchu_addr)
+    .chuchu_out(chuchu_addr),
+    .mret_sig(mret_sig)
 );
 
 
 (* keep_hierarchy = "yes" *)
 control_unit_top u_control_unit_top(
     .rst(rst),
-	.exception(exception_sig),
-	.mret(mret_sig),
     .opcode(opcode),
     .funct3(funct3),
     .funct7(funct7),
@@ -883,7 +891,7 @@ MUX_2input u_CSR_mux(
 .RS_BR_IF_ID_hit(RS_br_IF_ID_hit),
 	 .BR_Phy(b_BR_Phy),
 .BR_Done(b_RS_BR_Jump),
-.Predict_Result(Predict_Result),
+.Predict_Result(mret_sig),
      .P_Phy(P_Phy),
      .P_Done(P_Done),
 .RS_BR_Branch(RS_BR_Branch),
@@ -1218,6 +1226,11 @@ CSR_ALU u_CSR_ALU(
 	     .ROB_Flush(ROB_Flush),
 	     .exception_datamem(exception_datamem),
 	    
+	         .b_RS_BR_Branch(b_RS_BR_Branch),
+     .PCSrc(PCSrc),
+     .b_PC_BR(b_PC_BR),
+        .PC_Branch(PC_Branch),
+        
         .alu_exec_done(ALU_Done),
         .alu_exec_value(ALU_Data),
         .alu_exec_PC(RS_EX_inst_num),
@@ -1261,7 +1274,12 @@ CSR_ALU u_CSR_ALU(
         .exception_cause(ROB_cause),
         .ROB_funct3(ROB_funct3),
 	    .out_inst_num(ROB_instnum),
-	    .ROB_MemRead(ROB_MemRead)
+	    .ROB_MemRead(ROB_MemRead),
+	    
+	             .c_RS_BR_Branch(c_RS_BR_Branch),
+      .cPCSrc(cPCSrc),
+      .c_PC_BR(c_PC_BR),
+       .cPC_Branch(cPC_Branch)
     );
 
         (* keep_hierarchy = "yes" *)
