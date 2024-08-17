@@ -139,14 +139,14 @@ always @(posedge clk) begin
         end else if (IF_ID_instOut != 32'b0) begin  // Only increment tail if the instruction is not invalid (i.e., not a bubble)
             if (ID_exception == 1'b0) begin
                 if (mret_inst == 1'b1) begin
-                    rob_entry[tail] <= {MemRead, 2'b00,mret_inst, IF_ID_PC, MemWrite, 1'b0, 1'b1, 1'b1, reg_write, 32'b0, IF_ID_instOut, PC}; // Store input data in the ROB entry with value set to 32'b0 and new_bit set to 1 [99]는 exceptionflag
+                    rob_entry[tail] <= {MemRead, 2'b00,mret_inst, IF_ID_PC, MemWrite, 1'b0, 1'b1, 1'b1, reg_write, 32'b0, IF_ID_instOut, PC}; // Store input data in the ROB entry with value set to 32'b0 and new_bit set to 1 [99]�뒗 exceptionflag
                     tail <= (tail + 1) % 64;                // Circular buffer handling
                 end else begin
-                    rob_entry[tail] <= {MemRead, 2'b00,mret_inst, IF_ID_PC, MemWrite, 1'b0, 1'b1, 1'b0, reg_write, 32'b0, IF_ID_instOut, PC}; // Store input data in the ROB entry with value set to 32'b0 and new_bit set to 1 [99]는 exceptionflag
+                    rob_entry[tail] <= {MemRead, 2'b00,mret_inst, IF_ID_PC, MemWrite, 1'b0, 1'b1, 1'b0, reg_write, 32'b0, IF_ID_instOut, PC}; // Store input data in the ROB entry with value set to 32'b0 and new_bit set to 1 [99]�뒗 exceptionflag
                     tail <= (tail + 1) % 64;                // Circular buffer handling
                 end
             end else begin
-                rob_entry[tail] <= {MemRead, 2'b00,mret_inst, IF_ID_PC, MemWrite, 1'b1, 1'b1, 1'b1, reg_write, 32'b0, IF_ID_instOut, PC}; // Store input data in the ROB entry with value set to 32'b0 and new_bit set to 1 [99]는 exceptionflag
+                rob_entry[tail] <= {MemRead, 2'b00,mret_inst, IF_ID_PC, MemWrite, 1'b1, 1'b1, 1'b1, reg_write, 32'b0, IF_ID_instOut, PC}; // Store input data in the ROB entry with value set to 32'b0 and new_bit set to 1 [99]�뒗 exceptionflag
                 tail <= (tail + 1) % 64;                // Circular buffer handling
             end
         end
@@ -184,7 +184,7 @@ always @(posedge clk) begin
                     exception_sig <= 1'b1;
                     mret_sig <= 1'b0;
                     exception_cause <= rob_entry[head][135:134];
-                    EPC <= rob_entry[head][132:101];
+                    EPC <=  rob_entry[head][95:64];
                     out_reg_write <= 0; 
                     head <= 0;
                     tail <= 0;
