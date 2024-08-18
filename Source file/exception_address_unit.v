@@ -17,7 +17,7 @@ module exception_address_unit(
             address_exception <=0;
         end else begin
             address_exception <=0;
-             if (address > 2047) begin
+             if (address > 4095) begin
                 address_exception <= 1'b1;
              end
              
