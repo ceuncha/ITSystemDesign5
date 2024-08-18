@@ -47,7 +47,7 @@ module CPU_top_tb;
         rst = 1;
 
         // Wait 10 ns for global reset to finish
-        #20;
+        #10;
         
         // Deassert reset
         rst = 0;
@@ -63,6 +63,6 @@ module CPU_top_tb;
     end
     
     // Clock generator
-    always #10 clk = ~clk;
+    always #5 clk = ~clk;
 
 endmodule
