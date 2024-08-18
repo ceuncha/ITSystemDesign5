@@ -116,3 +116,23 @@ module RAT (
         end
     end
 endmodule
+
+
+module shadow_RAT_register(
+    input wire reset,
+    input wire [4:0] addr,    
+    input wire [7:0] data_in,
+    output reg [7:0] data_out,
+    input wire write_enable
+);
+    (* keep = "true" *) reg [7:0] registers [0:31];  
+    integer l;
+
+    always @(posedge write_enable) begin
+        registers[addr] <= data_in;
+    end
+
+    always @(*) begin
+        data_out = registers[addr];
+    end
+endmodule
