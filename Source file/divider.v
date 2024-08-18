@@ -19,16 +19,15 @@
 `define N(n)                       [(n)-1:0]
 `define FFx(signal,bits)           always @ ( posedge clk  ) if (   reset   )  signal <= bits;  else
 
-localparam                      XLEN          = 32;
-localparam `N(XLEN)             STAGE_LIST    = 32'b01010101010101010101010101010101;
 
-module divfunc
+
+module divider
 (
     input              clk,
     input              reset,
 
-    input  `N(XLEN)    A,
-    input  `N(XLEN)    B,
+    input  [31:0]    A,
+    input  [31:0]    B,
     input              start,
     
     input [7:0] Physical_address_in,
@@ -42,7 +41,8 @@ module divfunc
     
     output             done
 );
-
+ localparam                      XLEN          = 32;
+ localparam `N(XLEN)             STAGE_LIST    = 32'b01010101010101010101010101010101;
     
     reg  [7:0]        Physical_address_in_reg `N(XLEN+1); 
     reg [31:0]        PC_in_reg `N(XLEN+1);
@@ -52,6 +52,7 @@ module divfunc
     reg `N(XLEN)      dividend `N(XLEN+1);  
     reg `N(XLEN)      divisor  `N(XLEN+1);
     reg `N(XLEN)      quotient `N(XLEN+1);     
+    wire [31:0] quo, rem;
 
     always@* begin
         Physical_address_in_reg[0] = Physical_address_in;
@@ -120,7 +121,7 @@ module divfunc
         end
     endgenerate
     
-    assign Result = (divider_op_in_reg[XLEN]==4'b0001) ? rem : quo ;
+    assign Result = (divider_op_in_reg[XLEN]==4'b0001) ? quo : rem ;
     
     assign divide_zero_exception = divide_zero_exception_reg [XLEN];
     
@@ -128,9 +129,9 @@ module divfunc
     
     assign PC_out = PC_in_reg[XLEN];
 
-    assign quo = quotient[XLEN];
+    assign  quo = quotient[XLEN];
 
-    assign rem = dividend[XLEN];
+    assign  rem = dividend[XLEN];
 
     assign done = ready[XLEN];
 
