@@ -16,7 +16,7 @@ module BB(
 );
 
 // ROB memory
-reg [31:0] BB_entry [0:31];          
+reg [31:0] BB_entry [0:8];          
 reg ready [0:31];                       // Ready flag array for ROB entries
 integer i;
 integer j;
@@ -29,7 +29,7 @@ task reset_bb_entries;  //?釉녘린? �겫袁㏓┛揶�? 筌욊쑵六�?由
     begin
         head <= 0;
         tail <= 0;
-        for (i = 0; i < 32; i = i + 1) begin
+        for (i = 0; i < 8; i = i + 1) begin
             BB_entry[i] <= 32'b0;     // Reset ROB entry with all fields set to 0
             ready[i] <= 1'b0;         // Reset ready flag
         end
@@ -50,7 +50,7 @@ always @(posedge clk) begin
             ready[tail] <= 1'b0;     // Set ready flag to 0
             tail_num <= tail;        //
             Copy_RAT <= 1;
-            tail <= (tail + 1) % 32;        // Increment the tail pointer
+            tail <= (tail + 1) % 8;        // Increment the tail pointer
         end else begin
             Copy_RAT <= 0;
         end
@@ -66,12 +66,12 @@ always @(posedge clk) begin
                 head_num <= head;
                 reset_bb_entries();  // Reset BB entries
             end else begin
-                head <= (head + 1)% 32;    // Increment head
+                head <= (head + 1)% 8;    // Increment head
                 Paste_RAT <= 0;      // Reset Paste_RAT to 0
                 Paste_RAT_set <= 0;  // ?逾�?�삋域�? �뵳�딅��
             end
         end
-        for (i = 0; i < 32; i = i + 1) begin
+        for (i = 0; i < 8; i = i + 1) begin
             if (BB_entry[i] == branch_PC) begin //head?肉� ?�맄燁살꼹釉�筌�? ?釉�?? �겫袁㏓┛?�뻿?�깈揶�? ?諭�?堉�?�넅?�뱽?釉�
                 if (PCSrc == 1'b1) begin
                 ready[i] <= 1'b1;   // Set the ready flag to 1
@@ -79,7 +79,7 @@ always @(posedge clk) begin
                 Paste_RAT_set <= 1;  // ?逾�?�삋域�? ?苑�?�젟
                 head_num <= i;
                 tail <= i;
-                    for (j = i; j < 32; j = j + 1) begin
+                    for (j = i; j < 8; j = j + 1) begin
                         BB_entry[j] <= 32'b0;     // Reset ROB entry with all fields set to 0
                         ready[j] <= 1'b0;         // Reset ready flag
                     end
