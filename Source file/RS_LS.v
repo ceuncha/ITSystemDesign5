@@ -109,13 +109,15 @@
                 out_block <= SIZE -1;
             end
         end else begin
-        if (start) begin
-
+        
                     operand1s[out_block] <= 0;
                     operand2s[out_block] <= 0;
                     valid_entries1[out_block] <= 0;
                     valid_entries2[out_block] <= 0;
                     RS_LS_on[out_block] <= 0;
+        if (start) begin
+
+
 
             if (operand1_conflict && operand2_conflict) begin  
                 inst_nums[current_block] <= RS_alu_inst_num;
