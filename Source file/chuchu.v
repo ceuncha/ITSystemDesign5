@@ -3,11 +3,10 @@ module chuchu (
     input reset,
     input exception,
     input mret,
-
     input save_state,        
     input restore_state,      
-    input [4:0] save_page,     // 5-bit for 32 pages
-    input [4:0] restore_page,  // 5-bit for 32 pages
+    input [2:0] save_page,     // 3-bit for 8 pages
+    input [2:0] restore_page,  // 3-bit for 8 pages
     input [7:0] rat_data,
     output reg [7:0] chuchu_out
 );
@@ -16,14 +15,14 @@ module chuchu (
     reg [6:0] current_index;
     integer i;
 
-    wire [7:0] shadow_data_out [0:31][0:127];
-    reg [7:0] shadow_data_in [0:31][0:127];
-    reg shadow_write_enable [0:31];
+    wire [7:0] shadow_data_out [0:7][0:127]; // Changed to 8 pages
+    reg [7:0] shadow_data_in [0:7][0:127];   // Changed to 8 pages
+    reg shadow_write_enable [0:7];           // Changed to 8 pages
     reg [6:0] shadow_addr;
 
     genvar j, k;
     generate
-        for (j = 0; j < 32; j = j + 1) begin : shadow_chuchu_array
+        for (j = 0; j < 8; j = j + 1) begin : shadow_chuchu_array // Loop now iterates for 8 pages
             for (k = 0; k < 128; k = k + 1) begin : shadow_chuchu_regs
                 shadow_chuchu u_shadow_chuchu (
                     .reset(reset),
@@ -65,24 +64,5 @@ module chuchu (
                 current_index <= (current_index + 1) % 128;
             end
         end
-    end
-endmodule
-
-module shadow_chuchu (
-    input wire reset,
-    input wire [6:0] addr,    
-    input wire [7:0] data_in,
-    output reg [7:0] data_out,
-    input wire write_enable
-);
-    reg [7:0] registers [0:127];  
-    integer i;
-
-    always @(posedge write_enable) begin
-        registers[addr] <= data_in;
-    end
-
-    always @(*) begin
-        data_out <= registers[addr];
     end
 endmodule
