@@ -15,11 +15,11 @@ module DataMemory(      // 08.17 new update
 );
 reg [31:0]load_data;   //08.07 new update
 integer i;
-reg [7:0] memory [0:2047];
+reg [7:0] memory [0:4095];
     always @(posedge clk) begin                       
         if (reset) begin
             for (i = 0; i < 2048; i = i + 1) begin
-                memory[i] <= 0;
+                memory[i] <= i+3;
                 end
 
         end else begin
