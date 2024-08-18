@@ -66,3 +66,22 @@ module chuchu (
         end
     end
 endmodule
+
+module shadow_chuchu (
+    input wire reset,
+    input wire [6:0] addr,    
+    input wire [7:0] data_in,
+    output reg [7:0] data_out,
+    input wire write_enable
+);
+    reg [7:0] registers [0:127];  
+    integer i;
+
+    always @(posedge write_enable) begin
+        registers[addr] <= data_in;
+    end
+
+    always @(*) begin
+        data_out <= registers[addr];
+    end
+endmodule
