@@ -4,8 +4,8 @@ module RAT (
 
     input wire save_state,    
     input wire restore_state, 
-    input wire [2:0] save_page,     // 3-bit for 8 pages
-    input wire [2:0] restore_page,  // 3-bit for 8 pages
+    input wire [4:0] save_page,     // 3-bit for 8 pages
+    input wire [4:0] restore_page,  // 3-bit for 8 pages
     input wire [4:0] logical_addr1, 
     input wire [4:0] logical_addr2, 
     input wire [4:0] rd_logical_addr, 
