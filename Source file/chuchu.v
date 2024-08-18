@@ -5,8 +5,8 @@ module chuchu (
     input mret,
     input save_state,        
     input restore_state,      
-    input [2:0] save_page,     // 3-bit for 8 pages
-    input [2:0] restore_page,  // 3-bit for 8 pages
+    input [4:0] save_page,     // 3-bit for 8 pages
+    input [4:0] restore_page,  // 3-bit for 8 pages
     input [7:0] rat_data,
     output reg [7:0] chuchu_out
 );
