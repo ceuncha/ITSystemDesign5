@@ -107,7 +107,7 @@ module store_buffer(
 
             // Check for existing entry with the same address
                 for (i = 0; i < SIZE; i = i + 1) begin
-                    if (buffer_mem_addr[i] == mem_addr && funct3s[i] == funct3) begin
+                    if (buffer_mem_addr[i] == mem_addr) begin
                             buffer_inst_num[i] <= 0;
                             buffer_mem_addr[i] <= 0;  
                             entry_val[i] <= 1'b0;
@@ -123,7 +123,7 @@ module store_buffer(
                 load_done_out <= 1'b1;
                 store_address_out <= mem_addr;
                 for (i = 0; i < SIZE; i = i + 1) begin
-                    if (buffer_mem_addr[i] == mem_addr && funct3s[i] == funct3) begin 
+                    if (buffer_mem_addr[i] == mem_addr) begin 
                         load_valid <= 3'b111;
                         if (funct3 == 3'b000) begin 
                             load_data <= {{24{buffer_mem_data[i][7]}}, buffer_mem_data[i][7:0]}; // LB
