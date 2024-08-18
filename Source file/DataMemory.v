@@ -19,7 +19,7 @@ reg [7:0] memory [0:4095];
     always @(posedge clk) begin                       
         if (reset) begin
             for (i = 0; i < 2048; i = i + 1) begin
-                memory[i] <= i+3;
+                memory[i] <= 0;
                 end
 
         end else begin
