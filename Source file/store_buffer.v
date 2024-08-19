@@ -26,7 +26,7 @@ module store_buffer(
     input [31:0] mem_addr_rob,
     input [31:0] inst_num_rob
 );
-    parameter SIZE = 32;
+    parameter SIZE = 16;
     
     reg [31:0] buffer_inst_num [0:SIZE-1];
     reg [31:0] buffer_mem_addr [0:SIZE-1];
@@ -131,7 +131,7 @@ module store_buffer(
                             load_data <= {{16{buffer_mem_data[i][15]}}, buffer_mem_data[i][15:0]}; // LH
 
 
-                        end else if (funct3 == 3'b010) begin //하위 16바이트만 맞음
+                        end else if (funct3 == 3'b010) begin //�븯�쐞 16諛붿씠�듃留� 留욎쓬
                             load_data <= buffer_mem_data[i]; // LW
                         end else if (funct3 == 3'b100) begin
                             load_data <= {{24{1'b0}}, buffer_mem_data[i][7:0]}; // LBU
