@@ -83,6 +83,8 @@ module RS_Div (
                 next_block <= 1;
                 out_block <= SIZE - 1;
             end
+                   result_out <= 0;
+
        end else begin
                     operand1s[out_block] <= 0;
                     operand2s[out_block] <= 0;
