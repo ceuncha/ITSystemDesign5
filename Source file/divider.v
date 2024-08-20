@@ -82,28 +82,28 @@ module divider
     	    wire [XLEN+i:0] d = {t,u}>>(i+1);
 
             if (STAGE_LIST[XLEN-i-1]) begin:gen_ff
-                `FFx(Physical_address_in_reg[i],0)
+                `FFx(Physical_address_in_reg[i+1],0)
                 Physical_address_in_reg[i+1] <= Physical_address_in_reg[i];
                 
-                `FFx(PC_in_reg[i],0)
+                `FFx(PC_in_reg[i+1],0)
                 PC_in_reg[i+1] <= PC_in_reg[i];
                 
-                `FFx(divider_op_in_reg[i],0)
+                `FFx(divider_op_in_reg[i+1],0)
                 divider_op_in_reg[i+1] <= divider_op_in_reg[i];
                 
-                `FFx(divide_zero_exception_reg[i],0)
+                `FFx(divide_zero_exception_reg[i+1],0)
                 divide_zero_exception_reg[i+1] <= divide_zero_exception_reg[i];
                 
-                `FFx(ready[i],0)
+                `FFx(ready[i+1],0)
                 ready[i+1] <= ready[i];
 
-                `FFx(dividend[i],0)
+                `FFx(dividend[i+1],0)
                 dividend[i+1] <= d;
 
-                `FFx(divisor[i],0)
+                `FFx(divisor[i+1],0)
                 divisor[i+1] <= divisor[i];
 
-                `FFx(quotient[i],0)
+                `FFx(quotient[i+1],0)
                 quotient[i+1] <= quotient[i]|(q<<(XLEN-i-1));
                
             end else begin:gen_comb
