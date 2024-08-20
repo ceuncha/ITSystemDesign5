@@ -92,7 +92,7 @@ module RS_Div (
                     valid_entries2[out_block] <= 0;
                     RS_DIV_on[out_block] <= 0;
          if (RS_div_start) begin
-            if ((operand1_conflict == 1'b1) && (operand1_conflict == 1'b0)) begin  
+             if ((operand1_conflict == 1'b1) && (operand2_conflict == 1'b0)) begin  
                 PCs[current_block] <= RS_div_PC;
                 Rds[current_block] <= RS_div_Rd;
                 ALUOPs[current_block] <= RS_div_ALUOP;
@@ -101,7 +101,7 @@ module RS_Div (
                 valid_entries1[current_block] <= 1'b1;
                 valid_entries2[current_block] <= RS_div_valid[1];
                 RS_DIV_on[current_block] <= 1;
-            end else if ((operand1_conflict == 1'b0) && (operand1_conflict == 1'b1)) begin  
+             end else if ((operand1_conflict == 1'b0) && (operand2_conflict == 1'b1)) begin  
                 PCs[current_block] <= RS_div_PC;
                 Rds[current_block] <= RS_div_Rd;
                 ALUOPs[current_block] <= RS_div_ALUOP;
@@ -110,7 +110,7 @@ module RS_Div (
                 valid_entries1[current_block] <= RS_div_valid[0];
                 valid_entries2[current_block] <= 1'b1;
                 RS_DIV_on[current_block] <= 1;
-            end else if ((operand1_conflict == 1'b1) && (operand1_conflict == 1'b1)) begin  
+             end else if ((operand1_conflict == 1'b1) && (operand2_conflict == 1'b1)) begin  
                 PCs[current_block] <= RS_div_PC;
                 Rds[current_block] <= RS_div_Rd;
                 ALUOPs[current_block] <= RS_div_ALUOP;
