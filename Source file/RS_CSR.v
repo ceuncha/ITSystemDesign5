@@ -87,6 +87,7 @@
                 csr_addrs[i] <= 0;
                 ALUSrc2s[i] <= 0; 
             end
+       result_out <= 0;
         end else begin
                 operand1s[out_block] <= 0;
                 valid_entries1[out_block] <= 0;
