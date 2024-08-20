@@ -155,6 +155,37 @@ module RS_Branch (                                             //筌뤿굝議�
             Operand2_BR_phy<=0;
             end
         end else begin
+                    if (valid_entries1[head] && valid_entries2[head]) begin       // Check if the entry is ready
+            RS_BR_Branch <= Branchs [head];
+            RS_BR_Jump <= Jumps[head];
+            RS_BR_Hit <= hits[head];
+            RS_BR_taken <= takens[head];
+            RS_BR_Phy <= Rds[head];
+            RS_BR_inst_num_output <= inst_nums[head];
+            RS_BR_funct3 <= funct3s[head];
+            immediate_BR <= immediates[head];
+            PC_BR <= PCs[head];
+            Operand1_BR_phy <= operand1s[head];
+            Operand2_BR_phy <= operand2s[head];
+            valid_entries1[head] <= 0;            // Clear the ready flag after consuming the entry
+            valid_entries2[head] <= 0;
+            operand1s[head] <= 0;
+            operand2s[head] <= 0;
+            head <= (head + 1) % 64;                 // Circular buffer handling
+        end else  begin
+        RS_BR_Branch <= 0;
+            RS_BR_Jump <= 0;
+            RS_BR_Hit <= 0;
+            RS_BR_taken <= 0;
+            RS_BR_Phy <= 0;
+            RS_BR_inst_num_output <=0;
+            RS_BR_funct3 <= 0;
+            immediate_BR <= 0;
+            PC_BR <= 0;
+            Operand1_BR_phy <= 0;
+            Operand2_BR_phy <= 0;
+         end
+
         if(start) begin
             if ((operand1_conflict == 1'b1) && (operand2_conflict == 1'b0)) begin  // 筌뤿굝議�?堉긷첎? 筌ｌ꼷�벉 ?諭�?堉�?�넅?�뱽?釉�, alu?�벥 野껉퀗�궢?? 筌뤿굝議�?堉�?�벥 operand �눧�눖�봺雅뚯눘�꺖�몴? �뜮袁㏉꺍?釉�?肉� 
                                                     // ?毓�?�쑓?�뵠?�뱜揶�? ?釉�?�뒄?�뻻 ?�땾?六�?鍮먧빳??�뼄.
@@ -303,36 +334,6 @@ module RS_Branch (                                             //筌뤿굝議�
                 end
             end
         
-        if (valid_entries1[head] && valid_entries2[head]) begin       // Check if the entry is ready
-            RS_BR_Branch <= Branchs [head];
-            RS_BR_Jump <= Jumps[head];
-            RS_BR_Hit <= hits[head];
-            RS_BR_taken <= takens[head];
-            RS_BR_Phy <= Rds[head];
-            RS_BR_inst_num_output <= inst_nums[head];
-            RS_BR_funct3 <= funct3s[head];
-            immediate_BR <= immediates[head];
-            PC_BR <= PCs[head];
-            Operand1_BR_phy <= operand1s[head];
-            Operand2_BR_phy <= operand2s[head];
-            valid_entries1[head] <= 0;            // Clear the ready flag after consuming the entry
-            valid_entries2[head] <= 0;
-            operand1s[head] <= 0;
-            operand2s[head] <= 0;
-            head <= (head + 1) % 64;                 // Circular buffer handling
-        end else  begin
-        RS_BR_Branch <= 0;
-            RS_BR_Jump <= 0;
-            RS_BR_Hit <= 0;
-            RS_BR_taken <= 0;
-            RS_BR_Phy <= 0;
-            RS_BR_inst_num_output <=0;
-            RS_BR_funct3 <= 0;
-            immediate_BR <= 0;
-            PC_BR <= 0;
-            Operand1_BR_phy <= 0;
-            Operand2_BR_phy <= 0;
-         end
 end
     
 
