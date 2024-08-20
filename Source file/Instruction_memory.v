@@ -6,12 +6,12 @@ module Instruction_memory(
     output reg [31:0] instOut
 
 );
-  reg [7:0] memory [0:1023]; // 1KB memory
+    reg [7:0] memory [0:2047]; // 1KB memory
 integer i;
 
 initial begin
 
-    for (i = 0; i < 1024; i = i + 1) begin
+    for (i = 0; i < 2048; i = i + 1) begin
       memory[i] = 8'h00;
     end
     
