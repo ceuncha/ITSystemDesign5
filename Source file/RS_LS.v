@@ -108,6 +108,7 @@
                 next_block <= 1;
                 out_block <= SIZE -1;
             end
+           result_out <= 0;
         end else begin
         if (start) begin
 
